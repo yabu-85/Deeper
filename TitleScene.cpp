@@ -1,4 +1,6 @@
 #include "TitleScene.h"
+#include "Player.h"
+#include "Stage.h"
 
 //コンストラクタ
 TitleScene::TitleScene(GameObject* parent)
@@ -9,6 +11,9 @@ TitleScene::TitleScene(GameObject* parent)
 //初期化
 void TitleScene::Initialize()
 {
+	Instantiate<Player>(this);
+	Instantiate<Stage>(this);
+
 }
 
 //更新

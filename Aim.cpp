@@ -4,6 +4,7 @@
 #include "Engine/Model.h"
 #include "Player.h"
 #include "Stage.h"
+#include <vector>
 
 namespace {
     const float defaultPerspectiveDistance_ = 7.0f;
@@ -93,29 +94,42 @@ void Aim::Release()
 void Aim::RayCastStage()
 {
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
-    int hGroundModel = pStage->GetModelHandle();    //モデル番号を取得
+    std::vector<IntersectData> datas = pStage->GetModelHandle();    //モデル番号を取得
 
     RayCastData data;
     XMFLOAT3 start = pPlayer_->GetPosition();
     start.y += heightDistance_;
-    XMFLOAT3 target = XMFLOAT3(cameraPos_.x - start.x, cameraPos_.y - start.y, cameraPos_.z - start.z);
-    XMVECTOR vTarget = XMLoadFloat3(&target);
-    vTarget = XMVector3Normalize(vTarget);
-    XMStoreFloat3(&target, vTarget);
+    XMFLOAT3 dir = XMFLOAT3(cameraPos_.x - start.x, cameraPos_.y - start.y, cameraPos_.z - start.z);
+    XMVECTOR vDir = XMLoadFloat3(&dir);
+    vDir = XMVector3Normalize(vDir);
+    XMStoreFloat3(&dir, vDir);
 
-    data.start = start;
-    data.dir = target;
-    Model::RayCast(hGroundModel, &data); //レイを発射
+    int arraySize = datas.size();
+    bool rayHit = false;
 
-    //レイが当たったら
-    if (data.hit && data.dist < (defaultPerspectiveDistance_ + heightRay))
-    {
-        float dist = data.dist;
-        dist -= heightRay;
-        perspectiveDistance_ = dist;
+    for (int i = 0; i < arraySize; i++) {
+        Transform trans;
+        trans.position_ = datas.back().position;
+        int hGround = datas.back().hModelNum;
+        datas.pop_back();
 
+        data.start = start;
+        data.dir = dir;
+        Model::SetTransform(hGround, trans);
+        Model::RayCast(hGround, &data);
+
+        //レイ当たった・判定距離内だったら
+        if (data.hit && data.dist < (defaultPerspectiveDistance_ + heightRay))
+        {
+            float dist = data.dist;
+            dist -= heightRay;
+            perspectiveDistance_ = dist;
+
+            rayHit = true;
+        }
     }
-    else {
+
+    if (!rayHit) {
         perspectiveDistance_ = defaultPerspectiveDistance_;
     }
 

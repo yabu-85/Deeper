@@ -1,7 +1,15 @@
 #include "Aim.h"
 #include "Engine/Camera.h"
 #include "Engine/Input.h"
+#include "Engine/Model.h"
 #include "Player.h"
+#include "Stage.h"
+
+namespace {
+    const float defaultPerspectiveDistance_ = 7.0f;
+    const float heightRay = 0.5f; //StageとのRay判定の当たった距離にプラスする値
+
+}
 
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 },
@@ -19,7 +27,6 @@ Aim::~Aim()
 void Aim::Initialize()
 {
     pPlayer_ = (Player*)FindObject("Player");
-
     aimMove_ = true;
 }
 
@@ -47,18 +54,21 @@ void Aim::Update()
     XMVector3Normalize(camPos);
     XMStoreFloat3(&aimDirection_, -camPos);
 
+    //プレイヤーの位置をカメラの焦点とする
+    plaPos_ = pPlayer_->GetPosition();
+
     //マイナスで左、プラスで右寄りになる
     //これの値は多分だけど、画面上の中心から何割先までって感じだと思う：プレイヤーとの距離が近いと値も小さくなる、遠いと大きく
     float cameraOffset = 0.0f;
 
-    //プレイヤーの位置をカメラの焦点とする
-    plaPos_ = pPlayer_->GetPosition();
-    cameraPos_.x = plaPos_.x + (aimDirection_.z * cameraOffset);
-    cameraPos_.y = plaPos_.y + heightDistance_;
-    cameraPos_.z = plaPos_.z - (aimDirection_.x * cameraOffset);
+    cameraTarget_.x = plaPos_.x + (aimDirection_.z * cameraOffset);
+    cameraTarget_.y = plaPos_.y + heightDistance_;
+    cameraTarget_.z = plaPos_.z - (aimDirection_.x * cameraOffset);
 
     //カメラ焦点
-    XMVECTOR caTarget = XMLoadFloat3(&cameraPos_);
+    XMVECTOR caTarget = XMLoadFloat3(&cameraTarget_);
+
+    RayCastStage();
 
     //プレイヤーの半径を考慮して回転を適用している
     //ここAimの近さの値をプレイヤーから取得して計算もしてる
@@ -78,4 +88,36 @@ void Aim::Draw()
 
 void Aim::Release()
 {
+}
+
+void Aim::RayCastStage()
+{
+    Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
+    int hGroundModel = pStage->GetModelHandle();    //モデル番号を取得
+
+    RayCastData data;
+    XMFLOAT3 start = pPlayer_->GetPosition();
+    start.y += heightDistance_;
+    XMFLOAT3 target = XMFLOAT3(cameraPos_.x - start.x, cameraPos_.y - start.y, cameraPos_.z - start.z);
+    XMVECTOR vTarget = XMLoadFloat3(&target);
+    vTarget = XMVector3Normalize(vTarget);
+    XMStoreFloat3(&target, vTarget);
+
+    data.start = start;
+    data.dir = target;
+    Model::RayCast(hGroundModel, &data); //レイを発射
+
+    //レイが当たったら
+    if (data.hit && data.dist < (defaultPerspectiveDistance_ + heightRay))
+    {
+        float dist = data.dist;
+        dist -= heightRay;
+        perspectiveDistance_ = dist;
+
+    }
+    else {
+        perspectiveDistance_ = defaultPerspectiveDistance_;
+    }
+
+    return;
 }

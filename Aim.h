@@ -19,6 +19,8 @@ class Aim :
 
     Player* pPlayer_;
 
+    void RayCastStage();
+
 public:
     Aim(GameObject* parent);
     ~Aim();

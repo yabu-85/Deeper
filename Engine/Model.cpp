@@ -67,7 +67,7 @@ namespace Model
 
 
 	//•`‰æ
-	void Draw(int handle)
+	void Draw(int handle, int type)
 	{
 		if (handle < 0 || handle >= _datas.size() || _datas[handle] == nullptr)
 		{
@@ -81,11 +81,9 @@ namespace Model
 		if (_datas[handle]->nowFrame > (float)_datas[handle]->endFrame)
 			_datas[handle]->nowFrame = (float)_datas[handle]->startFrame;
 
-
-
 		if (_datas[handle]->pFbx)
 		{
-			_datas[handle]->pFbx->Draw(_datas[handle]->transform, (int)_datas[handle]->nowFrame);
+			_datas[handle]->pFbx->Draw(_datas[handle]->transform, type, (int)_datas[handle]->nowFrame);
 		}
 	}
 

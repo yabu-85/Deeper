@@ -46,6 +46,23 @@ namespace Model
 		}
 	};
 
+	//モデル情報
+	struct RayModelData
+	{
+		//ファイル名
+		std::string fileName;
+
+		//ロードしたモデルデータのアドレス
+		Fbx* pFbx;
+
+		//行列
+		Transform 	transform;
+
+		//初期化
+		RayModelData() : pFbx(nullptr)
+		{
+		}
+	};
 
 	//初期化
 	void Initialize();
@@ -58,7 +75,7 @@ namespace Model
 	//描画
 	//引数：handle	描画したいモデルの番号
 	//引数：matrix	ワールド行列
-	void Draw(int handle);
+	void Draw(int handle, int type = 0);
 
 	//任意のモデルを開放
 	//引数：handle	開放したいモデルの番号

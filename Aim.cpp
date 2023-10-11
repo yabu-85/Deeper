@@ -124,7 +124,6 @@ void Aim::RayCastStage()
             float dist = data.dist;
             dist -= heightRay;
             perspectiveDistance_ = dist;
-
             rayHit = true;
         }
     }

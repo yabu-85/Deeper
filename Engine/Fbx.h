@@ -73,7 +73,7 @@ public:
 
 	//描画
 	//引数：World	ワールド行列
-	void    Draw(Transform& transform, int frame);
+	void    Draw(Transform& transform, int type, int frame);
 
 	//解放
 	void    Release();

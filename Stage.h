@@ -8,6 +8,12 @@ enum StageNum {
     MAX,
 };
 
+enum RayStageNum {
+    RT1 = 0,
+    RT2,
+    RMAX,
+};
+
 struct IntersectData {
     int hModelNum;
     XMFLOAT3 position;
@@ -16,8 +22,8 @@ struct IntersectData {
 class Stage :
     public GameObject
 {
-    int hModel_[MAX];
-    std::vector<IntersectData> intersectDatas_;
+    int hModel_[MAX + RMAX];
+    std::vector<IntersectData> intersectDatas_; //RayCast用データ集
 
 public:
     Stage(GameObject* parent);

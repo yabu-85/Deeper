@@ -46,24 +46,6 @@ namespace Model
 		}
 	};
 
-	//モデル情報
-	struct RayModelData
-	{
-		//ファイル名
-		std::string fileName;
-
-		//ロードしたモデルデータのアドレス
-		Fbx* pFbx;
-
-		//行列
-		Transform 	transform;
-
-		//初期化
-		RayModelData() : pFbx(nullptr)
-		{
-		}
-	};
-
 	//初期化
 	void Initialize();
 
@@ -111,6 +93,8 @@ namespace Model
 	//戻値：ワールド行列
 	XMMATRIX GetMatrix(int handle);
 
+	//指定ModelDataのFbx情報を取得
+	Fbx* GetFbx(int handle);
 
 	//レイキャスト（レイを飛ばして当たり判定）　※未実装
 	//引数：handle	判定したいモデルの番号

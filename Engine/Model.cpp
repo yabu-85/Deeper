@@ -175,6 +175,11 @@ namespace Model
 		return _datas[handle]->transform.GetWorldMatrix();
 	}
 
+	Fbx* GetFbx(int handle)
+	{
+		return _datas[handle]->pFbx;
+	}
+
 
 	//レイキャスト（レイを飛ばして当たり判定）
 	void RayCast(int handle, RayCastData *data)

@@ -148,6 +148,10 @@ public:
 	//戻値：スキンメッシュ情報
 	FbxSkin* GetSkinInfo() { return pSkinInfo_; }
 
+	XMFLOAT3 GetVertexPosition(int index) { return pVertexData_[index].position; };
+
+	DWORD GetVertexCount() { return vertexCount_; };
+
 	//レイキャスト（レイを飛ばして当たり判定）
 	//引数：data	必要なものをまとめたデータ
 	void RayCast(RayCastData *data);

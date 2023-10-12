@@ -87,5 +87,7 @@ public:
 	//引数：data	必要なものをまとめたデータ
 	void RayCast(RayCastData *data);
 
+	std::vector<FbxParts*> GetFbxParts() { return parts_; };
+
 };
 

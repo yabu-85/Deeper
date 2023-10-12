@@ -29,6 +29,8 @@ void Aim::Initialize()
 {
     pPlayer_ = (Player*)FindObject("Player");
     aimMove_ = true;
+	
+	transform_.rotate_.y = 180;
 }
 
 void Aim::Update()

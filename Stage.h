@@ -36,4 +36,3 @@ public:
     std::vector<IntersectData> GetModelHandle() { return intersectDatas_; };
 
 };
-

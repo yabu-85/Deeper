@@ -1,12 +1,9 @@
 #pragma once
-#include <DirectXMath.h>
+#include "Engine/Camera.h"
+#include "Engine/Direct3D.h"
+#include "Engine/Transform.h"
 #include <vector>
 #include "Triangle.h"
-
-using namespace DirectX;
-
-class Triangle;
-class Transform;
 
 class Cell
 {
@@ -17,7 +14,7 @@ class Cell
 	float length_ = 0;
 
 	//’¸“_ˆÊ’u posision
-	XMFLOAT3 verPosition_[8];
+	XMFLOAT3 verPos_[8];
 
 	//‚±‚ÌCELL‚É‘®‚·‚éOŠpƒ|ƒŠƒSƒ“
 	std::vector<Triangle*>Triangles;
@@ -41,7 +38,10 @@ public:
 	void SetPosLeng(XMFLOAT3 pos, float leng);
 
 	//OŠpƒ|ƒŠƒSƒ“‚ªAAB‚ÉG‚ê‚Ä‚¢‚½‚ç‚±‚ÌCELL‚É“o˜^
-	void regist(Triangle& t) {};
+	void SetTriangle(Triangle& t);
+
+	//Setter
+	void ResetTriangles();
 
 	//Getter
 	XMFLOAT3 GetPosision() { return position_; }

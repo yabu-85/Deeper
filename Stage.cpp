@@ -15,7 +15,6 @@ namespace {
     const int maxCount = 8;
 
     Text *pText = new Text;
-	
     Quad* pQuad = new Quad;
     Cell* pCell = new Cell;
 
@@ -54,7 +53,6 @@ void Stage::Update()
     XMFLOAT3 plaPos = pPlayer->GetPosition();
 
 
-
     //プレイヤーの位置を取得して、判定距離内に入った分割ブロックを取得
     //Blockの追加はできたけど、半径・複数はまだやってない
     float fBox[3] = { plaPos.x / boxSize, plaPos.y / boxSize, plaPos.z / boxSize };
@@ -62,11 +60,12 @@ void Stage::Update()
     for (int i = 0; i < 3; i++) if (fBox[i] < 0) iBox[i] -= 1;
     for(int i = 0;i < 3;i++) iBox[i] *= 10;
     XMFLOAT3 cellPos = XMFLOAT3((float)iBox[0], 0.0f, (float)iBox[2]);
-    pQuad->SetPosition(cellPos);
 
+    pQuad->SetPosition(cellPos);
+    pCell->SetPosLeng(cellPos, boxSize);
+    pCell->ResetTriangles();
 
 	//Blockの範囲内のポリゴンを取得したい
-	std::vector<XMFLOAT3> list;
     for (int i = 0; i < intersectDatas_.size(); i++) {
         Fbx* pFbx = Model::GetFbx(intersectDatas_[i].hModelNum);
         std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
@@ -79,17 +78,19 @@ void Stage::Update()
                 XMFLOAT3 interPos = intersectDatas_[i].position;
                 verPos = { verPos.x + interPos.x, verPos.y + interPos.y, verPos.z + interPos.z };
                 
-                //とりあえず無条件で追加してみる
-                list.push_back(verPos);
-
+                //とりあえず無条件で追加してみる->Cellのほうで条件式やってる
+                Triangle tri;
+                XMFLOAT3* pori;
+                tri.SetPosition(&verPos);
+                
+                pCell->SetTriangle(tri);
             }
         }
     }
 
-    XMFLOAT3 first = list.front();
+    std::vector<Triangle*> triList = pCell->GetTriangles();
+    int aaaa = 0;
 
-
-    
 }
 
 void Stage::Draw()

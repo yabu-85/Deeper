@@ -1,10 +1,9 @@
 #include "Cell.h"
-#include "Engine/Camera.h"
-#include "Engine/Direct3D.h"
-#include "Engine/Transform.h"
 
 Cell::Cell()
+	:position_(0,0,0), length_(0)
 {
+	for (int i = 0; i < 8; i++) verPos_[i] = XMFLOAT3(0, 0, 0);
 }
 
 void Cell::SetPosLeng(XMFLOAT3 pos, float leng)
@@ -13,29 +12,57 @@ void Cell::SetPosLeng(XMFLOAT3 pos, float leng)
 	length_ = leng;
 
 	//下時計回り左上スタート（上から視点）
-	verPosition_[0] = XMFLOAT3(pos.x, pos.y, pos.z + leng);
-	verPosition_[1] = XMFLOAT3(pos.x + leng, pos.y, pos.z + leng);
-	verPosition_[2] = XMFLOAT3(pos.x + leng, pos.y, pos.z);
-	verPosition_[3] = XMFLOAT3(pos.x, pos.y, pos.z);
+	verPos_[0] = XMFLOAT3(pos.x, pos.y, pos.z + leng);
+	verPos_[1] = XMFLOAT3(pos.x + leng, pos.y, pos.z + leng);
+	verPos_[2] = XMFLOAT3(pos.x + leng, pos.y, pos.z);
+	verPos_[3] = XMFLOAT3(pos.x, pos.y, pos.z);
 
 	//上時計回り
-	verPosition_[4] = XMFLOAT3(pos.x, pos.y + leng, pos.z + leng);
-	verPosition_[5] = XMFLOAT3(pos.x + leng, pos.y + leng, pos.z + leng);
-	verPosition_[6] = XMFLOAT3(pos.x + leng, pos.y + leng, pos.z);
-	verPosition_[7] = XMFLOAT3(pos.x, pos.y + leng, pos.z);
+	verPos_[4] = XMFLOAT3(pos.x, pos.y + leng, pos.z + leng);
+	verPos_[5] = XMFLOAT3(pos.x + leng, pos.y + leng, pos.z + leng);
+	verPos_[6] = XMFLOAT3(pos.x + leng, pos.y + leng, pos.z);
+	verPos_[7] = XMFLOAT3(pos.x, pos.y + leng, pos.z);
 
 }
 
+void Cell::SetTriangle(Triangle& t)
+{
+	XMFLOAT3* tp = t.GetPosition();
+	if (tp[0].x < verPos_[0].x && tp[1].x < verPos_[0].x && tp[2].x < verPos_[0].x ||
+		tp[0].x < verPos_[1].x && tp[1].x < verPos_[2].x && tp[2].x < verPos_[3].x ||
+		
+		tp[0].y < verPos_[0].y && tp[1].y < verPos_[0].y && tp[2].y < verPos_[0].y ||
+		tp[0].y < verPos_[1].y && tp[1].y < verPos_[2].y && tp[2].y < verPos_[3].y ||
 
+		tp[0].z < verPos_[0].z && tp[1].z < verPos_[0].z && tp[2].z < verPos_[0].z ||
+		tp[0].z < verPos_[0].z && tp[1].z < verPos_[0].z && tp[2].z < verPos_[0].z )
+	{
+		return;
+	}
 
+	Triangle *tri = new Triangle;
+	tri->SetPosition(tp);
 
+	XMVECTOR vec[3];
+	for(int i = 0;i < 3;i++) vec[i] = XMLoadFloat3(&tp[i]);
+	tri->CreatTriangle(vec[0], vec[1], vec[2]);
 
+	Triangles.push_back(tri);
 
+}
 
+void Cell::ResetTriangles()
+{
+	for (Triangle* t : Triangles) {
+		delete t;
+	}
 
+	Triangles.clear();
+}
 
 
 //---------------------------------------------------------------------------------------------
+
 
 #define SAFE_RELEASE(p) {if ((p)!=nullptr) { p->Release(); (p)=nullptr;}}
 

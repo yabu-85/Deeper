@@ -3,8 +3,28 @@
 #include "Engine/Direct3D.h"
 #include "Engine/Transform.h"
 
+Cell::Cell()
+{
+}
 
+void Cell::SetPosLeng(XMFLOAT3 pos, float leng)
+{
+	position_ = pos;
+	length_ = leng;
 
+	//下時計回り左上スタート（上から視点）
+	verPosition_[0] = XMFLOAT3(pos.x, pos.y, pos.z + leng);
+	verPosition_[1] = XMFLOAT3(pos.x + leng, pos.y, pos.z + leng);
+	verPosition_[2] = XMFLOAT3(pos.x + leng, pos.y, pos.z);
+	verPosition_[3] = XMFLOAT3(pos.x, pos.y, pos.z);
+
+	//上時計回り
+	verPosition_[4] = XMFLOAT3(pos.x, pos.y + leng, pos.z + leng);
+	verPosition_[5] = XMFLOAT3(pos.x + leng, pos.y + leng, pos.z + leng);
+	verPosition_[6] = XMFLOAT3(pos.x + leng, pos.y + leng, pos.z);
+	verPosition_[7] = XMFLOAT3(pos.x, pos.y + leng, pos.z);
+
+}
 
 
 
@@ -69,6 +89,16 @@ void Quad::Draw()
 	Direct3D::pContext_->DrawIndexed(index_.size(), 0, 0);
 
 	Direct3D::SetShader(Direct3D::SHADER_3D);
+}
+
+void Quad::SetTransform(Transform& _t)
+{
+	transform_ = _t;
+}
+
+void Quad::SetPosition(XMFLOAT3& _t)
+{
+	transform_.position_ = _t;
 }
 
 void Quad::InitVertexData()

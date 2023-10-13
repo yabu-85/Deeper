@@ -15,7 +15,9 @@ namespace {
     const int maxCount = 8;
 
     Text *pText = new Text;
-	Quad* pQuad = new Quad;
+	
+    Quad* pQuad = new Quad;
+    Cell* pCell = new Cell;
 
 }
 
@@ -50,6 +52,8 @@ void Stage::Update()
 {
     Player* pPlayer = (Player*)FindObject("Player");
     XMFLOAT3 plaPos = pPlayer->GetPosition();
+
+
 
     //プレイヤーの位置を取得して、判定距離内に入った分割ブロックを取得
     //Blockの追加はできたけど、半径・複数はまだやってない

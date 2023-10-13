@@ -4,6 +4,7 @@
 #include <DirectXMath.h>
 #include "Texture.h"
 #include "Transform.h"
+#include <vector>
 
 using namespace DirectX;
 
@@ -68,18 +69,20 @@ class FbxParts
 		float*		pBoneWeight;	// ボーンの重み
 	};
 
-
-
 	//各データの個数
-	DWORD vertexCount_;		//頂点数
-	DWORD polygonCount_;		//ポリゴ数
-	DWORD indexCount_;		//インデックス数
-	DWORD materialCount_;		//マテリアルの個数
-	DWORD polygonVertexCount_;//ポリゴン頂点インデックス数 
-
+	DWORD vertexCount_;				//頂点数
+	DWORD polygonCount_;			//ポリゴン数
+	DWORD indexCount_;				//インデックス数
+	DWORD materialCount_;			//マテリアルの個数
+	DWORD polygonVertexCount_;		//ポリゴン頂点インデックス数 
 		
 	VERTEX *pVertexData_;
 	DWORD** ppIndexData_;
+	
+	struct Polygon{
+		XMFLOAT3 position_[3];
+	};
+	std::vector<Polygon> pPolygonData_;
 
 
 	//【頂点バッファ】
@@ -150,9 +153,10 @@ public:
 
 	XMFLOAT3 GetVertexPosition(int index) { return pVertexData_[index].position; };
 
-	DWORD GetIndexCount() { return indexCount_; };
+	DWORD GetPolygonCount();
 
-	XMFLOAT3* GetPolygon(int index);
+	//すべてのポリゴンの position_ データを取得：ポリゴン数×３帰ってくる
+	std::vector<XMFLOAT3> GetAllPositions();
 
 	//レイキャスト（レイを飛ばして当たり判定）
 	//引数：data	必要なものをまとめたデータ

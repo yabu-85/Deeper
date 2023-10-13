@@ -12,7 +12,7 @@ public:
 
 	void CreatTriangle(XMVECTOR& p1, XMVECTOR& p2, XMVECTOR& p3);
 
-	XMFLOAT3* GetPosition() { return position_; };
+	XMFLOAT3* GetPosition();
 
 };
 

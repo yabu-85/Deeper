@@ -44,6 +44,9 @@ FbxParts::~FbxParts()
 
 	SAFE_RELEASE(pVertexBuffer_);
 	SAFE_RELEASE(pConstantBuffer_);
+
+	pPolygonData_.clear();
+
 }
 
 //FBXファイルから情報をロードして諸々準備する
@@ -75,6 +78,8 @@ void FbxParts::InitVertex(fbxsdk::FbxMesh * mesh)
 
 	for (DWORD poly = 0; poly < polygonCount_; poly++)
 	{
+		Polygon polygon;
+
 		//3頂点分
 		for (int vertex = 0; vertex < 3; vertex++)
 		{
@@ -94,7 +99,13 @@ void FbxParts::InitVertex(fbxsdk::FbxMesh * mesh)
 			int uvIndex = mesh->GetTextureUVIndex(poly, vertex, FbxLayerElement::eTextureDiffuse);
 			FbxVector2  uv = pUV->GetDirectArray().GetAt(uvIndex);
 			pVertexData_[index].uv = XMFLOAT3((float)uv.mData[0], (float)(1.0f - uv.mData[1]), 0.0f);
+
+			//ポリゴン
+			polygon.position_[vertex] = XMFLOAT3((float)-pos[0], (float)pos[1], (float)pos[2]);
 		}
+
+		pPolygonData_.push_back(polygon);
+
 	}
 
 
@@ -211,8 +222,6 @@ void FbxParts::InitIndex(fbxsdk::FbxMesh * mesh)
 	// マテリアルの数だけインデックスバッファーを作成
 	ppIndexBuffer_ = new ID3D11Buffer*[materialCount_];
 	ppIndexData_ = new DWORD*[materialCount_];
-
-	
 
 	int count = 0;
 
@@ -578,22 +587,26 @@ bool FbxParts::GetBonePosition(std::string boneName, XMFLOAT3 * position)
 	return false;
 }
 
-XMFLOAT3* FbxParts::GetPolygon(int index)
+DWORD FbxParts::GetPolygonCount()
 {
-	//マテリアル毎
+	DWORD count = 0;
 	for (DWORD i = 0; i < materialCount_; i++)
-	{
-		//そのマテリアルのポリゴン毎
-		for (DWORD j = 0; j < pMaterial_[i].polygonCount; j++)
-		{
-			//3頂点
-			XMFLOAT3 ver[3];
-			ver[0] = pVertexData_[ppIndexData_[i][j * 3 + 0]].position;
-			ver[1] = pVertexData_[ppIndexData_[i][j * 3 + 1]].position;
-			ver[2] = pVertexData_[ppIndexData_[i][j * 3 + 2]].position;
+		count += pMaterial_[i].polygonCount;
+
+	return count;
+}
+
+std::vector<XMFLOAT3> FbxParts::GetAllPositions()
+{
+	std::vector<XMFLOAT3> positions;
+
+	for (Polygon pPolygon : pPolygonData_) {
+		for (int i = 0; i < 3; i++) {
+			positions.push_back(pPolygon.position_[i]);	
 		}
 	}
 
+	return positions;
 }
 
 void FbxParts::RayCast(RayCastData * data)

@@ -18,7 +18,7 @@ Aim::Aim(GameObject* parent)
 {
     mouseSensitivity = 2.0f;
     perspectiveDistance_ = 7.0f;
-    heightDistance_ = 1.5f;
+    heightDistance_ = 2.0f;
 }
 
 Aim::~Aim()

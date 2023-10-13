@@ -18,6 +18,9 @@ namespace {
     Quad* pQuad = new Quad;
     Cell* pCell = new Cell;
 
+    bool drawQuad = true;
+    bool drawCell = true;
+
 }
 
 Stage::Stage(GameObject* parent)
@@ -38,11 +41,18 @@ void Stage::Initialize()
         assert(hModel_[i] >= 0);
     }
 
-    intersectDatas_.push_back( { hModel_[MAX + RT1], XMFLOAT3(25.0f, 0.0f, 0.0f)} );
-    intersectDatas_.push_back( { hModel_[MAX + RT1], XMFLOAT3(-25.0f, 0.0f, 0.0f)} );
-    intersectDatas_.push_back( { hModel_[MAX + RT2], XMFLOAT3(10.0f, 0.0f, 0.0f)} );
-    intersectDatas_.push_back( { hModel_[MAX + RT2], XMFLOAT3(-10.0f, 0.0f, 0.0f)} );
+    intersectDatas_.push_back( { hModel_[MAX + RT1], XMFLOAT3(20.0f, 0.0f, 10.0f)} );
+    intersectDatas_.push_back( { hModel_[MAX + RT1], XMFLOAT3(-20.0f, 0.0f, 10.0f)} );
+    
+    const int rt2Count = 10;
+    const int rt2Countm = 10;
 
+    for(int i = 0;i < rt2Count;i++)
+    intersectDatas_.push_back( { hModel_[MAX + RT2], XMFLOAT3(5.0f + 10.0f * i, 0.0f, 15.0f)} );
+
+    for (int i = 0; i < rt2Countm; i++)
+    intersectDatas_.push_back( { hModel_[MAX + RT2], XMFLOAT3(-5.0f + -10.0f * i, 0.0f, 15.0f)} );
+    
     pText->Initialize();
 	pQuad->Initialize();
 }
@@ -52,7 +62,6 @@ void Stage::Update()
     Player* pPlayer = (Player*)FindObject("Player");
     XMFLOAT3 plaPos = pPlayer->GetPosition();
 
-
     //プレイヤーの位置を取得して、判定距離内に入った分割ブロックを取得
     //Blockの追加はできたけど、半径・複数はまだやってない
     float fBox[3] = { plaPos.x / boxSize, plaPos.y / boxSize, plaPos.z / boxSize };
@@ -60,44 +69,51 @@ void Stage::Update()
     for (int i = 0; i < 3; i++) if (fBox[i] < 0) iBox[i] -= 1;
     for(int i = 0;i < 3;i++) iBox[i] *= 10;
     XMFLOAT3 cellPos = XMFLOAT3((float)iBox[0], 0.0f, (float)iBox[2]);
+    XMFLOAT3 currentCellPos = pCell->GetPosision();
 
-    pQuad->SetPosition(cellPos);
-    pCell->SetPosLeng(cellPos, boxSize);
-    pCell->ResetTriangles();
+    if (cellPos.x != currentCellPos.x || cellPos.y != currentCellPos.y || cellPos.z != currentCellPos.z)
+    {
+        pQuad->SetPosition(cellPos);
+        pCell->SetPosLeng(cellPos, boxSize);
+        pCell->ResetTriangles();
 
-    const int polySize = 3;
+        const int polySize = 3;
 
-	//Blockの範囲内のポリゴンを取得したい
-    for (int i = 0; i < intersectDatas_.size(); i++) {
-        Fbx* pFbx = Model::GetFbx(intersectDatas_[i].hModelNum);
-        std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
-    
-        for (int n = 0; n < pFbxParts.size(); n++) {
-            int size = (int)pFbxParts[n]->GetIndexCount();
-            size /= polySize;
+        //Blockの範囲内のポリゴンを取得したい
+        for (int i = 0; i < intersectDatas_.size(); i++) {
+            Fbx* pFbx = Model::GetFbx(intersectDatas_[i].hModelNum);
+            std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
 
-            for (int j = 0; j < size; j++) {
-                //XMFLOAT3 verPos = pFbxParts[n]->GetVertexPosition(j);
-                
-                XMFLOAT3 polytest[3] = { pFbxParts[n]->GetPolygon(i)[0], pFbxParts[n]->GetPolygon(i)[1], pFbxParts[n]->GetPolygon(i)[2] };
+            for (int n = 0; n < pFbxParts.size(); n++) {
+                std::vector<XMFLOAT3> polygons = pFbxParts[n]->GetAllPositions();
 
+                //Intersectごとの座標を計算
                 XMFLOAT3 interPos = intersectDatas_[i].position;
-                //verPos = { verPos.x + interPos.x, verPos.y + interPos.y, verPos.z + interPos.z };
-                
-                //とりあえず無条件で追加してみる->Cellのほうで条件式やってる
-                XMVECTOR vpoly[3];
-                for (int i = 0; i < 3; i++) vpoly[i] = XMLoadFloat3(&polytest[i]);
-               
-                Triangle tri;
-                tri.CreatTriangle(vpoly[0], vpoly[1], vpoly[2]);
-                
-                pCell->SetTriangle(tri);
+                for (int j = 0; j < polygons.size(); j++)
+                polygons[j] = XMFLOAT3(polygons[j].x + interPos.x, polygons[j].y + interPos.y, polygons[j].z + interPos.z);
+
+                int polygonsSize = polygons.size() / polySize;
+                for (int h = 0; h < polygonsSize; h++) {
+                    XMVECTOR vpoly[polySize];
+                    for (int t = 0; t < polySize; t++)
+                    vpoly[t] = XMLoadFloat3(&polygons[h * polySize + t]);
+
+                    Triangle tri;
+                    tri.CreatTriangle(vpoly[0], vpoly[1], vpoly[2]);
+                    pCell->SetTriangle(tri);
+                }
             }
         }
+
+        std::vector<Triangle*> triList = pCell->GetTriangles();
+        std::string strNumber;
+        strNumber = std::to_string(triList.size());
+        OutputDebugStringA(strNumber.c_str());
+        OutputDebugString("\n");
     }
 
-    std::vector<Triangle*> triList = pCell->GetTriangles();
-    int aaaa = 0;
+    if (Input::IsKeyDown(DIK_E)) drawCell = !drawCell;
+    if (Input::IsKeyDown(DIK_R)) drawQuad = !drawQuad;
 
 }
 
@@ -112,7 +128,7 @@ void Stage::Draw()
     }
 
     //Ray用のワイヤー表示
-    if (true) {
+    if (drawCell) {
         for (int i = 0; i < intersectDatas_.size(); i++) {
             int handle = intersectDatas_.at(i).hModelNum;
             Transform trans;
@@ -122,7 +138,7 @@ void Stage::Draw()
         }
     }
 
-	if(true)
+	if(drawQuad)
 	pQuad->Draw();
 
     Player* pPlayer = (Player*)FindObject("Player");

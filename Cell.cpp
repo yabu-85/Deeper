@@ -1,7 +1,7 @@
 #include "Cell.h"
 
 Cell::Cell()
-	:position_(0,0,0), length_(0)
+	:position_(0,-99999,0), length_(0)
 {
 	for (int i = 0; i < 8; i++) verPos_[i] = XMFLOAT3(0, 0, 0);
 }
@@ -28,26 +28,38 @@ void Cell::SetPosLeng(XMFLOAT3 pos, float leng)
 void Cell::SetTriangle(Triangle& t)
 {
 	XMFLOAT3* tp = t.GetPosition();
-	if (tp[0].x < verPos_[0].x && tp[1].x < verPos_[0].x && tp[2].x < verPos_[0].x ||
-		tp[0].x < verPos_[1].x && tp[1].x < verPos_[2].x && tp[2].x < verPos_[3].x ||
-		
-		tp[0].y < verPos_[0].y && tp[1].y < verPos_[0].y && tp[2].y < verPos_[0].y ||
-		tp[0].y < verPos_[1].y && tp[1].y < verPos_[2].y && tp[2].y < verPos_[3].y ||
 
-		tp[0].z < verPos_[0].z && tp[1].z < verPos_[0].z && tp[2].z < verPos_[0].z ||
-		tp[0].z < verPos_[0].z && tp[1].z < verPos_[0].z && tp[2].z < verPos_[0].z )
+	XMFLOAT3 pos1 = tp[0];
+	XMFLOAT3 pos2 = tp[1];
+	XMFLOAT3 pos3 = tp[2];
+
+	//ƒeƒXƒg
+	if (tp[0].x < verPos_[7].x && tp[1].x < verPos_[7].x && tp[2].x < verPos_[7].x ||
+		tp[0].x > verPos_[6].x && tp[1].x > verPos_[6].x && tp[2].x > verPos_[6].x ||
+
+		tp[0].y < verPos_[3].y && tp[1].y < verPos_[3].y && tp[2].y < verPos_[3].y ||
+		tp[0].y > verPos_[7].y && tp[1].y > verPos_[7].y && tp[2].y > verPos_[7].y ||
+
+		tp[0].z < verPos_[4].z && tp[1].z < verPos_[4].z && tp[2].z < verPos_[4].z ||
+		tp[0].z > verPos_[7].z && tp[1].z > verPos_[7].z && tp[2].z > verPos_[7].z)
 	{
 		return;
 	}
 
-	Triangle *tri = new Triangle;
+	Triangle* tri = new Triangle;
 	tri->SetPosition(tp);
 
 	XMVECTOR vec[3];
-	for(int i = 0;i < 3;i++) vec[i] = XMLoadFloat3(&tp[i]);
+	for (int i = 0; i < 3; i++) vec[i] = XMLoadFloat3(&tp[i]);
 	tri->CreatTriangle(vec[0], vec[1], vec[2]);
 
 	Triangles.push_back(tri);
+	
+	return;
+
+
+
+
 
 }
 

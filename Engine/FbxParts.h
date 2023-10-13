@@ -150,7 +150,9 @@ public:
 
 	XMFLOAT3 GetVertexPosition(int index) { return pVertexData_[index].position; };
 
-	DWORD GetVertexCount() { return vertexCount_; };
+	DWORD GetIndexCount() { return indexCount_; };
+
+	XMFLOAT3* GetPolygon(int index);
 
 	//レイキャスト（レイを飛ばして当たり判定）
 	//引数：data	必要なものをまとめたデータ

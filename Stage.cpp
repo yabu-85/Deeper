@@ -65,23 +65,31 @@ void Stage::Update()
     pCell->SetPosLeng(cellPos, boxSize);
     pCell->ResetTriangles();
 
+    const int polySize = 3;
+
 	//Block‚Ì”ÍˆÍ“à‚Ìƒ|ƒŠƒSƒ“‚ğæ“¾‚µ‚½‚¢
     for (int i = 0; i < intersectDatas_.size(); i++) {
         Fbx* pFbx = Model::GetFbx(intersectDatas_[i].hModelNum);
         std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
     
         for (int n = 0; n < pFbxParts.size(); n++) {
-            int size = (int)pFbxParts[n]->GetVertexCount();
+            int size = (int)pFbxParts[n]->GetIndexCount();
+            size /= polySize;
 
             for (int j = 0; j < size; j++) {
-                XMFLOAT3 verPos = pFbxParts[n]->GetVertexPosition(j);
+                //XMFLOAT3 verPos = pFbxParts[n]->GetVertexPosition(j);
+                
+                XMFLOAT3 polytest[3] = { pFbxParts[n]->GetPolygon(i)[0], pFbxParts[n]->GetPolygon(i)[1], pFbxParts[n]->GetPolygon(i)[2] };
+
                 XMFLOAT3 interPos = intersectDatas_[i].position;
-                verPos = { verPos.x + interPos.x, verPos.y + interPos.y, verPos.z + interPos.z };
+                //verPos = { verPos.x + interPos.x, verPos.y + interPos.y, verPos.z + interPos.z };
                 
                 //‚Æ‚è‚ ‚¦‚¸–³ğŒ‚Å’Ç‰Á‚µ‚Ä‚İ‚é->Cell‚Ì‚Ù‚¤‚ÅğŒ®‚â‚Á‚Ä‚é
+                XMVECTOR vpoly[3];
+                for (int i = 0; i < 3; i++) vpoly[i] = XMLoadFloat3(&polytest[i]);
+               
                 Triangle tri;
-                XMFLOAT3* pori;
-                tri.SetPosition(&verPos);
+                tri.CreatTriangle(vpoly[0], vpoly[1], vpoly[2]);
                 
                 pCell->SetTriangle(tri);
             }

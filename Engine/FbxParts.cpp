@@ -578,6 +578,24 @@ bool FbxParts::GetBonePosition(std::string boneName, XMFLOAT3 * position)
 	return false;
 }
 
+XMFLOAT3* FbxParts::GetPolygon(int index)
+{
+	//マテリアル毎
+	for (DWORD i = 0; i < materialCount_; i++)
+	{
+		//そのマテリアルのポリゴン毎
+		for (DWORD j = 0; j < pMaterial_[i].polygonCount; j++)
+		{
+			//3頂点
+			XMFLOAT3 ver[3];
+			ver[0] = pVertexData_[ppIndexData_[i][j * 3 + 0]].position;
+			ver[1] = pVertexData_[ppIndexData_[i][j * 3 + 1]].position;
+			ver[2] = pVertexData_[ppIndexData_[i][j * 3 + 2]].position;
+		}
+	}
+
+}
+
 void FbxParts::RayCast(RayCastData * data)
 {
 	data->hit = FALSE;

@@ -29,19 +29,15 @@ void Cell::SetTriangle(Triangle& t)
 {
 	XMFLOAT3* tp = t.GetPosition();
 
-	XMFLOAT3 pos1 = tp[0];
-	XMFLOAT3 pos2 = tp[1];
-	XMFLOAT3 pos3 = tp[2];
+	//全頂点が Cellの頂点位置より外側にある場合は、関数を終わる
+	if (tp[0].x < verPos_[7].x && tp[1].x < verPos_[7].x && tp[2].x < verPos_[7].x || //全頂点が右
+		tp[0].x > verPos_[6].x && tp[1].x > verPos_[6].x && tp[2].x > verPos_[6].x || //全頂点が左
+		
+		tp[0].y < verPos_[3].y && tp[1].y < verPos_[3].y && tp[2].y < verPos_[3].y || //全頂点が下
+		tp[0].y > verPos_[7].y && tp[1].y > verPos_[7].y && tp[2].y > verPos_[7].y || //全頂点が上
 
-	//テスト
-	if (tp[0].x < verPos_[7].x && tp[1].x < verPos_[7].x && tp[2].x < verPos_[7].x ||
-		tp[0].x > verPos_[6].x && tp[1].x > verPos_[6].x && tp[2].x > verPos_[6].x ||
-
-		tp[0].y < verPos_[3].y && tp[1].y < verPos_[3].y && tp[2].y < verPos_[3].y ||
-		tp[0].y > verPos_[7].y && tp[1].y > verPos_[7].y && tp[2].y > verPos_[7].y ||
-
-		tp[0].z < verPos_[4].z && tp[1].z < verPos_[4].z && tp[2].z < verPos_[4].z ||
-		tp[0].z > verPos_[7].z && tp[1].z > verPos_[7].z && tp[2].z > verPos_[7].z)
+		tp[0].z < verPos_[7].z && tp[1].z < verPos_[7].z && tp[2].z < verPos_[7].z || //全頂点が奥
+		tp[0].z > verPos_[4].z && tp[1].z > verPos_[4].z && tp[2].z > verPos_[4].z )  //全頂点が前
 	{
 		return;
 	}
@@ -54,12 +50,6 @@ void Cell::SetTriangle(Triangle& t)
 	tri->CreatTriangle(vec[0], vec[1], vec[2]);
 
 	Triangles.push_back(tri);
-	
-	return;
-
-
-
-
 
 }
 

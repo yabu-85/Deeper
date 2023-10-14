@@ -16,9 +16,11 @@ class Aim :
     XMFLOAT3 cameraPos_;            //カメラの場所目標
     XMFLOAT3 aimDirection_;         //現在の視点に基づいた進行方向ベクトル
     XMFLOAT3 plaPos_;               //プレイヤー位置
+    XMFLOAT3 cameraOffset_;         //カメラの移動量
 
     Player* pPlayer_;
 
+    void CalcCameraOffset(float _aimMove);
     void RayCastStage();
 
 public:

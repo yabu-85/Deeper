@@ -8,13 +8,17 @@
 
 namespace {
     const float defaultPerspectiveDistance_ = 7.0f;
-    const float heightRay = 0.5f; //StageとのRay判定の当たった距離にプラスする値
+    const float heightRay = 0.5f;           //StageとのRay判定の当たった距離にプラスする値
+
+    const float numSupress = 0.002f;        //マウス移動でOffsetの値を戻す量
+    const float aimSpeed = 0.06f;           //cameraOffsetの移動スピード
+    const float maxCameraOffset = 1.0f;     //cameraOffsetの最大距離
 
 }
 
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 },
-    plaPos_{ 0,0,0 }, pPlayer_(nullptr), hPict_(-1), aimMove_(false)
+    plaPos_{ 0,0,0 }, pPlayer_(nullptr), hPict_(-1), aimMove_(false), cameraOffset_{0,0,0}
 {
     mouseSensitivity = 2.0f;
     perspectiveDistance_ = 7.0f;
@@ -60,18 +64,15 @@ void Aim::Update()
     //プレイヤーの位置をカメラの焦点とする
     plaPos_ = pPlayer_->GetPosition();
 
-    //マイナスで左、プラスで右寄りになる
-    //これの値は多分だけど、画面上の中心から何割先までって感じだと思う：プレイヤーとの距離が近いと値も小さくなる、遠いと大きく
-    float cameraOffset = 0.0f;
-
-    cameraTarget_.x = plaPos_.x + (aimDirection_.z * cameraOffset);
+    CalcCameraOffset(mouseMove.x * numSupress);
+    cameraTarget_.x = plaPos_.x + cameraOffset_.x;
     cameraTarget_.y = plaPos_.y + heightDistance_;
-    cameraTarget_.z = plaPos_.z - (aimDirection_.x * cameraOffset);
+    cameraTarget_.z = plaPos_.z + cameraOffset_.z;
+
+    RayCastStage();
 
     //カメラ焦点
     XMVECTOR caTarget = XMLoadFloat3(&cameraTarget_);
-
-    RayCastStage();
 
     //プレイヤーの半径を考慮して回転を適用している
     //ここAimの近さの値をプレイヤーから取得して計算もしてる
@@ -91,6 +92,30 @@ void Aim::Draw()
 
 void Aim::Release()
 {
+}
+
+void Aim::CalcCameraOffset(float _aimMove)
+{
+    //マウスの移動量で offsetの値を抑制
+    cameraOffset_.x += (cameraOffset_.x * -1.0f) * abs(_aimMove);
+    cameraOffset_.z += (cameraOffset_.z * -1.0f) * abs(_aimMove);
+    
+    XMVECTOR vCameraOffset = XMLoadFloat3(&cameraOffset_);
+    XMVECTOR vMoveVec;
+
+    //移動キーの情報を取得＆方向を逆に
+    bool plaMoveInput = pPlayer_->GetMoveVec(vMoveVec);
+    vMoveVec *= -1;
+
+    //移動キーを押していなければ、今のCameraOffsetの逆ベクトルにする
+    if (!plaMoveInput) vMoveVec = -vCameraOffset;
+    
+    vMoveVec *= aimSpeed;
+    vCameraOffset += vMoveVec;
+    float moveSpeed = XMVectorGetX(XMVector3Length(vCameraOffset));
+    if (moveSpeed >= maxCameraOffset) vCameraOffset = XMVector3Normalize(vCameraOffset) * maxCameraOffset;
+
+    XMStoreFloat3(&cameraOffset_, vCameraOffset);
 }
 
 void Aim::RayCastStage()

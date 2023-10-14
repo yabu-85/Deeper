@@ -9,6 +9,7 @@ class Player :
     int hModel_;
     float moveSpeed_;
     XMFLOAT3 playerMovement_;   //¡‚ÌˆÚ“®—Ê
+    XMFLOAT3 moveVec_;          //ˆÚ“®ƒL[‚Ì’l‚ğæ“¾
 
     Aim* pAim_;
 
@@ -21,6 +22,9 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
+
+    //ˆÚ“®‚µ‚Ä‚½‚çTrue
+    bool GetMoveVec(XMVECTOR& vec);
 
 };
 

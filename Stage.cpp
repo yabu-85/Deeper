@@ -1,19 +1,19 @@
 #include "Stage.h"
 #include "Engine/Model.h"
 #include "Engine/Input.h"
-
-//Rayの分割用のてすとようでーた
 #include "Player.h"
-#include "Engine/Text.h"
 #include <vector>
 #include "Cell.h"
 #include "Engine/FbxParts.h"
+
+#include "Engine/Text.h"
 
 namespace {
     const float playerRadius = 1.0f;
     const float boxSize = 10.0f;
     const int maxCount = 8;
 
+    Player* pPlayer;
     Text *pText = new Text;
     Quad* pQuad = new Quad;
     Cell* pCell = new Cell;
@@ -31,6 +31,8 @@ Stage::Stage(GameObject* parent)
 
 Stage::~Stage()
 {
+    pQuad->Release();
+    
 }
 
 void Stage::Initialize()
@@ -44,31 +46,31 @@ void Stage::Initialize()
     intersectDatas_.push_back( { hModel_[MAX + RT1], XMFLOAT3(20.0f, 0.0f, 10.0f)} );
     intersectDatas_.push_back( { hModel_[MAX + RT1], XMFLOAT3(-20.0f, 0.0f, 10.0f)} );
     
-    const int rt2Count = 10;
-    const int rt2Countm = 10;
-
+    const int rt2Count = 5;
     for(int i = 0;i < rt2Count;i++)
-    intersectDatas_.push_back( { hModel_[MAX + RT2], XMFLOAT3(5.0f + 10.0f * i, 0.0f, 15.0f)} );
+    intersectDatas_.push_back( { hModel_[MAX + RT2], XMFLOAT3(5.0f + 8.0f * i, 0.0f, 15.0f)} );
 
+    const int rt2Countm = 5;
     for (int i = 0; i < rt2Countm; i++)
-    intersectDatas_.push_back( { hModel_[MAX + RT2], XMFLOAT3(-5.0f + -10.0f * i, 0.0f, 15.0f)} );
+    intersectDatas_.push_back( { hModel_[MAX + RT2], XMFLOAT3(-5.0f + -8.0f * i, 0.0f, 15.0f)} );
     
+    pPlayer = (Player*)FindObject("Player");
     pText->Initialize();
 	pQuad->Initialize();
 }
 
 void Stage::Update()
 {
-    Player* pPlayer = (Player*)FindObject("Player");
     XMFLOAT3 plaPos = pPlayer->GetPosition();
 
     //プレイヤーの位置を取得して、判定距離内に入った分割ブロックを取得
     //Blockの追加はできたけど、半径・複数はまだやってない
+
     float fBox[3] = { plaPos.x / boxSize, plaPos.y / boxSize, plaPos.z / boxSize };
     int iBox[3] = { fBox[0], fBox[1], fBox[2] };
     for (int i = 0; i < 3; i++) if (fBox[i] < 0) iBox[i] -= 1;
     for(int i = 0;i < 3;i++) iBox[i] *= 10;
-    XMFLOAT3 cellPos = XMFLOAT3((float)iBox[0], 0.0f, (float)iBox[2]);
+    XMFLOAT3 cellPos = XMFLOAT3((float)iBox[0], (float)iBox[1], (float)iBox[2]);
     XMFLOAT3 currentCellPos = pCell->GetPosision();
 
     if (cellPos.x != currentCellPos.x || cellPos.y != currentCellPos.y || cellPos.z != currentCellPos.z)
@@ -111,6 +113,7 @@ void Stage::Update()
         OutputDebugStringA(strNumber.c_str());
         OutputDebugString("\n");
     }
+
 
     if (Input::IsKeyDown(DIK_E)) drawCell = !drawCell;
     if (Input::IsKeyDown(DIK_R)) drawQuad = !drawQuad;

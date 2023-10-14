@@ -7,13 +7,22 @@
 #include <vector>
 
 namespace {
-    const float defaultPerspectiveDistance_ = 7.0f;
+    const float upMouselimit = -89.0f;
+    const float donwMouselimit = 70.0f;
+    const float mouseSpeed = 0.05f;
+
+    const float defPerspectDistance = 8.0f; //デフォルトの視点の距離
     const float heightRay = 0.5f;           //StageとのRay判定の当たった距離にプラスする値
 
     const float numSupress = 0.002f;        //マウス移動でOffsetの値を戻す量
-    const float aimSpeed = 0.06f;           //cameraOffsetの移動スピード
-    const float maxCameraOffset = 1.0f;     //cameraOffsetの最大距離
+    const float maxCameraOffset = 2.0f;     //cameraOffsetの最大距離
+    const float moveAimTime = 0.07f;        //動く時の抑制の値
+    const float stopAimTime = 0.05f;        //止まる時の抑制の値
 
+}
+
+float easeOutQuad(float number) {
+    return 1.0f - (1.0f - number) * (1.0f - number);
 }
 
 Aim::Aim(GameObject* parent)
@@ -44,10 +53,10 @@ void Aim::Update()
     XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
 
     //移動量を計算
-    transform_.rotate_.y += (mouseMove.x * 0.05f) * mouseSensitivity; //横方向の回転
-    transform_.rotate_.x -= (mouseMove.y * 0.05f) * mouseSensitivity; //縦方向の回転
-    if (transform_.rotate_.x <= -89.0f) transform_.rotate_.x = -89.0f;
-    if (transform_.rotate_.x >= 89.0f) transform_.rotate_.x = 89.0f;
+    transform_.rotate_.y += (mouseMove.x * mouseSpeed) * mouseSensitivity; //横方向の回転
+    transform_.rotate_.x -= (mouseMove.y * mouseSpeed) * mouseSensitivity; //縦方向の回転
+    if (transform_.rotate_.x <= upMouselimit) transform_.rotate_.x = upMouselimit;
+    if (transform_.rotate_.x >= donwMouselimit) transform_.rotate_.x = donwMouselimit;
 
     //カメラの回転
     XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
@@ -69,7 +78,7 @@ void Aim::Update()
     cameraTarget_.y = plaPos_.y + heightDistance_;
     cameraTarget_.z = plaPos_.z + cameraOffset_.z;
 
-    RayCastStage();
+    RayCastStage(cameraTarget_);
 
     //カメラ焦点
     XMVECTOR caTarget = XMLoadFloat3(&cameraTarget_);
@@ -94,6 +103,8 @@ void Aim::Release()
 {
 }
 
+//-----------private-------------------
+
 void Aim::CalcCameraOffset(float _aimMove)
 {
     //マウスの移動量で offsetの値を抑制
@@ -101,31 +112,25 @@ void Aim::CalcCameraOffset(float _aimMove)
     cameraOffset_.z += (cameraOffset_.z * -1.0f) * abs(_aimMove);
     
     XMVECTOR vCameraOffset = XMLoadFloat3(&cameraOffset_);
-    XMVECTOR vMoveVec;
+    XMVECTOR vTargetOffset;
 
     //移動キーの情報を取得＆方向を逆に
-    bool plaMoveInput = pPlayer_->GetMoveVec(vMoveVec);
-    vMoveVec *= -1;
+    bool plaMoveInput = pPlayer_->GetMoveVec(vTargetOffset);
+    vTargetOffset *= maxCameraOffset * -1;
 
-    //移動キーを押していなければ、今のCameraOffsetの逆ベクトルにする
-    if (!plaMoveInput) vMoveVec = -vCameraOffset;
-    
-    vMoveVec *= aimSpeed;
-    vCameraOffset += vMoveVec;
-    float moveSpeed = XMVectorGetX(XMVector3Length(vCameraOffset));
-    if (moveSpeed >= maxCameraOffset) vCameraOffset = XMVector3Normalize(vCameraOffset) * maxCameraOffset;
+    if(plaMoveInput) vCameraOffset += (vTargetOffset - vCameraOffset) * moveAimTime;   //move
+    else vCameraOffset += (vTargetOffset - vCameraOffset) * stopAimTime;               //stop
 
     XMStoreFloat3(&cameraOffset_, vCameraOffset);
 }
 
-void Aim::RayCastStage()
+void Aim::RayCastStage(XMFLOAT3 _start)
 {
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
     std::vector<IntersectData> datas = pStage->GetModelHandle();    //モデル番号を取得
 
     RayCastData data;
-    XMFLOAT3 start = pPlayer_->GetPosition();
-    start.y += heightDistance_;
+    XMFLOAT3 start = _start;
     XMFLOAT3 dir = XMFLOAT3(cameraPos_.x - start.x, cameraPos_.y - start.y, cameraPos_.z - start.z);
     XMVECTOR vDir = XMLoadFloat3(&dir);
     vDir = XMVector3Normalize(vDir);
@@ -146,7 +151,7 @@ void Aim::RayCastStage()
         Model::RayCast(hGround, &data);
 
         //レイ当たった・判定距離内だったら
-        if (data.hit && data.dist < (defaultPerspectiveDistance_ + heightRay))
+        if (data.hit && data.dist < (defPerspectDistance + heightRay))
         {
             float dist = data.dist;
             dist -= heightRay;
@@ -156,7 +161,7 @@ void Aim::RayCastStage()
     }
 
     if (!rayHit) {
-        perspectiveDistance_ = defaultPerspectiveDistance_;
+        perspectiveDistance_ = defPerspectDistance;
     }
 
     return;

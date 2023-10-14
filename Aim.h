@@ -21,7 +21,7 @@ class Aim :
     Player* pPlayer_;
 
     void CalcCameraOffset(float _aimMove);
-    void RayCastStage();
+    void RayCastStage(XMFLOAT3 _start);
 
 public:
     Aim(GameObject* parent);

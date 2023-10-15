@@ -1,6 +1,7 @@
 #include "TitleScene.h"
 #include "Player.h"
 #include "Stage.h"
+#include "CollisionMap.h"
 
 TitleScene::TitleScene(GameObject* parent)
 	: GameObject(parent, "TitleScene")
@@ -9,8 +10,10 @@ TitleScene::TitleScene(GameObject* parent)
 
 void TitleScene::Initialize()
 {
-	Instantiate<Player>(this);
 	Instantiate<Stage>(this);
+	Instantiate<Player>(this);
+	Instantiate<CollisionMap>(this);
+
 
 }
 

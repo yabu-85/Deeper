@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include "Engine/Fbx.h"
 
 using namespace DirectX;
 
@@ -12,6 +13,8 @@ public:
 
 	void SetPosition(XMFLOAT3* pos);
 	XMFLOAT3* GetPosition() { return position_; };
+
+	void RayCast(RayCastData* data, Triangle& tri);
 
 };
 

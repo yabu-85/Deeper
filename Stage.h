@@ -23,7 +23,7 @@ class Stage :
     public GameObject
 {
     int hModel_[MAX + RMAX];
-    std::vector<IntersectData> intersectDatas_; //RayCast用データ集
+    std::vector<IntersectData> intersectDatas_; //ローポリのデータ集
 
 public:
     Stage(GameObject* parent);
@@ -33,6 +33,6 @@ public:
     void Draw() override;
     void Release() override;
 
-    std::vector<IntersectData> GetModelHandle() { return intersectDatas_; };
+   std::vector<IntersectData> GetIntersectDatas() { return intersectDatas_; }; 
 
 };

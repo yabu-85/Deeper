@@ -101,6 +101,7 @@
     <ClCompile Include="Aim.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Triangle.cpp" />
+    <ClCompile Include="CollisionMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -178,6 +179,7 @@
     <ClInclude Include="Aim.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Triangle.h" />
+    <ClInclude Include="CollisionMap.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

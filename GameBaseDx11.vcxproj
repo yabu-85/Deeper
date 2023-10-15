@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClCompile Include="Aim.cpp" />
     <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="CollisionMap.cpp" />
     <ClCompile Include="Engine\Audio.cpp" />
     <ClCompile Include="Engine\BillBoard.cpp" />
     <ClCompile Include="Engine\BoxCollider.cpp" />
@@ -158,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="Aim.h" />
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="CollisionMap.h" />
     <ClInclude Include="Engine\Audio.h" />
     <ClInclude Include="Engine\BillBoard.h" />
     <ClInclude Include="Engine\BoxCollider.h" />

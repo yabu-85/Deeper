@@ -20,18 +20,6 @@ class Cell
 	std::vector<Triangle*>Triangles;
 	int NumTriangles = 0;
 
-
-	//オブジェクトより下にある最も近い床の座標を得る
-	int GetNearestFloorY(
-		const XMFLOAT3* pos,
-		float offsetY, //落下速度が速すぎて、床を突き抜ける場合の調整値 
-		float ny,
-		float* tanTheta,
-		float* floorY
-	)const {
-		return 0;
-	};
-
 public:
 	Cell();
 

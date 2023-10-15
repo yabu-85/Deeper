@@ -4,6 +4,8 @@
 #include "Engine/Model.h"
 #include "Player.h"
 #include "Stage.h"
+#include "CollisionMap.h"
+#include "Triangle.h"
 #include <vector>
 
 namespace {
@@ -16,7 +18,7 @@ namespace {
 
     const float numSupress = 0.002f;        //マウス移動でOffsetの値を戻す量
     const float maxCameraOffset = 2.0f;     //cameraOffsetの最大距離
-    const float moveAimTime = 0.07f;        //動く時の抑制の値
+    const float moveAimTime = 0.05f;        //動く時の抑制の値
     const float stopAimTime = 0.05f;        //止まる時の抑制の値
 
 }
@@ -48,6 +50,8 @@ void Aim::Initialize()
 
 void Aim::Update()
 {
+    if (Input::IsMouseButtonDown(0)) aimMove_ = !aimMove_;
+
     if (!aimMove_) return;
 
     XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
@@ -126,8 +130,14 @@ void Aim::CalcCameraOffset(float _aimMove)
 
 void Aim::RayCastStage(XMFLOAT3 _start)
 {
-    Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
-    std::vector<IntersectData> datas = pStage->GetModelHandle();    //モデル番号を取得
+    CollisionMap* pCollisionMap = (CollisionMap*)FindObject("CollisionMap");
+    if (pCollisionMap == nullptr)
+        return;
+
+    int dataSize = 0;
+
+    std::vector<Triangle*> datas = pCollisionMap->GetCellInTriangle();
+    dataSize = (int)datas.size();
 
     RayCastData data;
     XMFLOAT3 start = _start;
@@ -135,20 +145,14 @@ void Aim::RayCastStage(XMFLOAT3 _start)
     XMVECTOR vDir = XMLoadFloat3(&dir);
     vDir = XMVector3Normalize(vDir);
     XMStoreFloat3(&dir, vDir);
-
-    int arraySize = datas.size();
+    
     bool rayHit = false;
-
-    for (int i = 0; i < arraySize; i++) {
-        Transform trans;
-        trans.position_ = datas.back().position;
-        int hGround = datas.back().hModelNum;
-        datas.pop_back();
-
+    for (int i = 0; i < dataSize; i++) {
         data.start = start;
         data.dir = dir;
-        Model::SetTransform(hGround, trans);
-        Model::RayCast(hGround, &data);
+
+        Triangle tri = *datas.at(i);
+        tri.RayCast(&data, tri);
 
         //レイ当たった・判定距離内だったら
         if (data.hit && data.dist < (defPerspectDistance + heightRay))

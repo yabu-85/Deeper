@@ -7,6 +7,7 @@
 #include "CollisionMap.h"
 #include "Triangle.h"
 #include <vector>
+#include "EnemyBase.h"
 
 namespace {
     const float upMouselimit = -89.0f;
@@ -29,7 +30,7 @@ float easeOutQuad(float number) {
 
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 },
-    plaPos_{ 0,0,0 }, pPlayer_(nullptr), hPict_(-1), aimMove_(false), cameraOffset_{0,0,0}
+    plaPos_{ 0,0,0 }, pPlayer_(nullptr), hPict_(-1), aimMove_(false), cameraOffset_{0,0,0}, isTarget_(false)
 {
     mouseSensitivity = 2.0f;
     perspectiveDistance_ = 7.0f;
@@ -50,17 +51,27 @@ void Aim::Initialize()
 
 void Aim::Update()
 {
-    if (Input::IsMouseButtonDown(0)) aimMove_ = !aimMove_;
+    if (Input::IsMouseButtonDown(1)) aimMove_ = !aimMove_;
 
     if (!aimMove_) return;
+    if (Input::IsKeyDown(DIK_Q)) isTarget_ = !isTarget_;
 
-    XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
+    if (isTarget_) {
+        //カメラオフセットの機能はターゲット時も有効にする、ただしマウスでの抑制はなし
+        CalcCameraOffset(0.0f);
 
-    //移動量を計算
-    transform_.rotate_.y += (mouseMove.x * mouseSpeed) * mouseSensitivity; //横方向の回転
-    transform_.rotate_.x -= (mouseMove.y * mouseSpeed) * mouseSensitivity; //縦方向の回転
-    if (transform_.rotate_.x <= upMouselimit) transform_.rotate_.x = upMouselimit;
-    if (transform_.rotate_.x >= donwMouselimit) transform_.rotate_.x = donwMouselimit;
+        FacingTarget();
+        
+    }
+    else {
+        XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
+        transform_.rotate_.y += (mouseMove.x * mouseSpeed) * mouseSensitivity; //横方向の回転
+        transform_.rotate_.x -= (mouseMove.y * mouseSpeed) * mouseSensitivity; //縦方向の回転
+        if (transform_.rotate_.x <= upMouselimit) transform_.rotate_.x = upMouselimit;
+        if (transform_.rotate_.x >= donwMouselimit) transform_.rotate_.x = donwMouselimit;
+
+        CalcCameraOffset(mouseMove.x * numSupress);
+    }
 
     //カメラの回転
     XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
@@ -70,14 +81,13 @@ void Aim::Update()
     XMMATRIX mView = mRotX * mRotY;
 
     const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-    XMVECTOR camPos = XMVector3TransformNormal(forwardVector, mView); //XMVector3TransformNormalを使用することで回転のみを適用します
-    XMVector3Normalize(camPos);
-    XMStoreFloat3(&aimDirection_, -camPos);
+    XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView); //XMVector3TransformNormalを使用することで回転のみを適用します
+    XMVector3Normalize(direction);
+    XMStoreFloat3(&aimDirection_, -direction);
 
     //プレイヤーの位置をカメラの焦点とする
     plaPos_ = pPlayer_->GetPosition();
 
-    CalcCameraOffset(mouseMove.x * numSupress);
     cameraTarget_.x = plaPos_.x + cameraOffset_.x;
     cameraTarget_.y = plaPos_.y + heightDistance_;
     cameraTarget_.z = plaPos_.z + cameraOffset_.z;
@@ -87,9 +97,8 @@ void Aim::Update()
     //カメラ焦点
     XMVECTOR caTarget = XMLoadFloat3(&cameraTarget_);
 
-    //プレイヤーの半径を考慮して回転を適用している
     //ここAimの近さの値をプレイヤーから取得して計算もしてる
-    camPos = caTarget + (camPos * perspectiveDistance_);
+    XMVECTOR camPos = caTarget + (direction * perspectiveDistance_);
 
     XMStoreFloat3(&cameraPos_, camPos);
     XMStoreFloat3(&cameraTarget_, caTarget);
@@ -108,6 +117,30 @@ void Aim::Release()
 }
 
 //-----------private-------------------
+
+void Aim::FacingTarget()
+{
+    //プレイヤーの方向に向くようにする
+    XMVECTOR vFront{ 0,0,1,0 };
+    XMFLOAT3 fAimPos = XMFLOAT3(cameraPos_.x - 20.0f, 0, cameraPos_.z - 0.0f);
+    XMVECTOR vAimPos = XMLoadFloat3(&fAimPos);  //正規化用の変数にfloatの値を入れる
+    vAimPos = XMVector3Normalize(vAimPos);
+    XMVECTOR vDot = XMVector3Dot(vFront, vAimPos);
+    float dot = XMVectorGetX(vDot);
+    float angle = acos(dot);
+
+    //外積求めて半回転だったら angle に -1 掛ける
+    XMVECTOR vCross = XMVector3Cross(vFront, vAimPos); //外積求めるやつ 外積はベクトル型
+    if (XMVectorGetY(vCross) < 0) {
+        angle *= -1;
+    }
+    transform_.rotate_.y = XMConvertToDegrees(angle);
+
+
+    //このX軸の回転を位置によって自動で計算するようにしたい
+    //transform_.rotate_.x = -30.0f;
+
+}
 
 void Aim::CalcCameraOffset(float _aimMove)
 {

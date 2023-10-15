@@ -11,6 +11,7 @@ class Aim :
     float perspectiveDistance_;     //どのくらい後ろから映すか
     float heightDistance_;          //焦点の高さ
     bool aimMove_;                  //エイムを動かすかどうか
+    bool isTarget_;                 //ターゲット状態か
 
     XMFLOAT3 cameraTarget_;         //カメラの焦点目標
     XMFLOAT3 cameraPos_;            //カメラの場所目標
@@ -20,6 +21,7 @@ class Aim :
 
     Player* pPlayer_;
 
+    void FacingTarget();
     void CalcCameraOffset(float _aimMove);
     void RayCastStage(XMFLOAT3 _start);
 

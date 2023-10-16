@@ -32,61 +32,21 @@ public:
 	void ResetTriangles();
 
 	//Getter
-	XMFLOAT3 GetPosision() { return position_; }
-	std::vector<Triangle*>& GetTriangles() { return Triangles; }
+	XMFLOAT3 GetPosision() { return position_; };
+	std::vector<Triangle*>& GetTriangles() { return Triangles; };
 
 };
 
-class Quad
+class CellBox : public GameObject
 {
-	//コンスタントバッファー
-	struct CONSTANT_BUFFER
-	{
-		XMMATRIX	matWVP;
-		XMMATRIX	matNormal; //matWからNormal用に改名
-	};
-
-	//頂点情報
-	struct VERTEX
-	{
-		XMVECTOR position;
-		XMVECTOR normal;
-	};
-
-	Transform transform_;
-
-protected:
-	std::vector<int> index_; //インデックス情報
-	int indexNum_;
-	int vertexNum_;
-	std::vector<VERTEX> vertices_;
-
-	ID3D11Buffer* pVertexBuffer_;	//頂点バッファ
-	ID3D11Buffer* pIndexBuffer_;
-	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ
+	int hModel_ = -1;
 
 public:
-	Quad();
-	virtual ~Quad();
-
-	void Release();
-	HRESULT Initialize();
-	void Draw();
-
-	void SetTransform(Transform& _t);
-	void SetPosition(XMFLOAT3& _t);
-
-private:
-	//  Initializeから呼ばれる関数-----------------
-	virtual void InitVertexData(); //頂点情報の準備
-	HRESULT CreateVertexBuffer();  //頂点バッファを作成
-
-	virtual void InitIndexData();  //インデックス情報を準備
-	HRESULT CreateIndexBuffer();  //インデックスバッファを作成
-
-	HRESULT CreateConstantBuffer(); //コンスタントバッファを作成
-
-	// Draw関数から呼ばれる関数--------------------
-	void PassDataToCB(Transform transform);	//コンスタントバッファに各種情報を渡す
-	void SetBufferToPipeline();                         //各バッファ
+	CellBox(GameObject* parent) : GameObject(parent, "CollisionMap"), hModel_(-1) {};
+	~CellBox() {};
+	void Initialize() override;
+	void Update() override;
+	void Draw() override;
+	void Release() override {};
 };
+

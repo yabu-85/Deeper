@@ -9,17 +9,16 @@
 
 namespace {
     const float playerRadius = 8.0f;
-    const float boxSize = 10.0f;
-    const int maxCount = 8;
+    const float boxSize = 20.0f;
     const int polySize = 3;
 
+    std::vector<Triangle*> triList;
     Player* pPlayer;
     Stage* pStage;
-    Quad* pQuad = new Quad;
     Fbx* pFbx;
 
-    bool drawQuad = false;
-    std::vector<Triangle*> triList;
+    CellBox* pBox;
+
 }
 
 CollisionMap::CollisionMap(GameObject* parent)
@@ -35,10 +34,10 @@ void CollisionMap::Initialize()
 {
     pPlayer = (Player*)FindObject("Player");
     pStage = (Stage*)FindObject("Stage");
-    pQuad->Initialize();
 
     Cell* cell = new Cell;
     cells_.push_back(cell);
+    pBox = Instantiate<CellBox>(this);
 
 }
 
@@ -50,40 +49,32 @@ void CollisionMap::Update()
     float fBox[polySize] = { plaPos.x / boxSize, plaPos.y / boxSize, plaPos.z / boxSize };
     int iBox[polySize] = { fBox[0], fBox[1], fBox[2] };
     for (int i = 0; i < polySize; i++) if (fBox[i] < 0) iBox[i] -= 1;
-    for (int i = 0; i < polySize; i++) iBox[i] *= 10;
+    for (int i = 0; i < polySize; i++) iBox[i] *= boxSize;
     XMFLOAT3 cellPos = XMFLOAT3((float)iBox[0], (float)iBox[1], (float)iBox[2]);
     XMFLOAT3 currentCellPos = cells_.front()->GetPosision();
 
     if (cellPos.x != currentCellPos.x || cellPos.y != currentCellPos.y || cellPos.z != currentCellPos.z)
     {
-
         //‚±‚±‚Å•¡”‘I‘ğ‚Å‚«‚é‚æ‚¤‚É‚µ‚½‚¢
-
+        
         //¡‚ÌcellPos‚Ì”»’è‚¾‚Æ‚Å‚«‚Ä‚È‚¢
         //‚Ü‚¸Player‚ªˆÚ“®‚µ‚½‚ç”ÍˆÍ‚Ì‚b‚…‚Œ‚Œ‚ğŒvZ
 
-        //‚Æ‚É‚©‚­‚È‚ñ‚Æ‚©‚µ‚ÄŒvZ‚·‚é
-        //‚±‚±[|||||||||||||||||||||||
-
-
         //‰E‚¾‚Á‚½‚ç@flag‚ğ‚O‚Æ‚©‚É‚µ‚Ä‰º‚Ìvector‚Ì•ûŒü‚Æ‰~‚ÌÚG”»’è‚Å”ÍˆÍ‚É“ü‚Á‚Ä‚¢‚é‚©‚ğ’²‚×‚é
-        
         //‘½•ªƒtƒ‰ƒO‚ª‚S‚Â‚¢‚é‚©‚çfor•¶‚Åflag‚ğİ’è‚·‚é‚æ‚¤‚É‚µ‚È‚¢‚Æ‚¢‚¯‚È‚¢
 
-        XMFLOAT3 zero = XMFLOAT3(0.0f, 0.0f, 0.0f);
-        XMFLOAT3 vector[4] = {
-            XMFLOAT3(zero.x, zero.y, zero.z),                       //¶‰º
-            XMFLOAT3(zero.x, zero.y, zero.z + boxSize),             //¶ã 
-            XMFLOAT3(zero.x + boxSize, zero.y, zero.z),             //‰E‰º
-            XMFLOAT3(zero.x + boxSize, zero.y, zero.z + boxSize)    //‰Eã
-        };
 
-        int vecFlag = -1;
-        if (plaPos.x - playerRadius < currentCellPos.x) vecFlag = 0;            //¶
-        if (plaPos.x + playerRadius > currentCellPos.x + boxSize) vecFlag = 2;  //‰E
+        const XMFLOAT3 vector[4] = {
+                XMFLOAT3(0.0f, 0.0f, 0.0f),                       //¶‰º
+                XMFLOAT3(0.0f, 0.0f, 0.0f + boxSize),             //¶ã 
+                XMFLOAT3(0.0f + boxSize, 0.0f, 0.0f),             //‰E‰º
+                XMFLOAT3(0.0f + boxSize, 0.0f, 0.0f + boxSize) }; //‰Eã
+        bool vecFlag[4] = { false, false, false, false };
 
-        //‚±‚±‚Å‰º‚©ã–ì”»’è‚ğ‚µ‚Äƒtƒ‰ƒO‚ğİ’è‚·‚é
-        
+        if (plaPos.x - playerRadius < currentCellPos.x) vecFlag[0] = 0;            //¶
+        if (plaPos.x + playerRadius > currentCellPos.x + boxSize) vecFlag[2] = 2;  //‰E
+
+
 
         //‚Ä‚·‚Æ( Cell‚ÌƒŠƒXƒg‰Šú‰»
         {
@@ -110,21 +101,19 @@ void CollisionMap::Update()
             cellTest->SetPosLeng(cellPosTest, boxSize);
             cellTest->ResetTriangles();
             cells_.push_back(cellTest);
-
         }
 
-        //Cell‚Ì4‚Â‚Ì’¸“_‚æ‚èŠO‚É‚¢‚½‚ç”»’è‚³‚¹‚é‚±‚Æ‚É‚·‚é
 
-        //
+
 
         std::string strNumber = std::to_string(cells_.size());
         OutputDebugStringA(strNumber.c_str());
         OutputDebugString(" : ");
 
-
-        pQuad->SetPosition(cellPos);
         cells_.front()->SetPosLeng(cellPos, boxSize);
         cells_.front()->ResetTriangles();
+        pBox->SetPosition(cellPos);
+        pBox->SetScale(XMFLOAT3(boxSize, boxSize, boxSize));
 
         std::vector<IntersectData> inteDatas = pStage->GetIntersectDatas();
 
@@ -170,15 +159,10 @@ void CollisionMap::Update()
         OutputDebugStringA(strNumber.c_str());
         OutputDebugString("\n");
     }
-
-    if (Input::IsKeyDown(DIK_R)) drawQuad = !drawQuad;
-
 }
 
 void CollisionMap::Draw()
 {
-    if (drawQuad) pQuad->Draw();
-
 }
 
 void CollisionMap::Release()

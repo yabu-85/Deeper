@@ -17,7 +17,6 @@ public:
     void Draw() override;
     void Release() override;
 
-    //const Triangle* GetCellInTriangle(int& size);
     std::vector<Triangle*>& GetCellInTriangle();
 
 };

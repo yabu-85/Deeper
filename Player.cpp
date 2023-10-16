@@ -32,6 +32,7 @@ void Player::Initialize()
     assert(hModel_ >= 0);
 
     transform_.scale_ = { 8.0f, 8.0f, 8.0f };
+    transform_.scale_ = { 1.0f, 1.0f, 1.0f };
 
     pAim_ = Instantiate<Aim>(this);
     

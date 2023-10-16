@@ -18,7 +18,6 @@ namespace {
     Fbx* pFbx;
 
     CellBox* pBox;
-
 }
 
 CollisionMap::CollisionMap(GameObject* parent)
@@ -69,10 +68,12 @@ void CollisionMap::Update()
                 XMFLOAT3(0.0f, 0.0f, 0.0f + boxSize),             //左上 
                 XMFLOAT3(0.0f + boxSize, 0.0f, 0.0f),             //右下
                 XMFLOAT3(0.0f + boxSize, 0.0f, 0.0f + boxSize) }; //右上
-        bool vecFlag[4] = { false, false, false, false };
 
-        if (plaPos.x - playerRadius < currentCellPos.x) vecFlag[0] = 0;            //左
-        if (plaPos.x + playerRadius > currentCellPos.x + boxSize) vecFlag[2] = 2;  //右
+        bool vecFlag[4] = { false, false, false, false };
+        if (plaPos.x - playerRadius < currentCellPos.x) vecFlag[0] = true;            //左
+        if (plaPos.x + playerRadius > currentCellPos.x + boxSize) vecFlag[2] = true;  //右
+        if (plaPos.y - playerRadius < currentCellPos.y) vecFlag[1] = true;            //下
+        if (plaPos.y + playerRadius > currentCellPos.y + boxSize) vecFlag[3] = true;  //上
 
 
 
@@ -163,6 +164,29 @@ void CollisionMap::Update()
 
 void CollisionMap::Draw()
 {
+    std::vector<CPolygon*> polyList;
+
+    int count = 10;
+    for (Cell* ce : cells_) {
+        std::vector<Triangle*>& triangles = ce->GetTriangles();
+        for (int i = 0; i < triangles.size(); i++) {
+            CPolygon* a = new CPolygon;
+            Triangle b = *triangles[i];
+            XMFLOAT3 poly[3] = { b.GetPosition()[0], b.GetPosition()[1], b.GetPosition()[2] };
+
+            a->Initialize(poly[0], poly[1], poly[2]);
+            a->Draw();
+            polyList.push_back(a);
+
+        }
+    }
+
+    for (auto e : polyList) {
+        e->Release();
+        delete e;
+    }polyList.clear();
+
+
 }
 
 void CollisionMap::Release()

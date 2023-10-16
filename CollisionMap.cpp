@@ -67,6 +67,8 @@ void CollisionMap::Update()
 
 
         //右だったら　flagを０とかにして下のvectorの方向と円の接触判定で範囲に入っているかを調べる
+        
+        //多分フラグが４ついるからfor文でflagを設定するようにしないといけない
 
         XMFLOAT3 zero = XMFLOAT3(0.0f, 0.0f, 0.0f);
         XMFLOAT3 vector[4] = {
@@ -81,6 +83,7 @@ void CollisionMap::Update()
         if (plaPos.x + playerRadius > currentCellPos.x + boxSize) vecFlag = 2;  //右
 
         //ここで下か上野判定をしてフラグを設定する
+        
 
         //てすと( Cellのリスト初期化
         {

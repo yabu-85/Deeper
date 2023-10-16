@@ -8,14 +8,14 @@
 #include "Stage.h"
 
 namespace {
-    const float playerRadius = 1.0f;
+    const float playerRadius = 8.0f;
     const float boxSize = 10.0f;
     const int maxCount = 8;
+    const int polySize = 3;
 
     Player* pPlayer;
     Stage* pStage;
     Quad* pQuad = new Quad;
-    Cell* pCell = new Cell;
 
     bool drawQuad = false;
     std::vector<Triangle*> triList;
@@ -36,6 +36,9 @@ void CollisionMap::Initialize()
     pStage = (Stage*)FindObject("Stage");
     pQuad->Initialize();
 
+    Cell* cell = new Cell;
+    cells_.push_back(cell);
+
 }
 
 void CollisionMap::Update()
@@ -43,21 +46,34 @@ void CollisionMap::Update()
     XMFLOAT3 plaPos = pPlayer->GetPosition();
 
     //ƒvƒŒƒCƒ„[‚ÌˆÊ’u‚ğæ“¾‚µ‚ÄA”»’è‹——£“à‚É“ü‚Á‚½•ªŠ„ƒuƒƒbƒN‚ğæ“¾
-    //Block‚Ì’Ç‰Á‚Í‚Å‚«‚½‚¯‚ÇA”¼ŒaE•¡”‚Í‚Ü‚¾‚â‚Á‚Ä‚È‚¢
-    float fBox[3] = { plaPos.x / boxSize, plaPos.y / boxSize, plaPos.z / boxSize };
-    int iBox[3] = { fBox[0], fBox[1], fBox[2] };
-    for (int i = 0; i < 3; i++) if (fBox[i] < 0) iBox[i] -= 1;
-    for (int i = 0; i < 3; i++) iBox[i] *= 10;
+    float fBox[polySize] = { plaPos.x / boxSize, plaPos.y / boxSize, plaPos.z / boxSize };
+    int iBox[polySize] = { fBox[0], fBox[1], fBox[2] };
+    for (int i = 0; i < polySize; i++) if (fBox[i] < 0) iBox[i] -= 1;
+    for (int i = 0; i < polySize; i++) iBox[i] *= 10;
     XMFLOAT3 cellPos = XMFLOAT3((float)iBox[0], (float)iBox[1], (float)iBox[2]);
-    XMFLOAT3 currentCellPos = pCell->GetPosision();
+    XMFLOAT3 currentCellPos = cells_.front()->GetPosision();
 
     if (cellPos.x != currentCellPos.x || cellPos.y != currentCellPos.y || cellPos.z != currentCellPos.z)
     {
-        pQuad->SetPosition(cellPos);
-        pCell->SetPosLeng(cellPos, boxSize);
-        pCell->ResetTriangles();
 
-        const int polySize = 3;
+        //‚±‚±‚Å•¡”‘I‘ğ‚Å‚«‚é‚æ‚¤‚É‚µ‚½‚¢
+
+        //‚Ü‚¸‚Í‰º‚Ì”»’è ³í‚¶‚á‚È‚¢ƒ||||||||||||||||
+        if (plaPos.y - playerRadius < currentCellPos.y) {
+            XMFLOAT3 cellPosTest = XMFLOAT3(cellPos.x, cellPos.y - boxSize, cellPos.z);
+            Cell* cellTest = new Cell;
+            cellTest->SetPosLeng(cellPosTest, boxSize);
+            cellTest->ResetTriangles();
+            cells_.push_back(cellTest);
+
+            OutputDebugString(" down !! , ");
+        }
+
+
+        pQuad->SetPosition(cellPos);
+        cells_.front()->SetPosLeng(cellPos, boxSize);
+        cells_.front()->ResetTriangles();
+
         std::vector<IntersectData> inteDatas = pStage->GetIntersectDatas();
 
         //Block‚Ì”ÍˆÍ“à‚Ìƒ|ƒŠƒSƒ“‚ğæ“¾‚µ‚½‚¢
@@ -81,12 +97,12 @@ void CollisionMap::Update()
 
                     Triangle tri;
                     tri.CreatTriangle(vpoly[0], vpoly[1], vpoly[2]);
-                    pCell->SetTriangle(tri);
+                    cells_.front()->SetTriangle(tri);
                 }
             }
         }
 
-        triList = pCell->GetTriangles();
+        triList = cells_.front()->GetTriangles();
         std::string strNumber;
         strNumber = std::to_string(triList.size());
         OutputDebugStringA(strNumber.c_str());

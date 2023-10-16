@@ -3,9 +3,11 @@
 #include <vector>
 
 class Triangle;
+class Cell;
 
 class CollisionMap : public GameObject
 {
+    std::vector<Cell*> cells_;
 
 public:
     CollisionMap(GameObject* parent);

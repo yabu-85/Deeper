@@ -25,7 +25,7 @@ void Cell::SetPosLeng(XMFLOAT3 pos, float leng)
 
 }
 
-void Cell::SetTriangle(Triangle& t)
+bool Cell::SetTriangle(Triangle& t)
 {
 	XMFLOAT3* tp = t.GetPosition();
 
@@ -39,7 +39,7 @@ void Cell::SetTriangle(Triangle& t)
 		tp[0].z < verPos_[7].z && tp[1].z < verPos_[7].z && tp[2].z < verPos_[7].z || //全頂点が奥
 		tp[0].z > verPos_[4].z && tp[1].z > verPos_[4].z && tp[2].z > verPos_[4].z )  //全頂点が前
 	{
-		return;
+		return false;
 	}
 
 	Triangle* tri = new Triangle;
@@ -51,6 +51,7 @@ void Cell::SetTriangle(Triangle& t)
 
 	Triangles.push_back(tri);
 
+	return true;
 }
 
 void Cell::ResetTriangles()

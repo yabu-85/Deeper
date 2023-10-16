@@ -28,8 +28,10 @@ Player::~Player()
 void Player::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("Model/PlayerModel.fbx");
+    hModel_ = Model::Load("Model/SphereCollider.fbx");
     assert(hModel_ >= 0);
+
+    transform_.scale_ = { 8.0f, 8.0f, 8.0f };
 
     pAim_ = Instantiate<Aim>(this);
     
@@ -87,7 +89,7 @@ void Player::Update()
 void Player::Draw()
 {
     Model::SetTransform(hModel_, transform_);
-    Model::Draw(hModel_);
+    Model::Draw(hModel_, 2);
 
     pText->Draw(30, 30, transform_.position_.x);
     pText->Draw(30, 70, transform_.position_.y);

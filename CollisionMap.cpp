@@ -16,6 +16,7 @@ namespace {
     Player* pPlayer;
     Stage* pStage;
     Quad* pQuad = new Quad;
+    Fbx* pFbx;
 
     bool drawQuad = false;
     std::vector<Triangle*> triList;
@@ -58,16 +59,64 @@ void CollisionMap::Update()
 
         //‚±‚±‚Å•¡”‘I‘ğ‚Å‚«‚é‚æ‚¤‚É‚µ‚½‚¢
 
-        //‚Ü‚¸‚Í‰º‚Ì”»’è ³í‚¶‚á‚È‚¢ƒ||||||||||||||||
+        //¡‚ÌcellPos‚Ì”»’è‚¾‚Æ‚Å‚«‚Ä‚È‚¢
+        //‚Ü‚¸Player‚ªˆÚ“®‚µ‚½‚ç”ÍˆÍ‚Ì‚b‚…‚Œ‚Œ‚ğŒvZ
+
+        //‚Æ‚É‚©‚­‚È‚ñ‚Æ‚©‚µ‚ÄŒvZ‚·‚é
+        //‚±‚±[|||||||||||||||||||||||
+
+
+        //‰E‚¾‚Á‚½‚ç@flag‚ğ‚O‚Æ‚©‚É‚µ‚Ä‰º‚Ìvector‚Ì•ûŒü‚Æ‰~‚ÌÚG”»’è‚Å”ÍˆÍ‚É“ü‚Á‚Ä‚¢‚é‚©‚ğ’²‚×‚é
+
+        XMFLOAT3 zero = XMFLOAT3(0.0f, 0.0f, 0.0f);
+        XMFLOAT3 vector[4] = {
+            XMFLOAT3(zero.x, zero.y, zero.z),                       //¶‰º
+            XMFLOAT3(zero.x, zero.y, zero.z + boxSize),             //¶ã 
+            XMFLOAT3(zero.x + boxSize, zero.y, zero.z),             //‰E‰º
+            XMFLOAT3(zero.x + boxSize, zero.y, zero.z + boxSize)    //‰Eã
+        };
+
+        int vecFlag = -1;
+        if (plaPos.x - playerRadius < currentCellPos.x) vecFlag = 0;            //¶
+        if (plaPos.x + playerRadius > currentCellPos.x + boxSize) vecFlag = 2;  //‰E
+
+        //‚±‚±‚Å‰º‚©ã–ì”»’è‚ğ‚µ‚Äƒtƒ‰ƒO‚ğİ’è‚·‚é
+
+        //‚Ä‚·‚Æ( Cell‚ÌƒŠƒXƒg‰Šú‰»
+        {
+            int cellSize = cells_.size();
+            for (int i = 1; i < cellSize; i++) {
+                cells_.pop_back();
+            }
+        }
+
+
+        //‚Ü‚¸‚Í‰º‚Ì”»’è ³í‚¶‚á‚È‚¢
         if (plaPos.y - playerRadius < currentCellPos.y) {
             XMFLOAT3 cellPosTest = XMFLOAT3(cellPos.x, cellPos.y - boxSize, cellPos.z);
             Cell* cellTest = new Cell;
             cellTest->SetPosLeng(cellPosTest, boxSize);
             cellTest->ResetTriangles();
             cells_.push_back(cellTest);
-
-            OutputDebugString(" down !! , ");
         }
+
+        //‚Æ‚è‚ ‚¦‚¸ã‚Ì”»’èl‚¦‚Ä‚İ‚é
+        if (plaPos.y + playerRadius > currentCellPos.y + boxSize) {
+            XMFLOAT3 cellPosTest = XMFLOAT3(cellPos.x, cellPos.y + boxSize, cellPos.z);
+            Cell* cellTest = new Cell;
+            cellTest->SetPosLeng(cellPosTest, boxSize);
+            cellTest->ResetTriangles();
+            cells_.push_back(cellTest);
+
+        }
+
+        //Cell‚Ì4‚Â‚Ì’¸“_‚æ‚èŠO‚É‚¢‚½‚ç”»’è‚³‚¹‚é‚±‚Æ‚É‚·‚é
+
+        //
+
+        std::string strNumber = std::to_string(cells_.size());
+        OutputDebugStringA(strNumber.c_str());
+        OutputDebugString(" : ");
 
 
         pQuad->SetPosition(cellPos);
@@ -78,7 +127,7 @@ void CollisionMap::Update()
 
         //Block‚Ì”ÍˆÍ“à‚Ìƒ|ƒŠƒSƒ“‚ğæ“¾‚µ‚½‚¢
         for (int i = 0; i < inteDatas.size(); i++) {
-            Fbx* pFbx = Model::GetFbx(inteDatas[i].hModelNum);
+            pFbx = Model::GetFbx(inteDatas[i].hModelNum);
             std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
 
             for (int n = 0; n < pFbxParts.size(); n++) {
@@ -97,13 +146,23 @@ void CollisionMap::Update()
 
                     Triangle tri;
                     tri.CreatTriangle(vpoly[0], vpoly[1], vpoly[2]);
-                    cells_.front()->SetTriangle(tri);
+
+                    for (Cell* ce : cells_) {
+                        if (ce->SetTriangle(tri)) break;
+                    }
                 }
             }
         }
 
-        triList = cells_.front()->GetTriangles();
-        std::string strNumber;
+
+        triList.clear();
+
+        for (Cell* ce : cells_) {
+            std::vector<Triangle*>& triangles = ce->GetTriangles();
+            triList.insert(triList.end(), triangles.begin(), triangles.end());
+        }
+
+        strNumber;
         strNumber = std::to_string(triList.size());
         OutputDebugStringA(strNumber.c_str());
         OutputDebugString("\n");

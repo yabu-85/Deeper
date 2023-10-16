@@ -26,7 +26,7 @@ public:
 	void SetPosLeng(XMFLOAT3 pos, float leng);
 
 	//OŠpƒ|ƒŠƒSƒ“‚ªAAB‚ÉG‚ê‚Ä‚¢‚½‚ç‚±‚ÌCELL‚É“o˜^
-	void SetTriangle(Triangle& t);
+	bool SetTriangle(Triangle& t);
 
 	//Setter
 	void ResetTriangles();

@@ -13,7 +13,14 @@ GameManager::~GameManager()
 void GameManager::Initialize()
 {
 	enemyList_.push_back(Instantiate<EnemyBase>(this));
+	enemyList_.push_back(Instantiate<EnemyBase>(this));
+	enemyList_.push_back(Instantiate<EnemyBase>(this));
+	enemyList_.push_back(Instantiate<EnemyBase>(this));
 	
+	enemyList_.at(1)->SetPosition(XMFLOAT3(25.0f, 0.0f, 0.0f));
+	enemyList_.at(2)->SetPosition(XMFLOAT3(30.0f, 0.0f, 0.0f));
+	enemyList_.at(3)->SetPosition(XMFLOAT3(35.0f, 0.0f, 0.0f));
+
 }
 
 void GameManager::Update()

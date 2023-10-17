@@ -23,6 +23,8 @@ namespace {
     const float moveAimTime = 0.05f;        //動く時の抑制の値
     const float stopAimTime = 0.05f;        //止まる時の抑制の値
 
+    const float targetRange = 30.0f;        //ターゲットの有効範囲
+    const float fovRadian = XMConvertToRadians(60) / 2;
 }
 
 float easeOutQuad(float number) {
@@ -133,40 +135,54 @@ void Aim::SetTargetEnemy()
     GameManager* pGameManager = (GameManager*)FindObject("GameManager");
     std::vector<EnemyBase*> eList = pGameManager->GetAllEnemy();
 
+    // プレイヤーの視線方向を計算
+    XMFLOAT3 playerForward;
+    playerForward.x = sin(XMConvertToRadians(transform_.rotate_.y));
+    playerForward.y = 0.0f;
+    playerForward.z = cos(XMConvertToRadians(transform_.rotate_.y));
+
+    float minLeng = 999999;
+    int minLengIndex = -1;
+    int index = 0;
+
     for (EnemyBase* e : eList) {
+        index++;
         XMFLOAT3 ePos = e->GetPosition();
 
-        //カメラからターゲットへのベクトルを計算
+        // プレイヤーからターゲットへのベクトルを計算（逆ベクトル）
         XMFLOAT3 toTarget;
-        toTarget.x = ePos.x - cameraPos_.x;
-        toTarget.y = 0.0f;  // Y軸方向は無視
-        toTarget.z = ePos.z - cameraPos_.z;
+        toTarget.x = cameraTarget_.x - ePos.x;
+        toTarget.y = 0.0f;
+        toTarget.z = cameraTarget_.z - ePos.z;
 
-        //カメラの方向ベクトルを計算
-        XMFLOAT3 playerForward;
-        playerForward.x = sin(transform_.rotate_.y);
-        playerForward.y = 0.0f;
-        playerForward.z = cos(transform_.rotate_.y);
+        // プレイヤーからターゲットへの距離を計算
+        float distance = sqrt(toTarget.x * toTarget.x + toTarget.z * toTarget.z);
 
-        XMVECTOR vToTarget = XMLoadFloat3(&toTarget);
-        XMVECTOR vplaForward = XMLoadFloat3(&playerForward);
+        //範囲外だったら次
+        if (distance >= targetRange) continue;
 
+        // プレイヤーとターゲットの方向ベクトルを正規化
+        XMVECTOR toTargetNorm = XMVector3Normalize(XMLoadFloat3(&toTarget));
+        XMVECTOR playerForwardNorm = XMLoadFloat3(&playerForward);
 
-        //カメラからターゲットへの方向ベクトルとプレイヤーの方向ベクトルのなす角度を計算
-        float dotProduct = XMVectorGetX(XMVector3Dot(XMVector3Normalize(vToTarget), XMVector3Normalize(vplaForward)));
+        // プレイヤーの視野角を計算
+        float dotProduct = XMVectorGetX(XMVector3Dot(toTargetNorm, playerForwardNorm));
         float angle = acosf(dotProduct);
 
-        float cccc = 45.0f;
-        float range = 10.0f;
-
-        // 計算された角度が視野角度の半分以下で、ターゲットまでの距離が範囲内であれば、ターゲットは視野内に存在します
-        if (angle <= cccc / 2 && XMVectorGetX(XMVector3Length(XMLoadFloat3(&toTarget))) <= range)
-        {
-            pEnemyBase_ = e;
-            isTarget_ = true;
-            return;
+        // 距離と角度を比較してターゲットが範囲内にあるかどうかを確認
+        if (angle <= fovRadian) {
+            if (minLeng > distance) {
+                minLeng = distance;
+                minLengIndex = index - 1;
+            }
         }
     }
+
+    if (minLengIndex >= 0) {
+        pEnemyBase_ = eList.at(minLengIndex);
+        isTarget_ = true;
+    }
+
 }
 
 //-----------private-------------------

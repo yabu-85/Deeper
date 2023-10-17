@@ -2,6 +2,7 @@
 #include "Engine/GameObject.h"
 
 class Player;
+class EnemyBase;
 
 class Aim :
     public GameObject
@@ -20,6 +21,7 @@ class Aim :
     XMFLOAT3 cameraOffset_;         //ƒJƒƒ‰‚ÌˆÚ“®—Ê
 
     Player* pPlayer_;
+    EnemyBase* pEnemyBase_;
 
     void FacingTarget();
     void CalcCameraOffset(float _aimMove);
@@ -39,5 +41,6 @@ public:
 
     float GetMouseSensitivity() { return mouseSensitivity; };
     void SetMouseSensitivity(float f) { mouseSensitivity = f; };
+    void SetTargetEnemy();
 
 };

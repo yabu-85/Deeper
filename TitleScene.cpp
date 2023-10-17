@@ -2,7 +2,12 @@
 #include "Player.h"
 #include "Stage.h"
 #include "CollisionMap.h"
-#include "EnemyBase.h"
+#include "GameManager.h"
+
+namespace {
+	GameManager *gm = nullptr;
+
+}
 
 TitleScene::TitleScene(GameObject* parent)
 	: GameObject(parent, "TitleScene")
@@ -14,7 +19,9 @@ void TitleScene::Initialize()
 	Instantiate<Stage>(this);
 	Instantiate<Player>(this);
 	Instantiate<CollisionMap>(this);
-	Instantiate<EnemyBase>(this);
+
+	gm = Instantiate<GameManager>(this);
+
 
 }
 

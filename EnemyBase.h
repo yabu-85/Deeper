@@ -4,7 +4,7 @@
 class EnemyBase :
     public GameObject
 {
-
+    
 public:
     EnemyBase(GameObject* parent);
     ~EnemyBase();

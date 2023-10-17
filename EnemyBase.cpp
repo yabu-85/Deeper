@@ -1,9 +1,11 @@
 #include "EnemyBase.h"
 #include "Engine/Model.h"
+#include "Engine/Input.h"
 
 namespace {
 	int hModel_ = -1;
 	bool isUp = true;
+	bool isActive = true;
 }
 
 EnemyBase::EnemyBase(GameObject* parent)
@@ -28,6 +30,9 @@ void EnemyBase::Initialize()
 
 void EnemyBase::Update()
 {
+	if(Input::IsKeyDown(DIK_3)) isActive = !isActive;
+	if (isActive) return;
+
 	if (isUp) {
 		transform_.position_.y += 0.1f;
 		if (transform_.position_.y >= 5.0f) isUp = false;

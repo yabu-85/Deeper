@@ -2,6 +2,8 @@
 #include "Engine/Model.h"
 #include "Engine/Input.h"
 #include "Aim.h"
+#include "GameManager.h"
+#include "EnemyBase.h"
 
 #include "Engine/Text.h"
 
@@ -42,7 +44,12 @@ void Player::Initialize()
 
 void Player::Update()
 {
-    CalcMove();
+    CalcMove();         //ˆÚ“®—ÊŒvŽZ
+    CalcDirection();    //•ûŒüŒvŽZ
+
+    if (Input::IsKeyDown(DIK_Q)) {
+        pAim_->SetTargetEnemy();
+    }
 
     XMFLOAT3 prePos = transform_.position_;
     if (playerMovement_.x != 0.0f || playerMovement_.z != 0.0f) {
@@ -157,4 +164,15 @@ void Player::CalcMove()
         XMStoreFloat3(&playerMovement_, vMove);
     }
 
+}
+
+void Player::CalcDirection()
+{
+    XMFLOAT3 fCurePos = XMFLOAT3(transform_.position_.x + playerMovement_.x, 0.0f, transform_.position_.z + playerMovement_.z);
+    XMVECTOR curePos = XMLoadFloat3(&fCurePos);
+
+    XMFLOAT3 fPrePos = XMFLOAT3(transform_.position_.x, 0.0f, transform_.position_.z);
+    XMVECTOR prePos = XMLoadFloat3(&fPrePos);
+
+    vDirection_ = prePos - curePos;
 }

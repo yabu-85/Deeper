@@ -8,6 +8,7 @@
 #include "Triangle.h"
 #include <vector>
 #include "EnemyBase.h"
+#include "GameManager.h"
 
 namespace {
     const float upMouselimit = -89.0f;
@@ -30,7 +31,7 @@ float easeOutQuad(float number) {
 
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 },
-    plaPos_{ 0,0,0 }, pPlayer_(nullptr), hPict_(-1), aimMove_(false), cameraOffset_{0,0,0}, isTarget_(false)
+    plaPos_{ 0,0,0 }, pPlayer_(nullptr), hPict_(-1), aimMove_(false), cameraOffset_{0,0,0}, isTarget_(false), pEnemyBase_(nullptr)
 {
     mouseSensitivity = 2.0f;
     perspectiveDistance_ = 7.0f;
@@ -51,15 +52,22 @@ void Aim::Initialize()
 
 void Aim::Update()
 {
-    if (Input::IsMouseButtonDown(1)) aimMove_ = !aimMove_;
 
+    if (Input::IsMouseButtonDown(1)) aimMove_ = !aimMove_;
     if (!aimMove_) return;
-    if (Input::IsKeyDown(DIK_Q)) isTarget_ = !isTarget_;
 
     if (isTarget_) {
         //カメラオフセットの機能はターゲット時も有効にする、ただしマウスでの抑制はなし
         CalcCameraOffset(0.0f);
-        FacingTarget();
+
+
+        //test
+        if (Input::IsKey(DIK_K)) pEnemyBase_->KillMe();
+
+
+        //isTarget状態なのにTargetとなるEnemyがいない場合reset
+        if (!pEnemyBase_->IsDead()) FacingTarget();
+        else isTarget_ = false;
         
     }
     else {
@@ -115,16 +123,59 @@ void Aim::Release()
 {
 }
 
+void Aim::SetTargetEnemy()
+{
+    if (isTarget_) {
+        isTarget_ = false;
+        return;
+    }
+
+    GameManager* pGameManager = (GameManager*)FindObject("GameManager");
+    std::vector<EnemyBase*> eList = pGameManager->GetAllEnemy();
+
+    for (EnemyBase* e : eList) {
+        XMFLOAT3 ePos = e->GetPosition();
+
+        //カメラからターゲットへのベクトルを計算
+        XMFLOAT3 toTarget;
+        toTarget.x = ePos.x - cameraPos_.x;
+        toTarget.y = 0.0f;  // Y軸方向は無視
+        toTarget.z = ePos.z - cameraPos_.z;
+
+        //カメラの方向ベクトルを計算
+        XMFLOAT3 playerForward;
+        playerForward.x = sin(transform_.rotate_.y);
+        playerForward.y = 0.0f;
+        playerForward.z = cos(transform_.rotate_.y);
+
+        XMVECTOR vToTarget = XMLoadFloat3(&toTarget);
+        XMVECTOR vplaForward = XMLoadFloat3(&playerForward);
+
+
+        //カメラからターゲットへの方向ベクトルとプレイヤーの方向ベクトルのなす角度を計算
+        float dotProduct = XMVectorGetX(XMVector3Dot(XMVector3Normalize(vToTarget), XMVector3Normalize(vplaForward)));
+        float angle = acosf(dotProduct);
+
+        float cccc = 45.0f;
+        float range = 10.0f;
+
+        // 計算された角度が視野角度の半分以下で、ターゲットまでの距離が範囲内であれば、ターゲットは視野内に存在します
+        if (angle <= cccc / 2 && XMVectorGetX(XMVector3Length(XMLoadFloat3(&toTarget))) <= range)
+        {
+            pEnemyBase_ = e;
+            isTarget_ = true;
+            return;
+        }
+    }
+}
+
 //-----------private-------------------
 
 void Aim::FacingTarget()
 {
     //プレイヤーの方向に向くようにする
     XMVECTOR vFront{ 0,0,1,0 };
-    XMFLOAT3 targetPos = { 20.0f, 0.0f, 0.0f };
-
-    EnemyBase* pEnemyBase = (EnemyBase*)FindObject("EnemyBase");
-    targetPos = pEnemyBase->GetPosition();
+    XMFLOAT3 targetPos = pEnemyBase_->GetPosition();
 
     XMFLOAT3 fAimPos = XMFLOAT3(cameraPos_.x - targetPos.x, 0.0f, cameraPos_.z - targetPos.z);
     XMVECTOR vAimPos = XMLoadFloat3(&fAimPos);  //正規化用の変数にfloatの値を入れる

@@ -22,7 +22,6 @@ void TitleScene::Initialize()
 
 	gm = Instantiate<GameManager>(this);
 
-
 }
 
 void TitleScene::Update()

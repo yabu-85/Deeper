@@ -69,6 +69,10 @@ void Cell::ResetTriangles()
 	Triangles.clear();
 }
 
+
+//----------------------------------------------------------------------
+
+
 void CellBox::Initialize()
 {
 	//モデルデータのロード
@@ -76,10 +80,6 @@ void CellBox::Initialize()
 	assert(hModel_ >= 0);
 
 }
-
-
-//----------------------------------------------------------------------
-
 
 void CellBox::Update()
 {
@@ -154,14 +154,9 @@ void CPolygon::Draw()
 	transform_.Calclation();//トランスフォームを計算
 	PassDataToCB(transform_);
 	SetBufferToPipeline();
-	Direct3D::pContext_->DrawIndexed(index_.size(), 0, 0);
+	Direct3D::pContext_->DrawIndexed((UINT)index_.size(), 0, 0);
 
 	Direct3D::SetShader(Direct3D::SHADER_3D);
-}
-
-void CPolygon::SetVertex(XMFLOAT3& ver1, XMFLOAT3& ver2, XMFLOAT3& ver3)
-{
-	Initialize(ver1, ver2, ver3);
 }
 
 void CPolygon::InitVertexData(XMFLOAT3& ver1, XMFLOAT3& ver2, XMFLOAT3& ver3)
@@ -174,7 +169,7 @@ void CPolygon::InitVertexData(XMFLOAT3& ver1, XMFLOAT3& ver2, XMFLOAT3& ver3)
 		{ XMVectorSet(ver3.x, ver3.y, ver3.z, 0.0f), XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f) },   // 四角形の頂点（右下）2
 	};
 
-	vertexNum_ = vertices_.size();
+	vertexNum_ = (int)vertices_.size();
 }
 
 HRESULT CPolygon::CreateVertexBuffer(XMFLOAT3& ver1, XMFLOAT3& ver2, XMFLOAT3& ver3)

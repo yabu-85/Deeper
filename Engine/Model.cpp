@@ -16,52 +16,52 @@ namespace Model
 	//モデルをロード
 	int Load(std::string fileName)
 	{
-			ModelData* pData = new ModelData;
+		ModelData* pData = new ModelData;
 
 
-			//開いたファイル一覧から同じファイル名のものが無いか探す
-			bool isExist = false;
-			for (int i = 0; i < _datas.size(); i++)
+		//開いたファイル一覧から同じファイル名のものが無いか探す
+		bool isExist = false;
+		for (int i = 0; i < _datas.size(); i++)
+		{
+			//すでに開いている場合
+			if (_datas[i] != nullptr && _datas[i]->fileName == fileName)
 			{
-				//すでに開いている場合
-				if (_datas[i] != nullptr && _datas[i]->fileName == fileName)
-				{
-					pData->pFbx = _datas[i]->pFbx;
-					isExist = true;
-					break;
-				}
+				pData->pFbx = _datas[i]->pFbx;
+				isExist = true;
+				break;
+			}
+		}
+
+		//新たにファイルを開く
+		if (isExist == false)
+		{
+			pData->pFbx = new Fbx;
+			if (FAILED(pData->pFbx->Load(fileName)))
+			{
+				//開けなかった
+				SAFE_DELETE(pData->pFbx);
+				SAFE_DELETE(pData);
+				return -1;
 			}
 
-			//新たにファイルを開く
-			if (isExist == false)
+			//無事開けた
+			pData->fileName = fileName;
+		}
+
+
+		//使ってない番号が無いか探す
+		for (int i = 0; i < _datas.size(); i++)
+		{
+			if (_datas[i] == nullptr)
 			{
-				pData->pFbx = new Fbx;
-				if (FAILED(pData->pFbx->Load(fileName)))
-				{
-					//開けなかった
-					SAFE_DELETE(pData->pFbx);
-					SAFE_DELETE(pData);
-					return -1;
-				}
-
-				//無事開けた
-				pData->fileName = fileName;
+				_datas[i] = pData;
+				return i;
 			}
+		}
 
-
-			//使ってない番号が無いか探す
-			for (int i = 0; i < _datas.size(); i++)
-			{
-				if (_datas[i] == nullptr)
-				{
-					_datas[i] = pData;
-					return i;
-				}
-			}
-
-			//新たに追加
-			_datas.push_back(pData);
-			return (int)_datas.size() - 1;
+		//新たに追加
+		_datas.push_back(pData);
+		return (int)_datas.size() - 1;
 	}
 
 

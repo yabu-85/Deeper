@@ -129,6 +129,7 @@
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CollisionMap.cpp" />
     <ClCompile Include="EnemyBase.cpp" />
+    <ClCompile Include="EnemySpawnCtrl.cpp" />
     <ClCompile Include="Engine\Audio.cpp" />
     <ClCompile Include="Engine\BillBoard.cpp" />
     <ClCompile Include="Engine\BoxCollider.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="MasterHand.cpp" />
     <ClCompile Include="NavigationAI.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Stage.cpp" />
@@ -164,6 +166,7 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CollisionMap.h" />
     <ClInclude Include="EnemyBase.h" />
+    <ClInclude Include="EnemySpawnCtrl.h" />
     <ClInclude Include="Engine\Audio.h" />
     <ClInclude Include="Engine\BillBoard.h" />
     <ClInclude Include="Engine\BoxCollider.h" />
@@ -188,6 +191,7 @@
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="MasterHand.h" />
     <ClInclude Include="NavigationAI.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Stage.h" />

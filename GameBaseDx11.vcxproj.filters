@@ -24,6 +24,18 @@
       <UniqueIdentifier>{47a6a3f5-8cfd-436b-8d58-beccd108f3f3}</UniqueIdentifier>
       <Extensions>hlsl</Extensions>
     </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{e04af741-50b7-426b-8ed5-0d84c1ba486c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enemy">
+      <UniqueIdentifier>{41ef1b12-3dc4-44d5-8224-49a169e131f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enemy\EnemyBase">
+      <UniqueIdentifier>{45e1984c-0a58-4c08-9b28-222eb7b2751e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enemy\Enemies">
+      <UniqueIdentifier>{bba5f4f1-692c-4c4d-8c84-026ee8023168}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -96,15 +108,25 @@
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
     <ClCompile Include="TitleScene.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Aim.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="CollisionMap.cpp" />
-    <ClCompile Include="EnemyBase.cpp" />
     <ClCompile Include="NavigationAI.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="EnemyBase.cpp">
+      <Filter>Enemy\EnemyBase</Filter>
+    </ClCompile>
+    <ClCompile Include="MasterHand.cpp">
+      <Filter>Enemy\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemySpawnCtrl.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -177,15 +199,25 @@
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
     <ClInclude Include="TitleScene.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Aim.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="CollisionMap.h" />
-    <ClInclude Include="EnemyBase.h" />
     <ClInclude Include="NavigationAI.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="EnemyBase.h">
+      <Filter>Enemy\EnemyBase</Filter>
+    </ClInclude>
+    <ClInclude Include="MasterHand.h">
+      <Filter>Enemy\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemySpawnCtrl.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

@@ -22,7 +22,6 @@ void Triangle::RayCast(RayCastData* data, Triangle& tri)
 
 	hit = Direct3D::Intersect(data->start, data->dir, ver[0], ver[1], ver[2], &dist);
 
-
 	if (hit && dist < data->dist)
 	{
 		data->hit = TRUE;

@@ -11,7 +11,7 @@ namespace {
     float gradually = 0.1f;                 //移動スピードの加減の値
     const float stopGradually = 0.25f;      //移動スピードの加減の値止まるとき
     const float moveGradually = 0.15f;      //移動スピードの加減の値移動時
-    const float maxMoveSpeed = 1.0f;        //最大移動スピード
+    const float maxMoveSpeed = 3.0f;        //最大移動スピード
 
     Text* pText = new Text;
 
@@ -20,7 +20,8 @@ namespace {
 Player::Player(GameObject* parent)
     : GameObject(parent, "Player"), hModel_(-1), pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0,0,0)
 {
-    moveSpeed_ = 0.15f;
+    vDirection_ = XMVectorZero();
+    moveSpeed_ = 0.3f;
 }
 
 Player::~Player()
@@ -99,9 +100,9 @@ void Player::Draw()
     Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_, 2);
 
-    pText->Draw(30, 30, transform_.position_.x);
-    pText->Draw(30, 70, transform_.position_.y);
-    pText->Draw(30, 110, transform_.position_.z);
+    pText->Draw(30, 30, (int)transform_.position_.x);
+    pText->Draw(30, 70, (int)transform_.position_.y);
+    pText->Draw(30, 110, (int)transform_.position_.z);
 
 }
 

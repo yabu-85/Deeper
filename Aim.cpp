@@ -8,6 +8,7 @@
 #include "Triangle.h"
 #include <vector>
 #include "EnemyBase.h"
+#include "EnemySpawnCtrl.h"
 #include "GameManager.h"
 
 namespace {
@@ -25,10 +26,6 @@ namespace {
 
     const float targetRange = 30.0f;        //ターゲットの有効範囲
     const float fovRadian = XMConvertToRadians(60) / 2;
-}
-
-float easeOutQuad(float number) {
-    return 1.0f - (1.0f - number) * (1.0f - number);
 }
 
 Aim::Aim(GameObject* parent)
@@ -61,11 +58,6 @@ void Aim::Update()
     if (isTarget_) {
         //カメラオフセットの機能はターゲット時も有効にする、ただしマウスでの抑制はなし
         CalcCameraOffset(0.0f);
-
-
-        //test
-        if (Input::IsKey(DIK_K)) pEnemyBase_->KillMe();
-
 
         //isTarget状態なのにTargetとなるEnemyがいない場合reset
         if (!pEnemyBase_->IsDead()) FacingTarget();
@@ -127,53 +119,50 @@ void Aim::Release()
 
 void Aim::SetTargetEnemy()
 {
+    //ターゲット解除の場合はreturn
     if (isTarget_) {
         isTarget_ = false;
         return;
     }
 
-    GameManager* pGameManager = (GameManager*)FindObject("GameManager");
-    std::vector<EnemyBase*> eList = pGameManager->GetAllEnemy();
+    GameManager* pGM = (GameManager*)FindObject("GameManager");
+    EnemySpawnCtrl* pEnemySpawnCtrl = pGM->GetEnemySpawnCtrl();
+    std::vector<EnemyBase*> eList = pEnemySpawnCtrl->GetAllEnemy();
 
     // プレイヤーの視線方向を計算
     XMFLOAT3 playerForward;
-    playerForward.x = sin(XMConvertToRadians(transform_.rotate_.y));
+    playerForward.x = (float)sin(XMConvertToRadians(transform_.rotate_.y));
     playerForward.y = 0.0f;
-    playerForward.z = cos(XMConvertToRadians(transform_.rotate_.y));
+    playerForward.z = (float)cos(XMConvertToRadians(transform_.rotate_.y));
 
     float minLeng = 999999;
     int minLengIndex = -1;
-    int index = 0;
 
-    for (EnemyBase* e : eList) {
-        index++;
-        XMFLOAT3 ePos = e->GetPosition();
+    for (int i = 0; i < eList.size(); i++) {
+        XMFLOAT3 ePos = eList.at(i)->GetPosition();
+        
+        //ターゲットへのベクトルを計算（逆ベクトル）
+        XMFLOAT3 toTarget = XMFLOAT3(cameraTarget_.x - ePos.x, 0.0f, cameraTarget_.z - ePos.z);
 
-        // プレイヤーからターゲットへのベクトルを計算（逆ベクトル）
-        XMFLOAT3 toTarget;
-        toTarget.x = cameraTarget_.x - ePos.x;
-        toTarget.y = 0.0f;
-        toTarget.z = cameraTarget_.z - ePos.z;
-
-        // プレイヤーからターゲットへの距離を計算
-        float distance = sqrt(toTarget.x * toTarget.x + toTarget.z * toTarget.z);
+        //ターゲットへの距離を計算
+        float distance = (float)sqrt(toTarget.x * toTarget.x + toTarget.z * toTarget.z);
 
         //範囲外だったら次
         if (distance >= targetRange) continue;
 
-        // プレイヤーとターゲットの方向ベクトルを正規化
+        // 方向ベクトルを正規化
         XMVECTOR toTargetNorm = XMVector3Normalize(XMLoadFloat3(&toTarget));
         XMVECTOR playerForwardNorm = XMLoadFloat3(&playerForward);
 
-        // プレイヤーの視野角を計算
+        // 視野角を計算
         float dotProduct = XMVectorGetX(XMVector3Dot(toTargetNorm, playerForwardNorm));
         float angle = acosf(dotProduct);
 
-        // 距離と角度を比較してターゲットが範囲内にあるかどうかを確認
+        // 角度を比較してターゲットが範囲内にあるかどうかを確認
         if (angle <= fovRadian) {
             if (minLeng > distance) {
                 minLeng = distance;
-                minLengIndex = index - 1;
+                minLengIndex = i;
             }
         }
     }
@@ -185,7 +174,7 @@ void Aim::SetTargetEnemy()
 
 }
 
-//-----------private-------------------
+//-----------private--------------------------------------------
 
 void Aim::FacingTarget()
 {
@@ -198,7 +187,7 @@ void Aim::FacingTarget()
     vAimPos = XMVector3Normalize(vAimPos);
     XMVECTOR vDot = XMVector3Dot(vFront, vAimPos);
     float dot = XMVectorGetX(vDot);
-    float angle = acos(dot);
+    float angle = (float)acos(dot);
 
     //外積求めて半回転だったら angle に -1 掛ける
     XMVECTOR vCross = XMVector3Cross(vFront, vAimPos); //外積求めるやつ 外積はベクトル型
@@ -220,7 +209,7 @@ void Aim::FacingTarget()
     float height = cameraPos_.y - targetPos.y;
 
     // 距離と高さに基づいてX軸回転角度を計算
-    float rotationX = atan2(height, distance);
+    float rotationX = (float)atan2(height, distance);
 
     // 回転角度を度数に変換
     rotationX = -XMConvertToDegrees(rotationX);
@@ -253,11 +242,9 @@ void Aim::CalcCameraOffset(float _aimMove)
 void Aim::RayCastStage(XMFLOAT3 _start)
 {
     CollisionMap* pCollisionMap = (CollisionMap*)FindObject("CollisionMap");
-    if (pCollisionMap == nullptr)
-        return;
+    if (pCollisionMap == nullptr) return;
 
     int dataSize = 0;
-
     std::vector<Triangle*> datas = pCollisionMap->GetCellInTriangle();
     dataSize = (int)datas.size();
 
@@ -268,7 +255,8 @@ void Aim::RayCastStage(XMFLOAT3 _start)
     vDir = XMVector3Normalize(vDir);
     XMStoreFloat3(&dir, vDir);
     
-    bool rayHit = false;
+    const float minRangeMax = 100000000;
+    float minRange = minRangeMax;
     for (int i = 0; i < dataSize; i++) {
         data.start = start;
         data.dir = dir;
@@ -279,16 +267,15 @@ void Aim::RayCastStage(XMFLOAT3 _start)
         //レイ当たった・判定距離内だったら
         if (data.hit && data.dist < (defPerspectDistance + heightRay))
         {
-            float dist = data.dist;
-            dist -= heightRay;
-            perspectiveDistance_ = dist;
-            rayHit = true;
+            //最小より小さければ上書き
+            float range = data.dist - heightRay;
+            if(minRange > range) minRange = range;
         }
     }
 
-    if (!rayHit) {
-        perspectiveDistance_ = defPerspectDistance;
-    }
+    //当たったらMinRange、当たらなければデフォルト
+    if (minRange < minRangeMax) perspectiveDistance_ = minRange;
+    else perspectiveDistance_ = defPerspectDistance;
 
     return;
 }

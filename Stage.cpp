@@ -1,12 +1,9 @@
 #include "Stage.h"
 #include "Engine/Model.h"
 #include "Engine/Input.h"
-#include "Player.h"
 #include <vector>
-#include "Engine/FbxParts.h"
 
 namespace {
-    Player* pPlayer;
     bool drawCell = true;
 
 }
@@ -46,7 +43,6 @@ void Stage::Initialize()
         intersectDatas_.push_back({ hModel_[MAX + RT2], XMFLOAT3(-5.0f + -8.0f * i, 0.0f, -15.0f) });
     }
     
-    pPlayer = (Player*)FindObject("Player");
 }
 
 void Stage::Update()

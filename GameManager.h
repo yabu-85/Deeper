@@ -10,14 +10,14 @@
 //	Å´
 //êFÅX
 
-
-
 class EnemyBase;
-class GameObject;
+class EnemySpawnCtrl;
+class NavigationAI;
 
 class GameManager : public GameObject
 {
-	std::vector<EnemyBase*> enemyList_;
+	EnemySpawnCtrl* pEnemySpawnCtrl_;
+	NavigationAI* pNavigationAI_;
 
 public:
 	GameManager(GameObject* parent);
@@ -27,7 +27,7 @@ public:
 	void Draw() override;
 	void Release() override;
 
-	std::vector<EnemyBase*>& GetAllEnemy() { return enemyList_; };
+	EnemySpawnCtrl* GetEnemySpawnCtrl() { return pEnemySpawnCtrl_; };
+	NavigationAI* GetNavigationAI() { return pNavigationAI_; };
 
 };
-

@@ -87,8 +87,6 @@ public:
 	HRESULT Initialize(XMFLOAT3& ver1, XMFLOAT3& ver2, XMFLOAT3& ver3);
 	void Draw();
 
-	void SetVertex(XMFLOAT3& ver1, XMFLOAT3& ver2, XMFLOAT3& ver3);
-
 private:
 	//  Initialize‚©‚çŒÄ‚Î‚ê‚éŠÖ”-----------------
 	virtual void InitVertexData(XMFLOAT3& ver1, XMFLOAT3& ver2, XMFLOAT3& ver3); //’¸“_î•ñ‚Ì€”õ

@@ -59,7 +59,6 @@ void Aim::Update()
     if (isTarget_) {
         //カメラオフセットの機能はターゲット時も有効にする、ただしマウスでの抑制はなし
         CalcCameraOffset(0.0f);
-
         FacingTarget();
         
     }
@@ -122,7 +121,12 @@ void Aim::FacingTarget()
 {
     //プレイヤーの方向に向くようにする
     XMVECTOR vFront{ 0,0,1,0 };
-    XMFLOAT3 fAimPos = XMFLOAT3(cameraPos_.x - 20.0f, 0, cameraPos_.z - 0.0f);
+    XMFLOAT3 targetPos = { 20.0f, 0.0f, 0.0f };
+
+    EnemyBase* pEnemyBase = (EnemyBase*)FindObject("EnemyBase");
+    targetPos = pEnemyBase->GetPosition();
+
+    XMFLOAT3 fAimPos = XMFLOAT3(cameraPos_.x - targetPos.x, 0.0f, cameraPos_.z - targetPos.z);
     XMVECTOR vAimPos = XMLoadFloat3(&fAimPos);  //正規化用の変数にfloatの値を入れる
     vAimPos = XMVector3Normalize(vAimPos);
     XMVECTOR vDot = XMVector3Dot(vFront, vAimPos);
@@ -136,9 +140,27 @@ void Aim::FacingTarget()
     }
     transform_.rotate_.y = XMConvertToDegrees(angle);
 
+    //-----------------------------X軸計算-----------------------------
+    // カメラからターゲットへの方向ベクトルを計算
+    XMFLOAT3 taTarget = XMFLOAT3(targetPos.x, 0.0f, targetPos.z);
+    XMFLOAT3 taCamPos = XMFLOAT3(cameraPos_.x, 0.0f, cameraPos_.z);
+    XMVECTOR direction = XMVectorSubtract(XMLoadFloat3(&taTarget), XMLoadFloat3(&taCamPos));
 
-    //このX軸の回転を位置によって自動で計算するようにしたい
-    //transform_.rotate_.x = -30.0f;
+    // カメラとターゲット間の距離を計算
+    float distance = XMVectorGetX(XMVector3Length(direction));
+
+    // カメラとターゲット間の高さ差を計算
+    float height = cameraPos_.y - targetPos.y;
+
+    // 距離と高さに基づいてX軸回転角度を計算
+    float rotationX = atan2(height, distance);
+
+    // 回転角度を度数に変換
+    rotationX = -XMConvertToDegrees(rotationX);
+
+    transform_.rotate_.x = rotationX;
+    if (transform_.rotate_.x <= upMouselimit) transform_.rotate_.x = upMouselimit;
+    if (transform_.rotate_.x >= donwMouselimit) transform_.rotate_.x = donwMouselimit;
 
 }
 

@@ -96,7 +96,6 @@ void Player::Draw()
     pText->Draw(30, 70, transform_.position_.y);
     pText->Draw(30, 110, transform_.position_.z);
 
-
 }
 
 void Player::Release()

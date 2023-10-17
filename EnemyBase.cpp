@@ -3,7 +3,7 @@
 
 namespace {
 	int hModel_ = -1;
-
+	bool isUp = true;
 }
 
 EnemyBase::EnemyBase(GameObject* parent)
@@ -28,12 +28,21 @@ void EnemyBase::Initialize()
 
 void EnemyBase::Update()
 {
+	if (isUp) {
+		transform_.position_.y += 0.1f;
+		if (transform_.position_.y >= 5.0f) isUp = false;
+	}
+	else {
+		transform_.position_.y -= 0.1f;
+		if (transform_.position_.y <= 0.0f) isUp = true;
+	}
+
 }
 
 void EnemyBase::Draw()
 {
 	Model::SetTransform(hModel_, transform_);
-	Model::Draw(hModel_);
+	Model::Draw(hModel_, 5);
 
 }
 

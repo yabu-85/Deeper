@@ -37,6 +37,7 @@ public:
 
 };
 
+
 class CellBox : public GameObject
 {
 	int hModel_ = -1;
@@ -49,7 +50,6 @@ public:
 	void Draw() override;
 	void Release() override {};
 };
-
 
 
 class CPolygon

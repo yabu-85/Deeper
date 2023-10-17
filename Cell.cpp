@@ -77,6 +77,10 @@ void CellBox::Initialize()
 
 }
 
+
+//----------------------------------------------------------------------
+
+
 void CellBox::Update()
 {
 	if (Input::IsKeyDown(DIK_R)) boxDraw = !boxDraw;
@@ -99,13 +103,10 @@ void CellBox::Draw()
 }
 
 
-
-
 //---------------------------------------------------------------------------------------------
 
 
 #define SAFE_RELEASE(p) {if ((p)!=nullptr) { p->Release(); (p)=nullptr;}}
-
 CPolygon::CPolygon() :pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr), vertexNum_(0), indexNum_(0)
 {
 }

@@ -9,7 +9,7 @@
 
 namespace {
     const float playerRadius = 8.0f;
-    const float boxSize = 20.0f;
+    const float boxSize = 10.0f;
     const int polySize = 3;
 
     std::vector<Triangle*> triList;
@@ -18,6 +18,8 @@ namespace {
     Fbx* pFbx;
 
     CellBox* pBox;
+    std::vector<CPolygon*> polyList;
+
 }
 
 CollisionMap::CollisionMap(GameObject* parent)
@@ -147,7 +149,6 @@ void CollisionMap::Update()
             }
         }
 
-
         triList.clear();
 
         for (Cell* ce : cells_) {
@@ -159,33 +160,32 @@ void CollisionMap::Update()
         strNumber = std::to_string(triList.size());
         OutputDebugStringA(strNumber.c_str());
         OutputDebugString("\n");
+
+        for (auto e : polyList) {
+            e->Release();
+            delete e;
+        }polyList.clear();
+
+        for (Cell* ce : cells_) {
+            std::vector<Triangle*>& triangles = ce->GetTriangles();
+            for (int i = 0; i < triangles.size(); i++) {
+                CPolygon* a = new CPolygon;
+                Triangle b = *triangles[i];
+                XMFLOAT3 poly[3] = { b.GetPosition()[0], b.GetPosition()[1], b.GetPosition()[2] };
+
+                a->Initialize(poly[0], poly[1], poly[2]);
+                polyList.push_back(a);
+
+            }
+        }
     }
 }
 
 void CollisionMap::Draw()
 {
-    std::vector<CPolygon*> polyList;
-
-    int count = 10;
-    for (Cell* ce : cells_) {
-        std::vector<Triangle*>& triangles = ce->GetTriangles();
-        for (int i = 0; i < triangles.size(); i++) {
-            CPolygon* a = new CPolygon;
-            Triangle b = *triangles[i];
-            XMFLOAT3 poly[3] = { b.GetPosition()[0], b.GetPosition()[1], b.GetPosition()[2] };
-
-            a->Initialize(poly[0], poly[1], poly[2]);
-            a->Draw();
-            polyList.push_back(a);
-
-        }
-    }
-
     for (auto e : polyList) {
-        e->Release();
-        delete e;
-    }polyList.clear();
-
+        e->Draw();
+    }
 
 }
 

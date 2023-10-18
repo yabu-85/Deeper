@@ -6,6 +6,7 @@ class GameObject;
 
 enum ENEMY_TYPE {
 	ENEMY_MASTERHAND = 0,
+	ENEMY_FEET,
 
 	ENEMY_MAX,
 };

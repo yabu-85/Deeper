@@ -33,8 +33,8 @@ Aim::Aim(GameObject* parent)
     plaPos_{ 0,0,0 }, pPlayer_(nullptr), hPict_(-1), aimMove_(false), cameraOffset_{0,0,0}, isTarget_(false), pEnemyBase_(nullptr)
 {
     mouseSensitivity = 2.0f;
-    perspectiveDistance_ = 7.0f;
-    heightDistance_ = 2.0f;
+    perspectiveDistance_ = defPerspectDistance;
+    heightDistance_ = 2.0f; //‹ß‚¢‚Æ‚¾‚ß
 }
 
 Aim::~Aim()

@@ -127,6 +127,9 @@
     <ClCompile Include="EnemySpawnCtrl.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Feet.cpp">
+      <Filter>Enemy\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -217,6 +220,9 @@
     </ClInclude>
     <ClInclude Include="EnemySpawnCtrl.h">
       <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Feet.h">
+      <Filter>Enemy\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

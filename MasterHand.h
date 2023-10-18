@@ -1,14 +1,11 @@
 #pragma once
 #include "EnemyBase.h"
 
-class NavigationAI;
-
+//まじテスト用もぶ
 class MasterHand : public EnemyBase
 {
     int hModel_;
     int lifeTime_;
-
-    NavigationAI* pNavigationAI_;
 
 public:
     MasterHand(GameObject* parent);

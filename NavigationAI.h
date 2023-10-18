@@ -11,6 +11,7 @@ class NavigationAI
 
 public:
 	void Navi(XMFLOAT3 target, XMFLOAT3 pos);
+	void Navi(XMFLOAT3& target);
 
 };
 

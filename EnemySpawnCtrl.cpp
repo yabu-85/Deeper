@@ -1,13 +1,10 @@
 #include "EnemySpawnCtrl.h"
 #include "MasterHand.h"
+#include "Feet.h"
 
 void EnemySpawnCtrl::Initialize(GameObject* parent)
 {
 	pParent_ = parent;
-
-	enemyList_.push_back(Instantiate<MasterHand>(pParent_));
-	enemyList_.at(0)->SetPosition(XMFLOAT3(10.0f, 2.0f, 0.0f));
-
 }
 
 void EnemySpawnCtrl::Release()
@@ -18,9 +15,12 @@ void EnemySpawnCtrl::Release()
 
 int EnemySpawnCtrl::SpawnEnemy(int type)
 {
-	//Ç‹Ç∑ÇΩÅ[ÇÕÇÒÇ«
 	if (type == ENEMY_MASTERHAND) {
 		enemyList_.push_back(Instantiate<MasterHand>(pParent_));
+		return enemyList_.size() - 1;
+	}
+	else if (type == ENEMY_FEET) {
+		enemyList_.push_back(Instantiate<Feet>(pParent_));
 		return enemyList_.size() - 1;
 	}
 

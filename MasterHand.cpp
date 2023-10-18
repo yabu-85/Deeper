@@ -1,6 +1,5 @@
 #include "MasterHand.h"
 #include "Engine/Model.h"
-#include "NavigationAI.h"
 #include "GameManager.h"
 
 #include "Aim.h"
@@ -13,7 +12,7 @@ namespace {
 }
 
 MasterHand::MasterHand(GameObject* parent)
-	: EnemyBase(parent), hModel_(-1), lifeTime_(0), pNavigationAI_(nullptr)
+	: EnemyBase(parent), hModel_(-1), lifeTime_(0)
 {
 	objectName_ = "MasterHand";
 }
@@ -29,9 +28,6 @@ void MasterHand::Initialize()
 	assert(hModel_ >= 0);
 
 	transform_.rotate_.y = -90;
-
-	GameManager* pGameManager = (GameManager*)FindObject("GameManager");
-	pNavigationAI_ = pGameManager->GetNavigationAI();
 
 	//Ç‹Ç∑ÇΩÅ[ÇÕÇÒÇ«î≠éÀÇÊÇ§ÇÃ
 	Aim* pAim = (Aim*)FindObject("Aim");
@@ -50,7 +46,7 @@ void MasterHand::Update()
 	//å¸Ç¢ÇƒÇ¢ÇÈï˚å¸Ç÷ëOêi
 	XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
 	XMVECTOR vMove = { 0.0f, 0.0f, 0.1f, 0.0f };
-	CXMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y + 180.0f));
+	XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y + 180.0f));
 	vMove = XMVector3TransformCoord(vMove, mRotY) * moveSpeed;
 	vPos -= vMove;
 	XMStoreFloat3(&transform_.position_, vPos);

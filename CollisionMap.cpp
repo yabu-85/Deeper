@@ -8,7 +8,7 @@
 
 namespace {
     const float playerRadius = 8.0f;
-    const float boxSize = 10.0f;
+    const float boxSize = 20.0f;
     const int polySize = 3;
 
     std::vector<Triangle*> triList;
@@ -62,7 +62,7 @@ void CollisionMap::Update()
 
         //右だったら　flagを０とかにして下のvectorの方向と円の接触判定で範囲に入っているかを調べる
         //多分フラグが４ついるからfor文でflagを設定するようにしないといけない
-
+        
 
         const XMFLOAT3 vector[4] = {
                 XMFLOAT3(0.0f, 0.0f, 0.0f),                       //左下
@@ -118,6 +118,10 @@ void CollisionMap::Update()
         pBox->SetScale(XMFLOAT3(boxSize, boxSize, boxSize));
 
         std::vector<IntersectData> inteDatas = pStage->GetIntersectDatas();
+        //これfor回す前に遠いやつはリストから削除した方がええかもしれん
+        //Cell変わるごとに計算するのもどうかと思うから、のちのち何とかして
+
+
 
         //Blockの範囲内のポリゴンを取得したい
         for (int i = 0; i < inteDatas.size(); i++) {
@@ -160,11 +164,13 @@ void CollisionMap::Update()
         OutputDebugStringA(strNumber.c_str());
         OutputDebugString("\n");
 
+        //Cellないのポリゴン全削除
         for (auto e : polyList) {
             e->Release();
             delete e;
         }polyList.clear();
 
+        //Cell内のポリゴン作成メモリリーク起きてる気もする
         for (Cell* ce : cells_) {
             std::vector<Triangle*>& triangles = ce->GetTriangles();
             for (int i = 0; i < triangles.size(); i++) {

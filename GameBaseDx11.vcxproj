@@ -153,6 +153,7 @@
     <ClCompile Include="Engine\Text.cpp" />
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
+    <ClCompile Include="Feet.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="MasterHand.cpp" />
     <ClCompile Include="NavigationAI.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Engine\Text.h" />
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\Transform.h" />
+    <ClInclude Include="Feet.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="MasterHand.h" />
     <ClInclude Include="NavigationAI.h" />

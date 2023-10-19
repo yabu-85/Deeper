@@ -33,15 +33,10 @@ void Player::Initialize()
     //モデルデータのロード
     hModel_ = Model::Load("Model/PlayerTest.fbx");
     assert(hModel_ >= 0);
-    Model::SetAnimFrame(hModel_, 0, 40, 1);
-
-    transform_.scale_ = { 8.0f, 8.0f, 8.0f };
-    transform_.scale_ = { 1.0f, 1.0f, 1.0f };
-
-   // transform_.scale_ = { 0.2f, 0.2f, 0.2f };
+    //Model::SetAnimFrame(hModel_, 0, 40, 1);
 
     pAim_ = Instantiate<Aim>(this);
-    
+
     pText->Initialize();
 
 }

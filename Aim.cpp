@@ -16,7 +16,7 @@ namespace {
     const float donwMouselimit = 70.0f;
     const float mouseSpeed = 0.05f;
 
-    const float defPerspectDistance = 8.0f; //デフォルトの視点の距離
+    const float defPerspectDistance = 6.0f; //デフォルトの視点の距離
     const float heightRay = 0.5f;           //StageとのRay判定の当たった距離にプラスする値
 
     const float numSupress = 0.002f;        //マウス移動でOffsetの値を戻す量
@@ -34,7 +34,7 @@ Aim::Aim(GameObject* parent)
 {
     mouseSensitivity = 2.0f;
     perspectiveDistance_ = defPerspectDistance;
-    heightDistance_ = 2.0f; //近いとだめ
+    heightDistance_ = 2.5f; //近いとだめ
 }
 
 Aim::~Aim()

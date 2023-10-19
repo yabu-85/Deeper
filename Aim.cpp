@@ -21,8 +21,8 @@ namespace {
 
     const float numSupress = 0.002f;        //ƒ}ƒEƒXˆÚ“®‚ÅOffset‚Ì’l‚ð–ß‚·—Ê
     const float maxCameraOffset = 2.0f;     //cameraOffset‚ÌÅ‘å‹——£
-    const float moveAimTime = 0.05f;        //“®‚­Žž‚Ì—}§‚Ì’l
-    const float stopAimTime = 0.05f;        //Ž~‚Ü‚éŽž‚Ì—}§‚Ì’l
+    const float moveAimTime = 0.035f;        //“®‚­Žž‚Ì—}§‚Ì’l
+    const float stopAimTime = 0.03f;        //Ž~‚Ü‚éŽž‚Ì—}§‚Ì’l
 
     const float targetRange = 30.0f;        //ƒ^[ƒQƒbƒg‚Ì—LŒø”ÍˆÍ
     const float fovRadian = XMConvertToRadians(60) / 2;
@@ -46,7 +46,6 @@ void Aim::Initialize()
     pPlayer_ = (Player*)FindObject("Player");
     aimMove_ = true;
 	
-	transform_.rotate_.y = 180;
 }
 
 void Aim::Update()
@@ -227,14 +226,11 @@ void Aim::CalcCameraOffset(float _aimMove)
     cameraOffset_.z += (cameraOffset_.z * -1.0f) * abs(_aimMove);
     
     XMVECTOR vCameraOffset = XMLoadFloat3(&cameraOffset_);
-    XMVECTOR vTargetOffset;
-
-    //ˆÚ“®ƒL[‚Ìî•ñ‚ðŽæ“¾••ûŒü‚ð‹t‚É
-    bool plaMoveInput = pPlayer_->GetMoveVec(vTargetOffset);
+    XMVECTOR vTargetOffset = pPlayer_->GetMoveVec();
     vTargetOffset *= maxCameraOffset * -1;
 
-    if(plaMoveInput) vCameraOffset += (vTargetOffset - vCameraOffset) * moveAimTime;   //move
-    else vCameraOffset += (vTargetOffset - vCameraOffset) * stopAimTime;               //stop
+    if(pPlayer_->IsMove()) vCameraOffset += (vTargetOffset - vCameraOffset) * moveAimTime;   //move
+    else vCameraOffset += (vTargetOffset - vCameraOffset) * stopAimTime;                     //stop
 
     XMStoreFloat3(&cameraOffset_, vCameraOffset);
 }

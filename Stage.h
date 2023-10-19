@@ -4,12 +4,14 @@
 
 enum StageNum {
     T1 = 0,
+    T1R,
     T2,
     MAX,
 };
 
 enum RayStageNum {
     RT1 = 0,
+    RT1R,
     RT2,
     RMAX,
 };
@@ -28,14 +30,12 @@ class Stage :
     enum MAP {
         NONE = 0,
         FLOAR,
-        MAX,
     };
 
     int mapSizeX_;
     int mapSizeZ_;
     XMFLOAT3 startPos_;
     std::vector<std::vector<int>> mapData_;
-    void CreatSquare(XMFLOAT3 start, int x, int z);
 
 public:
     Stage(GameObject* parent);
@@ -45,10 +45,11 @@ public:
     void Draw() override;
     void Release() override;
 
-    void ResetStage();
-    void CreatStage();
+    std::vector<IntersectData> GetIntersectDatas() { return intersectDatas_; };
     XMFLOAT3 GetPlayerStartPos();
 
-   std::vector<IntersectData> GetIntersectDatas() { return intersectDatas_; }; 
+    void ResetStage();
+    void CreatStage();
+
 
 };

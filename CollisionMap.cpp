@@ -90,11 +90,9 @@ void CollisionMap::Update()
         //これfor回す前に遠いやつはリストから削除した方がええかもしれん
         //Cell変わるごとに計算するのもどうかと思うから、のちのち何とかして
 
-
-
         //Blockの範囲内のポリゴンを取得したい
         for (int i = 0; i < inteDatas.size(); i++) {
-            pFbx = Model::GetFbx(inteDatas[i].hModelNum);
+            pFbx = Model::GetFbx(inteDatas[i].hModelNum + StageNum::MAX);
             std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
 
             for (int n = 0; n < pFbxParts.size(); n++) {
@@ -145,7 +143,7 @@ void CollisionMap::Update()
             for (int i = 0; i < triangles.size(); i++) {
             
                 //なんかデータ量多いとバグる
-               // break;
+                break;
 
                 CPolygon* a = new CPolygon;
                 Triangle b = *triangles[i];

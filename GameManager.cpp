@@ -2,9 +2,12 @@
 #include "Engine/Input.h"
 #include "EnemySpawnCtrl.h"
 #include "NavigationAI.h"
+#include "Player.h"
+#include "Stage.h"
+#include "CollisionMap.h"
 
 GameManager::GameManager(GameObject* parent)
-	: GameObject(parent, "GameManager"), pEnemySpawnCtrl_(nullptr), pNavigationAI_(nullptr)
+	: GameObject(parent, "GameManager"), pPlayer_(nullptr), pStage_(nullptr), pEnemySpawnCtrl_(nullptr), pNavigationAI_(nullptr)
 {
 }
 
@@ -16,6 +19,12 @@ GameManager::~GameManager()
 
 void GameManager::Initialize()
 {
+	pStage_ = Instantiate<Stage>(this);
+	pPlayer_ = Instantiate<Player>(this);
+	pPlayer_->SetPosition(pStage_->GetPlayerStartPos());
+
+	Instantiate<CollisionMap>(this);
+
 	pNavigationAI_ = new NavigationAI;
 
 	pEnemySpawnCtrl_ = new EnemySpawnCtrl;

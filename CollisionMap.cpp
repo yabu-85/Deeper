@@ -8,7 +8,7 @@
 
 namespace {
     const float playerRadius = 8.0f;
-    const float boxSize = 20.0f;
+    const float boxSize = 30.0f;
     const int polySize = 3;
 
     std::vector<Triangle*> triList;
@@ -47,7 +47,7 @@ void CollisionMap::Update()
 
     //プレイヤーの位置を取得して、判定距離内に入った分割ブロックを取得
     float fBox[polySize] = { plaPos.x / boxSize, plaPos.y / boxSize, plaPos.z / boxSize };
-    int iBox[polySize] = { fBox[0], fBox[1], fBox[2] };
+    int iBox[polySize] = { (int)fBox[0], (int)fBox[1], (int)fBox[2] };
     for (int i = 0; i < polySize; i++) if (fBox[i] < 0) iBox[i] -= 1;
     for (int i = 0; i < polySize; i++) iBox[i] *= boxSize;
     XMFLOAT3 cellPos = XMFLOAT3((float)iBox[0], (float)iBox[1], (float)iBox[2]);
@@ -56,14 +56,14 @@ void CollisionMap::Update()
     if (cellPos.x != currentCellPos.x || cellPos.y != currentCellPos.y || cellPos.z != currentCellPos.z)
     {
         //ここで複数選択できるようにしたい
-        
+
         //今のcellPosの判定だとできてない
         //まずPlayerが移動したら範囲のＣｅｌｌを計算
 
         //右だったら　flagを０とかにして下のvectorの方向と円の接触判定で範囲に入っているかを調べる
         //多分フラグが４ついるからfor文でflagを設定するようにしないといけない
-        
 
+        /*
         const XMFLOAT3 vector[4] = {
                 XMFLOAT3(0.0f, 0.0f, 0.0f),                       //左下
                 XMFLOAT3(0.0f, 0.0f, 0.0f + boxSize),             //左上 
@@ -75,38 +75,7 @@ void CollisionMap::Update()
         if (plaPos.x + playerRadius > currentCellPos.x + boxSize) vecFlag[2] = true;  //右
         if (plaPos.y - playerRadius < currentCellPos.y) vecFlag[1] = true;            //下
         if (plaPos.y + playerRadius > currentCellPos.y + boxSize) vecFlag[3] = true;  //上
-
-
-
-        //てすと( Cellのリスト初期化
-        {
-            int cellSize = cells_.size();
-            for (int i = 1; i < cellSize; i++) {
-                cells_.pop_back();
-            }
-        }
-
-
-        //まずは下の判定 正常じゃない
-        if (plaPos.y - playerRadius < currentCellPos.y) {
-            XMFLOAT3 cellPosTest = XMFLOAT3(cellPos.x, cellPos.y - boxSize, cellPos.z);
-            Cell* cellTest = new Cell;
-            cellTest->SetPosLeng(cellPosTest, boxSize);
-            cellTest->ResetTriangles();
-            cells_.push_back(cellTest);
-        }
-
-        //とりあえず上の判定考えてみる
-        if (plaPos.y + playerRadius > currentCellPos.y + boxSize) {
-            XMFLOAT3 cellPosTest = XMFLOAT3(cellPos.x, cellPos.y + boxSize, cellPos.z);
-            Cell* cellTest = new Cell;
-            cellTest->SetPosLeng(cellPosTest, boxSize);
-            cellTest->ResetTriangles();
-            cells_.push_back(cellTest);
-        }
-
-
-
+        */
 
         std::string strNumber = std::to_string(cells_.size());
         OutputDebugStringA(strNumber.c_str());
@@ -136,7 +105,7 @@ void CollisionMap::Update()
                 for (int j = 0; j < polygons.size(); j++)
                     polygons[j] = XMFLOAT3(polygons[j].x + interPos.x, polygons[j].y + interPos.y, polygons[j].z + interPos.z);
 
-                int polygonsSize = polygons.size() / polySize;
+                int polygonsSize = (int)polygons.size() / polySize;
                 for (int h = 0; h < polygonsSize; h++) {
                     XMVECTOR vpoly[polySize];
                     for (int t = 0; t < polySize; t++)
@@ -174,6 +143,10 @@ void CollisionMap::Update()
         for (Cell* ce : cells_) {
             std::vector<Triangle*>& triangles = ce->GetTriangles();
             for (int i = 0; i < triangles.size(); i++) {
+            
+                //なんかデータ量多いとバグる
+               // break;
+
                 CPolygon* a = new CPolygon;
                 Triangle b = *triangles[i];
                 XMFLOAT3 poly[3] = { b.GetPosition()[0], b.GetPosition()[1], b.GetPosition()[2] };

@@ -25,8 +25,17 @@ class Stage :
     int hModel_[MAX + RMAX];
     std::vector<IntersectData> intersectDatas_; //ローポリのデータ集
 
+    enum MAP {
+        NONE = 0,
+        FLOAR,
+        MAX,
+    };
+
+    int mapSizeX_;
+    int mapSizeZ_;
     XMFLOAT3 startPos_;
-    XMFLOAT3 goalPos_;
+    std::vector<std::vector<int>> mapData_;
+    void CreatSquare(XMFLOAT3 start, int x, int z);
 
 public:
     Stage(GameObject* parent);
@@ -38,6 +47,7 @@ public:
 
     void ResetStage();
     void CreatStage();
+    XMFLOAT3 GetPlayerStartPos();
 
    std::vector<IntersectData> GetIntersectDatas() { return intersectDatas_; }; 
 

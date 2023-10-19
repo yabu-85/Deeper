@@ -10,12 +10,16 @@
 //	«
 //FX
 
+class Player;
+class Stage;
 class EnemyBase;
 class EnemySpawnCtrl;
 class NavigationAI;
 
 class GameManager : public GameObject
 {
+	Player* pPlayer_;
+	Stage* pStage_;
 	EnemySpawnCtrl* pEnemySpawnCtrl_;
 	NavigationAI* pNavigationAI_;
 

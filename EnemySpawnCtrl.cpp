@@ -17,11 +17,11 @@ int EnemySpawnCtrl::SpawnEnemy(int type)
 {
 	if (type == ENEMY_MASTERHAND) {
 		enemyList_.push_back(Instantiate<MasterHand>(pParent_));
-		return enemyList_.size() - 1;
+		return (int)enemyList_.size() - 1;
 	}
 	else if (type == ENEMY_FEET) {
 		enemyList_.push_back(Instantiate<Feet>(pParent_));
-		return enemyList_.size() - 1;
+		return (int)enemyList_.size() - 1;
 	}
 
 	return 0;

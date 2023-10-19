@@ -5,11 +5,12 @@
 
 namespace {
     bool drawCell = true;
+    const float floarSize = 5.0f;
 
 }
 
 Stage::Stage(GameObject* parent)
-    :GameObject(parent, "Stage"), startPos_(0,0,0), goalPos_(0,0,0)
+    :GameObject(parent, "Stage"), startPos_(0,0,0), mapSizeX_(0), mapSizeZ_(0)
 {
     for (int i = 0; i < MAX + RMAX; i++) hModel_[i] = -1;
 }
@@ -26,8 +27,10 @@ void Stage::Initialize()
         assert(hModel_[i] >= 0);
     }
     
-    startPos_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    goalPos_ = XMFLOAT3( 50.0f * (float)(rand() % 2 - 1) , 0.0f, 50.0f + (float)(rand() % 50));
+    mapSizeX_ = 30;
+    mapSizeZ_ = 50;
+
+    startPos_ = XMFLOAT3( (float)(rand() % mapSizeX_), 0.0f, (float)(mapSizeZ_ - 1));
 
     CreatStage();
 }
@@ -44,6 +47,7 @@ void Stage::Draw()
         int handle = intersectDatas_.at(i).hModelNum - MAX;
         Transform trans;
         trans.position_ = intersectDatas_.at(i).position;
+        if(handle == T1) trans.scale_ = XMFLOAT3(5.0f / 10.0f, 1.0f, 5.0f / 10.0f);
         Model::SetTransform(handle, trans);
         Model::Draw(handle, 0);
     }
@@ -54,6 +58,7 @@ void Stage::Draw()
             int handle = intersectDatas_.at(i).hModelNum;
             Transform trans;
             trans.position_ = intersectDatas_.at(i).position;
+            if (handle == RT1) trans.scale_ = XMFLOAT3(5.0f / 10.0f, 1.0f, 5.0f / 10.0f);
             Model::SetTransform(handle, trans);
             Model::Draw(handle, 2);
         }
@@ -82,35 +87,54 @@ void Stage::CreatStage()
 
     
     //やることー＞まずマップ生成するー＞ルートをつないでー＞その場所の影響力によって敵がスポーンされる
+
+    //マップ
+    //まずゴールまでのルートにパス引く
+    //ゴールまでのパスを導くんじゃなくて、とりあえずパスをある程度の場所まで引いて最終部屋の入口が自動的にgoalPosになる
+    
+    //マップのサイズ分の２次元配列を用意して、それをもとにパスをつなげていく
+    //まずｚが一番下か上今回は下で行くそこにスタートポジションを置いて
+    
+    //マスを配置してく
+    //１出入口の方向を計算し、空いている容量を計算して、ボックスのサイズを計算し配置・その分を２次元配列に入れてく
+    //何とかして、出口を配置するマスを計算
+
+    mapData_.resize(mapSizeZ_);
+    for (int i = 0; i < mapSizeZ_; i++)
+    {
+        mapData_[i].resize(mapSizeX_, NONE);
+    }
+
+    int StartsizeX = 5;
+    int StartsizeZ = 3;
+    XMFLOAT3 staPos = XMFLOAT3(startPos_.x, 0.0f, startPos_.z - StartsizeZ);
+    CreatSquare(staPos, StartsizeX, StartsizeZ);
+    //スタートの出口は固定でいいけど、このあとのマス目はなんかして出口マスを計算してだす
+    //
     
 
-    //なんか血迷って作ったスタートからゴールまで柱建てるやつ
-    XMVECTOR vFront{ 0,0,1,0 };
-    XMVECTOR vStart = XMLoadFloat3(&startPos_);
-    XMVECTOR vGoal = XMLoadFloat3(&goalPos_);
-    XMVECTOR vDot = XMVector3Dot(vFront, XMVector3Normalize(vStart - vGoal));
-    float angle = (float)acos(XMVectorGetX(vDot));
-    XMVECTOR vCross = XMVector3Cross(vFront, vStart - vGoal);
-    if (XMVectorGetY(vCross) < 0) {
-        angle *= -1;
+    //空白の場所は柱で埋めてみる
+    for (int z = 0; z < mapSizeZ_ -1; z++) {
+        for (int x = 0; x < mapSizeX_ -1; x++) {
+            if (mapData_[z][x] == NONE) {
+                intersectDatas_.push_back({ hModel_[MAX + RT2], XMFLOAT3(5.0f * x, 0.0f, 5.0f * z) });
+            }
+        }
     }
 
-    XMVECTOR vMove = { 0.0f, 0.0f, -XMVectorGetX(XMVector3Length(vStart - vGoal)) / 10, 0.0f };
-    XMMATRIX mRotY = XMMatrixRotationY(angle);
-    vMove = XMVector3TransformCoord(vMove, mRotY);
+}
 
-    XMVECTOR vRight = { 10, 0, 0, 0 };
-    XMVECTOR direction = XMVector3TransformNormal(vRight, mRotY);
+XMFLOAT3 Stage::GetPlayerStartPos()
+{
+    return startPos_;
+}
 
-    XMFLOAT3 dataPos1 = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    XMFLOAT3 dataPos2 = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    for (int i = 1; i <= 10; i++) {
-        XMStoreFloat3(&dataPos1, vStart + vMove * i + direction);
-        XMStoreFloat3(&dataPos2, vStart + vMove * i - direction);
-        intersectDatas_.push_back({ hModel_[MAX + RT2], dataPos1 });
-        intersectDatas_.push_back({ hModel_[MAX + RT2], dataPos2 });
+void Stage::CreatSquare(XMFLOAT3 start, int _x, int _z)
+{
+    for (int x = start.x; x < start.x + _x; x++) {
+        for (int z = start.z; z < start.z + _z; z++) {
+            intersectDatas_.push_back({ hModel_[MAX + RT1], XMFLOAT3(floarSize * (float)x , start.y, floarSize * (float)z) });
+            mapData_[z][x] = FLOAR;
+        }
     }
-    intersectDatas_.push_back({ hModel_[MAX + RT1], startPos_ });
-    intersectDatas_.push_back({ hModel_[MAX + RT1], goalPos_ });
-
 }

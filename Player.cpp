@@ -4,6 +4,8 @@
 #include "Aim.h"
 #include "GameManager.h"
 #include "EnemyBase.h"
+#include "StateManager.h"
+#include "PlayerState.h"
 
 #include "Engine/Text.h"
 
@@ -18,7 +20,7 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-    : GameObject(parent, "Player"), hModel_(-1), pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0,0,0), isAvo_(false)
+    : GameObject(parent, "Player"), hModel_(-1), pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0,0,0), isAvo_(false), pStateManager_(nullptr)
 {
     vDirection_ = XMVectorZero();
     moveSpeed_ = 0.2f;
@@ -34,6 +36,9 @@ void Player::Initialize()
     hModel_ = Model::Load("Model/PlayerTest.fbx");
     assert(hModel_ >= 0);
     //Model::SetAnimFrame(hModel_, 0, 40, 1);
+
+    pStateManager_ = new StateManager(this);
+    pStateManager_->AddState(new PlayerAvo(this));
 
     pAim_ = Instantiate<Aim>(this);
 

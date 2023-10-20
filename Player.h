@@ -2,6 +2,7 @@
 #include "Engine/GameObject.h"
 
 class Aim;
+class StateManager;
 
 class Player :
     public GameObject
@@ -12,7 +13,9 @@ class Player :
     XMFLOAT3 playerMovement_;   //今の移動量
     XMFLOAT3 moveVec_;          //移動キーの値を取得
     XMVECTOR vDirection_;       //プレイヤーの向いている方向（Vector）
+    
     Aim* pAim_;
+    StateManager* pStateManager_;
 
     void CalcMove();            //移動量計算
 

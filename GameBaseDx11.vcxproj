@@ -158,9 +158,12 @@
     <ClCompile Include="MasterHand.cpp" />
     <ClCompile Include="NavigationAI.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Triangle.cpp" />
+    <ClCompile Include="UIBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aim.h" />
@@ -196,9 +199,13 @@
     <ClInclude Include="MasterHand.h" />
     <ClInclude Include="NavigationAI.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerState.h" />
     <ClInclude Include="Stage.h" />
+    <ClInclude Include="StateBase.h" />
+    <ClInclude Include="StateManager.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Triangle.h" />
+    <ClInclude Include="UIBase.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">

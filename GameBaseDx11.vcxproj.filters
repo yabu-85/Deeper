@@ -36,6 +36,18 @@
     <Filter Include="Enemy\Enemies">
       <UniqueIdentifier>{bba5f4f1-692c-4c4d-8c84-026ee8023168}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{8b8e6f8e-5c92-4eb7-8beb-f190033fe076}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Base">
+      <UniqueIdentifier>{d7ded092-3bdb-499f-b158-284045e8ad77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="State">
+      <UniqueIdentifier>{8a662b94-36ef-44f4-8b8b-6139c1732c11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="State\Base">
+      <UniqueIdentifier>{bab4fd1d-232e-4963-bec1-cc685a8bc568}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -130,6 +142,15 @@
     <ClCompile Include="Feet.cpp">
       <Filter>Enemy\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="UIBase.cpp">
+      <Filter>UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="StateManager.cpp">
+      <Filter>State</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerState.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -223,6 +244,18 @@
     </ClInclude>
     <ClInclude Include="Feet.h">
       <Filter>Enemy\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="UIBase.h">
+      <Filter>UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="StateBase.h">
+      <Filter>State\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="StateManager.h">
+      <Filter>State</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerState.h">
+      <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

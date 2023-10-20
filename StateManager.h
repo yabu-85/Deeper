@@ -2,14 +2,14 @@
 #include <unordered_map>
 #include <string>
 
-class State;
+class StateBase;
 class GameObject;
 
 class StateManager
 {
 	// ＜ステート名、ステート＞map
-	std::unordered_map<std::string, State*> stateMap_;
-	State* currentState_;
+	std::unordered_map<std::string, StateBase*> stateMap_;
+	StateBase* currentState_;
 	GameObject* owner_;
 
 public:
@@ -20,7 +20,7 @@ public:
 	void ChangeState(const std::string& name);
 
 	// 新しいステートをmapに追加
-	void RegisterState(State* state);
+	void AddState(StateBase* state);
 	GameObject* GetActor() { return owner_; }
 	std::string GetName();
 

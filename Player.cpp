@@ -22,7 +22,6 @@ namespace {
 Player::Player(GameObject* parent)
     : GameObject(parent, "Player"), hModel_(-1), pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0,0,0), pStateManager_(nullptr)
 {
-    vDirection_ = XMVectorZero();
     moveSpeed_ = 0.2f;
 }
 
@@ -35,16 +34,16 @@ void Player::Initialize()
     //モデルデータのロード
     hModel_ = Model::Load("Model/PlayerTest.fbx");
     assert(hModel_ >= 0);
-    //Model::SetAnimFrame(hModel_, 0, 40, 1);
+    Model::SetAnimFrame(hModel_, 0, 40, 1);
 
     pStateManager_ = new StateManager(this);
-    pStateManager_->AddState(new PlayerWait(this));
-    pStateManager_->AddState(new PlayerAvo(this));
+    pStateManager_->AddState(new PlayerWait(pStateManager_));
+    pStateManager_->AddState(new PlayerWalk(pStateManager_));
+    pStateManager_->AddState(new PlayerAvo(pStateManager_));
     pStateManager_->ChangeState("Wait");
 
     pAim_ = Instantiate<Aim>(this);
     pText->Initialize();
-
 }
 
 void Player::Update()
@@ -54,12 +53,7 @@ void Player::Update()
     //エイムターゲット
     if (Input::IsKeyDown(DIK_Q)) pAim_->SetTargetEnemy();
 
-    //回避
-    if (Input::IsKeyDown(DIK_SPACE)) {
-        //true = 回避のフラグ
-        if (true) pStateManager_->ChangeState("Avo");
-    }
-
+    //デバッグ用コマンド
     if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;
     if (Input::IsKey(DIK_DOWNARROW)) transform_.position_.y -= 0.1f;
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
@@ -81,17 +75,43 @@ void Player::Release()
 {
 }
 
-void Player::Move()
+void Player::Move(float f)
 {
-    transform_.position_.x += ((playerMovement_.x * moveSpeed_));
-    transform_.position_.z += ((playerMovement_.z * moveSpeed_));
+    transform_.position_.x += ((playerMovement_.x * moveSpeed_) * f);
+    transform_.position_.z += ((playerMovement_.z * moveSpeed_) * f);
 }
 
 bool Player::IsMoveKeyPushed()
 {
     if (Input::IsKey(DIK_W) || Input::IsKey(DIK_A) || Input::IsKey(DIK_S) || Input::IsKey(DIK_D)) return true;
-
     return false;
+}
+
+bool Player::IsMoveKeyPushed(XMFLOAT3& key)
+{
+    XMFLOAT3 aimDirection = pAim_->GetAimDirection();
+    bool flag = false;
+    if (Input::IsKey(DIK_W)) {
+        key.x += aimDirection.x;
+        key.z += aimDirection.z;
+        flag = true;
+    }
+    if (Input::IsKey(DIK_A)) {
+        key.x -= aimDirection.z;
+        key.z += aimDirection.x;
+        flag = true;
+    }
+    if (Input::IsKey(DIK_S)) {
+        key.x -= aimDirection.x;
+        key.z -= aimDirection.z;
+        flag = true;
+    }
+    if (Input::IsKey(DIK_D)) {
+        key.x += aimDirection.z;
+        key.z -= aimDirection.x;
+        flag = true;
+    }
+    return flag;
 }
 
 bool Player::IsMove()
@@ -101,32 +121,10 @@ bool Player::IsMove()
 
 void Player::CalcMove()
 {
-    XMFLOAT3 fMove = { 0,0,0 };
-    XMFLOAT3 aimDirection = pAim_->GetAimDirection();
-    moveVec_ = { 0,0,0 };
+    //fMoveの値を取る＆ graduallyを設定
     gradually = stopGradually;
-
-    // PlayerクラスのMove関数内の一部
-    if (Input::IsKey(DIK_W)) {
-        fMove.x += aimDirection.x;
-        fMove.z += aimDirection.z;
-        gradually = moveGradually;
-    }
-    if (Input::IsKey(DIK_A)) {
-        fMove.x -= aimDirection.z;
-        fMove.z += aimDirection.x;
-        gradually = moveGradually;
-    }
-    if (Input::IsKey(DIK_S)) {
-        fMove.x -= aimDirection.x;
-        fMove.z -= aimDirection.z;
-        gradually = moveGradually;
-    }
-    if (Input::IsKey(DIK_D)) {
-        fMove.x += aimDirection.z;
-        fMove.z -= aimDirection.x;
-        gradually = moveGradually;
-    }
+    XMFLOAT3 fMove = { 0,0,0 };
+    if (IsMoveKeyPushed(fMove)) gradually = moveGradually;
 
     XMVECTOR vMove = XMLoadFloat3(&fMove);
     vMove = XMVector3Normalize(vMove);
@@ -136,16 +134,22 @@ void Player::CalcMove()
     fMove = { ((fMove.x - playerMovement_.x) * gradually) , 0.0f , ((fMove.z - playerMovement_.z) * gradually) };
     playerMovement_ = { playerMovement_.x + fMove.x , 0.0f , playerMovement_.z + fMove.z };
 
-    float currentSpeed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerMovement_)));
-
     //MaxSpeed超えていたら正規化・MaxSpeedの値にする
+    float currentSpeed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerMovement_)));
     if (currentSpeed > maxMoveSpeed) {
         XMVECTOR vMove;
         vMove = XMLoadFloat3(&playerMovement_);
         vMove = XMVector3Normalize(vMove);
         vMove *= maxMoveSpeed;
-
         XMStoreFloat3(&playerMovement_, vMove);
     }
+}
 
+void Player::CalcNoMove()
+{
+    XMFLOAT3 fMove = { 0,0,0 };
+    gradually = stopGradually;
+    moveVec_ = fMove;
+    fMove = { ((fMove.x - playerMovement_.x) * gradually) , 0.0f , ((fMove.z - playerMovement_.z) * gradually) };
+    playerMovement_ = { playerMovement_.x + fMove.x , 0.0f , playerMovement_.z + fMove.z };
 }

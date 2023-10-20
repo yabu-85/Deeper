@@ -8,27 +8,12 @@ StateManager::StateManager(GameObject* owner)
 
 StateManager::~StateManager()
 {
-    for (auto& mp : stateMap_)
-    {
-        delete mp.second;
-    }
 }
 
 void StateManager::Update()
 {
     if (currentState_) {
         currentState_->Update();
-    }
-
-
-    return;
-
-    //unordered_mapのすべてのデータにアクセス
-    for (auto& pair : stateMap_) {
-        StateBase* state = pair.second;
-        if (state) {
-            state->Update();
-        }
     }
 
 }

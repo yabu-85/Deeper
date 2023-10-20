@@ -143,7 +143,7 @@ void CollisionMap::Update()
             for (int i = 0; i < triangles.size(); i++) {
             
                 //なんかデータ量多いとバグる
-                //break;
+                break;
 
                 CPolygon* a = new CPolygon;
                 Triangle b = *triangles[i];

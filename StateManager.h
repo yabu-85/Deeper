@@ -21,7 +21,7 @@ public:
 
 	// 新しいステートをmapに追加
 	void AddState(StateBase* state);
-	GameObject* GetActor() { return owner_; }
+	GameObject* GetGameObject() { return owner_; }
 	std::string GetName();
 
 };

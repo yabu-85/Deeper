@@ -4,14 +4,12 @@
 
 enum StageNum {
     T1 = 0,
-    T1R,
     T2,
     MAX,
 };
 
 enum RayStageNum {
     RT1 = 0,
-    RT1R,
     RT2,
     RMAX,
 };

@@ -24,7 +24,7 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-    std::string fileName[] = { "StageT1", "StageT1R", "StageT2", "RayStageT1", "RayStageT1", "RayStageT2" };
+    std::string fileName[] = { "StageT1", "StageT2", "RayStageT1", "RayStageT2" };
     for (int i = 0; i < MAX + RMAX; i++) {
         hModel_[i] = Model::Load("Model/Stage/" + fileName[i] + ".fbx");
         assert(hModel_[i] >= 0);

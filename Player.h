@@ -16,7 +16,6 @@ class Player :
     Aim* pAim_;
     StateManager* pStateManager_;
 
-    void CalcMove();            //ˆÚ“®—ÊŒvŽZ
 
 public:
     Player(GameObject* parent);
@@ -25,6 +24,9 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
+
+    void Move();
+    void CalcMove();
 
     bool IsMoveKeyPushed();
     bool IsMove();

@@ -1,11 +1,37 @@
 #include "PlayerState.h"
 #include "Player.h"
 
-PlayerAvo::PlayerAvo(GameObject* owner)
-	: StateBase(owner)
+void PlayerWait::OnEnter()
 {
-	owner_ = owner;
 }
+
+void PlayerWait::Update()
+{
+	Player* pPlayer = static_cast<Player*>(owner_);
+
+	//キー入力でステート切り替え
+	if (pPlayer->IsMoveKeyPushed())
+	{
+		//mOwnerCompo->ChangeState("Walk");
+		return;
+	}
+
+}
+
+//------------------------------------------------------------
+
+void PlayerWalk::OnEnter()
+{
+}
+
+void PlayerWalk::Update()
+{
+	Player* pPlayer = static_cast<Player*>(owner_);
+	pPlayer->CalcMove();
+	pPlayer->Move();
+}
+
+//------------------------------------------------------------
 
 void PlayerAvo::Update()
 {

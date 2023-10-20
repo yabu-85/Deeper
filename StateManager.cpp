@@ -8,14 +8,24 @@ StateManager::StateManager(GameObject* owner)
 
 StateManager::~StateManager()
 {
+    for (auto& mp : stateMap_)
+    {
+        delete mp.second;
+    }
 }
 
 void StateManager::Update()
 {
-    for (auto& pair : stateMap_) {
-        const std::string& stateName = pair.first;
-        StateBase* state = pair.second;
+    if (currentState_) {
+        currentState_->Update();
+    }
 
+
+    return;
+
+    //unordered_mapのすべてのデータにアクセス
+    for (auto& pair : stateMap_) {
+        StateBase* state = pair.second;
         if (state) {
             state->Update();
         }
@@ -25,6 +35,25 @@ void StateManager::Update()
 
 void StateManager::ChangeState(const std::string& name)
 {
+	// 現在のステートから出る
+	if (currentState_)
+	{
+		currentState_->OnExit();
+	}
+
+	// mapから新しいステートを探す
+	auto iter = stateMap_.find(name);
+	if (iter != stateMap_.end())
+	{
+		currentState_ = iter->second;
+		// 新しい状態に入る
+		currentState_->OnEnter();
+	}
+	else
+	{
+		currentState_ = nullptr;
+	}
+
 }
 
 void StateManager::AddState(StateBase* state)
@@ -34,5 +63,5 @@ void StateManager::AddState(StateBase* state)
 
 std::string StateManager::GetName()
 {
-	return std::string();
+	return currentState_->GetName();
 }

@@ -11,7 +11,7 @@ class StateManager
 	std::unordered_map<std::string, StateBase*> stateMap_;
 	StateBase* currentState_;
 	GameObject* owner_;
-
+	
 public:
 	StateManager(GameObject* owner);
 	~StateManager();

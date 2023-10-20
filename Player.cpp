@@ -38,10 +38,11 @@ void Player::Initialize()
     //Model::SetAnimFrame(hModel_, 0, 40, 1);
 
     pStateManager_ = new StateManager(this);
+    pStateManager_->AddState(new PlayerWait(this));
     pStateManager_->AddState(new PlayerAvo(this));
+    pStateManager_->ChangeState("Wait");
 
     pAim_ = Instantiate<Aim>(this);
-
     pText->Initialize();
 
 }
@@ -53,23 +54,11 @@ void Player::Update()
     //エイムターゲット
     if (Input::IsKeyDown(DIK_Q)) pAim_->SetTargetEnemy();
 
-    //回避作ってく
+    //回避
     if (Input::IsKeyDown(DIK_SPACE)) {
-        if (IsMoveKeyPushed()) {
-
-        }
-        else {
-
-        }
-
+        //true = 回避のフラグ
+        if (true) pStateManager_->ChangeState("Avo");
     }
-
-    CalcMove();         //移動量計算
-
-    transform_.position_.x += ((playerMovement_.x * moveSpeed_));
-    transform_.position_.z += ((playerMovement_.z * moveSpeed_));
-
-
 
     if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;
     if (Input::IsKey(DIK_DOWNARROW)) transform_.position_.y -= 0.1f;
@@ -90,6 +79,12 @@ void Player::Draw()
 
 void Player::Release()
 {
+}
+
+void Player::Move()
+{
+    transform_.position_.x += ((playerMovement_.x * moveSpeed_));
+    transform_.position_.z += ((playerMovement_.z * moveSpeed_));
 }
 
 bool Player::IsMoveKeyPushed()

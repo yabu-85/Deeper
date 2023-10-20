@@ -128,7 +128,6 @@
     <ClCompile Include="Aim.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CollisionMap.cpp" />
-    <ClCompile Include="EnemyBase.cpp" />
     <ClCompile Include="EnemySpawnCtrl.cpp" />
     <ClCompile Include="Engine\Audio.cpp" />
     <ClCompile Include="Engine\BillBoard.cpp" />

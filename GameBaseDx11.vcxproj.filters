@@ -127,9 +127,6 @@
     <ClCompile Include="CollisionMap.cpp" />
     <ClCompile Include="NavigationAI.cpp" />
     <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="EnemyBase.cpp">
-      <Filter>Enemy\EnemyBase</Filter>
-    </ClCompile>
     <ClCompile Include="MasterHand.cpp">
       <Filter>Enemy\Enemies</Filter>
     </ClCompile>

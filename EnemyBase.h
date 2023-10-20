@@ -7,7 +7,8 @@ class EnemyBase : public GameObject
 protected:
 
 public:
-    EnemyBase(GameObject* parent);
+    EnemyBase(GameObject* parent) : GameObject(parent) {};
+
     virtual ~EnemyBase() = 0;
     virtual void Initialize() override = 0;
     virtual void Update() override = 0;

@@ -12,6 +12,15 @@ StateManager::~StateManager()
 
 void StateManager::Update()
 {
+    for (auto& pair : stateMap_) {
+        const std::string& stateName = pair.first;
+        StateBase* state = pair.second;
+
+        if (state) {
+            state->Update();
+        }
+    }
+
 }
 
 void StateManager::ChangeState(const std::string& name)

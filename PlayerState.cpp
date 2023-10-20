@@ -10,7 +10,8 @@ PlayerAvo::PlayerAvo(GameObject* owner)
 void PlayerAvo::Update()
 {
 	Player* pPlayer = static_cast<Player*>(owner_);
-	pPlayer->SetRotateY(pPlayer->GetRotate().x + 10.0f);
+	pPlayer->SetRotateY(pPlayer->GetRotate().y + 10.0f);
+
 }
 
 void PlayerAvo::OnEnter()

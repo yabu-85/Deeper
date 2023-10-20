@@ -20,7 +20,7 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-    : GameObject(parent, "Player"), hModel_(-1), pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0,0,0), isAvo_(false), pStateManager_(nullptr)
+    : GameObject(parent, "Player"), hModel_(-1), pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0,0,0), pStateManager_(nullptr)
 {
     vDirection_ = XMVectorZero();
     moveSpeed_ = 0.2f;
@@ -48,21 +48,19 @@ void Player::Initialize()
 
 void Player::Update()
 {
+    pStateManager_->Update();
+
     //エイムターゲット
     if (Input::IsKeyDown(DIK_Q)) pAim_->SetTargetEnemy();
 
     //回避作ってく
     if (Input::IsKeyDown(DIK_SPACE)) {
-        isAvo_ = true;
         if (IsMoveKeyPushed()) {
 
         }
         else {
 
         }
-
-    }
-    if (isAvo_) {
 
     }
 

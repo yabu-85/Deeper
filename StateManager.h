@@ -16,6 +16,7 @@ public:
 	StateManager(GameObject* owner);
 	~StateManager();
 
+	void Initialize();
 	void Update();
 	void ChangeState(const std::string& name);
 

@@ -4,66 +4,82 @@
 #include "Engine/Input.h"
 
 namespace {
-	const int avoTime = 5;
-	const float avoSpeed = 3.0f;
+	const int defAvoTime = 30;
+	const float defAvoSpeed = 2.0f;
 }
 
 void PlayerWait::Update()
 {
-	Player* pPlayer = static_cast<Player*>(owner_->GetGameObject());
-	pPlayer->CalcNoMove();
-	pPlayer->Move();
-
 	//キー入力でステート切り替え
-	if (pPlayer->IsMoveKeyPushed())
-	{
+	if (pPlayer_->IsMoveKeyPushed()) {
 		owner_->ChangeState("Walk");
+		return;
 	}
 	if (Input::IsKeyDown(DIK_SPACE)) {
 		owner_->ChangeState("Avo");
+		return;
 	}
+
+	pPlayer_->CalcNoMove();
+	pPlayer_->Move();
+}
+
+void PlayerWait::Initialize()
+{
+	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
 
 //------------------------------------------------------------
 
 void PlayerWalk::Update()
 {
-	Player* pPlayer = static_cast<Player*>(owner_->GetGameObject());
-	pPlayer->CalcMove();
-	pPlayer->Move();
+	pPlayer_->CalcMove();
+	pPlayer_->Move();
 
-	if (!pPlayer->IsMoveKeyPushed())
-	{
+	if (!pPlayer_->IsMoveKeyPushed()) {
 		owner_->ChangeState("Wait");
+		return;
 	}
 	if (Input::IsKeyDown(DIK_SPACE)) {
 		owner_->ChangeState("Avo");
+		return;
 	}
+}
 
+void PlayerWalk::Initialize()
+{
+	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
 
 //------------------------------------------------------------
 
 void PlayerAvo::Update()
 {
-	Player* pPlayer = static_cast<Player*>(owner_->GetGameObject());
-	pPlayer->Move(avoSpeed);
-
 	avoTime_--;
-	if(avoTime_ <= 0) owner_->ChangeState("Wait");
+	if (avoTime_ <= 0) {
+		owner_->ChangeState("Wait");
+		return;
+	}
 
+	const float endValue = 0.1f; //１．０～この値ガとれるようにする
+	float t = (float)avoTime_ / (float)defAvoTime;
+	float value = endValue + ((1.0f - endValue) * t);
+	pPlayer_->Move(value * defAvoSpeed);
 }
 
 void PlayerAvo::OnEnter()
 {
-	Player* pPlayer = static_cast<Player*>(owner_->GetGameObject());
-	if (pPlayer->IsMoveKeyPushed()) {
-		pPlayer->CalcMove();
-	}
-	else {
-		//移動キー押してない場合は向いている方向にする
+	pPlayer_->InitAvo();
+	
+	avoTime_ = defAvoTime;
+}
 
-	}
+void PlayerAvo::OnExit()
+{
+	pPlayer_->ResetMovement();
+}
 
-	avoTime_ = avoTime;
+void PlayerAvo::Initialize()
+{
+	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }

@@ -126,7 +126,6 @@ void CollisionMap::Update()
             triList.insert(triList.end(), triangles.begin(), triangles.end());
         }
 
-        strNumber;
         strNumber = std::to_string(triList.size());
         OutputDebugStringA(strNumber.c_str());
         OutputDebugString("\n");
@@ -143,7 +142,7 @@ void CollisionMap::Update()
             for (int i = 0; i < triangles.size(); i++) {
             
                 //なんかデータ量多いとバグる
-                break;
+                //break;
 
                 CPolygon* a = new CPolygon;
                 Triangle b = *triangles[i];

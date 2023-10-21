@@ -165,8 +165,8 @@ void CPolygon::InitVertexData(XMFLOAT3& ver1, XMFLOAT3& ver2, XMFLOAT3& ver3)
 	vertices_ =
 	{
 		{ XMVectorSet(ver1.x, ver1.y, ver1.z, 0.0f), XMVectorSet(0.0f,  0.0f, 0.0f, 0.0f) },   // 四角形の頂点（左上）0
-		{ XMVectorSet(ver2.x, ver2.y, ver2.z, 0.0f), XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f) },   // 四角形の頂点（右上）1
-		{ XMVectorSet(ver3.x, ver3.y, ver3.z, 0.0f), XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f) },   // 四角形の頂点（右下）2
+		{ XMVectorSet(ver2.x, ver2.y, ver2.z, 0.0f), XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },   // 四角形の頂点（右上）1
+		{ XMVectorSet(ver3.x, ver3.y, ver3.z, 0.0f), XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },   // 四角形の頂点（右下）2
 	};
 
 	vertexNum_ = (int)vertices_.size();
@@ -201,7 +201,7 @@ HRESULT CPolygon::CreateVertexBuffer(XMFLOAT3& ver1, XMFLOAT3& ver2, XMFLOAT3& v
 void CPolygon::InitIndexData()
 {
 	//インデックス情報
-	index_ = { 0,1,2, 0,2,1 };
+	index_ = { 0,1,2 };
 
 	indexNum_ = sizeof(index_);
 }

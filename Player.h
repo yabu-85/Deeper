@@ -27,11 +27,16 @@ public:
     void CalcMove();                //Inputを考慮したやつ
     void CalcNoMove();              //Input考慮してない、滑るやつとかの計算用
 
+    void InitAvo();
+
     bool IsMoveKeyPushed();                 //boolだけ
     bool IsMoveKeyPushed(XMFLOAT3& key);    //向いている角度を考慮した値
     bool IsMove();                          //移動量が少しでも入ってればtrue
 
-    XMVECTOR GetMoveVec() { return XMLoadFloat3(&moveVec_); };
+    XMVECTOR GetMoveVec() { return XMLoadFloat3(&moveVec_); };  //移動方向（正規化済み
+    XMVECTOR GetDirectionVec();                                 //向いている方向（正規化済み
+
+    void ResetMovement() { playerMovement_ = XMFLOAT3(0.0f, 0.0f, 0.0f); };
 
 };
 

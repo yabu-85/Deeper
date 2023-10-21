@@ -10,6 +10,17 @@ StateManager::~StateManager()
 {
 }
 
+void StateManager::Initialize()
+{
+	for (auto& data : stateMap_) {
+		StateBase* state = data.second;
+
+		if (state) {
+			state->Initialize();
+		}
+	}
+}
+
 void StateManager::Update()
 {
     if (currentState_) {

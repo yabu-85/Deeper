@@ -30,7 +30,6 @@ void GameManager::Initialize()
 	pEnemySpawnCtrl_ = new EnemySpawnCtrl;
 	pEnemySpawnCtrl_->Initialize(this);
 
-
 }
 
 void GameManager::Update()

@@ -21,8 +21,8 @@ namespace {
 
     const float numSupress = 0.002f;        //マウス移動でOffsetの値を戻す量
     const float maxCameraOffset = 2.0f;     //cameraOffsetの最大距離
-    const float moveAimTime = 0.035f;        //動く時の抑制の値
-    const float stopAimTime = 0.03f;        //止まる時の抑制の値
+    const float moveAimTime = 0.04f;        //動く時の抑制の値
+    const float stopAimTime = 0.035f;        //止まる時の抑制の値
 
     const float targetRange = 30.0f;        //ターゲットの有効範囲
     const float fovRadian = XMConvertToRadians(60) / 2;

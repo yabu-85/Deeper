@@ -25,7 +25,8 @@ void Feet::Initialize()
 	assert(hModel_ >= 0);
 
 	transform_.rotate_.y = -90;
-	transform_.position_ = XMFLOAT3((float)(rand() % 10), 0.0f, (float)(rand() % 10));
+	transform_.position_ = XMFLOAT3(50.0f, 0.0f, 50.0f);
+	targetPos_ = XMFLOAT3(50.0f, 0.0f, 50.0f);
 
 	GameManager* pGameManager = (GameManager*)FindObject("GameManager");
 	pNavigationAI_ = pGameManager->GetNavigationAI();

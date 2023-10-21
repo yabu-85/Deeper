@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include <vector>
+#include "Engine/Fbx.h"
 
 class Triangle;
 class Cell;
@@ -17,7 +18,6 @@ public:
     void Draw() override;
     void Release() override;
 
-    std::vector<Triangle*>& GetCellInTriangle();
-
+    float GetRayCastMinDist(RayCastData* _data); //“–‚½‚ç‚È‚©‚Á‚½ê‡minMaxRang(10000000)‚ª•Ô‚Á‚Ä‚­‚é
 };
 

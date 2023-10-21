@@ -18,7 +18,6 @@ namespace {
 
     CellBox* pBox;
     std::vector<CPolygon*> polyList;
-
 }
 
 CollisionMap::CollisionMap(GameObject* parent)
@@ -57,25 +56,6 @@ void CollisionMap::Update()
     {
         //ここで複数選択できるようにしたい
 
-        //今のcellPosの判定だとできてない
-        //まずPlayerが移動したら範囲のＣｅｌｌを計算
-
-        //右だったら　flagを０とかにして下のvectorの方向と円の接触判定で範囲に入っているかを調べる
-        //多分フラグが４ついるからfor文でflagを設定するようにしないといけない
-
-        /*
-        const XMFLOAT3 vector[4] = {
-                XMFLOAT3(0.0f, 0.0f, 0.0f),                       //左下
-                XMFLOAT3(0.0f, 0.0f, 0.0f + boxSize),             //左上 
-                XMFLOAT3(0.0f + boxSize, 0.0f, 0.0f),             //右下
-                XMFLOAT3(0.0f + boxSize, 0.0f, 0.0f + boxSize) }; //右上
-
-        bool vecFlag[4] = { false, false, false, false };
-        if (plaPos.x - playerRadius < currentCellPos.x) vecFlag[0] = true;            //左
-        if (plaPos.x + playerRadius > currentCellPos.x + boxSize) vecFlag[2] = true;  //右
-        if (plaPos.y - playerRadius < currentCellPos.y) vecFlag[1] = true;            //下
-        if (plaPos.y + playerRadius > currentCellPos.y + boxSize) vecFlag[3] = true;  //上
-        */
 
         std::string strNumber = std::to_string(cells_.size());
         OutputDebugStringA(strNumber.c_str());
@@ -136,14 +116,13 @@ void CollisionMap::Update()
             delete e;
         }polyList.clear();
 
+        //なんかデータ量多いとバグる
+        return;
+
         //Cell内のポリゴン作成メモリリーク起きてる気もする
         for (Cell* ce : cells_) {
             std::vector<Triangle*>& triangles = ce->GetTriangles();
             for (int i = 0; i < triangles.size(); i++) {
-            
-                //なんかデータ量多いとバグる
-                //break;
-
                 CPolygon* a = new CPolygon;
                 Triangle b = *triangles[i];
                 XMFLOAT3 poly[3] = { b.GetPosition()[0], b.GetPosition()[1], b.GetPosition()[2] };
@@ -168,7 +147,24 @@ void CollisionMap::Release()
 {
 }
 
-std::vector<Triangle*>& CollisionMap::GetCellInTriangle()
+float CollisionMap::GetRayCastMinDist(RayCastData* _data)
 {
-    return triList;
+    RayCastData data;
+    const float minRangeMax = 100000000;
+    float minRange = minRangeMax;
+    for (int i = 0; i < (int)triList.size(); i++) {
+        data.start = _data->start;
+        data.dir = _data->dir;
+
+        Triangle tri = *triList.at(i);
+        tri.RayCast(&data, tri);
+
+        //レイ当たった・判定距離内だったら
+        if (data.hit && minRange > data.dist )
+        {
+            minRange = data.dist;
+        }
+    }
+
+    return minRange;
 }

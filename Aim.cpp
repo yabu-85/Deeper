@@ -240,38 +240,18 @@ void Aim::RayCastStage(XMFLOAT3 _start)
     CollisionMap* pCollisionMap = (CollisionMap*)FindObject("CollisionMap");
     if (pCollisionMap == nullptr) return;
 
-    int dataSize = 0;
-    std::vector<Triangle*> datas = pCollisionMap->GetCellInTriangle();
-    dataSize = (int)datas.size();
-
     RayCastData data;
     XMFLOAT3 start = _start;
     XMFLOAT3 dir = XMFLOAT3(cameraPos_.x - start.x, cameraPos_.y - start.y, cameraPos_.z - start.z);
     XMVECTOR vDir = XMLoadFloat3(&dir);
     vDir = XMVector3Normalize(vDir);
     XMStoreFloat3(&dir, vDir);
-    
-    const float minRangeMax = 100000000;
-    float minRange = minRangeMax;
-    for (int i = 0; i < dataSize; i++) {
-        data.start = start;
-        data.dir = dir;
+    data.start = start;
+    data.dir = dir;
+    float min = pCollisionMap->GetRayCastMinDist(&data);
 
-        Triangle tri = *datas.at(i);
-        tri.RayCast(&data, tri);
-
-        //レイ当たった・判定距離内だったら
-        if (data.hit && data.dist < (defPerspectDistance + heightRay))
-        {
-            //最小より小さければ上書き
-            float range = data.dist - heightRay;
-            if(minRange > range) minRange = range;
-        }
-    }
-
-    //当たったらMinRange、当たらなければデフォルト
-    if (minRange < minRangeMax) perspectiveDistance_ = minRange;
+    //レイ当たった・判定距離内だったら
+    if (min < (defPerspectDistance + heightRay)) 
+        perspectiveDistance_ = min - heightRay;
     else perspectiveDistance_ = defPerspectDistance;
-
-    return;
 }

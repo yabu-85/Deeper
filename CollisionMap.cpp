@@ -54,9 +54,6 @@ void CollisionMap::Update()
 
     if (cellPos.x != currentCellPos.x || cellPos.y != currentCellPos.y || cellPos.z != currentCellPos.z)
     {
-        //ここで複数選択できるようにしたい
-
-
         std::string strNumber = std::to_string(cells_.size());
         OutputDebugStringA(strNumber.c_str());
         OutputDebugString(" : ");
@@ -67,7 +64,6 @@ void CollisionMap::Update()
         pBox->SetScale(XMFLOAT3(boxSize, boxSize, boxSize));
 
         std::vector<IntersectData> inteDatas = pStage->GetIntersectDatas();
-        //これfor回す前に遠いやつはリストから削除した方がええかもしれん
         //Cell変わるごとに計算するのもどうかと思うから、のちのち何とかして
 
         //Blockの範囲内のポリゴンを取得したい
@@ -116,10 +112,9 @@ void CollisionMap::Update()
             delete e;
         }polyList.clear();
 
-        //なんかデータ量多いとバグる
-        return;
 
-        //Cell内のポリゴン作成メモリリーク起きてる気もする
+        //Triangle表示：なんかたまにバグる
+        return;
         for (Cell* ce : cells_) {
             std::vector<Triangle*>& triangles = ce->GetTriangles();
             for (int i = 0; i < triangles.size(); i++) {

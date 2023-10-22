@@ -36,7 +36,7 @@ HRESULT Fbx::Load(std::string fileName)
 	fbxImporter->Import(pFbxScene_);
 	fbxImporter->Destroy();
 
-	// アニメーションのタイムモードの取得
+	// アニメーションのタイムモードの取得(フレームレートとかの（60fps)）
 	_frameRate = pFbxScene_->GetGlobalSettings().GetTimeMode();
 
 
@@ -49,8 +49,10 @@ HRESULT Fbx::Load(std::string fileName)
 	_splitpath_s(fileName.c_str(), nullptr, 0, dir, MAX_PATH, nullptr, 0, nullptr, 0);
 	SetCurrentDirectory(dir);
 
-
-
+	//FbxSceneオブジェクト->このオブジェクトの中にFBXファイルのすべての情報が格納されています。
+	//FBXは情報の巨大なツリー構造になっています。そのツリーは基本すべて「FbxNode」というノードが基本となっています
+	//巨大なツリーのトップは「ルートノード」と呼ばれます。そこの下にあらゆる情報がぶら下がっています
+	
 	//ルートノードを取得して
 	FbxNode* rootNode = pFbxScene_->GetRootNode();
 
@@ -61,9 +63,14 @@ HRESULT Fbx::Load(std::string fileName)
 	for (int i = 0; childCount > i; i++)
 	{
 		CheckNode(rootNode->GetChild(i), &parts_);
+	
 	}
 
-
+	for (int i = 0; i < childCount; ++i) {
+		std::string strNumber = rootNode->GetChild(i)->GetName();
+		OutputDebugStringA(strNumber.c_str());
+		OutputDebugString("\n");
+	}
 
 	//カレントディレクトリを元の位置に戻す
 	SetCurrentDirectory(defaultCurrentDir);
@@ -74,6 +81,7 @@ HRESULT Fbx::Load(std::string fileName)
 void Fbx::CheckNode(FbxNode * pNode, std::vector<FbxParts*>* pPartsList)
 {
 	//そのノードにはメッシュ情報が入っているだろうか？
+	//FbxNodeAttribute = これはそのノードが具体的にどういう情報を持っているかを表すオブジェクト（クラスの定義を見れば分かるよ
 	FbxNodeAttribute* attr = pNode->GetNodeAttribute();
 	if (attr != nullptr && attr->GetAttributeType() == FbxNodeAttribute::eMesh)
 	{

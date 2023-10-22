@@ -7,7 +7,7 @@ class StateManager;
 class Player :
     public GameObject
 {
-    int hModel_;
+    int hModel_[2];
     float moveSpeed_;           //移動スピード
     XMFLOAT3 playerMovement_;   //今の移動量
     XMFLOAT3 moveVec_;          //移動キーの値を取得

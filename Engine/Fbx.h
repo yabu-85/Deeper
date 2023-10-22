@@ -34,10 +34,15 @@ class Fbx
 	//モデルの各パーツ（複数あるかも）
 	std::vector<FbxParts*>	parts_;
 
-	//FBXファイルを扱う機能の本体
+	//FBXファイルを扱う機能の本体（FbxImportやFbxSceneを作成するために必要な管理クラスです。
 	FbxManager* pFbxManager_;
 
+	//FbxImporter
+	//FbxファイルをImportするためのパーサークラスです。
+	//ファイルの持つデータをメッシュやカメラなどの情報に分解してくれます。
+
 	//FBXファイルのシーン（Mayaで作ったすべての物体）を扱う
+	//Importerによって、分解されたFbxのデータを保存するためのクラスです。
 	FbxScene*	pFbxScene_;
 
 

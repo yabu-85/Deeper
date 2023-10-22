@@ -18,10 +18,11 @@ namespace {
     Text* pText = new Text;
     XMFLOAT3 prePos = XMFLOAT3(0.0f, 0.0f, 0.0f);
     
+    float rotateTime = 0.0f;
 }
 
 Player::Player(GameObject* parent)
-    : GameObject(parent, "Player"), hModel_(-1), pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0,0,0), pStateManager_(nullptr)
+    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr)
 {
     moveSpeed_ = 0.2f;
 }
@@ -33,9 +34,14 @@ Player::~Player()
 void Player::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("Model/PlayerTest.fbx");
-    assert(hModel_ >= 0);
-    Model::SetAnimFrame(hModel_, 0, 40, 1);
+    hModel_[0] = Model::Load("Model/FiterTest2Up.fbx");
+    assert(hModel_[0] >= 0);
+    //Model::SetAnimFrame(hModel_[0], 0, 80, 1);
+
+    hModel_[1] = Model::Load("Model/FiterTest2Down.fbx");
+    assert(hModel_[1] >= 0);
+    Model::SetAnimFrame(hModel_[1], 0, 160, 1);
+
     transform_.rotate_.y += 180.0f;
 
     pStateManager_ = new StateManager(this);
@@ -65,8 +71,23 @@ void Player::Update()
 
 void Player::Draw()
 {
-    Model::SetTransform(hModel_, transform_);
-    Model::Draw(hModel_);
+    transform_.rotate_.y = pAim_->GetRotate().y + 180.0f;
+    
+    Model::SetTransform(hModel_[0], transform_);
+    Model::Draw(hModel_[0]);
+
+    XMVECTOR moveVec = XMLoadFloat3(&playerMovement_);
+    XMVECTOR vFront{ 0,0,1,0 };
+    XMVECTOR vDot = XMVector3Dot(vFront, moveVec);
+    float dot = XMVectorGetX(vDot);
+    float angle = (float)acos(dot);
+    XMVECTOR vCross = XMVector3Cross(vFront, moveVec);
+    if (XMVectorGetY(vCross) < 0) {
+        angle *= -1;
+    }
+    transform_.rotate_.y = XMConvertToDegrees(angle);
+    Model::SetTransform(hModel_[1], transform_);
+    Model::Draw(hModel_[1]);
 
     pText->Draw(30, 30, (int)transform_.position_.x);
     pText->Draw(30, 70, (int)transform_.position_.y);

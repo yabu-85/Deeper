@@ -18,6 +18,6 @@ public:
     void Draw() override;
     void Release() override;
 
-    float GetRayCastMinDist(RayCastData* _data); //“–‚½‚ç‚È‚©‚Á‚½ê‡minMaxRang(10000000)‚ª•Ô‚Á‚Ä‚­‚é
+    float GetRayCastMinDist(RayCastData* _data); //“–‚½‚ç‚È‚©‚Á‚½ê‡minMaxRang(100000000)‚ª•Ô‚Á‚Ä‚­‚é
 };
 

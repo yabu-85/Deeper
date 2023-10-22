@@ -24,7 +24,7 @@ namespace {
 Player::Player(GameObject* parent)
     : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr)
 {
-    moveSpeed_ = 0.2f;
+    moveSpeed_ = 0.1f;
 }
 
 Player::~Player()

@@ -126,6 +126,28 @@ XMFLOAT3 Fbx::GetBonePosition(std::string boneName)
 	return position;
 }
 
+void Fbx::Draw(Transform& transform, int frame1, int frame2, float blendFactor)
+{
+	Direct3D::SetBlendMode(Direct3D::BLEND_DEFAULT);
+	Direct3D::SetShader(Direct3D::SHADER_3D);
+
+	//パーツを1個ずつ描画
+	for (int k = 0; k < parts_.size(); k++)
+	{
+		// その瞬間の自分の姿勢行列を得る
+
+		FbxTime time1, time2;
+		time1.SetTime(0, 0, 0, frame1, 0, 0, _frameRate);
+		time2.SetTime(0, 0, 0, frame2, 0, 0, _frameRate);
+
+		//スキンアニメーション（ボーン有り）の場合
+		if (parts_[k]->GetSkinInfo() != nullptr)
+		{
+			parts_[k]->DrawBlendedSkinAnime(transform, time1, time2, blendFactor);
+		}
+	}
+}
+
 void Fbx::Draw(Transform& transform, int type, int frame)
 {
 	Direct3D::SetBlendMode(Direct3D::BLEND_DEFAULT);

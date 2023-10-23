@@ -132,6 +132,11 @@ namespace Model
 		_datas.clear();
 	}
 
+	//アニメーションのフレーム数をセット
+	void SetBlendingAnimFrame(int handle, int startFrame1, int endFrame1, int startFrame2, int endFrame2, float animSpeed, float blendWeight)
+	{
+		_datas[handle]->SetBlendingAnimFrame(startFrame1, endFrame1, startFrame2, endFrame2, animSpeed, blendWeight);
+	}
 
 	//アニメーションのフレーム数をセット
 	void SetAnimFrame(int handle, int startFrame, int endFrame, float animSpeed)

@@ -78,7 +78,7 @@ public:
 
 	//描画
 	//引数：World	ワールド行列
-	void    Draw(Transform& transform, int frame1, int frame2, float blendFactor);
+	void    Draw(Transform& transform, int type, int frame1, int frame2, float blendFactor);
 
 	//描画
 	//引数：World	ワールド行列

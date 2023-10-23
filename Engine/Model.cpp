@@ -83,6 +83,11 @@ namespace Model
 
 		if (_datas[handle]->pFbx)
 		{
+			if (_datas[handle]->isBlending) {
+				_datas[handle]->pFbx->Draw(_datas[handle]->transform, type, (int)_datas[handle]->nowFrame, (int)_datas[handle]->blendNowFrame, _datas[handle]->blendWeight);
+				return;
+			}
+
 			_datas[handle]->pFbx->Draw(_datas[handle]->transform, type, (int)_datas[handle]->nowFrame);
 		}
 	}

@@ -42,6 +42,8 @@ void Player::Initialize()
     assert(hModel_[1] >= 0);
     Model::SetAnimFrame(hModel_[1], 0, 160, 1);
 
+    Model::SetBlendingAnimFrame(hModel_[1], 0, 120, 20, 140, 1.0f, 0.1f);
+
     transform_.rotate_.y += 180.0f;
 
     pStateManager_ = new StateManager(this);
@@ -76,16 +78,19 @@ void Player::Draw()
     Model::SetTransform(hModel_[0], transform_);
     Model::Draw(hModel_[0]);
 
-    XMVECTOR moveVec = XMLoadFloat3(&playerMovement_);
-    XMVECTOR vFront{ 0,0,1,0 };
-    XMVECTOR vDot = XMVector3Dot(vFront, moveVec);
-    float dot = XMVectorGetX(vDot);
-    float angle = (float)acos(dot);
-    XMVECTOR vCross = XMVector3Cross(vFront, moveVec);
-    if (XMVectorGetY(vCross) < 0) {
-        angle *= -1;
+    {
+        XMVECTOR moveVec = XMLoadFloat3(&playerMovement_);
+        XMVECTOR vFront{ 0,0,1,0 };
+        XMVECTOR vDot = XMVector3Dot(vFront, moveVec);
+        float dot = XMVectorGetX(vDot);
+        float angle = (float)acos(dot);
+        XMVECTOR vCross = XMVector3Cross(vFront, moveVec);
+        if (XMVectorGetY(vCross) < 0) {
+            angle *= -1;
+        }
+        transform_.rotate_.y = XMConvertToDegrees(angle);
     }
-    transform_.rotate_.y = XMConvertToDegrees(angle);
+    
     Model::SetTransform(hModel_[1], transform_);
     Model::Draw(hModel_[1]);
 

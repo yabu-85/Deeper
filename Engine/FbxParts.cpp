@@ -488,45 +488,21 @@ void FbxParts::DrawBlendedSkinAnime(Transform& transform, FbxTime time1, FbxTime
 	for (int i = 0; i < numBone_; i++)
 	{
 		FbxAnimEvaluator* evaluator = ppCluster_[i]->GetLink()->GetScene()->GetAnimationEvaluator();
+
+		//evaluatro（評価者）ー＞からTransform場所の情報をとっているらしい
 		FbxMatrix mCurrentOrientation1 = evaluator->GetNodeGlobalTransform(ppCluster_[i]->GetLink(), time1);
 		XMFLOAT4X4 pose1;
 		for (DWORD x = 0; x < 4; x++)
 		{
 			for (DWORD y = 0; y < 4; y++)
 			{
+				//
 				pose1(x, y) = (float)mCurrentOrientation1.Get(x, y);
 			}
 		}
 		pBoneArray_[i].newPose = XMLoadFloat4x4(&pose1);
 		pBoneArray_[i].diffPose = XMMatrixInverse(nullptr, pBoneArray_[i].bindPose);
 		pBoneArray_[i].diffPose *= pBoneArray_[i].newPose;
-	}
-
-	// 各ボーンに対応した頂点の変形制御（タイム1のフレーム）
-	for (DWORD i = 0; i < vertexCount_; i++)
-	{
-		//各頂点ごとに、「影響するボーン×ウェイト値」を反映させた関節行列を作成する
-		XMMATRIX  matrix;
-		ZeroMemory(&matrix, sizeof(matrix));
-		for (int m = 0; m < numBone_; m++)
-		{
-			if (pWeightArray_[i].pBoneIndex[m] < 0)
-			{
-				break;
-			}
-			matrix += pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose * pWeightArray_[i].pBoneWeight[m];
-		}
-
-		// 作成された関節行列を使って、頂点を変形する
-		XMVECTOR Pos = XMLoadFloat3(&pWeightArray_[i].posOrigin);
-		XMVECTOR Normal = XMLoadFloat3(&pWeightArray_[i].normalOrigin);
-
-		Pos = XMVector3TransformCoord(Pos, matrix);
-		Normal = XMVector3TransformCoord(Normal, matrix);
-
-		XMStoreFloat3(&pVertexData_[i].position, XMVector3TransformCoord(Pos, matrix));
-		XMStoreFloat3(&pVertexData_[i].normal, XMVector3TransformCoord(Normal, matrix));
-
 	}
 
 	// ボーンごとの現在の行列を取得する（タイム２のフレーム）
@@ -547,10 +523,12 @@ void FbxParts::DrawBlendedSkinAnime(Transform& transform, FbxTime time1, FbxTime
 		pBoneArray_[i].diffPose2 *= pBoneArray_[i].newPose2;
 	}
 
-	// 各ボーンに対応した頂点の変形制御（タイム２のフレーム）
+	//-----------------------------こっから二つのアニメーションを合わせる---------------------------------------------------
+
 	for (DWORD i = 0; i < vertexCount_; i++)
 	{
-		XMMATRIX matrix;
+		// 各頂点ごとに、「影響するボーン×ウェイト値」を反映させた関節行列を作成する
+		XMMATRIX  matrix;
 		ZeroMemory(&matrix, sizeof(matrix));
 		for (int m = 0; m < numBone_; m++)
 		{
@@ -558,43 +536,16 @@ void FbxParts::DrawBlendedSkinAnime(Transform& transform, FbxTime time1, FbxTime
 			{
 				break;
 			}
-			matrix += pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose2 * pWeightArray_[i].pBoneWeight[m];
+			matrix = pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose * pWeightArray_[i].pBoneWeight[m];// +
+			//		 pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose2 * pWeightArray_[i].pBoneWeight[m];
 		}
 
+		// 作成された関節行列を使って、頂点を変形する
 		XMVECTOR Pos = XMLoadFloat3(&pWeightArray_[i].posOrigin);
 		XMVECTOR Normal = XMLoadFloat3(&pWeightArray_[i].normalOrigin);
-
-		Pos = XMVector3TransformCoord(Pos, matrix);
-		Normal = XMVector3TransformCoord(Normal, matrix);
-
 		XMStoreFloat3(&pVertexData_[i].position, XMVector3TransformCoord(Pos, matrix));
 		XMStoreFloat3(&pVertexData_[i].normal, XMVector3TransformCoord(Normal, matrix));
 	}
-
-	for (DWORD i = 0; i < vertexCount_; i++)
-	{
-		// 各ボーンの影響を足し合わせて最終的な変形行列を計算
-		XMMATRIX matrix = pBoneArray_[pWeightArray_[i].pBoneIndex[0]].diffPose + pBoneArray_[pWeightArray_[i].pBoneIndex[0]].diffPose2;
-		for (int m = 1; m < numBone_; m++)
-		{
-			if (pWeightArray_[i].pBoneIndex[m] < 0)
-			{
-				break;
-			}
-			matrix += pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose + pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose2;
-		}
-
-		// 頂点変形を計算
-		XMVECTOR Pos = XMLoadFloat3(&pWeightArray_[i].posOrigin);
-		XMVECTOR Normal = XMLoadFloat3(&pWeightArray_[i].normalOrigin);
-
-		Pos = XMVector3TransformCoord(Pos, matrix);
-		Normal = XMVector3TransformCoord(Normal, matrix);
-
-		XMStoreFloat3(&pVertexData_[i].position, Pos);
-		XMStoreFloat3(&pVertexData_[i].normal, Normal);
-	}
-
 
 	// 頂点バッファをロックして、変形させた後の頂点情報で上書きする
 	D3D11_MAPPED_SUBRESOURCE msr = {};

@@ -60,6 +60,8 @@ namespace Model
 		//引数：animSpeed	アニメーション速度
 		void SetAnimFrame(int start, int end, float speed)
 		{
+			isBlending = false;
+
 			nowFrame = (float)start;
 			startFrame = start;
 			endFrame = end;

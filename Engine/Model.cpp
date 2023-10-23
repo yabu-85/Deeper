@@ -80,11 +80,13 @@ namespace Model
 		//最後までアニメーションしたら戻す
 		if (_datas[handle]->nowFrame > (float)_datas[handle]->endFrame)
 			_datas[handle]->nowFrame = (float)_datas[handle]->startFrame;
+		//blendのFrameTimeをセット
+		_datas[handle]->nowFrame2 = (float)_datas[handle]->nowFrame + (float)_datas[handle]->startFrame2;
 
 		if (_datas[handle]->pFbx)
 		{
 			if (_datas[handle]->isBlending) {
-				_datas[handle]->pFbx->Draw(_datas[handle]->transform, type, (int)_datas[handle]->nowFrame, (int)_datas[handle]->blendNowFrame, _datas[handle]->blendWeight);
+				_datas[handle]->pFbx->Draw(_datas[handle]->transform, type, (int)_datas[handle]->nowFrame, (int)_datas[handle]->nowFrame2, _datas[handle]->blendWeight);
 				return;
 			}
 

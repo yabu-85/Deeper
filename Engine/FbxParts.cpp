@@ -496,7 +496,6 @@ void FbxParts::DrawBlendedSkinAnime(Transform& transform, FbxTime time1, FbxTime
 		{
 			for (DWORD y = 0; y < 4; y++)
 			{
-				//
 				pose1(x, y) = (float)mCurrentOrientation1.Get(x, y);
 			}
 		}
@@ -536,8 +535,8 @@ void FbxParts::DrawBlendedSkinAnime(Transform& transform, FbxTime time1, FbxTime
 			{
 				break;
 			}
-			matrix = pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose * pWeightArray_[i].pBoneWeight[m];// +
-			//		 pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose2 * pWeightArray_[i].pBoneWeight[m];
+			matrix += pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose * pWeightArray_[i].pBoneWeight[m] +
+					  pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose2 * pWeightArray_[i].pBoneWeight[m] * blendFactor;
 		}
 
 		// 作成された関節行列を使って、頂点を変形する

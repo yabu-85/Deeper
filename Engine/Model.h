@@ -29,14 +29,14 @@ namespace Model
 
 		// ブレンディング用フィールド
 		bool isBlending;
-		float blendNowFrame;
-		int blendStartFrame;
-		int blendEndFrame;
+		float nowFrame2;
+		int startFrame2;
+		int endFrame2;
 		float blendWeight;
 
 		//初期化
 		ModelData() : pFbx(nullptr), nowFrame(0), startFrame(0), endFrame(0), animSpeed(0),
-			isBlending(false), blendNowFrame(0.0f), blendStartFrame(0), blendEndFrame(0), blendWeight(0.0f)
+			isBlending(false), nowFrame2(0.0f), startFrame2(0), endFrame2(0), blendWeight(0.0f)
 		{
 		}
 
@@ -46,10 +46,12 @@ namespace Model
 			isBlending = true;
 
 			nowFrame = (float)_startFrame1;
-			blendNowFrame = (float)_startFrame2;
-			blendStartFrame = _startFrame2;
+			nowFrame2 = (float)_startFrame2;
+			startFrame2 = _startFrame2;
+
 			endFrame = _endFrame1;
-			blendEndFrame = _endFrame2;
+			endFrame2 = _endFrame2;
+
 			animSpeed = _blendSpeed;
 			blendWeight = _blendWeight;
 		}
@@ -88,7 +90,7 @@ namespace Model
 	//（シーンが切り替わるときは必ず実行）
 	void AllRelease();
 
-	//ブレンディングする二つのフレーム数と影響度をセット
+	//アニメーションブレンディングの値セット：１のアニメーションに２の指定したウェイトでブレンディングをする
 	//引数：handle		設定したいモデルの番号
 	//引数：startFrame	開始フレーム1
 	//引数：endFrame	終了フレーム1

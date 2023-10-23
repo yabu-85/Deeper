@@ -40,6 +40,7 @@ void Player::Initialize()
 
     hModel_[1] = Model::Load("Model/FiterTest2Down.fbx");
     assert(hModel_[1] >= 0);
+    //Model::SetAnimFrame(hModel_[1], 40, 120, 1);
 
     transform_.rotate_.y += 180.0f;
 
@@ -59,8 +60,7 @@ void Player::Update()
     pStateManager_->Update();
 
     if (Input::IsKeyDown(DIK_G))
-    Model::SetBlendingAnimFrame(hModel_[1], 40, 120, 160, 240, 1.0f, 0.5f);
-
+    Model::SetBlendingAnimFrame(hModel_[1], 40, 120, 160, 1.0f, 2.0f);
 
     //エイムターゲット
     if (Input::IsKeyDown(DIK_Q)) pAim_->SetTargetEnemy();

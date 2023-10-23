@@ -76,12 +76,13 @@ namespace Model
 
 		//アニメーションを進める
 		_datas[handle]->nowFrame += _datas[handle]->animSpeed;
+		_datas[handle]->nowFrame2 += _datas[handle]->animSpeed;
 
 		//最後までアニメーションしたら戻す
-		if (_datas[handle]->nowFrame > (float)_datas[handle]->endFrame)
+		if (_datas[handle]->nowFrame > (float)_datas[handle]->endFrame) {
 			_datas[handle]->nowFrame = (float)_datas[handle]->startFrame;
-		//blendのFrameTimeをセット
-		_datas[handle]->nowFrame2 = (float)_datas[handle]->nowFrame + (float)_datas[handle]->startFrame2;
+			_datas[handle]->nowFrame2 = (float)_datas[handle]->startFrame2;
+		}
 
 		if (_datas[handle]->pFbx)
 		{
@@ -140,9 +141,9 @@ namespace Model
 	}
 
 	//アニメーションのフレーム数をセット
-	void SetBlendingAnimFrame(int handle, int startFrame1, int endFrame1, int startFrame2, int endFrame2, float animSpeed, float blendWeight)
+	void SetBlendingAnimFrame(int handle, int startFrame1, int endFrame1, int startFrame2, float animSpeed, float blendWeight)
 	{
-		_datas[handle]->SetBlendingAnimFrame(startFrame1, endFrame1, startFrame2, endFrame2, animSpeed, blendWeight);
+		_datas[handle]->SetBlendingAnimFrame(startFrame1, endFrame1, startFrame2, animSpeed, blendWeight);
 	}
 
 	//アニメーションのフレーム数をセット

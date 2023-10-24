@@ -77,7 +77,7 @@ void Aim::Update()
     //ƒJƒƒ‰‚Ì‰ñ“]
     XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-
+    
     //ƒJƒƒ‰‚ÌˆÊ’u‚Æ‰ñ“]‚ğ‡¬
     XMMATRIX mView = mRotX * mRotY;
 

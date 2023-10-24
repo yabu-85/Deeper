@@ -19,7 +19,7 @@ namespace Image
 		std::string fileName;
 
 		//ロードした画像データのアドレス
-		Sprite*		pSprite;
+		Sprite* pSprite;
 
 		//切り抜き範囲
 		RECT		rect;
@@ -30,6 +30,10 @@ namespace Image
 		//行列
 		Transform transform;
 
+		XMFLOAT3 GetTextureSize() {
+			return pSprite->GetTextureSize();
+		}
+
 		//コンストラクタ
 		ImageData() : pSprite(nullptr)
 		{
@@ -38,7 +42,6 @@ namespace Image
 			pSprite = nullptr;
 		}
 	};
-
 
 	//初期化
 	void Initialize();
@@ -88,4 +91,8 @@ namespace Image
 	//引数：handle	知りたい画像の番号
 	//戻値：ワールド行列
 	XMMATRIX GetMatrix(int handle);
+
+	//画像サイズの取得
+	//戻値：画像サイズ
+	XMFLOAT3 GetTextureSize(int handle);
 }

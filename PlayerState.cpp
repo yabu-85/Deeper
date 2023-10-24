@@ -1,7 +1,7 @@
 #include "PlayerState.h"
 #include "Player.h"
 #include "StateManager.h"
-#include "Engine/Input.h"
+#include "PlayerCommand.h"
 
 namespace {
 	const int defAvoTime = 30;
@@ -11,11 +11,11 @@ namespace {
 void PlayerWait::Update()
 {
 	//キー入力でステート切り替え
-	if (pPlayer_->IsMoveKeyPushed()) {
+	if (pPlayer_->GetCommand()->CmdWalk()) {
 		owner_->ChangeState("Walk");
 		return;
 	}
-	if (Input::IsKeyDown(DIK_SPACE)) {
+	if (pPlayer_->GetCommand()->CmdAvo()) {
 		owner_->ChangeState("Avo");
 		return;
 	}
@@ -36,11 +36,11 @@ void PlayerWalk::Update()
 	pPlayer_->CalcMove();
 	pPlayer_->Move();
 
-	if (!pPlayer_->IsMoveKeyPushed()) {
+	if (!pPlayer_->GetCommand()->CmdWalk()) {
 		owner_->ChangeState("Wait");
 		return;
 	}
-	if (Input::IsKeyDown(DIK_SPACE)) {
+	if (pPlayer_->GetCommand()->CmdAvo()) {
 		owner_->ChangeState("Avo");
 		return;
 	}

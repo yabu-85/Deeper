@@ -148,6 +148,9 @@
     <ClCompile Include="PlayerState.cpp">
       <Filter>Player</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerCommand.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -252,6 +255,9 @@
       <Filter>State</Filter>
     </ClInclude>
     <ClInclude Include="PlayerState.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCommand.h">
       <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>

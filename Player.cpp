@@ -6,6 +6,7 @@
 #include "EnemyBase.h"
 #include "StateManager.h"
 #include "PlayerState.h"
+#include "PlayerCommand.h"
 
 #include "Engine/Text.h"
 
@@ -22,7 +23,7 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr)
+    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr), pCommand_(nullptr)
 {
     moveSpeed_ = 0.1f;
 }
@@ -41,6 +42,8 @@ void Player::Initialize()
     assert(hModel_[1] >= 0);
     transform_.rotate_.y += 180.0f;
 
+    pCommand_ = new PlayerCommand();
+
     pStateManager_ = new StateManager(this);
     pStateManager_->AddState(new PlayerWait(pStateManager_));
     pStateManager_->AddState(new PlayerWalk(pStateManager_));
@@ -54,17 +57,19 @@ void Player::Initialize()
 
 void Player::Update()
 {
+    pCommand_->Update();
     pStateManager_->Update();
 
+    //エイムターゲット
+    if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
+
+
+    //デバッグ用コマンド
     if (Input::IsKeyDown(DIK_G)) {
         Model::SetBlendingAnimFrame(hModel_[1], 0, 120, 160, 1.0f, 0.5f);
         Model::SetAnimFrame(hModel_[1], 0, 160, 1.0f);
     }
 
-    //エイムターゲット
-    if (Input::IsKeyDown(DIK_Q)) pAim_->SetTargetEnemy();
-
-    //デバッグ用コマンド
     if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;
     if (Input::IsKey(DIK_DOWNARROW)) transform_.position_.y -= 0.1f;
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
@@ -110,7 +115,7 @@ void Player::Move(float f)
     transform_.position_.z += ((playerMovement_.z * moveSpeed_) * f);
 
     //進行方向を向かせる
-    if (IsMoveKeyPushed()) {
+    if (pCommand_->CmdWalk()) {
         XMFLOAT3 fAimPos = XMFLOAT3(prePos.x - transform_.position_.x, 0.0f, prePos.z - transform_.position_.z);
         XMVECTOR vAimPos = XMLoadFloat3(&fAimPos);  //正規化用の変数にfloatの値を入れる
         vAimPos = XMVector3Normalize(vAimPos);
@@ -129,32 +134,26 @@ void Player::Move(float f)
     }
 }
 
-bool Player::IsMoveKeyPushed()
-{
-    if (Input::IsKey(DIK_W) || Input::IsKey(DIK_A) || Input::IsKey(DIK_S) || Input::IsKey(DIK_D)) return true;
-    return false;
-}
-
 bool Player::IsMoveKeyPushed(XMFLOAT3& key)
 {
     XMFLOAT3 aimDirection = pAim_->GetAimDirection();
     bool flag = false;
-    if (Input::IsKey(DIK_W)) {
+    if (pCommand_->CmdUp()) {
         key.x += aimDirection.x;
         key.z += aimDirection.z;
         flag = true;
     }
-    if (Input::IsKey(DIK_A)) {
+    if (pCommand_->CmdLeft()) {
         key.x -= aimDirection.z;
         key.z += aimDirection.x;
         flag = true;
     }
-    if (Input::IsKey(DIK_S)) {
+    if (pCommand_->CmdDown()) {
         key.x -= aimDirection.x;
         key.z -= aimDirection.z;
         flag = true;
     }
-    if (Input::IsKey(DIK_D)) {
+    if (pCommand_->CmdRight()) {
         key.x += aimDirection.z;
         key.z -= aimDirection.x;
         flag = true;
@@ -213,7 +212,7 @@ void Player::CalcNoMove()
 
 void Player::InitAvo()
 {
-    if (IsMoveKeyPushed()) {
+    if (pCommand_->CmdWalk()) {
         CalcMove();
         XMStoreFloat3(&playerMovement_, GetMoveVec());
     }

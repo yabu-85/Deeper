@@ -50,8 +50,9 @@ void Aim::Initialize()
 
 void Aim::Update()
 {
-
+    //デバッグ用
     if (Input::IsMouseButtonDown(1)) aimMove_ = !aimMove_;
+    
     if (!aimMove_) return;
 
     if (isTarget_) {

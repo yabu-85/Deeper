@@ -3,6 +3,7 @@
 
 class Player;
 class EnemyBase;
+class CollisionMap;
 
 class Aim :
     public GameObject
@@ -22,6 +23,7 @@ class Aim :
 
     Player* pPlayer_;
     EnemyBase* pEnemyBase_;
+    CollisionMap* pCollisionMap_;
 
     void FacingTarget();
     void CalcCameraOffset(float _aimMove);

@@ -48,6 +48,9 @@
     <Filter Include="State\Base">
       <UniqueIdentifier>{bab4fd1d-232e-4963-bec1-cc685a8bc568}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{3c140e0d-d296-431c-a2e9-c6b1e3fae785}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -119,7 +122,6 @@
     <ClCompile Include="Engine\VFX.cpp">
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Aim.cpp" />
     <ClCompile Include="Cell.cpp" />
@@ -150,6 +152,15 @@
     </ClCompile>
     <ClCompile Include="PlayerCommand.cpp">
       <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyUi.cpp">
+      <Filter>Enemy\EnemyBase</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -222,7 +233,6 @@
     <ClInclude Include="Engine\VFX.h">
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Aim.h" />
     <ClInclude Include="Cell.h" />
@@ -259,6 +269,15 @@
     </ClInclude>
     <ClInclude Include="PlayerCommand.h">
       <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyUi.h">
+      <Filter>Enemy\EnemyBase</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

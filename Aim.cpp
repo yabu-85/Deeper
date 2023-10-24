@@ -30,7 +30,7 @@ namespace {
 
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 },
-    plaPos_{ 0,0,0 }, pPlayer_(nullptr), hPict_(-1), aimMove_(false), cameraOffset_{0,0,0}, isTarget_(false), pEnemyBase_(nullptr)
+    plaPos_{ 0,0,0 }, pPlayer_(nullptr), hPict_(-1), aimMove_(false), cameraOffset_{0,0,0}, isTarget_(false), pEnemyBase_(nullptr), pCollisionMap_(nullptr)
 {
     mouseSensitivity = 2.0f;
     perspectiveDistance_ = defPerspectDistance;
@@ -177,7 +177,7 @@ void Aim::SetTargetEnemy()
 //-----------private--------------------------------------------
 
 //Facingの方もOffsetみたいな機能を入れるようにしたい
-//あとターゲット状態の時は常に敵の方を見て移動するように（後ろにどうする時も敵を常に見る）
+//あとターゲット状態の時は常に敵の方を見て移動するように（後ろに移動する時も敵を常に見る）
 //それと回避の動作を何も入力してない時はバックステップにするようにする
 void Aim::FacingTarget()
 {
@@ -241,8 +241,8 @@ void Aim::CalcCameraOffset(float _aimMove)
 
 void Aim::RayCastStage(XMFLOAT3 _start)
 {
-    CollisionMap* pCollisionMap = (CollisionMap*)FindObject("CollisionMap");
-    if (pCollisionMap == nullptr) return;
+    pCollisionMap_ = (CollisionMap*)FindObject("CollisionMap");
+    if (pCollisionMap_ == nullptr) return;
 
     RayCastData data;
     XMFLOAT3 start = _start;
@@ -252,7 +252,7 @@ void Aim::RayCastStage(XMFLOAT3 _start)
     XMStoreFloat3(&dir, vDir);
     data.start = start;
     data.dir = dir;
-    float min = pCollisionMap->GetRayCastMinDist(&data);
+    float min = pCollisionMap_->GetRayCastMinDist(&data);
 
     //レイ当たった・判定距離内だったら
     if (min < (defPerspectDistance + heightRay)) 

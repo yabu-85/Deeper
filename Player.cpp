@@ -66,8 +66,7 @@ void Player::Update()
 
     //デバッグ用コマンド
     if (Input::IsKeyDown(DIK_G)) {
-        Model::SetBlendingAnimFrame(hModel_[1], 0, 120, 160, 1.0f, 0.5f);
-        Model::SetAnimFrame(hModel_[1], 0, 160, 1.0f);
+        Model::SetBlendingAnimFrame(hModel_[1], 0, 120, 160, 1.0f, 0.9f);
     }
 
     if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;
@@ -83,6 +82,7 @@ void Player::Draw()
     Model::SetTransform(hModel_[0], transform_);
     Model::Draw(hModel_[0]);
 
+    //ここ回転試しにやってみてる
     {
         XMVECTOR moveVec = XMLoadFloat3(&playerMovement_);
         XMVECTOR vFront{ 0,0,1,0 };
@@ -217,6 +217,6 @@ void Player::InitAvo()
         XMStoreFloat3(&playerMovement_, GetMoveVec());
     }
     else {
-        XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
+        XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0);
     }
 }

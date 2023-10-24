@@ -8,7 +8,7 @@ class Cell;
 
 class CollisionMap : public GameObject
 {
-    std::vector<Cell*> cells_;
+    Cell*** cells_ = 0;
 
 public:
     CollisionMap(GameObject* parent);

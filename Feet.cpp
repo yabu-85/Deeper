@@ -2,6 +2,7 @@
 #include "Engine/Model.h"
 #include "NavigationAI.h"
 #include "GameManager.h"
+#include "EnemyUi.h"
 
 namespace {	
 	float moveSpeed = 0.2f;
@@ -25,12 +26,15 @@ void Feet::Initialize()
 	assert(hModel_ >= 0);
 
 	transform_.rotate_.y = -90;
+	transform_.scale_ = XMFLOAT3(0.3f, 0.3f, 0.3f);
 	transform_.position_ = XMFLOAT3(50.0f, 0.0f, 50.0f);
-	targetPos_ = XMFLOAT3(50.0f, 0.0f, 50.0f);
+	targetPos_ = transform_.position_;
 
 	GameManager* pGameManager = (GameManager*)FindObject("GameManager");
 	pNavigationAI_ = pGameManager->GetNavigationAI();
-
+	
+	pEnemyUi_ = new EnemyUi(this);
+	pEnemyUi_->Initialize();
 }
 
 void Feet::Update()
@@ -62,6 +66,8 @@ void Feet::Draw()
 {
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
+
+	pEnemyUi_->Draw();
 
 }
 

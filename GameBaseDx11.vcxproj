@@ -126,6 +126,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Aim.cpp" />
+    <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CollisionMap.cpp" />
     <ClCompile Include="EnemySpawnCtrl.cpp" />
@@ -169,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aim.h" />
+    <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CollisionMap.h" />
     <ClInclude Include="EnemyBase.h" />

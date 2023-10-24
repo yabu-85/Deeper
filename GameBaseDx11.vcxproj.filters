@@ -123,7 +123,6 @@
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
     <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="Aim.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="CollisionMap.cpp" />
@@ -161,6 +160,10 @@
     </ClCompile>
     <ClCompile Include="TitleScene.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="Aim.cpp">
+      <Filter>Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -234,7 +237,6 @@
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
     <ClInclude Include="Stage.h" />
-    <ClInclude Include="Aim.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="CollisionMap.h" />
@@ -278,6 +280,10 @@
     </ClInclude>
     <ClInclude Include="TitleScene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="Aim.h">
+      <Filter>Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

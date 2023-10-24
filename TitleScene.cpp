@@ -3,6 +3,7 @@
 #include "Engine/Input.h"
 #include "Engine/Image.h"
 #include "UIBase.h"
+#include "AudioManager.h"
 
 namespace {
 	UIBase* button;
@@ -15,6 +16,8 @@ TitleScene::TitleScene(GameObject* parent)
 
 void TitleScene::Initialize()
 {
+	AudioManager::Initialize();
+
 	const char* fileName[] = { "Png/Title.png", "Png/TitleBG.png" };
 	const int png = sizeof(fileName) / sizeof(fileName[0]);
 	for (int i = 0; i < png; i++) {
@@ -32,6 +35,17 @@ void TitleScene::Update()
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_PLAY);
 	}
+
+	button->Update();
+
+	XMFLOAT3 mouse = Input::GetMousePosition();
+	std::string strNumber = std::to_string(mouse.x);
+	OutputDebugStringA(strNumber.c_str());
+	OutputDebugString(", ");
+
+	strNumber = std::to_string(mouse.y);
+	OutputDebugStringA(strNumber.c_str());
+	OutputDebugString("\n");
 
 }
 

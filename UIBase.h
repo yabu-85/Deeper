@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include <string>
+#include <functional>
 #include "Engine/Transform.h"
 using namespace DirectX;
 
@@ -12,7 +13,6 @@ class UIBase
 	bool isBound_;			//îÕàÕÇÃì‡ë§Ç…Ç¢ÇÈÇ©Ç«Ç§Ç©
 	XMFLOAT2 widePos_;		//0 ~ 1980Ç∆Ç©ÇÃç¿ïW
 	XMFLOAT2 frameSize_;	//îºåa
-	std::string name_;
 	Transform transform_;
 
 	enum BUTTON_STATE {
@@ -20,13 +20,14 @@ class UIBase
 		UPPRESSED,
 	};
 
-	bool IsWithinBound();
+	std::function<void()> onClick_;
 
 public:
 	UIBase();
-	void Initialize(std::string name);
-	void Update();
+	void Initialize(std::string name, XMFLOAT2 pos, std::function<void()> onClick);
 	void Draw();
+	bool IsWithinBound();
+	void OnClick();
 
 };
 

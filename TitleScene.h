@@ -1,9 +1,12 @@
 #pragma once
 #include "Engine/GameObject.h"
 
+class UIManager;
+
 class TitleScene : public GameObject
 {
 	int hPict_[2];
+	UIManager* pUIManager_;
 
 public:
 	TitleScene(GameObject* parent);

@@ -2,15 +2,11 @@
 #include "Engine/SceneManager.h"
 #include "Engine/Input.h"
 #include "Engine/Image.h"
-#include "UIBase.h"
 #include "AudioManager.h"
-
-namespace {
-	UIBase* button;
-}
+#include "UIManager.h"
 
 TitleScene::TitleScene(GameObject* parent)
-	: GameObject(parent, "TitleScene"), hPict_{-1, -1}
+	: GameObject(parent, "TitleScene"), hPict_{-1, -1}, pUIManager_(nullptr)
 {
 }
 
@@ -25,27 +21,21 @@ void TitleScene::Initialize()
 		assert(hPict_[i] >= 0);
 	}
 
-	button = new UIBase();
-	button->Initialize("Play");
+	pUIManager_ = new UIManager();
+
+	//ƒV[ƒ“„ˆÚ‚ðŠŠ‚ç‚©‚É‚µ‚½‚¢‚æ‚Ë
+	pUIManager_->AddUi("Play", XMFLOAT2(0.0f, 0.0f), [this]() {
+		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		pSceneManager->ChangeScene(SCENE_ID_PLAY); });
+
+	pUIManager_->AddUi("Option", XMFLOAT2(0.0f, -0.35f), [this]() { AudioManager::PlaySoundA(); });
+	pUIManager_->AddUi("Exit", XMFLOAT2(0.0f, -0.7f), nullptr);
+
 }
 
 void TitleScene::Update()
 {
-	if (Input::IsMouseButton(0)) {
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
-		pSceneManager->ChangeScene(SCENE_ID_PLAY);
-	}
-
-	button->Update();
-
-	XMFLOAT3 mouse = Input::GetMousePosition();
-	std::string strNumber = std::to_string(mouse.x);
-	OutputDebugStringA(strNumber.c_str());
-	OutputDebugString(", ");
-
-	strNumber = std::to_string(mouse.y);
-	OutputDebugStringA(strNumber.c_str());
-	OutputDebugString("\n");
+	pUIManager_->Update();
 
 }
 
@@ -65,7 +55,8 @@ void TitleScene::Draw()
 	Image::SetTransform(hPict_[1], bg);
 	Image::Draw(hPict_[1]);
 
-	button->Draw();
+	pUIManager_->Draw();
+
 }
 
 void TitleScene::Release()

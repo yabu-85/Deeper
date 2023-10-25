@@ -13,7 +13,7 @@ UIBase::UIBase()
 {
 }
 
-void UIBase::Initialize(std::string name)
+void UIBase::Initialize(std::string name, XMFLOAT2 pos, std::function<void()> onClick)
 {
 	const std::string fileName[] = { "Png/ButtonFrame1.png", "Png/ButtonFrame2.png", "Png/" + name + ".png" };
 	for (int i = 0; i < PNG_COUNT; i++) {
@@ -22,8 +22,8 @@ void UIBase::Initialize(std::string name)
 	}
 
 	transform_.scale_ = XMFLOAT3(0.5f, 0.5f, 0.0f);
-	transform_.position_.x = -0.5f;
-	transform_.position_.y = -0.2f;
+	transform_.position_.x = pos.x;
+	transform_.position_.y = pos.y;
 
 	XMFLOAT3 size = Image::GetTextureSize(hPict_[0]);
 	frameSize_ = XMFLOAT2(size.x * transform_.scale_.x / 2.0f, size.y * transform_.scale_.y / 2.0f);
@@ -33,19 +33,7 @@ void UIBase::Initialize(std::string name)
 	widePos_.x = screenWidth / 2.0f + screenWidth / 2.0f * transform_.position_.x;
 	widePos_.y = screenHeight / 2.0f + screenHeight / 2.0f * -transform_.position_.y;
 
-	name_ = name;
-
-}
-
-void UIBase::Update()
-{
-	bool preBound = isBound_;
-	isBound_ = IsWithinBound();
-	if (preBound != isBound_) {
-		AudioManager::PlaySoundA();
-	}
-
-
+	onClick_ = onClick;
 }
 
 void UIBase::Draw()
@@ -66,8 +54,19 @@ bool UIBase::IsWithinBound()
 	XMFLOAT3 mouse = Input::GetMousePosition();
 
 	if (mouse.y < widePos_.y + frameSize_.y && mouse.y > widePos_.y - frameSize_.y &&
-		mouse.x < widePos_.x + frameSize_.x && mouse.x > widePos_.x - frameSize_.x)
+		mouse.x < widePos_.x + frameSize_.x && mouse.x > widePos_.x - frameSize_.x) 
+	{
+		isBound_ = true;
 		return true;
+	}
 
+	isBound_ = false;
 	return false;
+}
+
+void UIBase::OnClick()
+{
+	if (onClick_) {
+		onClick_();
+	}
 }

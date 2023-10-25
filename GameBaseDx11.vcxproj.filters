@@ -165,6 +165,12 @@
     <ClCompile Include="Aim.cpp">
       <Filter>Player</Filter>
     </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ExitMenue.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -284,6 +290,12 @@
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Aim.h">
       <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ExitMenue.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

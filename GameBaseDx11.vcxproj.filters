@@ -166,9 +166,12 @@
       <Filter>Player</Filter>
     </ClCompile>
     <ClCompile Include="UIManager.cpp">
+      <Filter>UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleUIManager.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="ExitMenue.cpp">
+    <ClCompile Include="ExitUIManager.cpp">
       <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -292,9 +295,12 @@
       <Filter>Player</Filter>
     </ClInclude>
     <ClInclude Include="UIManager.h">
+      <Filter>UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleUIManager.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="ExitMenue.h">
+    <ClInclude Include="ExitUIManager.h">
       <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>

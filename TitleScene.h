@@ -1,12 +1,12 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include <vector>
 
 class UIManager;
 
 class TitleScene : public GameObject
 {
-	int hPict_[2];
-	UIManager* pUIManager_;
+	std::vector<UIManager*> pUIManagerList_;
 
 public:
 	TitleScene(GameObject* parent);

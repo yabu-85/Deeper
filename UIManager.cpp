@@ -3,6 +3,7 @@
 #include "Engine/Input.h"
 
 UIManager::UIManager()
+	:state_(UI_STATE::DRAW)
 {
 }
 
@@ -42,8 +43,4 @@ void UIManager::AddUi(std::string name, XMFLOAT2 pos, std::function<void()> onCl
 	UIBase* ui = new UIBase();
 	ui->Initialize(name, pos, onClick);
 	uiList_.push_back(ui);
-}
-
-void UIManager::EndDraw()
-{
 }

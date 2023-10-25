@@ -154,7 +154,7 @@
     <ClCompile Include="Engine\Text.cpp" />
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
-    <ClCompile Include="ExitMenue.cpp" />
+    <ClCompile Include="ExitUIManager.cpp" />
     <ClCompile Include="Feet.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="MasterHand.cpp" />
@@ -166,6 +166,7 @@
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="TitleUIManager.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="UIBase.cpp" />
     <ClCompile Include="UIManager.cpp" />
@@ -201,7 +202,7 @@
     <ClInclude Include="Engine\Text.h" />
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\Transform.h" />
-    <ClInclude Include="ExitMenue.h" />
+    <ClInclude Include="ExitUIManager.h" />
     <ClInclude Include="Feet.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="MasterHand.h" />
@@ -214,6 +215,7 @@
     <ClInclude Include="StateBase.h" />
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="TitleUIManager.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="UIBase.h" />
     <ClInclude Include="UIManager.h" />

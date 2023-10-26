@@ -131,31 +131,6 @@ void CollisionMap::Update()
     pBox->SetPosition(cellPos);
     pBox->SetScale(XMFLOAT3(boxSize, boxSize, boxSize));
 
-    int x = int((plaPos.x - minX) / boxSize);
-    int y = int((plaPos.y - minY) / boxSize);
-    int z = int((plaPos.z - minZ) / boxSize);
-    if (x < 0 || y < 0 || z < 0 ||
-        x > maxX / boxSize || y > maxY / boxSize || z > maxZ / boxSize) return;
-
-    std::vector<Triangle*> triList;
-    triList = cells_[y][z][x].GetTriangles();
-
-    std::string strNumber = std::to_string(x);
-    OutputDebugStringA(strNumber.c_str());
-    OutputDebugString(" ,");
-
-    strNumber = std::to_string(y);
-    OutputDebugStringA(strNumber.c_str());
-    OutputDebugString(" ,");
-
-    strNumber = std::to_string(z);
-    OutputDebugStringA(strNumber.c_str());
-    OutputDebugString(" ,");
-
-    strNumber = std::to_string(triList.size());
-    OutputDebugStringA(strNumber.c_str());
-    OutputDebugString("\n");
-
 }
 
 void CollisionMap::Draw()

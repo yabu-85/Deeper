@@ -137,6 +137,16 @@ void Player::Move(float f)
 bool Player::IsMoveKeyPushed(XMFLOAT3& key)
 {
     XMFLOAT3 aimDirection = pAim_->GetAimDirection();
+
+    OutputDebugString("Player : ");
+    std::string strNumber = std::to_string(aimDirection.x);
+    OutputDebugStringA(strNumber.c_str());
+    OutputDebugString(", ");
+
+    strNumber = std::to_string(aimDirection.z);
+    OutputDebugStringA(strNumber.c_str());
+    OutputDebugString("\n");
+
     bool flag = false;
     if (pCommand_->CmdUp()) {
         key.x += aimDirection.x;

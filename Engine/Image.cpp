@@ -73,14 +73,14 @@ namespace Image
 
 
 	//•`‰æ
-	void Draw(int handle)
+	void Draw(int handle, int type)
 	{
 		if (handle < 0 || handle >= _datas.size() || _datas[handle] == nullptr)
 		{
 			return;
 		}
 		_datas[handle]->transform.Calclation();
-		_datas[handle]->pSprite->Draw(_datas[handle]->transform, _datas[handle]->rect, _datas[handle]->alpha);
+		_datas[handle]->pSprite->Draw(_datas[handle]->transform, _datas[handle]->rect, _datas[handle]->alpha, type);
 	}
 
 

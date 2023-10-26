@@ -27,7 +27,7 @@ void Feet::Initialize()
 
 	transform_.rotate_.y = -90;
 	transform_.scale_ = XMFLOAT3(0.3f, 0.3f, 0.3f);
-	transform_.position_ = XMFLOAT3(50.0f, 0.0f, 50.0f);
+	transform_.position_ = XMFLOAT3(50.0f + (float)(rand() % 10), 0.0f, 50.0f + (float)(rand() % 10));
 	targetPos_ = transform_.position_;
 
 	GameManager* pGameManager = (GameManager*)FindObject("GameManager");
@@ -35,10 +35,14 @@ void Feet::Initialize()
 	
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize();
+
 }
 
 void Feet::Update()
 {
+	pEnemyUi_->Update();
+	return;
+
 	if (currtime_ > 0) {
 		currtime_--;
 		if (currtime_ <= 0) flag_ = true;
@@ -66,8 +70,6 @@ void Feet::Draw()
 {
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
-
-	pEnemyUi_->Draw();
 
 }
 

@@ -191,7 +191,7 @@ void VFX::CreateParticle(std::list<VFX::Emitter*>::iterator& emitter)
 void VFX::Draw()
 {
     Direct3D::SetShader(Direct3D::SHADER_BILLBOARD);
-    Direct3D::SetBlendMode(Direct3D::BLEND_ADD);
+    Direct3D::SetBlendMode(Direct3D::BLEND_DEFAULT);
 
  
     for (auto particle = particleList_.begin(); particle != particleList_.end(); particle++)
@@ -217,7 +217,7 @@ void VFX::Draw()
         (*particle)->pEmitter->pBillBoard->Draw(matWorld,(*particle)->now.color);
     }
 
-    
+
 }
 
 //‰ð•ú
@@ -276,6 +276,16 @@ void VFX::End(int handle)
         {
             (*i)->isDead = true;
             break;
+        }
+    }
+}
+
+void VFX::SetParticlePosition(int handle, XMFLOAT3 pos)
+{
+    for (auto par = particleList_.begin(); par != particleList_.end(); par++)
+    {
+        if ((*par)->pEmitter->handle == handle) {
+            (*par)->now.position = pos;
         }
     }
 }

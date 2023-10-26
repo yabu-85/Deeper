@@ -15,6 +15,12 @@ void TitleScene::Initialize()
 {
 	AudioManager::Initialize();
 
+	//デバッグ用
+	if (true) {
+		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		pSceneManager->ChangeScene(SCENE_ID_PLAY);
+	}
+
 	TitleUIManager* title = new TitleUIManager();
 	//シーン推移を滑らかにしたいよね
 	title->AddUi("Play", XMFLOAT2(0.0f, 0.0f), [this]() {

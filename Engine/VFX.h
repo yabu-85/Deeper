@@ -121,5 +121,8 @@ namespace VFX
 	//エミッタを削除（エフェクト終了）
 	//引数：handle	エフェクトの番号
 	void End(int handle);
+
+	void SetParticlePosition(int handle, XMFLOAT3 pos);
+
 };
 

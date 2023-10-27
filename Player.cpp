@@ -7,6 +7,7 @@
 #include "StateManager.h"
 #include "PlayerState.h"
 #include "PlayerCommand.h"
+#include "Feet.h"
 
 #include "Engine/Text.h"
 
@@ -59,6 +60,9 @@ void Player::Update()
 {
     pCommand_->Update();
     pStateManager_->Update();
+
+    Feet* pFeet = (Feet*)FindObject("Feet");
+    if (pCommand_->CmdAtk() && pFeet) pFeet->ApplyDamage(5);
 
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();

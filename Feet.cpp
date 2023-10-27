@@ -17,6 +17,7 @@ Feet::Feet(GameObject* parent)
 
 Feet::~Feet()
 {
+	Release();
 }
 
 void Feet::Initialize()
@@ -35,6 +36,9 @@ void Feet::Initialize()
 	
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize();
+
+	maxHp_ = 10;
+	hp_ = maxHp_;
 
 }
 
@@ -63,7 +67,6 @@ void Feet::Update()
 		if (length <= moveSpeed) currtime_ = stopTime_;
 
 	}
-
 }
 
 void Feet::Draw()
@@ -75,4 +78,14 @@ void Feet::Draw()
 
 void Feet::Release()
 {
+	pEnemyUi_->~EnemyUi();
+
+}
+
+void Feet::ApplyDamage(int da)
+{
+	hp_ -= da;
+	pEnemyUi_->SetParcent((float)(hp_) / (float)(maxHp_));
+	if (hp_ <= 0) KillMe();
+
 }

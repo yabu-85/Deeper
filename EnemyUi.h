@@ -11,12 +11,17 @@ class EnemyUi
 	EmitterData data_;
 	Transform transform_;
 	EnemyBase* pParent_;
-	Aim* pAim_;
+
+	float parcent;
+	XMFLOAT2 size;
 
 public:
 	EnemyUi(EnemyBase* parent);
+	~EnemyUi();
 	void Initialize();
 	void Update();
+
+	void SetParcent(float f) { parcent = f; };
 
 };
 

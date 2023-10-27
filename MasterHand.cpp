@@ -36,6 +36,8 @@ void MasterHand::Initialize()
 	transform_.rotate_.y -= 180.0f;
 	transform_.position_ = pPlayer->GetPosition();
 
+	maxHp_ = 10;
+	hp_ = maxHp_;
 }
 
 void MasterHand::Update()
@@ -61,5 +63,9 @@ void MasterHand::Draw()
 }
 
 void MasterHand::Release()
+{
+}
+
+void MasterHand::ApplyDamage(int da)
 {
 }

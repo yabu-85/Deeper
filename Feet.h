@@ -22,6 +22,7 @@ public:
     void Draw() override;
     void Release() override;
 
+    void ApplyDamage(int da) override;
 
 };
 

@@ -123,6 +123,8 @@ namespace VFX
 	void End(int handle);
 
 	void SetParticlePosition(int handle, XMFLOAT3 pos);
+	void SetParticleSize(int handle, XMFLOAT2 size);
+
 
 };
 

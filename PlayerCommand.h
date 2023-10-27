@@ -17,6 +17,7 @@ public:
 	PlayerCommand();
 	void Update();
 
+	bool CmdAtk() { return atk_; };
 	bool CmdAvo() { return avo_; }
 	bool CmdTarget() { return target_; }
 

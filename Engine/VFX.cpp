@@ -289,3 +289,13 @@ void VFX::SetParticlePosition(int handle, XMFLOAT3 pos)
         }
     }
 }
+
+void VFX::SetParticleSize(int handle, XMFLOAT2 size)
+{
+    for (auto par = particleList_.begin(); par != particleList_.end(); par++)
+    {
+        if ((*par)->pEmitter->handle == handle) {
+            (*par)->now.scale = size;
+        }
+    }
+}

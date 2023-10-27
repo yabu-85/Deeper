@@ -2,14 +2,19 @@
 #include "EnemyBase.h"
 #include "Aim.h"
 #include "Engine/Camera.h"
+#include "Engine/BillBoard.h"
+#include "Engine/Texture.h"
 
 namespace {
     const unsigned maxTime = 4294967295;
     const float maxSizeX = 5.0f;
+
+
+
 }
 
 EnemyUi::EnemyUi(EnemyBase* parent)
-	:vHandle_{-1, -1}, pParent_(parent)
+	:vHandle_{-1, -1}, pParent_(parent), pAim_(nullptr)
 {
 }
 
@@ -47,6 +52,7 @@ void EnemyUi::Initialize()
     data_.isBillBoard = true;
     vHandle_[1] = VFX::Start(data_);	//エミッターを設置
 
+    pAim_ = (Aim*)pParent_->GameObject::FindObject("Aim");
 }
 
 void EnemyUi::Update()
@@ -56,30 +62,14 @@ void EnemyUi::Update()
     VFX::SetParticlePosition(vHandle_[1], pos);
 
     if (true) {
-        //オフセットの値を求めてやらんといけん
-        XMMATRIX mat;
-        mat.r[0] = Camera::GetViewMatrix().r[0];
-        mat.r[1] = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-        mat.r[2] = Camera::GetViewMatrix().r[2];
-        mat.r[3] = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+        XMFLOAT3 direc = pAim_->GetAimDirection();
 
-        const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-        XMVECTOR direction = XMVector3TransformNormal(forwardVector, mat);
-        XMFLOAT4 directionTest;
-        XMStoreFloat4(&directionTest, direction);
-        XMFLOAT3 direc = XMFLOAT3(directionTest.x, directionTest.y, directionTest.z);
+        direc.x *= direc.x * 1.5f * direc.y;
+        direc.z *= direc.z * 1.5f * direc.y;
 
-        OutputDebugString("UI : ");
-        std::string strNumber = std::to_string(direc.x);
-        OutputDebugStringA(strNumber.c_str());
-        OutputDebugString(", ");
+        pos.x -= direc.z;
+        pos.z -= direc.x;
 
-        strNumber = std::to_string(direc.z);
-        OutputDebugStringA(strNumber.c_str());
-        OutputDebugString("\n");
-        
-        pos.x -= direc.z * 1.5f;
-        pos.z -= direc.x * 1.5f;
     }
 
     VFX::SetParticlePosition(vHandle_[0], pos);

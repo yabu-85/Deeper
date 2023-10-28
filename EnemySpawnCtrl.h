@@ -22,7 +22,7 @@ public:
 	
 	int SpawnEnemy(int type);
 	std::vector<EnemyBase*>& GetAllEnemy();
-
+	void CleanUpEnemyList();
 
 };
 

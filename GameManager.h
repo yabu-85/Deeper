@@ -15,6 +15,7 @@ class Stage;
 class EnemyBase;
 class EnemySpawnCtrl;
 class NavigationAI;
+class DamageCtrl;
 
 class GameManager : public GameObject
 {
@@ -22,6 +23,7 @@ class GameManager : public GameObject
 	Stage* pStage_;
 	EnemySpawnCtrl* pEnemySpawnCtrl_;
 	NavigationAI* pNavigationAI_;
+	DamageCtrl* pDamageCtrl_;
 
 public:
 	GameManager(GameObject* parent);

@@ -4,6 +4,7 @@
 class Aim;
 class StateManager;
 class PlayerCommand;
+class DamageCtrl;
 
 class Player :
     public GameObject
@@ -16,6 +17,7 @@ class Player :
     Aim* pAim_;
     StateManager* pStateManager_;
     PlayerCommand* pCommand_;
+    DamageCtrl* pDamageCtrl_;
 
 public:
     Player(GameObject* parent);
@@ -38,6 +40,7 @@ public:
     XMVECTOR GetDirectionVec();                                 //Œü‚¢‚Ä‚¢‚é•ûŒüi³‹K‰»Ï‚İ
 
     PlayerCommand* GetCommand() { return pCommand_; }
+    void SetDamageCtrl(DamageCtrl* d) { pDamageCtrl_ = d; };
 
 };
 

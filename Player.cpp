@@ -8,6 +8,7 @@
 #include "PlayerState.h"
 #include "PlayerCommand.h"
 #include "Feet.h"
+#include "DamageCtrl.h"
 
 #include "Engine/Text.h"
 
@@ -24,9 +25,10 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr), pCommand_(nullptr)
+    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr), pCommand_(nullptr),
+    pDamageCtrl_(nullptr)
 {
-    moveSpeed_ = 0.1f;
+    moveSpeed_ = 0.15f;
 }
 
 Player::~Player()
@@ -61,12 +63,10 @@ void Player::Update()
     pCommand_->Update();
     pStateManager_->Update();
 
-    Feet* pFeet = (Feet*)FindObject("Feet");
-    if (pCommand_->CmdAtk() && pFeet) pFeet->ApplyDamage(4);
+    if (pCommand_->CmdAtk()) pDamageCtrl_->ApplyDamage(DamageCtrl::ALL, 4);
 
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
-
 
     //デバッグ用コマンド
     if (Input::IsKeyDown(DIK_G)) {
@@ -81,26 +81,33 @@ void Player::Update()
 
 void Player::Draw()
 {
-    transform_.rotate_.y = pAim_->GetRotate().y + 180.0f;
-    
-    Model::SetTransform(hModel_[0], transform_);
-    Model::Draw(hModel_[0]);
-
     //ここ回転試しにやってみてる
     {
-        XMVECTOR moveVec = XMLoadFloat3(&playerMovement_);
-        XMVECTOR vFront{ 0,0,1,0 };
-        XMVECTOR vDot = XMVector3Dot(vFront, moveVec);
+        const XMVECTOR vFront{ 0, 0, 1, 0 };
+        XMVECTOR playerForward = XMVectorSet(sinf(XMConvertToRadians(transform_.rotate_.y)), 0.0f, cosf(XMConvertToRadians(transform_.rotate_.y)), 0.0f);
+
+        XMVECTOR vDot = XMVector3Dot(vFront, playerForward);
         float dot = XMVectorGetX(vDot);
         float angle = (float)acos(dot);
-        XMVECTOR vCross = XMVector3Cross(vFront, moveVec);
+        
+        //外積求めて半回転だったら angle に -1 掛ける
+        XMVECTOR vCross = XMVector3Cross(vFront, playerForward); //外積求めるやつ 外積はベクトル型
         if (XMVectorGetY(vCross) < 0) {
             angle *= -1;
         }
         transform_.rotate_.y = XMConvertToDegrees(angle);
     }
-    
-    Model::SetTransform(hModel_[1], transform_);
+
+    Model::SetTransform(hModel_[0], transform_);
+    Model::Draw(hModel_[0]);
+
+    //ターゲット状態の場合はAim方向に強制
+    if (pAim_->IsTarget()) {
+        Transform trans = transform_;
+        transform_.rotate_.y = pAim_->GetRotate().y + 180.0f;
+        Model::SetTransform(hModel_[1], trans);
+    }
+    else Model::SetTransform(hModel_[1], transform_);
     Model::Draw(hModel_[1]);
 
     pText->Draw(30, 30, (int)transform_.position_.x);

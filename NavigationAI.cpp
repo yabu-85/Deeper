@@ -1,5 +1,12 @@
 #include "NavigationAI.h"
-#include <stdlib.h>
+#include "Stage.h"
+
+NavigationAI::NavigationAI(Stage* s)
+{
+	pStage_ = s;
+	mapData_ = pStage_->GetMapData();
+
+}
 
 void NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 {

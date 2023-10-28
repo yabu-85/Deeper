@@ -54,6 +54,9 @@ public:
 
     float GetMouseSensitivity() { return mouseSensitivity; };
     void SetMouseSensitivity(float f) { mouseSensitivity = f; };
+
+    //Target‚ÌXV
     void SetTargetEnemy();
+    bool IsTarget() { return isTarget_; };
 
 };

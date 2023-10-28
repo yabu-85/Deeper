@@ -129,6 +129,7 @@
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CollisionMap.cpp" />
+    <ClCompile Include="DamageCtrl.cpp" />
     <ClCompile Include="EnemySpawnCtrl.cpp" />
     <ClCompile Include="EnemyUi.cpp" />
     <ClCompile Include="Engine\Audio.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CollisionMap.h" />
+    <ClInclude Include="DamageCtrl.h" />
     <ClInclude Include="EnemyBase.h" />
     <ClInclude Include="EnemySpawnCtrl.h" />
     <ClInclude Include="EnemyUi.h" />

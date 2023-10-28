@@ -66,6 +66,7 @@ void Feet::Update()
 		if (length <= moveSpeed) currtime_ = stopTime_;
 
 	}
+
 }
 
 void Feet::Draw()
@@ -77,6 +78,8 @@ void Feet::Draw()
 
 void Feet::Release()
 {
+	Model::Release(hModel_);
+
 }
 
 void Feet::ApplyDamage(int da)

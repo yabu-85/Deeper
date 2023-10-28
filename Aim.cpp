@@ -27,7 +27,7 @@ Aim::Aim(GameObject* parent)
     maxCameraOffset_ = 2.0f;
     moveAimTime_ = 0.04f;
     stopAimTime_ = 0.035f;
-    targetRange_ = 30.0f;
+    targetRange_ = 50.0f;
     fovRadian_ = XMConvertToRadians(60) / 2;
 }
 

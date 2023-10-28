@@ -15,6 +15,8 @@ void EnemySpawnCtrl::Release()
 
 int EnemySpawnCtrl::SpawnEnemy(int type)
 {
+	CleanUpEnemyList();
+
 	if (type == ENEMY_MASTERHAND) {
 		enemyList_.push_back(Instantiate<MasterHand>(pParent_));
 		return (int)enemyList_.size() - 1;
@@ -29,7 +31,12 @@ int EnemySpawnCtrl::SpawnEnemy(int type)
 
 std::vector<EnemyBase*>& EnemySpawnCtrl::GetAllEnemy()
 {
-	//Ç‹Ç∏éÄÇÒÇ≈ÇΩÇÁÉäÉXÉgÇ©ÇÁè¡Ç∑
+	CleanUpEnemyList();
+	return enemyList_;
+}
+
+void EnemySpawnCtrl::CleanUpEnemyList()
+{
 	for (int i = 0; i < enemyList_.size();) {
 		if (enemyList_.at(i)->IsDead())
 			enemyList_.erase(enemyList_.begin() + i);
@@ -37,5 +44,4 @@ std::vector<EnemyBase*>& EnemySpawnCtrl::GetAllEnemy()
 			i++;
 	}
 
-	return enemyList_;
 }

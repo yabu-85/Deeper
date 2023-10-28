@@ -47,6 +47,7 @@ public:
 
     std::vector<IntersectData> GetIntersectDatas() { return intersectDatas_; };
     XMFLOAT3 GetPlayerStartPos();
+    std::vector<std::vector<int>> GetMapData() { return mapData_; };
 
     void ResetStage();
     void CreatStage();

@@ -24,7 +24,7 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-    std::string fileName[] = { "StageT1", "StageT2", "RayStageT1", "RayStageT2" };
+    std::string fileName[] = { "StageT1", "StageT2", "StageT3", "RayStageT1", "RayStageT2", "RayStageT3" };
     for (int i = 0; i < MAX + RMAX; i++) {
         hModel_[i] = Model::Load("Model/Stage/" + fileName[i] + ".fbx");
         assert(hModel_[i] >= 0);
@@ -111,6 +111,12 @@ void Stage::CreatStage()
                 mapData_[z][x] = 1;
                 intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
                 intersectDatas_.push_back({ hModel_[T2], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
+            }
+            else if (data == 3)
+            {
+                mapData_[z][x] = 1;
+                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
+                intersectDatas_.push_back({ hModel_[T3], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
             }
             else
             {

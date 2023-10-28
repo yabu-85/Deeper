@@ -11,30 +11,24 @@
 #include "EnemySpawnCtrl.h"
 #include "GameManager.h"
 
-namespace {
-    const float upMouselimit = -89.0f;
-    const float donwMouselimit = 70.0f;
-    const float mouseSpeed = 0.05f;
-
-    const float defPerspectDistance = 7.0f; //デフォルトの視点の距離
-    const float heightRay = 0.5f;           //StageとのRay判定の当たった距離にプラスする値
-
-    const float numSupress = 0.002f;        //マウス移動でOffsetの値を戻す量
-    const float maxCameraOffset = 2.0f;     //cameraOffsetの最大距離
-    const float moveAimTime = 0.04f;        //動く時の抑制の値
-    const float stopAimTime = 0.035f;        //止まる時の抑制の値
-
-    const float targetRange = 30.0f;        //ターゲットの有効範囲
-    const float fovRadian = XMConvertToRadians(60) / 2;
-}
-
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 },
     plaPos_{ 0,0,0 }, pPlayer_(nullptr), hPict_(-1), aimMove_(false), cameraOffset_{0,0,0}, isTarget_(false), pEnemyBase_(nullptr), pCollisionMap_(nullptr)
 {
     mouseSensitivity = 2.0f;
-    perspectiveDistance_ = defPerspectDistance;
-    heightDistance_ = 3.0f; //近いとだめ
+    perspectiveDistance_ = defPerspectDistance_;
+    heightDistance_ = 3.0f;
+    upMouselimit_ = -89.0f;
+    donwMouselimit_ = 70.0f;
+    mouseSpeed_ = 0.05f;
+    defPerspectDistance_ = 7.0f;
+    heightRay_ = 0.1f;
+    numSupress_ = 0.002f;
+    maxCameraOffset_ = 2.0f;
+    moveAimTime_ = 0.04f;
+    stopAimTime_ = 0.035f;
+    targetRange_ = 30.0f;
+    fovRadian_ = XMConvertToRadians(60) / 2;
 }
 
 Aim::~Aim()
@@ -56,22 +50,20 @@ void Aim::Update()
     if (!aimMove_) return;
 
     if (isTarget_) {
-        //カメラオフセットの機能はターゲット時も有効にする、ただしマウスでの抑制はなし
         CalcCameraOffset(0.0f);
 
         //isTarget状態なのにTargetとなるEnemyがいない場合reset
         if (!pEnemyBase_->IsDead()) FacingTarget();
         else isTarget_ = false;
-        
     }
     else {
         XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
-        transform_.rotate_.y += (mouseMove.x * mouseSpeed) * mouseSensitivity; //横方向の回転
-        transform_.rotate_.x -= (mouseMove.y * mouseSpeed) * mouseSensitivity; //縦方向の回転
-        if (transform_.rotate_.x <= upMouselimit) transform_.rotate_.x = upMouselimit;
-        if (transform_.rotate_.x >= donwMouselimit) transform_.rotate_.x = donwMouselimit;
+        transform_.rotate_.y += (mouseMove.x * mouseSpeed_) * mouseSensitivity; //横方向の回転
+        transform_.rotate_.x -= (mouseMove.y * mouseSpeed_) * mouseSensitivity; //縦方向の回転
+        if (transform_.rotate_.x <= upMouselimit_) transform_.rotate_.x = upMouselimit_;
+        if (transform_.rotate_.x >= donwMouselimit_) transform_.rotate_.x = donwMouselimit_;
 
-        CalcCameraOffset(mouseMove.x * numSupress);
+        CalcCameraOffset(mouseMove.x * numSupress_);
     }
 
     //カメラの回転
@@ -88,25 +80,23 @@ void Aim::Update()
 
     //プレイヤーの位置をカメラの焦点とする
     plaPos_ = pPlayer_->GetPosition();
-
     cameraTarget_.x = plaPos_.x + cameraOffset_.x;
     cameraTarget_.y = plaPos_.y + heightDistance_;
     cameraTarget_.z = plaPos_.z + cameraOffset_.z;
 
-    RayCastStage(cameraTarget_);
-
-    //カメラ焦点
+    //RayCast前の情報を入れる
     XMVECTOR caTarget = XMLoadFloat3(&cameraTarget_);
-
-    //ここAimの近さの値をプレイヤーから取得して計算もしてる
     XMVECTOR camPos = caTarget + (direction * perspectiveDistance_);
-
     XMStoreFloat3(&cameraPos_, camPos);
     XMStoreFloat3(&cameraTarget_, caTarget);
 
+    //RayCastしてその値を上書きする
+    RayCastStage(cameraTarget_);
+    camPos = caTarget + (direction * perspectiveDistance_);
+    XMStoreFloat3(&cameraPos_, camPos);
+
     Camera::SetPosition(cameraPos_);
     Camera::SetTarget(cameraTarget_);
-
 }
 
 void Aim::Draw()
@@ -148,7 +138,7 @@ void Aim::SetTargetEnemy()
         float distance = (float)sqrt(toTarget.x * toTarget.x + toTarget.z * toTarget.z);
 
         //範囲外だったら次
-        if (distance >= targetRange) continue;
+        if (distance >= targetRange_) continue;
 
         // 方向ベクトルを正規化
         XMVECTOR toTargetNorm = XMVector3Normalize(XMLoadFloat3(&toTarget));
@@ -159,7 +149,7 @@ void Aim::SetTargetEnemy()
         float angle = acosf(dotProduct);
 
         // 角度を比較してターゲットが範囲内にあるかどうかを確認
-        if (angle <= fovRadian) {
+        if (angle <= fovRadian_) {
             if (minLeng > distance) {
                 minLeng = distance;
                 minLengIndex = i;
@@ -176,9 +166,6 @@ void Aim::SetTargetEnemy()
 
 //-----------private--------------------------------------------
 
-//Facingの方もOffsetみたいな機能を入れるようにしたい
-//あとターゲット状態の時は常に敵の方を見て移動するように（後ろに移動する時も敵を常に見る）
-//それと回避の動作を何も入力してない時はバックステップにするようにする
 void Aim::FacingTarget()
 {
     //プレイヤーの方向に向くようにする
@@ -218,8 +205,8 @@ void Aim::FacingTarget()
     rotationX = -XMConvertToDegrees(rotationX);
 
     transform_.rotate_.x = rotationX;
-    if (transform_.rotate_.x <= upMouselimit) transform_.rotate_.x = upMouselimit;
-    if (transform_.rotate_.x >= donwMouselimit) transform_.rotate_.x = donwMouselimit;
+    if (transform_.rotate_.x <= upMouselimit_) transform_.rotate_.x = upMouselimit_;
+    if (transform_.rotate_.x >= donwMouselimit_) transform_.rotate_.x = donwMouselimit_;
 
 }
 
@@ -231,10 +218,10 @@ void Aim::CalcCameraOffset(float _aimMove)
     
     XMVECTOR vCameraOffset = XMLoadFloat3(&cameraOffset_);
     XMVECTOR vTargetOffset = pPlayer_->GetMoveVec();
-    vTargetOffset *= maxCameraOffset * -1;
+    vTargetOffset *= maxCameraOffset_ * -1;
 
-    if(pPlayer_->IsMove()) vCameraOffset += (vTargetOffset - vCameraOffset) * moveAimTime;   //move
-    else vCameraOffset += (vTargetOffset - vCameraOffset) * stopAimTime;                     //stop
+    if(pPlayer_->IsMove()) vCameraOffset += (vTargetOffset - vCameraOffset) * moveAimTime_;   //move
+    else vCameraOffset += (vTargetOffset - vCameraOffset) * stopAimTime_;                     //stop
 
     XMStoreFloat3(&cameraOffset_, vCameraOffset);
 }
@@ -252,10 +239,14 @@ void Aim::RayCastStage(XMFLOAT3 _start)
     XMStoreFloat3(&dir, vDir);
     data.start = start;
     data.dir = dir;
-    float min = pCollisionMap_->GetRayCastMinDist(&data);
+    float min = pCollisionMap_->GetRayCastMinDist(cameraPos_, &data);
 
     //レイ当たった・判定距離内だったら
-    if (min < (defPerspectDistance + heightRay)) 
-        perspectiveDistance_ = min - heightRay;
-    else perspectiveDistance_ = defPerspectDistance;
+    if (min <= (defPerspectDistance_)) {
+        perspectiveDistance_ = min - heightRay_;
+    }
+    else {
+        perspectiveDistance_ = defPerspectDistance_ - heightRay_;
+    }
+
 }

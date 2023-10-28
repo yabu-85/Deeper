@@ -12,6 +12,17 @@ class Aim :
     float mouseSensitivity;         //マウス感度
     float perspectiveDistance_;     //どのくらい後ろから映すか
     float heightDistance_;          //焦点の高さ
+    float upMouselimit_;            //マウス移動の制限値（上下
+    float donwMouselimit_;          //マウス移動の制限値（左右
+    float mouseSpeed_;              //マウス移動スピード
+    float defPerspectDistance_;     //デフォルトの視点の距離
+    float heightRay_;               //Rayの値にプラスする量
+    float numSupress_;              //マウス移動でOffsetの値を戻す量
+    float maxCameraOffset_;         //cameraOffsetの最大距離
+    float moveAimTime_;             //動く時の抑制の値
+    float stopAimTime_;             //止まる時の抑制の値
+    float targetRange_;             //ターゲットの有効範囲
+    float fovRadian_;               //Targetの範囲
     bool aimMove_;                  //エイムを動かすかどうか
     bool isTarget_;                 //ターゲット状態か
 

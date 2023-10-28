@@ -45,7 +45,6 @@ void Feet::Initialize()
 void Feet::Update()
 {
 	pEnemyUi_->Update();
-	return;
 
 	if (currtime_ > 0) {
 		currtime_--;
@@ -78,8 +77,6 @@ void Feet::Draw()
 
 void Feet::Release()
 {
-	pEnemyUi_->~EnemyUi();
-
 }
 
 void Feet::ApplyDamage(int da)

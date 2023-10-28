@@ -34,9 +34,11 @@ void GameManager::Initialize()
 
 void GameManager::Update()
 {
+
+
+	//デバッグ用
 	if (Input::IsKeyDown(DIK_M)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND);
 	if (Input::IsKeyDown(DIK_N)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET);
-
 }
 
 void GameManager::Draw()

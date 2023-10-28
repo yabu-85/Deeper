@@ -1,6 +1,7 @@
 #include "MasterHand.h"
 #include "Engine/Model.h"
 #include "GameManager.h"
+#include "EnemyUi.h"
 
 #include "Aim.h"
 #include "Player.h"
@@ -19,6 +20,8 @@ MasterHand::MasterHand(GameObject* parent)
 
 MasterHand::~MasterHand()
 {
+	Release();
+
 }
 
 void MasterHand::Initialize()
@@ -36,13 +39,21 @@ void MasterHand::Initialize()
 	transform_.rotate_.y -= 180.0f;
 	transform_.position_ = pPlayer->GetPosition();
 
+	pEnemyUi_ = new EnemyUi(this);
+	pEnemyUi_->Initialize();
+
 	maxHp_ = 10;
 	hp_ = maxHp_;
 }
 
 void MasterHand::Update()
 {
-	if (lifeTime_ >= killTime) KillMe();
+	pEnemyUi_->Update();
+
+	if (lifeTime_ >= killTime) {
+		KillMe();
+		return;
+	}
 	lifeTime_++;
 
 	//Œü‚¢‚Ä‚¢‚é•ûŒü‚Ö‘Oi

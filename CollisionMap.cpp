@@ -145,17 +145,17 @@ void CollisionMap::Release()
 {
 }
 
-float CollisionMap::GetRayCastMinDist(RayCastData* _data)
+float CollisionMap::GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data)
 {
     RayCastData data;
     const float minRangeMax = 100000000;
     float minRange = minRangeMax;
 
-    int x = int((_data->start.x - minX) / boxSize);
-    int y = int((_data->start.y - minY) / boxSize);
-    int z = int((_data->start.z - minZ) / boxSize);
-    if (x < 0 || y < 0 || z < 0 ||
-        x > maxX / boxSize || y > maxY / boxSize || z > maxZ / boxSize) return minRange;
+    int x = int((pos.x - minX) / boxSize);
+    int y = int((pos.y - minY) / boxSize);
+    int z = int((pos.z - minZ) / boxSize);
+    if (x < 0 || y < 0 || z < 0 || x > maxX / boxSize || y > maxY / boxSize || z > maxZ / boxSize) return minRange;
+
     std::vector<Triangle*> triList;
     triList = cells_[y][z][x].GetTriangles();
 

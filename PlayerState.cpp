@@ -2,10 +2,20 @@
 #include "Player.h"
 #include "StateManager.h"
 #include "PlayerCommand.h"
+#include "DamageCtrl.h"
+#include "GameManager.h"
 
 namespace {
 	const int defAvoTime = 30;
 	const float defAvoSpeed = 2.0f;
+}
+
+//--------------------------------------------------------------------------------
+
+PlayerWait::PlayerWait(StateManager* owner)
+{
+	owner_ = owner;
+	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
 
 void PlayerWait::Update()
@@ -19,22 +29,28 @@ void PlayerWait::Update()
 		owner_->ChangeState("Avo");
 		return;
 	}
+	if (pPlayer_->GetCommand()->CmdAtk()) {
+		owner_->ChangeState("Atk");
+		return;
+	}
 
 	pPlayer_->CalcNoMove();
 	pPlayer_->Move();
 }
 
-void PlayerWait::Initialize()
+//--------------------------------------------------------------------------------
+
+PlayerWalk::PlayerWalk(StateManager* owner)
 {
+	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
-
-//------------------------------------------------------------
 
 void PlayerWalk::Update()
 {
 	pPlayer_->CalcMove();
 	pPlayer_->Move();
+	pPlayer_->Rotate();
 
 	if (!pPlayer_->GetCommand()->CmdWalk()) {
 		owner_->ChangeState("Wait");
@@ -44,14 +60,20 @@ void PlayerWalk::Update()
 		owner_->ChangeState("Avo");
 		return;
 	}
+	if (pPlayer_->GetCommand()->CmdAtk()) {
+		owner_->ChangeState("Atk");
+		return;
+	}
 }
 
-void PlayerWalk::Initialize()
+//--------------------------------------------------------------------------------
+
+PlayerAvo::PlayerAvo(StateManager* owner)
+	:avoTime_(0)
 {
+	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
-
-//------------------------------------------------------------
 
 void PlayerAvo::Update()
 {
@@ -79,7 +101,39 @@ void PlayerAvo::OnExit()
 	pPlayer_->ResetMovement();
 }
 
-void PlayerAvo::Initialize()
+//--------------------------------------------------------------------------------
+
+PlayerAtk::PlayerAtk(StateManager* owner)
+	:atkTime_(0)
 {
+	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
+	
+	GameManager* pGameManager = (GameManager*)pPlayer_->FindObject("GameManager");
+	pDamageCtrl_ = pGameManager->GetDamageCtrl();
+}
+
+void PlayerAtk::Update()
+{
+	atkTime_--;
+	if (atkTime_ <= 0) {
+		owner_->ChangeState("Wait");
+		return;
+	}
+
+	if(pPlayer_->GetCommand()->CmdAtk())
+	pDamageCtrl_->ApplyDamage(DamageCtrl::ALL, 4);
+
+	pPlayer_->SetScale(XMFLOAT3( 1.0f - (float)atkTime_ / (float)60, 1.0f, 1.0f - (float)atkTime_ / (float)60) );
+	pPlayer_->CalcNoMove();
+}
+
+void PlayerAtk::OnEnter()
+{
+	pDamageCtrl_->ApplyDamage(DamageCtrl::ALL, 4);
+	atkTime_ = 60;
+}
+
+void PlayerAtk::OnExit()
+{
 }

@@ -1,25 +1,24 @@
 #pragma once
 #include "StateBase.h"
 class Player;
+class DamageCtrl;
 
 class PlayerWait : public StateBase
 {
 	Player* pPlayer_;
 public:
-	PlayerWait(StateManager* owner) : StateBase(owner), pPlayer_(nullptr) {};
+	PlayerWait(StateManager* owner);
 	const char* GetName() const override { return "Wait"; }
 	void Update() override;
-	void Initialize() override;
 };
 
 class PlayerWalk : public StateBase
 {
 	Player* pPlayer_;
 public:
-	PlayerWalk(StateManager* owner) : StateBase(owner), pPlayer_(nullptr) {};
+	PlayerWalk(StateManager* owner);
 	const char* GetName() const override { return "Walk"; }
 	void Update() override;
-	void Initialize() override;
 };
 
 class PlayerAvo : public StateBase
@@ -27,11 +26,22 @@ class PlayerAvo : public StateBase
 	int avoTime_;
 	Player* pPlayer_;
 public:
-	PlayerAvo(StateManager* owner) : StateBase(owner), avoTime_(0), pPlayer_(nullptr) {};
+	PlayerAvo(StateManager* owner);
 	const char* GetName() const override { return "Avo"; }
 	void Update() override;
 	void OnEnter() override;
 	void OnExit() override;
-	void Initialize() override;
 };
 
+class PlayerAtk : public StateBase
+{
+	int atkTime_;
+	Player* pPlayer_;
+	DamageCtrl* pDamageCtrl_;
+public:
+	PlayerAtk(StateManager* owner);
+	const char* GetName() const override { return "Atk"; }
+	void Update() override;
+	void OnEnter() override;
+	void OnExit() override;
+};

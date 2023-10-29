@@ -29,7 +29,6 @@ void GameManager::Initialize()
 
 	pPlayer_ = Instantiate<Player>(this);
 	pPlayer_->SetPosition(pStage_->GetPlayerStartPos());
-	pPlayer_->SetDamageCtrl(pDamageCtrl_);
 
 	Instantiate<CollisionMap>(this);
 

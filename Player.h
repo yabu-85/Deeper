@@ -4,7 +4,6 @@
 class Aim;
 class StateManager;
 class PlayerCommand;
-class DamageCtrl;
 
 class Player :
     public GameObject
@@ -13,11 +12,11 @@ class Player :
     float moveSpeed_;           //移動スピード
     XMFLOAT3 playerMovement_;   //今の移動量
     XMFLOAT3 moveVec_;          //移動キーの値を取得
+    Transform upTrans_;         //上半身のTransform
 
     Aim* pAim_;
     StateManager* pStateManager_;
     PlayerCommand* pCommand_;
-    DamageCtrl* pDamageCtrl_;
 
 public:
     Player(GameObject* parent);
@@ -27,6 +26,7 @@ public:
     void Draw() override;
     void Release() override;
 
+    void Rotate();
     void Move(float f = 1.0f);      //実際の移動
     void CalcMove();                //Inputを考慮したやつ
     void CalcNoMove();              //Input考慮してない、滑るやつとかの計算用
@@ -40,7 +40,6 @@ public:
     XMVECTOR GetDirectionVec();                                 //向いている方向（正規化済み
 
     PlayerCommand* GetCommand() { return pCommand_; }
-    void SetDamageCtrl(DamageCtrl* d) { pDamageCtrl_ = d; };
 
 };
 

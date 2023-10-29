@@ -33,7 +33,8 @@ public:
 	void Draw() override;
 	void Release() override;
 
-	EnemySpawnCtrl* GetEnemySpawnCtrl() { return pEnemySpawnCtrl_; };
-	NavigationAI* GetNavigationAI() { return pNavigationAI_; };
+	EnemySpawnCtrl* GetEnemySpawnCtrl() { return pEnemySpawnCtrl_; }
+	NavigationAI* GetNavigationAI() { return pNavigationAI_; }
+	DamageCtrl* GetDamageCtrl() { return pDamageCtrl_; }
 
 };

@@ -1,13 +1,24 @@
 #pragma once
+#include "Engine/GameObject.h"
 #include "WeaponBase.h"
 
-class BulletBase 
+class BulletBase : public GameObject
 {
 protected:
-
+	int hModel_;
+	int lifeTime_;		//ê∂ë∂éûä‘
+	XMFLOAT3 moveVec_;	//à⁄ìÆó 
 
 public:
-	virtual void Initialize() = 0;
+	BulletBase(GameObject* parent);
+	virtual ~BulletBase() = 0 {};
+	virtual void Initialize() override = 0 {};
+	virtual void Update() override = 0 {};
+	virtual void Draw() override = 0 {};
+	virtual void Release() override = 0 {};
+
+	virtual void Shot(XMFLOAT3 pos, XMFLOAT3 target);	//î≠éÀ
+	virtual void Move();								//à⁄ìÆÇ≥ÇπÇÈ
 
 };
 

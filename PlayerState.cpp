@@ -4,6 +4,7 @@
 #include "PlayerCommand.h"
 #include "DamageCtrl.h"
 #include "GameManager.h"
+#include "TestBullet.h"
 
 namespace {
 	const int defAvoTime = 30;
@@ -31,6 +32,10 @@ void PlayerWait::Update()
 	}
 	if (pPlayer_->GetCommand()->CmdAtk()) {
 		owner_->ChangeState("Atk");
+		return;
+	}
+	if (pPlayer_->GetCommand()->CmdSubAtk()) {
+		owner_->ChangeState("SubAtk");
 		return;
 	}
 
@@ -62,6 +67,10 @@ void PlayerWalk::Update()
 	}
 	if (pPlayer_->GetCommand()->CmdAtk()) {
 		owner_->ChangeState("Atk");
+		return;
+	}
+	if (pPlayer_->GetCommand()->CmdSubAtk()) {
+		owner_->ChangeState("SubAtk");
 		return;
 	}
 }
@@ -127,8 +136,11 @@ void PlayerAtk::Update()
 		nextCmd = 1;
 	if (pPlayer_->GetCommand()->CmdAtk())
 		nextCmd = 2;
+	if (pPlayer_->GetCommand()->CmdSubAtk())
+		nextCmd = 3;
 
-	if (atkTime_ <= nextCmd) {
+	if (atkTime_ <= (int)nextCmd) {
+		//Command
 		if (nextCmd == 1) {
 			owner_->ChangeState("Avo");
 			return;
@@ -137,13 +149,17 @@ void PlayerAtk::Update()
 			owner_->ChangeState("Atk");
 			return;
 		}
-	
+		if (nextCmd == 3) {
+			owner_->ChangeState("SubAtk");
+			return;
+		}
+		
+		//クールタイム終わり
 		if (atkTime_ <= 0) {
 			owner_->ChangeState("Wait");
 			return;
 		}
 	}
-
 
 	pPlayer_->SetScale(XMFLOAT3(1.0f - (float)atkTime_ / (float)60, 1.0f, 1.0f - (float)atkTime_ / (float)60));
 }
@@ -168,8 +184,17 @@ PlayerSubAtk::PlayerSubAtk(StateManager* owner)
 
 void PlayerSubAtk::Update()
 {
+	atkTime_--;
+	//クールタイム終わり
+	if (atkTime_ <= 0) {
+		owner_->ChangeState("Wait");
+		return;
+	}
 }
 
 void PlayerSubAtk::OnEnter()
 {
+	TestBullet* b = Instantiate<TestBullet>(pPlayer_->GetParent());
+	b->Shot(pPlayer_->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	atkTime_ = 60;
 }

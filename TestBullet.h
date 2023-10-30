@@ -3,10 +3,13 @@
 
 class TestBullet : public BulletBase
 {
-
-protected:
-
-
 public:
+    TestBullet(GameObject* parent);
+    ~TestBullet() override;
+    void Initialize() override;
+    void Update() override;
+    void Draw() override;
+    void Release() override;
+
 };
 

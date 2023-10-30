@@ -52,7 +52,7 @@ class PlayerSubAtk : public StateBase
 	DamageCtrl* pDamageCtrl_;
 public:
 	PlayerSubAtk(StateManager* owner);
-	const char* GetName() const override { return "Atk"; }
+	const char* GetName() const override { return "SubAtk"; }
 	void Update() override;
 	void OnEnter() override;
 };

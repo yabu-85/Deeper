@@ -4,6 +4,7 @@
 class PlayerCommand
 {
 	bool atk_;
+	bool subAtk_;
 	bool avo_;
 	bool target_;
 
@@ -18,6 +19,7 @@ public:
 	void Update();
 
 	bool CmdAtk() { return atk_; };
+	bool CmdSubAtk() { return subAtk_; };
 	bool CmdAvo() { return avo_; }
 	bool CmdTarget() { return target_; }
 

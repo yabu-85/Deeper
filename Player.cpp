@@ -47,6 +47,7 @@ void Player::Initialize()
     pStateManager_->AddState(new PlayerWalk(pStateManager_));
     pStateManager_->AddState(new PlayerAvo(pStateManager_));
     pStateManager_->AddState(new PlayerAtk(pStateManager_));
+    pStateManager_->AddState(new PlayerSubAtk(pStateManager_));
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 

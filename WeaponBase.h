@@ -4,7 +4,7 @@
 class WeaponBase
 {
 protected:
-	std::string name_;
+	std::string weaponName_;
 	float damage_;
 
 public:

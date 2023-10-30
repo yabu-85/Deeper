@@ -1,5 +1,4 @@
 #pragma once
-#include "Engine/GameObject.h"
 #include "WeaponBase.h"
 
 class BulletBase : public GameObject
@@ -7,6 +6,7 @@ class BulletBase : public GameObject
 protected:
 	int hModel_;
 	int lifeTime_;		//¶‘¶ŠÔ
+	float velocity_;	//’e‘¬
 	XMFLOAT3 moveVec_;	//ˆÚ“®—Ê
 
 public:
@@ -19,6 +19,7 @@ public:
 
 	virtual void Shot(XMFLOAT3 pos, XMFLOAT3 target);	//”­Ë
 	virtual void Move();								//ˆÚ“®‚³‚¹‚é
+	virtual void LifeTime();
 
 };
 

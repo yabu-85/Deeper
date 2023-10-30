@@ -1,7 +1,6 @@
 #pragma once
 #include "StateBase.h"
 class Player;
-class DamageCtrl;
 
 class PlayerWait : public StateBase
 {
@@ -37,19 +36,18 @@ class PlayerAtk : public StateBase
 {
 	int atkTime_;
 	Player* pPlayer_;
-	DamageCtrl* pDamageCtrl_;
 public:
 	PlayerAtk(StateManager* owner);
 	const char* GetName() const override { return "Atk"; }
 	void Update() override;
 	void OnEnter() override;
+	void OnExit() override;
 };
 
 class PlayerSubAtk : public StateBase
 {
 	int atkTime_;
 	Player* pPlayer_;
-	DamageCtrl* pDamageCtrl_;
 public:
 	PlayerSubAtk(StateManager* owner);
 	const char* GetName() const override { return "SubAtk"; }

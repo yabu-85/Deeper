@@ -78,8 +78,6 @@ void Feet::Draw()
 
 void Feet::Release()
 {
-	Model::Release(hModel_);
-
 }
 
 void Feet::ApplyDamage(int da)

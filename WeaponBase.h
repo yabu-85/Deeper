@@ -1,13 +1,31 @@
 #pragma once
-#include <string>
+#include "Engine/GameObject.h"
 
-class WeaponBase
+class StateManager;
+
+class WeaponBase : public GameObject
 {
 protected:
-	std::string weaponName_;
-	float damage_;
+	int hModel_;
+	bool atkEnd_;
+	XMFLOAT3 offsetPosition_;
+	XMFLOAT3 offsetRotation_;
+	StateManager* pStateManager_;
 
 public:
-	virtual void Initialize() = 0;
+	WeaponBase(GameObject* parent);
+	virtual ~WeaponBase() = 0 {};
+	virtual void Initialize() override = 0 {};
+	virtual void Update() override = 0 {};
+	virtual void Draw() override = 0 {};
+	virtual void Release() override = 0 {};
+
+	void SetOffsetPosition(XMFLOAT3 pos) { offsetPosition_ = pos; }
+	void SetOffsetRotate(XMFLOAT3 rot) { offsetRotation_ = rot; }
+	void UpdateState();
+	virtual void ResetState() = 0;
+
+	void SetAtkEnd(bool b) { atkEnd_ = b; }
+	bool IsAtkEnd() { return atkEnd_; }
 };
 

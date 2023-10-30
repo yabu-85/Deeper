@@ -4,6 +4,7 @@
 class Aim;
 class StateManager;
 class PlayerCommand;
+class WeaponBase;
 
 class Player :
     public GameObject
@@ -17,6 +18,9 @@ class Player :
     Aim* pAim_;
     StateManager* pStateManager_;
     PlayerCommand* pCommand_;
+
+    WeaponBase* pMainWeapon_;
+    WeaponBase* pSubWeapon_;
 
 public:
     Player(GameObject* parent);
@@ -38,8 +42,12 @@ public:
 
     XMVECTOR GetMoveVec() { return XMLoadFloat3(&moveVec_); }  //ˆÚ“®•ûŒüi³‹K‰»Ï‚İ
     XMVECTOR GetDirectionVec();                                 //Œü‚¢‚Ä‚¢‚é•ûŒüi³‹K‰»Ï‚İ
+    XMFLOAT3 GetUpRotate() { return upTrans_.rotate_; }
 
     PlayerCommand* GetCommand() { return pCommand_; }
+    Aim* GetAim() { return pAim_; }
+    WeaponBase* GetMainWeapon() { return pMainWeapon_; }
+    WeaponBase* GetSubWeapon() { return pSubWeapon_; }
 
 };
 

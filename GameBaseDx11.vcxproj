@@ -168,11 +168,14 @@
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="TestBullet.cpp" />
+    <ClCompile Include="TestWeaponMain.cpp" />
+    <ClCompile Include="TestWeaponSub.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="TitleUIManager.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="UIBase.cpp" />
     <ClCompile Include="UIManager.cpp" />
+    <ClCompile Include="WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aim.h" />
@@ -220,6 +223,8 @@
     <ClInclude Include="StateBase.h" />
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="TestBullet.h" />
+    <ClInclude Include="TestWeaponMain.h" />
+    <ClInclude Include="TestWeaponSub.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="TitleUIManager.h" />
     <ClInclude Include="Triangle.h" />

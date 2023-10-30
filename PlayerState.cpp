@@ -2,9 +2,9 @@
 #include "Player.h"
 #include "StateManager.h"
 #include "PlayerCommand.h"
-#include "DamageCtrl.h"
 #include "GameManager.h"
 #include "TestBullet.h"
+#include "Aim.h"
 
 namespace {
 	const int defAvoTime = 30;
@@ -117,8 +117,6 @@ PlayerAtk::PlayerAtk(StateManager* owner)
 {
 	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
-	GameManager* pGameManager = (GameManager*)pPlayer_->FindObject("GameManager");
-	pDamageCtrl_ = pGameManager->GetDamageCtrl();
 }
 
 namespace {
@@ -131,13 +129,12 @@ void PlayerAtk::Update()
 {
 	pPlayer_->CalcNoMove();
 	atkTime_--;
+	pPlayer_->GetMainWeapon()->UpdateState();
 
 	if (pPlayer_->GetCommand()->CmdAvo())
 		nextCmd = 1;
-	if (pPlayer_->GetCommand()->CmdAtk())
-		nextCmd = 2;
 	if (pPlayer_->GetCommand()->CmdSubAtk())
-		nextCmd = 3;
+		nextCmd = 2;
 
 	if (atkTime_ <= (int)nextCmd) {
 		//Command
@@ -146,10 +143,6 @@ void PlayerAtk::Update()
 			return;
 		}
 		if (nextCmd == 2) {
-			owner_->ChangeState("Atk");
-			return;
-		}
-		if (nextCmd == 3) {
 			owner_->ChangeState("SubAtk");
 			return;
 		}
@@ -166,11 +159,16 @@ void PlayerAtk::Update()
 
 void PlayerAtk::OnEnter()
 {
-	pDamageCtrl_->ApplyDamage(DamageCtrl::ALL, 4);
 	atkTime_ = 60;
 	nextCmd = 0;
+	pPlayer_->GetMainWeapon()->SetAtkEnd(false);
 }
 
+void PlayerAtk::OnExit()
+{
+	pPlayer_->GetMainWeapon()->ResetState();
+}
+ 
 //--------------------------------------------------------------------------------
 
 PlayerSubAtk::PlayerSubAtk(StateManager* owner)
@@ -178,23 +176,55 @@ PlayerSubAtk::PlayerSubAtk(StateManager* owner)
 {
 	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
-	GameManager* pGameManager = (GameManager*)pPlayer_->FindObject("GameManager");
-	pDamageCtrl_ = pGameManager->GetDamageCtrl();
 }
 
 void PlayerSubAtk::Update()
 {
+	pPlayer_->CalcMove();
+	pPlayer_->Move();
 	atkTime_--;
+	pPlayer_->GetSubWeapon()->UpdateState();
+
 	//クールタイム終わり
 	if (atkTime_ <= 0) {
-		owner_->ChangeState("Wait");
+		if (pPlayer_->GetCommand()->CmdWalk())
+			owner_->ChangeState("Walk");
+		else
+			owner_->ChangeState("Wait");
 		return;
 	}
+
+	if (atkTime_ % 1 == 0) {
+		Aim* pAim = pPlayer_->GetAim();
+		XMFLOAT3 tar;
+		if (pAim->IsTarget()) {
+			tar = pAim->GetTargetPos();
+		}
+		else {
+			XMFLOAT3 pos = pPlayer_->GetPosition();
+			XMFLOAT3 vec = pAim->GetAimDirection();
+			tar = XMFLOAT3(pos.x + vec.x, pos.y + vec.y, pos.z + vec.z);
+		}
+		TestBullet* b = Instantiate<TestBullet>(pPlayer_->GetParent());
+		b->Shot(pPlayer_->GetPosition(), tar);
+	}
+
 }
 
 void PlayerSubAtk::OnEnter()
 {
+	Aim* pAim = pPlayer_->GetAim();
+	XMFLOAT3 tar;
+	if (pAim->IsTarget()) {
+		tar = pAim->GetTargetPos();
+	}
+	else {
+		XMFLOAT3 pos = pPlayer_->GetPosition();
+		XMFLOAT3 vec = pAim->GetAimDirection();
+		tar = XMFLOAT3(pos.x + vec.x, pos.y + vec.y, pos.z + vec.z);
+	}
 	TestBullet* b = Instantiate<TestBullet>(pPlayer_->GetParent());
-	b->Shot(pPlayer_->GetPosition(), XMFLOAT3(0.0f, 0.0f, 0.0f));
-	atkTime_ = 60;
+	b->Shot(pPlayer_->GetPosition(), tar);
+
+	atkTime_ = 20;
 }

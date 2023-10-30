@@ -51,6 +51,7 @@ public:
     //進行方向ベクトルのAim情報を取得
     XMFLOAT3 GetAimDirection() { return aimDirection_; }
     void SetAimMove(bool b) { aimMove_ = b; };
+    XMFLOAT3 GetTargetPos();
 
     float GetMouseSensitivity() { return mouseSensitivity; };
     void SetMouseSensitivity(float f) { mouseSensitivity = f; };

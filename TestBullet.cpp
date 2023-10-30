@@ -9,6 +9,7 @@ TestBullet::TestBullet(GameObject* parent)
 
 TestBullet::~TestBullet()
 {
+	Release();
 }
 
 void TestBullet::Initialize()
@@ -17,12 +18,16 @@ void TestBullet::Initialize()
 	hModel_ = Model::Load("Model/Feet.fbx");
 	assert(hModel_ >= 0);
 
-	transform_.scale_ = XMFLOAT3(0.2f, 0.2f, 0.2f);
+	transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	velocity_ = 0.7f;
+	lifeTime_ = 100;
 }
 
 void TestBullet::Update()
 {
+	LifeTime();
 	Move();
+
 }
 
 void TestBullet::Draw()
@@ -33,5 +38,5 @@ void TestBullet::Draw()
 
 void TestBullet::Release()
 {
-
+	Model::Release(hModel_);
 }

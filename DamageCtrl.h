@@ -1,12 +1,11 @@
 #pragma once
 #include <DirectXMath.h>
-
 using namespace DirectX;
+
 class EnemySpawnCtrl;
 
 class DamageCtrl
 {
-
 	EnemySpawnCtrl* pEnemySpawnCtrl_;
 
 public:

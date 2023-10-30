@@ -16,12 +16,12 @@ Aim::Aim(GameObject* parent)
     plaPos_{ 0,0,0 }, pPlayer_(nullptr), hPict_(-1), aimMove_(false), cameraOffset_{0,0,0}, isTarget_(false), pEnemyBase_(nullptr), pCollisionMap_(nullptr)
 {
     mouseSensitivity = 2.0f;
-    perspectiveDistance_ = defPerspectDistance_;
     heightDistance_ = 3.0f;
     upMouselimit_ = -89.0f;
     donwMouselimit_ = 70.0f;
     mouseSpeed_ = 0.05f;
     defPerspectDistance_ = 7.0f;
+    perspectiveDistance_ = defPerspectDistance_;
     heightRay_ = 0.1f;
     numSupress_ = 0.002f;
     maxCameraOffset_ = 2.0f;
@@ -45,7 +45,7 @@ void Aim::Initialize()
 void Aim::Update()
 {
     //デバッグ用
-    if (Input::IsMouseButtonDown(1)) aimMove_ = !aimMove_;
+    if (Input::IsKeyDown(DIK_T)) aimMove_ = !aimMove_;
     
     if (!aimMove_) return;
 
@@ -105,6 +105,14 @@ void Aim::Draw()
 
 void Aim::Release()
 {
+}
+
+XMFLOAT3 Aim::GetTargetPos()
+{
+    if(!isTarget_)
+        return XMFLOAT3();
+
+    return pEnemyBase_->GetPosition();
 }
 
 void Aim::SetTargetEnemy()

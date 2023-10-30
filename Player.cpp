@@ -5,6 +5,8 @@
 #include "StateManager.h"
 #include "PlayerState.h"
 #include "PlayerCommand.h"
+#include "TestWeaponMain.h"
+#include "TestWeaponSub.h"
 
 #include "Engine/Text.h"
 
@@ -21,7 +23,8 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr), pCommand_(nullptr)
+    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr), pCommand_(nullptr),
+    pMainWeapon_(nullptr), pSubWeapon_(nullptr)
 {
     moveSpeed_ = 0.15f;
 }
@@ -51,6 +54,11 @@ void Player::Initialize()
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 
+    pMainWeapon_ = Instantiate<TestWeaponMain>(this);
+    pMainWeapon_->SetOffsetPosition(XMFLOAT3(0.5f, 1.5f, 0.0f));
+    pSubWeapon_ = Instantiate<TestWeaponSub>(this);
+    pSubWeapon_->SetOffsetPosition(XMFLOAT3(-0.5f, 1.5f, 0.0f));
+
     pAim_ = Instantiate<Aim>(this);
     pText->Initialize();
 }
@@ -59,11 +67,13 @@ void Player::Update()
 {
     pCommand_->Update();
     pStateManager_->Update();
+    pMainWeapon_->SetRotate(transform_.rotate_);
+    pSubWeapon_->SetRotate(transform_.rotate_);
 
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
 
-    //デバッグ用コマンド
+    //デバッグ用
     if (Input::IsKeyDown(DIK_G)) {
         Model::SetBlendingAnimFrame(hModel_[1], 0, 120, 160, 1.0f, 0.9f);
     }
@@ -76,8 +86,8 @@ void Player::Update()
 
 void Player::Draw()
 {
-    Model::SetTransform(hModel_[0], transform_);
-    Model::Draw(hModel_[0]);
+    Model::SetTransform(hModel_[1], transform_);
+    Model::Draw(hModel_[1]);
 
     //ターゲット状態の場合はAim方向に強制
     if (pAim_->IsTarget()) {
@@ -85,12 +95,16 @@ void Player::Draw()
         upTrans_.rotate_.y = pAim_->GetRotate().y + 180.0f;
     }
     else upTrans_ = transform_;
-    Model::SetTransform(hModel_[1], upTrans_);
-    Model::Draw(hModel_[1]);
+    Model::SetTransform(hModel_[0], upTrans_);
+    Model::Draw(hModel_[0]);
 
     pText->Draw(30, 30, (int)transform_.position_.x);
     pText->Draw(30, 70, (int)transform_.position_.y);
     pText->Draw(30, 110, (int)transform_.position_.z);
+
+    pMainWeapon_->Draw();
+    pSubWeapon_->Draw();
+
 }
 
 void Player::Release()

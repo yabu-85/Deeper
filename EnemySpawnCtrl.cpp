@@ -44,4 +44,6 @@ void EnemySpawnCtrl::CleanUpEnemyList()
 			i++;
 	}
 
+	return;
+
 }

@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClCompile Include="Aim.cpp" />
     <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="BulletBase.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CollisionMap.cpp" />
     <ClCompile Include="DamageCtrl.cpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StateManager.cpp" />
+    <ClCompile Include="TestBullet.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="TitleUIManager.cpp" />
     <ClCompile Include="Triangle.cpp" />
@@ -175,6 +177,7 @@
   <ItemGroup>
     <ClInclude Include="Aim.h" />
     <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="BulletBase.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CollisionMap.h" />
     <ClInclude Include="DamageCtrl.h" />
@@ -216,11 +219,13 @@
     <ClInclude Include="Stage.h" />
     <ClInclude Include="StateBase.h" />
     <ClInclude Include="StateManager.h" />
+    <ClInclude Include="TestBullet.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="TitleUIManager.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="UIBase.h" />
     <ClInclude Include="UIManager.h" />
+    <ClInclude Include="WeaponBase.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">

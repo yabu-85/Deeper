@@ -2,7 +2,7 @@
 #include "Engine/Input.h"
 
 PlayerCommand::PlayerCommand()
-	:atk_(false), avo_(false), target_(false), left_(false), right_(false), up_(false), down_(false)
+	:atk_(false), avo_(false), target_(false), left_(false), right_(false), up_(false), down_(false), walk_(false)
 {
 }
 

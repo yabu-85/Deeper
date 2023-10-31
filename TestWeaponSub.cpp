@@ -19,7 +19,9 @@ TestWeaponSub::~TestWeaponSub()
 void TestWeaponSub::Initialize()
 {
     pStateManager_ = new StateManager(this);
-//    pStateManager_->AddState(new TestWeaponWait(pStateManager_));
+    pStateManager_->AddState(new TestWeaponSubWait(pStateManager_));
+    pStateManager_->AddState(new TestWeaponSubCombo1(pStateManager_));
+    pStateManager_->AddState(new TestWeaponSubCombo2(pStateManager_));
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 
@@ -32,14 +34,8 @@ void TestWeaponSub::Initialize()
 
 void TestWeaponSub::Update()
 {
-    transform_.position_ = GetParent()->GetPosition();
-    transform_.position_.x += offsetPosition_.x;
-    transform_.position_.y += offsetPosition_.y;
-    transform_.position_.z += offsetPosition_.z;
+    CalcOffset();
 
-    transform_.rotate_.x += offsetRotation_.x;
-    transform_.rotate_.y += offsetRotation_.y;
-    transform_.rotate_.z += offsetRotation_.z;
 }
 
 void TestWeaponSub::Draw()
@@ -55,4 +51,91 @@ void TestWeaponSub::Release()
 
 void TestWeaponSub::ResetState()
 {
+    atkEnd_ = true;
+    pStateManager_->ChangeState("Wait");
+}
+
+//--------------------------state-----------------------------------
+
+TestWeaponSubWait::TestWeaponSubWait(StateManager* owner)
+{
+    owner_ = owner;
+    pWeaponBase_ = static_cast<WeaponBase*>(owner_->GetGameObject());
+}
+
+void TestWeaponSubWait::Update()
+{
+    if (!pWeaponBase_->IsAtkEnd()) owner_->ChangeState("Combo1");
+}
+
+//---------------------------------------------------------------
+
+TestWeaponSubCombo1::TestWeaponSubCombo1(StateManager* owner)
+    :time_(0), next_(false)
+{
+    owner_ = owner;
+    pWeaponBase_ = static_cast<WeaponBase*>(owner_->GetGameObject());
+    pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+}
+
+void TestWeaponSubCombo1::Update()
+{
+    time_--;
+    if (pPlayer_->GetCommand()->CmdSubAtk()) next_ = true;
+
+    if (time_ <= 0) {
+        if (next_ == true) owner_->ChangeState("Combo2");
+        else {
+            pWeaponBase_->SetAtkEnd(true);
+            owner_->ChangeState("Wait");
+        }
+    }
+}
+
+void TestWeaponSubCombo1::OnEnter()
+{
+    time_ = 20;
+    next_ = false;
+    pWeaponBase_->SetScale(XMFLOAT3(0.3f, 0.3f, 0.3f));
+}
+
+void TestWeaponSubCombo1::OnExit()
+{
+    pWeaponBase_->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
+}
+
+//---------------------------------------------------------------
+
+TestWeaponSubCombo2::TestWeaponSubCombo2(StateManager* owner)
+    :time_(0), next_(false)
+{
+    owner_ = owner;
+    pWeaponBase_ = static_cast<WeaponBase*>(owner_->GetGameObject());
+    pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+}
+
+void TestWeaponSubCombo2::Update()
+{
+    time_--;
+    if (pPlayer_->GetCommand()->CmdSubAtk()) next_ = true;
+
+    if (time_ <= 0) {
+        if (next_ == true) owner_->ChangeState("Combo1");
+        else {
+            pWeaponBase_->SetAtkEnd(true);
+            owner_->ChangeState("Wait");
+        }
+    }
+}
+
+void TestWeaponSubCombo2::OnEnter()
+{
+    time_ = 20;
+    next_ = false;
+    pWeaponBase_->SetScale(XMFLOAT3(0.4f, 0.4f, 0.4f));
+}
+
+void TestWeaponSubCombo2::OnExit()
+{
+    pWeaponBase_->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
 }

@@ -25,7 +25,6 @@ public:
     TestWeaponWait(StateManager* owner);
     const char* GetName() const override { return "Wait"; }
     void Update() override;
-    void OnEnter() override;
 };
 
 class TestWeaponCombo1 : public StateBase

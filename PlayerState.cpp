@@ -113,54 +113,40 @@ void PlayerAvo::OnExit()
 //--------------------------------------------------------------------------------
 
 PlayerAtk::PlayerAtk(StateManager* owner)
-	:atkTime_(0)
+	:nextCmd_(0)
 {
 	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
 
-namespace {
-	int StartTime = 60; 
-	int nextCmdTime = 10;
-	unsigned nextCmd = 0;
-}
-
 void PlayerAtk::Update()
 {
 	pPlayer_->CalcNoMove();
-	atkTime_--;
 	pPlayer_->GetMainWeapon()->UpdateState();
 
 	if (pPlayer_->GetCommand()->CmdAvo())
-		nextCmd = 1;
+		nextCmd_ = 1;
 	if (pPlayer_->GetCommand()->CmdSubAtk())
-		nextCmd = 2;
+		nextCmd_ = 2;
 
-	if (atkTime_ <= (int)nextCmd) {
-		//Command
-		if (nextCmd == 1) {
+	if (pPlayer_->GetMainWeapon()->IsAtkEnd()) {
+		if (nextCmd_ == 1) {
 			owner_->ChangeState("Avo");
 			return;
 		}
-		if (nextCmd == 2) {
+		if (nextCmd_ == 2) {
 			owner_->ChangeState("SubAtk");
 			return;
 		}
 		
-		//クールタイム終わり
-		if (atkTime_ <= 0) {
-			owner_->ChangeState("Wait");
-			return;
-		}
+		owner_->ChangeState("Wait");
+		return;
 	}
-
-	pPlayer_->SetScale(XMFLOAT3(1.0f - (float)atkTime_ / (float)60, 1.0f, 1.0f - (float)atkTime_ / (float)60));
 }
 
 void PlayerAtk::OnEnter()
 {
-	atkTime_ = 60;
-	nextCmd = 0;
+	nextCmd_ = 0;
 	pPlayer_->GetMainWeapon()->SetAtkEnd(false);
 }
 
@@ -172,7 +158,7 @@ void PlayerAtk::OnExit()
 //--------------------------------------------------------------------------------
 
 PlayerSubAtk::PlayerSubAtk(StateManager* owner)
-	:atkTime_(0)
+	:nextCmd_(0)
 {
 	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
@@ -182,11 +168,10 @@ void PlayerSubAtk::Update()
 {
 	pPlayer_->CalcMove();
 	pPlayer_->Move();
-	atkTime_--;
 	pPlayer_->GetSubWeapon()->UpdateState();
 
 	//クールタイム終わり
-	if (atkTime_ <= 0) {
+	if (pPlayer_->GetSubWeapon()->IsAtkEnd()) {
 		if (pPlayer_->GetCommand()->CmdWalk())
 			owner_->ChangeState("Walk");
 		else
@@ -194,7 +179,7 @@ void PlayerSubAtk::Update()
 		return;
 	}
 
-	if (atkTime_ % 1 == 0) {
+	if (rand() % 1 == 0) {
 		Aim* pAim = pPlayer_->GetAim();
 		XMFLOAT3 tar;
 		if (pAim->IsTarget()) {
@@ -213,6 +198,9 @@ void PlayerSubAtk::Update()
 
 void PlayerSubAtk::OnEnter()
 {
+	nextCmd_ = 0;
+	pPlayer_->GetSubWeapon()->SetAtkEnd(false);
+
 	Aim* pAim = pPlayer_->GetAim();
 	XMFLOAT3 tar;
 	if (pAim->IsTarget()) {
@@ -225,6 +213,9 @@ void PlayerSubAtk::OnEnter()
 	}
 	TestBullet* b = Instantiate<TestBullet>(pPlayer_->GetParent());
 	b->Shot(pPlayer_->GetPosition(), tar);
+}
 
-	atkTime_ = 20;
+void PlayerSubAtk::OnExit()
+{
+	pPlayer_->GetMainWeapon()->ResetState();
 }

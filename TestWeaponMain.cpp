@@ -35,14 +35,8 @@ void TestWeaponMain::Initialize()
 
 void TestWeaponMain::Update()
 {
-    transform_.position_ = GetParent()->GetPosition();
-    transform_.position_.x += offsetPosition_.x;
-    transform_.position_.y += offsetPosition_.y;
-    transform_.position_.z += offsetPosition_.z;
+    CalcOffset();
 
-    transform_.rotate_.x += offsetRotation_.x;
-    transform_.rotate_.y += offsetRotation_.y;
-    transform_.rotate_.z += offsetRotation_.z;
 }
 
 void TestWeaponMain::Draw()
@@ -75,11 +69,6 @@ void TestWeaponWait::Update()
     if (!pWeaponBase_->IsAtkEnd()) owner_->ChangeState("Combo1");
 }
 
-void TestWeaponWait::OnEnter()
-{
-    if (!pWeaponBase_->IsAtkEnd()) owner_->ChangeState("Combo1");
-}
-
 //---------------------------------------------
 
 TestWeaponCombo1::TestWeaponCombo1(StateManager* owner)
@@ -87,14 +76,16 @@ TestWeaponCombo1::TestWeaponCombo1(StateManager* owner)
 {
     owner_ = owner;
     pWeaponBase_ = static_cast<WeaponBase*>(owner_->GetGameObject());
+    pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     GameManager* pGameManager = (GameManager*)owner_->GetGameObject()->FindObject("GameManager");
     pDamageCtrl_ = pGameManager->GetDamageCtrl();
-    pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
 }
 
 void TestWeaponCombo1::Update()
 {
     time_--;
+    if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;
+    
     if (time_ <= 0) {
         if(next_ == true) owner_->ChangeState("Combo2");
         else {
@@ -102,8 +93,6 @@ void TestWeaponCombo1::Update()
             owner_->ChangeState("Wait");
         }    
     }
-
-    if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;
 }
 
 void TestWeaponCombo1::OnEnter()
@@ -126,14 +115,16 @@ TestWeaponCombo2::TestWeaponCombo2(StateManager* owner)
 {
     owner_ = owner;
     pWeaponBase_ = static_cast<WeaponBase*>(owner_->GetGameObject());
+    pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     GameManager* pGameManager = (GameManager*)owner_->GetGameObject()->FindObject("GameManager");
     pDamageCtrl_ = pGameManager->GetDamageCtrl();
-    pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
 }
 
 void TestWeaponCombo2::Update()
 {
     time_--;
+    if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;
+    
     if (time_ <= 0) {
         if (next_ == true) owner_->ChangeState("Combo3");
         else {
@@ -141,8 +132,6 @@ void TestWeaponCombo2::Update()
             owner_->ChangeState("Wait");
         }
     }
-
-    if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;
 }
 
 void TestWeaponCombo2::OnEnter()
@@ -165,14 +154,16 @@ TestWeaponCombo3::TestWeaponCombo3(StateManager* owner)
 {
     owner_ = owner;
     pWeaponBase_ = static_cast<WeaponBase*>(owner_->GetGameObject());
+    pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     GameManager* pGameManager = (GameManager*)owner_->GetGameObject()->FindObject("GameManager");
     pDamageCtrl_ = pGameManager->GetDamageCtrl();
-    pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
 }
 
 void TestWeaponCombo3::Update()
 {
     time_--;
+    if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;
+    
     if (time_ <= 0) {
         if (next_ == true) owner_->ChangeState("Combo1");
         else {
@@ -180,8 +171,6 @@ void TestWeaponCombo3::Update()
             owner_->ChangeState("Wait");
         }
     }
-
-    if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;
 }
 
 void TestWeaponCombo3::OnEnter()

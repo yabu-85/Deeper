@@ -34,7 +34,7 @@ public:
 
 class PlayerAtk : public StateBase
 {
-	int atkTime_;
+	int nextCmd_;
 	Player* pPlayer_;
 public:
 	PlayerAtk(StateManager* owner);
@@ -46,11 +46,12 @@ public:
 
 class PlayerSubAtk : public StateBase
 {
-	int atkTime_;
+	int nextCmd_;
 	Player* pPlayer_;
 public:
 	PlayerSubAtk(StateManager* owner);
 	const char* GetName() const override { return "SubAtk"; }
 	void Update() override;
 	void OnEnter() override;
+	void OnExit() override;
 };

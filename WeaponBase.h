@@ -19,12 +19,12 @@ public:
 	virtual void Update() override = 0 {};
 	virtual void Draw() override = 0 {};
 	virtual void Release() override = 0 {};
+	virtual void ResetState() = 0;
 
+	void CalcOffset();
 	void SetOffsetPosition(XMFLOAT3 pos) { offsetPosition_ = pos; }
 	void SetOffsetRotate(XMFLOAT3 rot) { offsetRotation_ = rot; }
 	void UpdateState();
-	virtual void ResetState() = 0;
-
 	void SetAtkEnd(bool b) { atkEnd_ = b; }
 	bool IsAtkEnd() { return atkEnd_; }
 };

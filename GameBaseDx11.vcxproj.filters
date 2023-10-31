@@ -57,6 +57,12 @@
     <Filter Include="Weapon\Bullet">
       <UniqueIdentifier>{6dd57487-9671-4a91-b667-b5c85bbb2e66}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Weapon\Weapon">
+      <UniqueIdentifier>{4c9605a3-36b8-48d2-915e-a1299ca77da3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Weapon\Base">
+      <UniqueIdentifier>{c3450bad-3506-4e41-8646-7fe925f04220}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -188,6 +194,15 @@
     </ClCompile>
     <ClCompile Include="TestBullet.cpp">
       <Filter>Weapon\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="TestWeaponMain.cpp">
+      <Filter>Weapon\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="TestWeaponSub.cpp">
+      <Filter>Weapon\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponBase.cpp">
+      <Filter>Weapon\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -321,14 +336,20 @@
     <ClInclude Include="DamageCtrl.h">
       <Filter>Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponBase.h">
-      <Filter>Weapon</Filter>
-    </ClInclude>
     <ClInclude Include="BulletBase.h">
       <Filter>Weapon\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="TestBullet.h">
       <Filter>Weapon\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="TestWeaponMain.h">
+      <Filter>Weapon\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="TestWeaponSub.h">
+      <Filter>Weapon\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponBase.h">
+      <Filter>Weapon\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

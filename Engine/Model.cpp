@@ -169,6 +169,14 @@ namespace Model
 		return pos;
 	}
 
+	XMFLOAT3 GetBoneAnimPosition(int handle, std::string boneName)
+	{
+		XMFLOAT3 pos = _datas[handle]->pFbx->GetBoneAnimPosition(boneName, _datas[handle]->nowFrame); //相対座標（ボーンの中心からの位置）
+		XMVECTOR vec = XMVector3TransformCoord(XMLoadFloat3(&pos), _datas[handle]->transform.GetWorldMatrix()); //posをワールドマトリックスで計算する
+		XMStoreFloat3(&pos, vec);
+		return pos;
+	}
+
 
 	//ワールド行列を設定
 	void SetTransform(int handle, Transform & transform)

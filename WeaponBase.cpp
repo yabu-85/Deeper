@@ -2,20 +2,23 @@
 #include "StateManager.h"
 
 WeaponBase::WeaponBase(GameObject* parent)
-	: hModel_(-1), offsetPosition_(0.0f, 0.0f, 0.0f), offsetRotation_(0.0f, 0.0f, 0.0f), pStateManager_(nullptr), atkEnd_(true)
+	: hModel_(-1), pStateManager_(nullptr), atkEnd_(true)
 {
 }
 
-void WeaponBase::CalcOffset()
+void WeaponBase::CalcOffset(Transform& trans)
 {
-    transform_.position_ = GetParent()->GetPosition();
-    transform_.position_.x += offsetPosition_.x;
-    transform_.position_.y += offsetPosition_.y;
-    transform_.position_.z += offsetPosition_.z;
+    trans.position_.x += offsetTrans_.position_.x;
+    trans.position_.y += offsetTrans_.position_.y;
+    trans.position_.z += offsetTrans_.position_.z;
 
-    transform_.rotate_.x += offsetRotation_.x;
-    transform_.rotate_.y += offsetRotation_.y;
-    transform_.rotate_.z += offsetRotation_.z;
+    trans.rotate_.x += offsetTrans_.rotate_.x;
+    trans.rotate_.y += offsetTrans_.rotate_.y;
+    trans.rotate_.z += offsetTrans_.rotate_.z;
+
+    trans.scale_.x += offsetTrans_.scale_.x;
+    trans.scale_.y += offsetTrans_.scale_.y;
+    trans.scale_.z += offsetTrans_.scale_.z;
 }
 
 void WeaponBase::UpdateState()

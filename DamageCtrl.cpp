@@ -21,13 +21,17 @@ void DamageCtrl::ApplyDamage(DAMAGE_TYPE type, int d)
 		for (EnemyBase* e : enemyList) {
 			e->ApplyDamage(d);
 		}
+	}
+	else if (type == DAMAGE_TYPE::CUBE) {
 
+
+
+		int randomIndex = rand() % (int)enemyList.size();
+		enemyList.at(randomIndex)->ApplyDamage(d);
 	}
 	else if (type == DAMAGE_TYPE::RAND) {
 		int randomIndex = rand() % (int)enemyList.size();
 		enemyList.at(randomIndex)->ApplyDamage(d);
-	
 	}
-
 
 }

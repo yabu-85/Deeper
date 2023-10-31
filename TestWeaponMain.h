@@ -6,6 +6,7 @@ class Player;
 
 class TestWeaponMain : public WeaponBase
 {
+    Player* pPlayer_;
 public:
     TestWeaponMain(GameObject* parent);
     ~TestWeaponMain() override;
@@ -31,6 +32,7 @@ class TestWeaponCombo1 : public StateBase
 {
     bool next_;
     int time_;
+    int comboTime_;
     WeaponBase* pWeaponBase_;
     DamageCtrl* pDamageCtrl_;
     Player* pPlayer_;
@@ -46,6 +48,7 @@ class TestWeaponCombo2 : public StateBase
 {
     bool next_;
     int time_;
+    int comboTime_;
     WeaponBase* pWeaponBase_;
     DamageCtrl* pDamageCtrl_;
     Player* pPlayer_;
@@ -61,6 +64,7 @@ class TestWeaponCombo3 : public StateBase
 {
     bool next_;
     int time_;
+    int comboTime_;
     WeaponBase* pWeaponBase_;
     DamageCtrl* pDamageCtrl_;
     Player* pPlayer_;

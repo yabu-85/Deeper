@@ -29,18 +29,22 @@ void TestWeaponSub::Initialize()
     hModel_ = Model::Load("Model/RedBox.fbx");
     assert(hModel_ >= 0);
 
+    pPlayer_ = (Player*)GetParent();
+
     transform_.scale_ = XMFLOAT3(0.2f, 0.2f, 0.2f);
 }
 
 void TestWeaponSub::Update()
 {
-    CalcOffset();
-
 }
 
 void TestWeaponSub::Draw()
 {
-    Model::SetTransform(hModel_, transform_);
+    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "hand.L");
+    
+    Transform t = transform_;
+    CalcOffset(t);
+    Model::SetTransform(hModel_, t);
     Model::Draw(hModel_);
 
 }

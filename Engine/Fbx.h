@@ -92,6 +92,9 @@ public:
 	//戻値：ボーンの位置
 	XMFLOAT3 GetBonePosition(std::string boneName);
 
+	//任意のアニメーション時のボーンの位置を取得
+	XMFLOAT3 GetBoneAnimPosition(std::string boneName, int frame);
+
 	//レイキャスト（レイを飛ばして当たり判定）
 	//引数：data	必要なものをまとめたデータ
 	void RayCast(RayCastData *data);

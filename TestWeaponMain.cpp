@@ -30,18 +30,24 @@ void TestWeaponMain::Initialize()
     hModel_ = Model::Load("Model/BlueBox.fbx");
     assert(hModel_ >= 0);
 
+    pPlayer_ = (Player*)GetParent();
+
     transform_.scale_ = XMFLOAT3(0.2f, 0.2f, 0.2f);
 }
 
 void TestWeaponMain::Update()
 {
-    CalcOffset();
 
 }
 
 void TestWeaponMain::Draw()
 {
-    Model::SetTransform(hModel_, transform_);
+    //Drawの直前にやらないとひとつ前のフレームの座標が返ってくる
+    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "hand.R");
+    
+    Transform t = transform_;
+    CalcOffset(t);
+    Model::SetTransform(hModel_, t);
     Model::Draw(hModel_);
 
 }
@@ -79,6 +85,7 @@ TestWeaponCombo1::TestWeaponCombo1(StateManager* owner)
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     GameManager* pGameManager = (GameManager*)owner_->GetGameObject()->FindObject("GameManager");
     pDamageCtrl_ = pGameManager->GetDamageCtrl();
+    comboTime_ = 20;
 }
 
 void TestWeaponCombo1::Update()
@@ -91,16 +98,19 @@ void TestWeaponCombo1::Update()
         else {
             pWeaponBase_->SetAtkEnd(true);
             owner_->ChangeState("Wait");
-        }    
+        }
+        return;
     }
+
+    float fff = (float)time_ / (float)comboTime_;
+    pWeaponBase_->SetScale(XMFLOAT3(0.3f * fff, 0.3f * fff, 0.3f * fff));
 }
 
 void TestWeaponCombo1::OnEnter()
 {
-    time_ = 20;
+    time_ = comboTime_;
     next_ = false;
     pDamageCtrl_->ApplyDamage(DamageCtrl::RAND, 2);
-    pWeaponBase_->SetScale(XMFLOAT3(0.3f, 0.3f, 0.3f));
 }
 
 void TestWeaponCombo1::OnExit()
@@ -118,6 +128,7 @@ TestWeaponCombo2::TestWeaponCombo2(StateManager* owner)
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     GameManager* pGameManager = (GameManager*)owner_->GetGameObject()->FindObject("GameManager");
     pDamageCtrl_ = pGameManager->GetDamageCtrl();
+    comboTime_ = 25;
 }
 
 void TestWeaponCombo2::Update()
@@ -131,15 +142,19 @@ void TestWeaponCombo2::Update()
             pWeaponBase_->SetAtkEnd(true);
             owner_->ChangeState("Wait");
         }
+        return;
     }
+
+    float fff = (float)time_ / (float)comboTime_;
+    pWeaponBase_->SetScale(XMFLOAT3(0.5f * fff, 0.5f * fff, 0.5f * fff));
+
 }
 
 void TestWeaponCombo2::OnEnter()
 {
-    time_ = 20;
+    time_ = comboTime_;
     next_ = false;
     pDamageCtrl_->ApplyDamage(DamageCtrl::RAND, 2);
-    pWeaponBase_->SetScale(XMFLOAT3(0.4f, 0.4f, 0.4f));
 }
 
 void TestWeaponCombo2::OnExit()
@@ -157,6 +172,7 @@ TestWeaponCombo3::TestWeaponCombo3(StateManager* owner)
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     GameManager* pGameManager = (GameManager*)owner_->GetGameObject()->FindObject("GameManager");
     pDamageCtrl_ = pGameManager->GetDamageCtrl();
+    comboTime_ = 30;
 }
 
 void TestWeaponCombo3::Update()
@@ -170,15 +186,20 @@ void TestWeaponCombo3::Update()
             pWeaponBase_->SetAtkEnd(true);
             owner_->ChangeState("Wait");
         }
+        return;
     }
+    
+    float fff = (float)time_ / (float)comboTime_;
+    pWeaponBase_->SetScale(XMFLOAT3(0.7f * fff, 0.7f * fff, 0.7f * fff));
+
 }
 
 void TestWeaponCombo3::OnEnter()
 {
-    time_ = 20;
+    time_ = comboTime_;
     next_ = false;
     pDamageCtrl_->ApplyDamage(DamageCtrl::ALL, 2);
-    pWeaponBase_->SetScale(XMFLOAT3(0.5f, 0.5f, 0.5f));
+    
 }
 
 void TestWeaponCombo3::OnExit()

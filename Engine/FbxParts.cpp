@@ -398,6 +398,12 @@ void FbxParts::InitSkelton(FbxMesh * pMesh)
 		pBoneArray_[i].bindPose = XMLoadFloat4x4(&pose);
 	}
 
+	for (int i = 0; i < numBone_; i++) {
+		std::string strNumber = ppCluster_[i]->GetLink()->GetName();
+		OutputDebugStringA(strNumber.c_str());
+		OutputDebugString("\n");
+	}
+
 	// ˆê“I‚Èƒƒ‚ƒŠ—Ìˆæ‚ğ‰ğ•ú‚·‚é
 	for (DWORD i = 0; i < vertexCount_; i++)
 	{
@@ -657,6 +663,26 @@ bool FbxParts::GetBonePosition(std::string boneName, XMFLOAT3 * position)
 			return true;
 		}
 
+	}
+
+	return false;
+}
+
+bool FbxParts::GetBonePosition(std::string boneName, FbxTime time, XMFLOAT3* position)
+{
+	for (int i = 0; i < numBone_; i++)
+	{
+		if (boneName == ppCluster_[i]->GetLink()->GetName())
+		{
+			FbxAnimEvaluator* evaluator = ppCluster_[i]->GetLink()->GetScene()->GetAnimationEvaluator();
+			FbxMatrix mCurrentOrentation = evaluator->GetNodeGlobalTransform(ppCluster_[i]->GetLink(), time);
+
+			position->x = (float)mCurrentOrentation[3][0];
+			position->y = (float)mCurrentOrentation[3][1];
+			position->z = (float)mCurrentOrentation[3][2];
+
+			return true;
+		}
 	}
 
 	return false;

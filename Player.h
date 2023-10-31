@@ -48,6 +48,7 @@ public:
     Aim* GetAim() { return pAim_; }
     WeaponBase* GetMainWeapon() { return pMainWeapon_; }
     WeaponBase* GetSubWeapon() { return pSubWeapon_; }
+    int GetModelHandle() { return hModel_[0]; }
 
 };
 

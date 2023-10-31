@@ -7,6 +7,7 @@ class Player;
 class TestWeaponMain : public WeaponBase
 {
     Player* pPlayer_;
+    DamageCtrl* pDamageCtrl_;
 public:
     TestWeaponMain(GameObject* parent);
     ~TestWeaponMain() override;
@@ -15,6 +16,9 @@ public:
     void Draw() override;
     void Release() override;
     void ResetState() override;
+
+    void CalcDamage(float range = 10.0);
+
 };
 
 //-------------------State----------------------
@@ -33,8 +37,7 @@ class TestWeaponCombo1 : public StateBase
     bool next_;
     int time_;
     int comboTime_;
-    WeaponBase* pWeaponBase_;
-    DamageCtrl* pDamageCtrl_;
+    TestWeaponMain* pTestWeaponMain_;
     Player* pPlayer_;
 public:
     TestWeaponCombo1(StateManager* owner);
@@ -49,8 +52,7 @@ class TestWeaponCombo2 : public StateBase
     bool next_;
     int time_;
     int comboTime_;
-    WeaponBase* pWeaponBase_;
-    DamageCtrl* pDamageCtrl_;
+    TestWeaponMain* pTestWeaponMain_;
     Player* pPlayer_;
 public:
     TestWeaponCombo2(StateManager* owner);
@@ -65,8 +67,7 @@ class TestWeaponCombo3 : public StateBase
     bool next_;
     int time_;
     int comboTime_;
-    WeaponBase* pWeaponBase_;
-    DamageCtrl* pDamageCtrl_;
+    TestWeaponMain* pTestWeaponMain_;
     Player* pPlayer_;
 public:
     TestWeaponCombo3(StateManager* owner);

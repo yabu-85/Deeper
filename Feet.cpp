@@ -46,6 +46,8 @@ void Feet::Update()
 {
 	pEnemyUi_->Update();
 
+	return;
+
 	if (currtime_ > 0) {
 		currtime_--;
 		if (currtime_ <= 0) flag_ = true;

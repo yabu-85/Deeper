@@ -55,10 +55,12 @@ void Player::Initialize()
     pStateManager_->Initialize();
 
     pMainWeapon_ = Instantiate<TestWeaponMain>(this);
-    pMainWeapon_->SetOffsetRotate(XMFLOAT3(30.0f, 100.0f, 150.0f));
-    pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
+    pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
+    pMainWeapon_->SetOffsetRotate(XMFLOAT3(90.0f, 0.0f, 0.0f));
+    
     pSubWeapon_ = Instantiate<TestWeaponSub>(this);
     pSubWeapon_->SetOffsetPosition(XMFLOAT3(0.0f, 0.5f, 0.0f));
+    pSubWeapon_->SetOffsetRotate(XMFLOAT3(30.0f, 100.0f, 150.0f));
     pSubWeapon_->SetOffsetScale(XMFLOAT3(0.0f, 0.0f, 0.0f));
 
     pAim_ = Instantiate<Aim>(this);
@@ -69,8 +71,9 @@ void Player::Update()
 {
     pCommand_->Update();
     pStateManager_->Update();
-    pMainWeapon_->SetRotate(transform_.rotate_);
-    pSubWeapon_->SetRotate(transform_.rotate_);
+    
+    if (pMainWeapon_) pMainWeapon_->SetRotate(transform_.rotate_);
+    if (pSubWeapon_) pSubWeapon_->SetRotate(transform_.rotate_);
 
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
@@ -105,8 +108,8 @@ void Player::Draw()
     pText->Draw(30, 70, (int)transform_.position_.y);
     pText->Draw(30, 110, (int)transform_.position_.z);
 
-    pMainWeapon_->Draw();
-    pSubWeapon_->Draw();
+    if (pMainWeapon_) pMainWeapon_->Draw();
+    if (pSubWeapon_) pSubWeapon_->Draw();
 
 }
 

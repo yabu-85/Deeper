@@ -30,7 +30,7 @@ public:
 	};
 	void ApplyDamage(DAMAGE_TYPE type, int d);
 
-
+	int CalcSword(XMFLOAT3 start, XMFLOAT3 vec, float range);
 
 };
 

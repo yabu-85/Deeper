@@ -16,16 +16,14 @@ public:
     void Draw() override;
     void Release() override;
     void ResetState() override;
-
     void CalcDamage(float range = 10.0);
-
 };
 
 //-------------------State----------------------
 
 class TestWeaponWait : public StateBase
 {
-    WeaponBase* pWeaponBase_;
+    TestWeaponMain* pTestWeaponMain_;
 public:
     TestWeaponWait(StateManager* owner);
     const char* GetName() const override { return "Wait"; }

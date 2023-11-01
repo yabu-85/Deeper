@@ -112,16 +112,10 @@ public:
 	//コライダー（衝突判定）を追加する
 	void AddCollider(Collider * collider);
 
-	//何かと衝突した場合に呼ばれる（オーバーライド用）
-	//引数：pTarget	衝突した相手
-	virtual void OnCollision(GameObject* pTarget) {};
+	std::list<Collider*> GetColliderList() { return colliderList_; }
 
 	//コライダー（衝突判定）を削除
 	void ClearCollider();
-
-	//衝突判定
-	//引数：pTarget	衝突してるか調べる相手
-	void Collision(GameObject* pTarget);
 
 	//テスト用の衝突判定枠を表示
 	void CollisionDraw();

@@ -15,13 +15,14 @@ public:
     void Draw() override;
     void Release() override;
     void ResetState() override;
+    void ShotBullet();
 };
 
 //-------------------State----------------------
 
 class TestWeaponSubWait : public StateBase
 {
-    WeaponBase* pWeaponBase_;
+    TestWeaponSub* pTestWeaponSub_;
 public:
     TestWeaponSubWait(StateManager* owner);
     const char* GetName() const override { return "Wait"; }
@@ -32,7 +33,7 @@ class TestWeaponSubCombo1 : public StateBase
 {
     bool next_;
     int time_;
-    WeaponBase* pWeaponBase_;
+    TestWeaponSub* pTestWeaponSub_;
     Player* pPlayer_;
 public:
     TestWeaponSubCombo1(StateManager* owner);
@@ -46,7 +47,7 @@ class TestWeaponSubCombo2 : public StateBase
 {
     bool next_;
     int time_;
-    WeaponBase* pWeaponBase_;
+    TestWeaponSub* pTestWeaponSub_;
     Player* pPlayer_;
 public:
     TestWeaponSubCombo2(StateManager* owner);

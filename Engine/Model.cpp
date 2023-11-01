@@ -161,6 +161,11 @@ namespace Model
 		_datas[handle]->isAimeStop = b;
 	}
 
+	bool IsAnimeStop(int handle)
+	{
+		return _datas[handle]->isAimeStop;
+	}
+
 	//現在のアニメーションのフレームを取得
 	int GetAnimFrame(int handle)
 	{

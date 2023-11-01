@@ -43,6 +43,7 @@ void Player::Initialize()
     assert(hModel_[1] >= 0);
     transform_.rotate_.y += 180.0f;
 
+    pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
 
     pStateManager_ = new StateManager(this);
@@ -54,15 +55,6 @@ void Player::Initialize()
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 
-    pMainWeapon_ = Instantiate<TestWeaponMain>(this);
-    pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
-    pMainWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 0.0f, 0.0f));
-    
-    pSubWeapon_ = Instantiate<TestWeaponSub>(this);
-    pSubWeapon_->SetOffsetScale(XMFLOAT3(0.0f, 0.0f, 0.0f));
-    pSubWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 180.0f, 0.0f));
-
-    pAim_ = Instantiate<Aim>(this);
     pText->Initialize();
 }
 
@@ -71,22 +63,43 @@ void Player::Update()
     pCommand_->Update();
     pStateManager_->Update();
     
-    if (pMainWeapon_) pMainWeapon_->SetRotate(transform_.rotate_);
-    if (pSubWeapon_) pSubWeapon_->SetRotate(transform_.rotate_);
-
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
+
+    if (pCommand_->CmdCenterUp()) {
+        if (pMainWeapon_ == nullptr) {
+            pMainWeapon_ = Instantiate<TestWeaponMain>(this);
+            pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
+            pMainWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 0.0f, 0.0f));
+        }
+        else {
+            pMainWeapon_->KillMe();
+            pMainWeapon_ = nullptr;
+        }
+    }
+
+    if (pCommand_->CmdCenterDown()) {
+        if (pSubWeapon_ == nullptr) {
+            pSubWeapon_ = Instantiate<TestWeaponSub>(this);
+            pSubWeapon_->SetOffsetScale(XMFLOAT3(0.0f, 0.0f, 0.0f));
+            pSubWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 180.0f, 0.0f));
+        }
+        else {
+            pSubWeapon_->KillMe();
+            pSubWeapon_ = nullptr;
+        }
+    }
 
     //デバッグ用
     if (Input::IsKeyDown(DIK_G)) {
         Model::SetAnimFrame(hModel_[0], 0, 120, 1.0f);
-        Model::SetBlendingAnimFrame(hModel_[1], 0, 120, 160, 1.0f, 0.9f);
+        Model::SetBlendingAnimFrame(hModel_[1], 0, 120, 160, 1.0f, 0.5f);
     }
 
-    //デバッグ用
     if (Input::IsKeyDown(DIK_F)) {
-        Model::SetAnimeStop(hModel_[0], true);
-        Model::SetAnimeStop(hModel_[1], true);
+        bool flag = Model::IsAnimeStop(hModel_[0]);
+        Model::SetAnimeStop(hModel_[0], !flag);
+        Model::SetAnimeStop(hModel_[1], !flag);
     }
 
     if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;
@@ -109,12 +122,13 @@ void Player::Draw()
     Model::SetTransform(hModel_[0], upTrans_);
     Model::Draw(hModel_[0]);
 
+    if (pMainWeapon_ && !pMainWeapon_->IsDead()) pMainWeapon_->Draw();
+    if (pSubWeapon_ && !pSubWeapon_->IsDead()) pSubWeapon_->Draw();
+
+    //デバッグ用
     pText->Draw(30, 30, (int)transform_.position_.x);
     pText->Draw(30, 70, (int)transform_.position_.y);
     pText->Draw(30, 110, (int)transform_.position_.z);
-
-    if (pMainWeapon_) pMainWeapon_->Draw();
-    if (pSubWeapon_) pSubWeapon_->Draw();
 
 }
 

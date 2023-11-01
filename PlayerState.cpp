@@ -3,8 +3,7 @@
 #include "StateManager.h"
 #include "PlayerCommand.h"
 #include "GameManager.h"
-#include "TestBullet.h"
-#include "Aim.h"
+#include "WeaponBase.h"
 
 namespace {
 	const int defAvoTime = 30;
@@ -30,11 +29,11 @@ void PlayerWait::Update()
 		owner_->ChangeState("Avo");
 		return;
 	}
-	if (pPlayer_->GetCommand()->CmdAtk()) {
+	if (pPlayer_->GetMainWeapon() && pPlayer_->GetCommand()->CmdAtk()) {
 		owner_->ChangeState("Atk");
 		return;
 	}
-	if (pPlayer_->GetCommand()->CmdSubAtk()) {
+	if (pPlayer_->GetSubWeapon() && pPlayer_->GetCommand()->CmdSubAtk()) {
 		owner_->ChangeState("SubAtk");
 		return;
 	}
@@ -65,11 +64,11 @@ void PlayerWalk::Update()
 		owner_->ChangeState("Avo");
 		return;
 	}
-	if (pPlayer_->GetCommand()->CmdAtk()) {
+	if (pPlayer_->GetMainWeapon() && pPlayer_->GetCommand()->CmdAtk()) {
 		owner_->ChangeState("Atk");
 		return;
 	}
-	if (pPlayer_->GetCommand()->CmdSubAtk()) {
+	if (pPlayer_->GetSubWeapon() && pPlayer_->GetCommand()->CmdSubAtk()) {
 		owner_->ChangeState("SubAtk");
 		return;
 	}
@@ -124,11 +123,10 @@ void PlayerAtk::Update()
 	pPlayer_->CalcNoMove();
 	pPlayer_->GetMainWeapon()->UpdateState();
 
-	if (pPlayer_->GetCommand()->CmdAvo())
-		nextCmd_ = 1;
-	if (pPlayer_->GetCommand()->CmdSubAtk())
-		nextCmd_ = 2;
-
+	if (pPlayer_->GetCommand()->CmdAvo()) nextCmd_ = 1;
+	if (pPlayer_->GetCommand()->CmdSubAtk()) nextCmd_ = 2;
+	
+	//コンボ終了NextCmdのステートへ
 	if (pPlayer_->GetMainWeapon()->IsAtkEnd()) {
 		if (nextCmd_ == 1) {
 			owner_->ChangeState("Avo");
@@ -138,7 +136,6 @@ void PlayerAtk::Update()
 			owner_->ChangeState("SubAtk");
 			return;
 		}
-		
 		owner_->ChangeState("Wait");
 		return;
 	}
@@ -148,6 +145,7 @@ void PlayerAtk::OnEnter()
 {
 	nextCmd_ = 0;
 	pPlayer_->GetMainWeapon()->SetAtkEnd(false);
+
 }
 
 void PlayerAtk::OnExit()
@@ -172,50 +170,18 @@ void PlayerSubAtk::Update()
 
 	//クールタイム終わり
 	if (pPlayer_->GetSubWeapon()->IsAtkEnd()) {
-		if (pPlayer_->GetCommand()->CmdWalk())
-			owner_->ChangeState("Walk");
-		else
-			owner_->ChangeState("Wait");
+		owner_->ChangeState("Walk");
 		return;
 	}
-
-	if (rand() % 1 == 0) {
-		Aim* pAim = pPlayer_->GetAim();
-		XMFLOAT3 tar;
-		if (pAim->IsTarget()) {
-			tar = pAim->GetTargetPos();
-		}
-		else {
-			XMFLOAT3 pos = pPlayer_->GetPosition();
-			XMFLOAT3 vec = pAim->GetAimDirection();
-			tar = XMFLOAT3(pos.x + vec.x, pos.y + vec.y, pos.z + vec.z);
-		}
-		TestBullet* b = Instantiate<TestBullet>(pPlayer_->GetParent());
-		b->Shot(pPlayer_->GetPosition(), tar);
-	}
-
 }
 
 void PlayerSubAtk::OnEnter()
 {
 	nextCmd_ = 0;
 	pPlayer_->GetSubWeapon()->SetAtkEnd(false);
-
-	Aim* pAim = pPlayer_->GetAim();
-	XMFLOAT3 tar;
-	if (pAim->IsTarget()) {
-		tar = pAim->GetTargetPos();
-	}
-	else {
-		XMFLOAT3 pos = pPlayer_->GetPosition();
-		XMFLOAT3 vec = pAim->GetAimDirection();
-		tar = XMFLOAT3(pos.x + vec.x, pos.y + vec.y, pos.z + vec.z);
-	}
-	TestBullet* b = Instantiate<TestBullet>(pPlayer_->GetParent());
-	b->Shot(pPlayer_->GetPosition(), tar);
 }
 
 void PlayerSubAtk::OnExit()
 {
-	pPlayer_->GetMainWeapon()->ResetState();
+	pPlayer_->GetSubWeapon()->ResetState();
 }

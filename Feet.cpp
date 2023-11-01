@@ -4,6 +4,8 @@
 #include "GameManager.h"
 #include "EnemyUi.h"
 
+#include "Engine/SphereCollider.h"
+
 namespace {	
 	float moveSpeed = 0.2f;
 
@@ -40,6 +42,8 @@ void Feet::Initialize()
 	maxHp_ = 10;
 	hp_ = maxHp_;
 
+	SphereCollider* collision = new SphereCollider(XMFLOAT3(0, 1, 0), 1.9f);
+	AddCollider(collision);
 }
 
 void Feet::Update()
@@ -75,6 +79,8 @@ void Feet::Draw()
 {
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
+
+	CollisionDraw();
 
 }
 

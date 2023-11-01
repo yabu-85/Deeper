@@ -19,7 +19,7 @@ namespace Input
 	DIMOUSESTATE mouseState_;				//マウスの状態
 	DIMOUSESTATE prevMouseState_;			//前フレームのマウスの状態
 	POINT mousePos_;							//マウスカーソルの位置
-
+	
 	//コントローラー
 	const int MAX_PAD_NUM = 4;
 	XINPUT_STATE controllerState_[MAX_PAD_NUM];
@@ -177,6 +177,11 @@ namespace Input
 	{
 		XMFLOAT3 result = XMFLOAT3((float)mouseState_.lX, (float)mouseState_.lY, (float)mouseState_.lZ);
 		return result;
+	}
+
+	float GetScroll()
+	{
+		return (float)mouseState_.lZ;
 	}
 
 

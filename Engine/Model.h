@@ -109,6 +109,7 @@ namespace Model
 
 	//アニメーション停止
 	void SetAnimeStop(int handle, bool b);
+	bool IsAnimeStop(int handle);
 
 	//現在のアニメーションのフレームを取得
 	int GetAnimFrame(int handle);

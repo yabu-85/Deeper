@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include <vector>
 
 class EnemyUi;
 
@@ -9,7 +10,6 @@ class EnemyBase : public GameObject
 protected:
     int hp_;
     int maxHp_;
-
     EnemyUi* pEnemyUi_;
 
 public:

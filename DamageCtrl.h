@@ -4,14 +4,6 @@ using namespace DirectX;
 
 class EnemySpawnCtrl;
 
-class DamageInfo {
-public:
-	int type;
-	int damage;
-	XMFLOAT3 pos;
-
-};
-
 class DamageCtrl
 {
 	EnemySpawnCtrl* pEnemySpawnCtrl_;

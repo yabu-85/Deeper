@@ -20,10 +20,6 @@
     <Filter Include="01Engine\ResourceManager">
       <UniqueIdentifier>{bedee914-5063-4c08-95bb-79c861b4969c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02Shader">
-      <UniqueIdentifier>{47a6a3f5-8cfd-436b-8d58-beccd108f3f3}</UniqueIdentifier>
-      <Extensions>hlsl</Extensions>
-    </Filter>
     <Filter Include="Player">
       <UniqueIdentifier>{e04af741-50b7-426b-8ed5-0d84c1ba486c}</UniqueIdentifier>
     </Filter>
@@ -32,9 +28,6 @@
     </Filter>
     <Filter Include="Enemy\EnemyBase">
       <UniqueIdentifier>{45e1984c-0a58-4c08-9b28-222eb7b2751e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Enemy\Enemies">
-      <UniqueIdentifier>{bba5f4f1-692c-4c4d-8c84-026ee8023168}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{8b8e6f8e-5c92-4eb7-8beb-f190033fe076}</UniqueIdentifier>
@@ -62,6 +55,13 @@
     </Filter>
     <Filter Include="Weapon\Weapon">
       <UniqueIdentifier>{0ad40fca-bfa2-4aa9-a457-d57e0e105098}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01Engine\02Shader">
+      <UniqueIdentifier>{47a6a3f5-8cfd-436b-8d58-beccd108f3f3}</UniqueIdentifier>
+      <Extensions>hlsl</Extensions>
+    </Filter>
+    <Filter Include="Enemy\Enemies">
+      <UniqueIdentifier>{bba5f4f1-692c-4c4d-8c84-026ee8023168}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -354,25 +354,25 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">
-      <Filter>02Shader</Filter>
+      <Filter>01Engine\02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\Simple3D.hlsl">
-      <Filter>02Shader</Filter>
+      <Filter>01Engine\02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\Debug3D.hlsl">
-      <Filter>02Shader</Filter>
+      <Filter>01Engine\02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">
-      <Filter>02Shader</Filter>
+      <Filter>01Engine\02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\OutLine.hlsl">
-      <Filter>02Shader</Filter>
+      <Filter>01Engine\02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\Chara3D.hlsl">
-      <Filter>02Shader</Filter>
+      <Filter>01Engine\02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\BillBoard2D.hlsl">
-      <Filter>02Shader</Filter>
+      <Filter>01Engine\02Shader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

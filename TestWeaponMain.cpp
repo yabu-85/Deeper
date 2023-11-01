@@ -15,6 +15,7 @@ TestWeaponMain::TestWeaponMain(GameObject* parent)
 
 TestWeaponMain::~TestWeaponMain()
 {
+    Release();
 }
 
 void TestWeaponMain::Initialize()
@@ -61,44 +62,12 @@ void TestWeaponMain::Draw()
 
     rotation.y -= pPlayer_->GetRotate().y;
     rotation.y *= -1.0f;
-    
     transform_.rotate_ = rotation;
+
     Transform t = transform_;
     CalcOffset(t);
     Model::SetTransform(hModel_, t);
     Model::Draw(hModel_);
-
-    //-------------------------------------------
-
-    XMFLOAT3 tar;
-    tar.x = (float)sin(XMConvertToRadians(transform_.rotate_.y + offsetTrans_.rotate_.y));
-    tar.y = -(float)tan(XMConvertToRadians(transform_.rotate_.x + offsetTrans_.rotate_.x));
-    tar.z = (float)cos(XMConvertToRadians(transform_.rotate_.y + offsetTrans_.rotate_.y));
-
-    XMFLOAT3 vec = tar;
-    XMVECTOR vVec = XMLoadFloat3(&vec);
-    vVec = XMVector3Normalize(vVec);
-    XMStoreFloat3(&vec, vVec);
-
-    EmitterData  data;
-    data.position = transform_.position_;
-    data.delay = 0;
-    data.number = 1;
-    data.lifeTime = 10;
-    data.positionRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    data.direction = vec;
-    data.directionRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    data.speed = data.lifeTime * 15 / 100;
-    data.speedRnd = 0.0f;
-    data.accel = 1.0f;
-    data.size = XMFLOAT2(0.4f, 0.4f);
-    data.sizeRnd = XMFLOAT2(0.4f, 0.4f);
-    data.scale = XMFLOAT2(1.0f, 1.0f);
-    data.color = XMFLOAT4(1.0f, 1.0f, 0.1f, 1.0f);
-    data.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-    data.gravity = 0.0f;
-    VFX::Start(data);
-
 
 }
 
@@ -125,6 +94,25 @@ void TestWeaponMain::CalcDamage(float range)
     XMStoreFloat3(&vec, vVec);
     pDamageCtrl_->CalcSword(transform_.position_, vec, range);
 
+    EmitterData  data;
+    data.position = transform_.position_;
+    data.delay = 0;
+    data.number = 1;
+    data.lifeTime = 10;
+    data.positionRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    data.direction = vec;
+    data.directionRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    data.speed = data.lifeTime * 15 / 100;
+    data.speedRnd = 0.0f;
+    data.accel = 1.0f;
+    data.size = XMFLOAT2(0.4f, 0.4f);
+    data.sizeRnd = XMFLOAT2(0.4f, 0.4f);
+    data.scale = XMFLOAT2(1.0f, 1.0f);
+    data.color = XMFLOAT4(1.0f, 1.0f, 0.1f, 1.0f);
+    data.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+    data.gravity = 0.0f;
+    VFX::Start(data);
+
 }
 
 //--------------------state---------------------------------------------------
@@ -132,12 +120,12 @@ void TestWeaponMain::CalcDamage(float range)
 TestWeaponWait::TestWeaponWait(StateManager* owner)
 {
     owner_ = owner;
-    pWeaponBase_ = static_cast<WeaponBase*>(owner_->GetGameObject());
+    pTestWeaponMain_ = static_cast<TestWeaponMain*>(owner_->GetGameObject());
 }
 
 void TestWeaponWait::Update()
 {
-    if (!pWeaponBase_->IsAtkEnd()) owner_->ChangeState("Combo1");
+    if (!pTestWeaponMain_->IsAtkEnd()) owner_->ChangeState("Combo1");
 }
 
 //---------------------------------------------
@@ -174,6 +162,7 @@ void TestWeaponCombo1::Update()
 
 void TestWeaponCombo1::OnEnter()
 {
+    if (pTestWeaponMain_ == nullptr) owner_->ChangeState("Wait");
     time_ = comboTime_;
     next_ = false;
 }
@@ -215,6 +204,7 @@ void TestWeaponCombo2::Update()
 
 void TestWeaponCombo2::OnEnter()
 {
+    if (pTestWeaponMain_ == nullptr) owner_->ChangeState("Wait");
     time_ = comboTime_;
     next_ = false;
 }
@@ -258,6 +248,7 @@ void TestWeaponCombo3::Update()
 
 void TestWeaponCombo3::OnEnter()
 {
+    if (pTestWeaponMain_ == nullptr) owner_->ChangeState("Wait");
     time_ = comboTime_;
     next_ = false;
 }

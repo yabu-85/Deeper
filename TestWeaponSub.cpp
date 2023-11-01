@@ -5,6 +5,8 @@
 #include "GameManager.h"
 #include "Player.h"
 #include "PlayerCommand.h"
+#include "TestBullet.h"
+#include "Aim.h"
 
 TestWeaponSub::TestWeaponSub(GameObject* parent)
     :WeaponBase(parent)
@@ -59,17 +61,33 @@ void TestWeaponSub::ResetState()
     pStateManager_->ChangeState("Wait");
 }
 
+void TestWeaponSub::ShotBullet()
+{
+    Aim* pAim = pPlayer_->GetAim();
+    XMFLOAT3 tar;
+    if (pAim->IsTarget()) {
+        tar = pAim->GetTargetPos();
+    }
+    else {
+        XMFLOAT3 pos = pPlayer_->GetPosition();
+        XMFLOAT3 vec = pAim->GetAimDirection();
+        tar = XMFLOAT3(pos.x + vec.x, pos.y + vec.y, pos.z + vec.z);
+    }
+    TestBullet* b = Instantiate<TestBullet>(pPlayer_->GetParent());
+    b->Shot(pPlayer_->GetPosition(), tar);
+}
+
 //--------------------------state-----------------------------------
 
 TestWeaponSubWait::TestWeaponSubWait(StateManager* owner)
 {
     owner_ = owner;
-    pWeaponBase_ = static_cast<WeaponBase*>(owner_->GetGameObject());
+    pTestWeaponSub_ = static_cast<TestWeaponSub*>(owner_->GetGameObject());
 }
 
 void TestWeaponSubWait::Update()
 {
-    if (!pWeaponBase_->IsAtkEnd()) owner_->ChangeState("Combo1");
+    if (!pTestWeaponSub_->IsAtkEnd()) owner_->ChangeState("Combo1");
 }
 
 //---------------------------------------------------------------
@@ -78,7 +96,7 @@ TestWeaponSubCombo1::TestWeaponSubCombo1(StateManager* owner)
     :time_(0), next_(false)
 {
     owner_ = owner;
-    pWeaponBase_ = static_cast<WeaponBase*>(owner_->GetGameObject());
+    pTestWeaponSub_ = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
 }
 
@@ -90,22 +108,26 @@ void TestWeaponSubCombo1::Update()
     if (time_ <= 0) {
         if (next_ == true) owner_->ChangeState("Combo2");
         else {
-            pWeaponBase_->SetAtkEnd(true);
+            pTestWeaponSub_->SetAtkEnd(true);
             owner_->ChangeState("Wait");
         }
+        return;
     }
+
+    pTestWeaponSub_->ShotBullet();
 }
 
 void TestWeaponSubCombo1::OnEnter()
 {
     time_ = 20;
     next_ = false;
-    pWeaponBase_->SetScale(XMFLOAT3(0.3f, 0.3f, 0.3f));
+    if (pTestWeaponSub_ == nullptr) owner_->ChangeState("Wait");
+    pTestWeaponSub_->SetScale(XMFLOAT3(0.3f, 0.3f, 0.3f));
 }
 
 void TestWeaponSubCombo1::OnExit()
 {
-    pWeaponBase_->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
+    pTestWeaponSub_->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
 }
 
 //---------------------------------------------------------------
@@ -114,7 +136,7 @@ TestWeaponSubCombo2::TestWeaponSubCombo2(StateManager* owner)
     :time_(0), next_(false)
 {
     owner_ = owner;
-    pWeaponBase_ = static_cast<WeaponBase*>(owner_->GetGameObject());
+    pTestWeaponSub_ = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
 }
 
@@ -126,20 +148,24 @@ void TestWeaponSubCombo2::Update()
     if (time_ <= 0) {
         if (next_ == true) owner_->ChangeState("Combo1");
         else {
-            pWeaponBase_->SetAtkEnd(true);
+            pTestWeaponSub_->SetAtkEnd(true);
             owner_->ChangeState("Wait");
         }
+        return;
     }
+
+    pTestWeaponSub_->ShotBullet();
 }
 
 void TestWeaponSubCombo2::OnEnter()
 {
     time_ = 20;
     next_ = false;
-    pWeaponBase_->SetScale(XMFLOAT3(0.4f, 0.4f, 0.4f));
+    if (pTestWeaponSub_ == nullptr) owner_->ChangeState("Wait");
+    pTestWeaponSub_->SetScale(XMFLOAT3(0.4f, 0.4f, 0.4f));
 }
 
 void TestWeaponSubCombo2::OnExit()
 {
-    pWeaponBase_->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
+    pTestWeaponSub_->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
 }

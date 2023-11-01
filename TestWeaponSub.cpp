@@ -31,7 +31,7 @@ void TestWeaponSub::Initialize()
 
     pPlayer_ = (Player*)GetParent();
 
-    transform_.scale_ = XMFLOAT3(0.2f, 0.2f, 0.2f);
+    transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
 }
 
 void TestWeaponSub::Update()

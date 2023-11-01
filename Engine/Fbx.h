@@ -95,6 +95,9 @@ public:
 	//任意のアニメーション時のボーンの位置を取得
 	XMFLOAT3 GetBoneAnimPosition(std::string boneName, int frame);
 
+	//任意のアニメーション時のボーンの回転Matrixを取得
+	XMMATRIX GetBoneAnimRotateMatrix(std::string boneName, int frame);
+
 	//レイキャスト（レイを飛ばして当たり判定）
 	//引数：data	必要なものをまとめたデータ
 	void RayCast(RayCastData *data);

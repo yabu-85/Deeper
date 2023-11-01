@@ -75,15 +75,17 @@ namespace Model
 		}
 
 		//アニメーションを進める
-		_datas[handle]->nowFrame += _datas[handle]->animSpeed;
-		_datas[handle]->nowFrame2 += _datas[handle]->animSpeed;
-
-		//最後までアニメーションしたら戻す
-		if (_datas[handle]->nowFrame > (float)_datas[handle]->endFrame) {
-			_datas[handle]->nowFrame = (float)_datas[handle]->startFrame;
-			_datas[handle]->nowFrame2 = (float)_datas[handle]->startFrame2;
+		if (!_datas[handle]->isAimeStop) {
+			_datas[handle]->nowFrame += _datas[handle]->animSpeed;
+			_datas[handle]->nowFrame2 += _datas[handle]->animSpeed;
+		
+			//最後までアニメーションしたら戻す
+			if (_datas[handle]->nowFrame > (float)_datas[handle]->endFrame) {
+				_datas[handle]->nowFrame = (float)_datas[handle]->startFrame;
+				_datas[handle]->nowFrame2 = (float)_datas[handle]->startFrame2;
+			}
 		}
-
+		
 		if (_datas[handle]->pFbx)
 		{
 			if (_datas[handle]->isBlending) {
@@ -143,15 +145,21 @@ namespace Model
 	//アニメーションのフレーム数をセット
 	void SetBlendingAnimFrame(int handle, int startFrame1, int endFrame1, int startFrame2, float animSpeed, float blendWeight)
 	{
+		_datas[handle]->isAimeStop = false;
 		_datas[handle]->SetBlendingAnimFrame(startFrame1, endFrame1, startFrame2, animSpeed, blendWeight);
 	}
 
 	//アニメーションのフレーム数をセット
 	void SetAnimFrame(int handle, int startFrame, int endFrame, float animSpeed)
 	{
+		_datas[handle]->isAimeStop = false;
 		_datas[handle]->SetAnimFrame(startFrame, endFrame, animSpeed);
 	}
 
+	void SetAnimeStop(int handle, bool b)
+	{
+		_datas[handle]->isAimeStop = b;
+	}
 
 	//現在のアニメーションのフレームを取得
 	int GetAnimFrame(int handle)
@@ -175,6 +183,11 @@ namespace Model
 		XMVECTOR vec = XMVector3TransformCoord(XMLoadFloat3(&pos), _datas[handle]->transform.GetWorldMatrix()); //posをワールドマトリックスで計算する
 		XMStoreFloat3(&pos, vec);
 		return pos;
+	}
+
+	XMMATRIX GetBoneAnimRotateMatrix(int handle, std::string boneName)
+	{
+		return _datas[handle]->pFbx->GetBoneAnimRotateMatrix(boneName, _datas[handle]->nowFrame); //相対座標（ボーンの中心からの位置）
 	}
 
 

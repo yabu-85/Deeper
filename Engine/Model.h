@@ -24,6 +24,7 @@ namespace Model
 		Transform 	transform;
 
 		//アニメーションのフレーム
+		bool isAimeStop;
 		float nowFrame, animSpeed;
 		int startFrame, endFrame;
 
@@ -34,7 +35,7 @@ namespace Model
 		float blendWeight;
 
 		//初期化
-		ModelData() : pFbx(nullptr), nowFrame(0), startFrame(0), endFrame(0), animSpeed(0),
+		ModelData() : pFbx(nullptr), isAimeStop(false), nowFrame(0), startFrame(0), endFrame(0), animSpeed(0),
 			isBlending(false), nowFrame2(0.0f), startFrame2(0), blendWeight(0.0f)
 		{
 		}
@@ -106,6 +107,9 @@ namespace Model
 	//引数：animSpeed	アニメーション速度
 	void SetAnimFrame(int handle, int startFrame, int endFrame, float animSpeed);
 
+	//アニメーション停止
+	void SetAnimeStop(int handle, bool b);
+
 	//現在のアニメーションのフレームを取得
 	int GetAnimFrame(int handle);
 
@@ -117,6 +121,9 @@ namespace Model
 
 	//アニメーション時のボーンの位置を取得
 	XMFLOAT3 GetBoneAnimPosition(int handle, std::string boneName);
+	
+	//アニメーション時のボーンの回転Matrixを取得
+	XMMATRIX GetBoneAnimRotateMatrix(int handle, std::string boneName);
 
 	//ワールド行列を設定
 	//引数：handle	設定したいモデルの番号

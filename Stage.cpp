@@ -106,13 +106,13 @@ void Stage::CreatStage()
                 mapData_[z][x] = 1;
                 intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
             }
-            else if (data == 2)
+            else if (data == 21)
             {
                 mapData_[z][x] = 1;
                 intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
                 intersectDatas_.push_back({ hModel_[T2], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
             }
-            else if (data == 3)
+            else if (data == 31)
             {
                 mapData_[z][x] = 1;
                 intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });

@@ -56,12 +56,11 @@ void Player::Initialize()
 
     pMainWeapon_ = Instantiate<TestWeaponMain>(this);
     pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
-    pMainWeapon_->SetOffsetRotate(XMFLOAT3(90.0f, 0.0f, 0.0f));
+    pMainWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 0.0f, 0.0f));
     
     pSubWeapon_ = Instantiate<TestWeaponSub>(this);
-    pSubWeapon_->SetOffsetPosition(XMFLOAT3(0.0f, 0.5f, 0.0f));
-    pSubWeapon_->SetOffsetRotate(XMFLOAT3(30.0f, 100.0f, 150.0f));
     pSubWeapon_->SetOffsetScale(XMFLOAT3(0.0f, 0.0f, 0.0f));
+    pSubWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 180.0f, 0.0f));
 
     pAim_ = Instantiate<Aim>(this);
     pText->Initialize();
@@ -80,8 +79,14 @@ void Player::Update()
 
     //デバッグ用
     if (Input::IsKeyDown(DIK_G)) {
-        Model::SetBlendingAnimFrame(hModel_[1], 0, 120, 160, 1.0f, 0.9f);
         Model::SetAnimFrame(hModel_[0], 0, 120, 1.0f);
+        Model::SetBlendingAnimFrame(hModel_[1], 0, 120, 160, 1.0f, 0.9f);
+    }
+
+    //デバッグ用
+    if (Input::IsKeyDown(DIK_F)) {
+        Model::SetAnimeStop(hModel_[0], true);
+        Model::SetAnimeStop(hModel_[1], true);
     }
 
     if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;

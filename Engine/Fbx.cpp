@@ -135,6 +135,21 @@ XMFLOAT3 Fbx::GetBoneAnimPosition(std::string boneName, int frame)
 	return position;
 }
 
+XMMATRIX Fbx::GetBoneAnimRotateMatrix(std::string boneName, int frame)
+{
+	XMMATRIX rotate;
+	FbxTime time;
+	time.SetTime(0, 0, 0, frame, 0, 0, _frameRate);
+
+	for (int i = 0; i < parts_.size(); i++)
+	{
+		if (parts_[i]->GetBoneRotateMatrix(boneName, time, &rotate))
+			break;
+	}
+
+	return rotate;
+}
+
 void Fbx::Draw(Transform& transform, int type, int frame1, int frame2, float blendFactor)
 {
 	Direct3D::SetBlendMode(Direct3D::BLEND_DEFAULT);

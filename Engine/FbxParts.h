@@ -153,10 +153,10 @@ public:
 	bool GetBonePosition(std::string boneName, XMFLOAT3	* position);
 
 	//任意のボーンの位置を取得
-	//引数：boneName	取得したいボーンの位置
-	//引数：position	ワールド座標での位置【out】
-	//戻値：見つかればtrue
 	bool GetBonePosition(std::string boneName, FbxTime time, XMFLOAT3* position);
+
+	//任意のボーンの回転Matrixを取得
+	bool GetBoneRotateMatrix(std::string boneName, FbxTime time, XMMATRIX* rotate);
 
 	//スキンメッシュ情報を取得
 	//戻値：スキンメッシュ情報

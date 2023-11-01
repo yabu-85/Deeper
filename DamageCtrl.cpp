@@ -34,8 +34,7 @@ int DamageCtrl::CalcSword(XMFLOAT3 start, XMFLOAT3 vec, float range)
 {
     std::vector<EnemyBase*> enemyList = pEnemySpawnCtrl_->GetAllEnemy();
 
-    BoxCollider* bCol = new BoxCollider(XMFLOAT3(0, 1, 0), XMFLOAT3(1.0f, 1.0f, 1.0f));
-
+    //BoxCollider* bCol = new BoxCollider(XMFLOAT3(0, 1, 0), XMFLOAT3(1.0f, 1.0f, 1.0f));
 
     //線分（レイ）と円の衝突判定パクった：おまけに衝突開始地点と終了地点とれる
     for (int i = 0; i < enemyList.size(); i++) {
@@ -93,11 +92,11 @@ int DamageCtrl::CalcSword(XMFLOAT3 start, XMFLOAT3 vec, float range)
         }
 
         enemyList.at(i)->ApplyDamage(1);
-        delete bCol;
+      //  delete bCol;
         return i; //true
 
     }
     
-    delete bCol;
+ //   delete bCol;
     return -1;
 }

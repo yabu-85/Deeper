@@ -15,6 +15,7 @@ enum ColliderType
 	COLLIDER_BOX,		//î†å^
 	COLLIDER_CIRCLE,	//ãÖëÃ
 	COLLIDER_LINE,		//íºê¸å^
+	COLLIDER_MAX,		
 };
 
 //-----------------------------------------------------------

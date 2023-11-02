@@ -8,6 +8,7 @@ class LineCollider;
 
 class TestWeaponMain : public WeaponBase
 {
+    int damage_;
     Player* pPlayer_;
     DamageCtrl* pDamageCtrl_;
     LineCollider* line_;

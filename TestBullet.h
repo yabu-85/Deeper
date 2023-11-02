@@ -1,8 +1,15 @@
 #pragma once
 #include "BulletBase.h"
 
+class SphereCollider;
+class DamageCtrl;
+
 class TestBullet : public BulletBase
 {
+    int damage_;
+    SphereCollider* collision_;
+    DamageCtrl* pDamageCtrl_;
+
 public:
     TestBullet(GameObject* parent);
     ~TestBullet() override;

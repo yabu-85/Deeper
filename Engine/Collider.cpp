@@ -7,7 +7,7 @@
 
 //コンストラクタ
 Collider::Collider():
-	pGameObject_(nullptr)
+	pGameObject_(nullptr), center_(0.0f, 0.0f, 0.0f), hDebugModel_(-1), size_(0.0f, 0.0f, 0.0f), type_(COLLIDER_MAX)
 {
 }
 
@@ -25,7 +25,6 @@ bool Collider::IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB)
 
 	XMFLOAT3 boxPosA = Transform::Float3Add(boxA->pGameObject_->GetWorldPosition(), boxA->center_);
 	XMFLOAT3 boxPosB = Transform::Float3Add(boxB->pGameObject_->GetWorldPosition(), boxB->center_);
-
 
 	if ((boxPosA.x + boxA->size_.x / 2) > (boxPosB.x - boxB->size_.x / 2) &&
 		(boxPosA.x - boxA->size_.x / 2) < (boxPosB.x + boxB->size_.x / 2) &&
@@ -47,8 +46,6 @@ bool Collider::IsHitBoxVsCircle(BoxCollider* box, SphereCollider* sphere)
 {
 	XMFLOAT3 circlePos = Transform::Float3Add(sphere->pGameObject_->GetWorldPosition(), sphere->center_);
 	XMFLOAT3 boxPos = Transform::Float3Add(box->pGameObject_->GetWorldPosition(), box->center_);
-
-
 
 	if (circlePos.x > boxPos.x - box->size_.x - sphere->size_.x &&
 		circlePos.x < boxPos.x + box->size_.x + sphere->size_.x &&
@@ -85,7 +82,7 @@ bool Collider::IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circ
 	XMFLOAT3 positionB = circleB->pGameObject_->GetWorldPosition();
 
 	XMVECTOR v = (XMLoadFloat3(&centerA) + XMLoadFloat3(&positionA))
-		- (XMLoadFloat3(&centerB) + XMLoadFloat3(&positionB));
+				- (XMLoadFloat3(&centerB) + XMLoadFloat3(&positionB));
 
 	if (XMVector3Length(v).m128_f32[0] <= circleA->size_.x + circleB->size_.x)
 	{

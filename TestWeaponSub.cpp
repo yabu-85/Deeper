@@ -69,12 +69,12 @@ void TestWeaponSub::ShotBullet()
         tar = pAim->GetTargetPos();
     }
     else {
-        XMFLOAT3 pos = pPlayer_->GetPosition();
+        XMFLOAT3 pos = transform_.position_;
         XMFLOAT3 vec = pAim->GetAimDirection();
         tar = XMFLOAT3(pos.x + vec.x, pos.y + vec.y, pos.z + vec.z);
     }
     TestBullet* b = Instantiate<TestBullet>(pPlayer_->GetParent());
-    b->Shot(pPlayer_->GetPosition(), tar);
+    b->Shot(transform_.position_, tar);
 }
 
 //--------------------------state-----------------------------------

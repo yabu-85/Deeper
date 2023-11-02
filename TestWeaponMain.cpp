@@ -9,7 +9,7 @@
 #include "Engine/LineCollider.h"
 
 TestWeaponMain::TestWeaponMain(GameObject* parent)
-	:WeaponBase(parent)
+	:WeaponBase(parent), damage_(0)
 {
 	objectName_ = "TestWeaponMain";
 }
@@ -40,6 +40,7 @@ void TestWeaponMain::Initialize()
     line_ = new LineCollider(XMFLOAT3(), XMFLOAT3(), 10.0f);
     AddCollider(line_);
 
+    damage_ = 1;
 }
 
 void TestWeaponMain::Update()
@@ -98,21 +99,20 @@ void TestWeaponMain::CalcDamage(float range)
     XMStoreFloat3(&vec, vVec);
     
     line_->SetVec(vec);
-    pDamageCtrl_->CalcSword(line_);
+    pDamageCtrl_->CalcSword(line_, damage_);
 
     EmitterData  data;
     data.position = transform_.position_;
     data.position.x += Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "hand.L").x;
     data.position.y += Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "hand.L").y;
     data.position.z += Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "hand.L").z;
-
     data.delay = 0;
     data.number = 1;
     data.lifeTime = 10;
     data.positionRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
     data.direction = vec;
     data.directionRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    data.speed = data.lifeTime * 15 / 100;
+    data.speed = data.lifeTime * range / 100;
     data.speedRnd = 0.0f;
     data.accel = 1.0f;
     data.size = XMFLOAT2(0.4f, 0.4f);

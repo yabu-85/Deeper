@@ -14,26 +14,10 @@ DamageCtrl::~DamageCtrl()
 {
 }
 
-void DamageCtrl::ApplyDamage(DAMAGE_TYPE type, int d)
-{
-	std::vector<EnemyBase*> enemyList = pEnemySpawnCtrl_->GetAllEnemy();
-	if (enemyList.empty()) return;
-
-	if (type == DAMAGE_TYPE::ALL) {
-		for (EnemyBase* e : enemyList) {
-			e->ApplyDamage(d);
-		}
-	}
-	else if (type == DAMAGE_TYPE::RAND) {
-		int randomIndex = rand() % (int)enemyList.size();
-		enemyList.at(randomIndex)->ApplyDamage(d);
-	}
-
-}
-
-int DamageCtrl::CalcSword(LineCollider* line)
+bool DamageCtrl::CalcSword(LineCollider* line, int damage)
 {
     std::vector<EnemyBase*> enemyList = pEnemySpawnCtrl_->GetAllEnemy();
+	bool hit = false;
 
     //線分（レイ）と円の衝突判定パクった：おまけに衝突開始地点と終了地点とれる
     for (int i = 0; i < enemyList.size(); i++) {
@@ -44,13 +28,35 @@ int DamageCtrl::CalcSword(LineCollider* line)
 
 		for (int j = 0; j < col.size(); j++) {
 			if (col.front()->IsHit(line)) {
-				enemyList.at(i)->ApplyDamage(2);
+				enemyList.at(i)->ApplyDamage(damage);
+				hit = true;
 				break;
 			}
 			col.pop_front();
 		}
-
     }
-    
-	return -1;
+	return hit;
+}
+
+bool DamageCtrl::CalcBullet(SphereCollider* sphere, int damage)
+{
+	std::vector<EnemyBase*> enemyList = pEnemySpawnCtrl_->GetAllEnemy();
+	bool hit = false;
+
+	for (int i = 0; i < enemyList.size(); i++) {
+		std::list<Collider*> col = enemyList.at(i)->GetColliderList();
+
+		//Colliderなかったら次
+		if (col.empty()) continue;
+
+		for (int j = 0; j < col.size(); j++) {
+			if (col.front()->IsHit(sphere)) {
+				enemyList.at(i)->ApplyDamage(damage);
+				hit = true;
+				break;
+			}
+			col.pop_front();
+		}
+	}
+	return hit;
 }

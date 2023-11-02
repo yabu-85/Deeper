@@ -36,7 +36,7 @@ void TestWeaponMain::Initialize()
     pPlayer_ = (Player*)GetParent();
     GameManager* pGameManager = (GameManager*)FindObject("GameManager");
     pDamageCtrl_ = pGameManager->GetDamageCtrl();
-
+    
     line_ = new LineCollider(XMFLOAT3(), XMFLOAT3(), 10.0f);
     AddCollider(line_);
 

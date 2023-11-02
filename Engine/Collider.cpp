@@ -1,5 +1,6 @@
 #include "BoxCollider.h"
 #include "SphereCollider.h"
+#include "LineCollider.h"
 #include "GameObject.h"
 #include "Model.h"
 #include "Transform.h"
@@ -62,6 +63,16 @@ bool Collider::IsHitBoxVsCircle(BoxCollider* box, SphereCollider* sphere)
 	return false;
 }
 
+//箱型と直線の衝突判定
+//引数：box	箱型判定
+//引数：line	２つ目の直線判定
+//戻値：接触していればtrue
+bool Collider::IsHitBoxVsLine(BoxCollider* box, LineCollider* line)
+{
+
+	return false;
+}
+
 //球体同士の衝突判定
 //引数：circleA	１つ目の球体判定
 //引数：circleB	２つ目の球体判定
@@ -81,6 +92,86 @@ bool Collider::IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circ
 		return true;
 	}
 
+	return false;
+}
+
+//球体と直線の衝突判定
+//引数：circle	１つ目の球体判定
+//引数：line	２つ目の直線判定
+//戻値：接触していればtrue
+bool Collider::IsHitCircleVsLine(SphereCollider* circle, LineCollider* line)
+{
+	XMFLOAT3 p = circle->center_; //中心点の座標
+	p.x += circle->pGameObject_->GetWorldPosition().x;
+	p.y += circle->pGameObject_->GetWorldPosition().y;
+	p.z += circle->pGameObject_->GetWorldPosition().z;
+
+	XMFLOAT3 l = line->center_;
+	XMFLOAT3 linePos = line->pGameObject_->GetWorldPosition();
+	l.x += linePos.x;
+	l.y += linePos.y;
+	l.z += linePos.z;
+
+	float r = circle->size_.x;
+
+	//これStartがPの半径内に入っていたら無条件で当たってるとみなす
+	double distSquared = pow(p.x - l.x, 2) + pow(p.y - l.y, 2) + pow(p.z - l.z, 2);
+	double radSquared = pow(r, 2);
+	if (distSquared < radSquared) {
+		return true;
+	}
+
+	p.x = p.x - l.x;
+	p.y = p.y - l.y;
+	p.z = p.z - l.z;
+
+	float A = line->vec_.x * line->vec_.x + line->vec_.y * line->vec_.y + line->vec_.z * line->vec_.z;
+	float B = line->vec_.x * p.x + line->vec_.y * p.y + line->vec_.z * p.z;
+	float C = p.x * p.x + p.y * p.y + p.z * p.z - r * r;
+
+	if (A == 0.0f)
+		return false;  //レイの長さが0
+
+	float s = B * B - A * C;
+	if (s < 0.0f) return false; // 衝突していない
+
+	s = sqrtf(s);
+	float a1 = (B - s) / A;
+	float a2 = (B + s) / A;
+
+	if (a1 < 0.0f || a2 < 0.0f) return false; // レイの反対で衝突
+
+	XMFLOAT3 q1; //衝突開始地点
+	q1.x = l.x + a1 * line->vec_.x;
+	q1.y = l.y + a1 * line->vec_.y;
+	q1.z = l.z + a1 * line->vec_.z;
+
+	//XMFLOAT3 q2; //終了地点
+	//q2.x = start.x + a2 * vec.x;
+	//q2.y = start.y + a2 * vec.y;
+	//q2.z = start.z + a2 * vec.z;
+
+	// ベクトルの差分を計算
+	XMVECTOR difference = XMVectorSubtract(XMLoadFloat3(&l), XMLoadFloat3(&q1));
+	// ベクトルの長さ（距離）を計算
+	XMVECTOR distance = XMVector3Length(difference);
+	// 結果を float に変換して返す
+	float distanceFloat;
+	XMStoreFloat(&distanceFloat, distance);
+
+	//rangeの範囲外だった場合次
+	if (line->size_.x < distanceFloat) return false;
+
+	return true;
+
+}
+
+//直線同士の衝突判定
+//引数：lineA	１つ目の直線判定
+//引数：lineB	２つ目の直線判定
+//戻値：接触していればtrue
+bool Collider::IsHitLineVsLine(LineCollider* lineA, LineCollider* lineB)
+{
 	return false;
 }
 

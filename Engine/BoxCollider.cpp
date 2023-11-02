@@ -1,7 +1,7 @@
 #include "BoxCollider.h"
 #include "SphereCollider.h"
+#include "LineCollider.h"
 #include "Model.h"
-
 
 //コンストラクタ（当たり判定の作成）
 //引数：basePos	当たり判定の中心位置（ゲームオブジェクトの原点から見た位置）
@@ -26,6 +26,8 @@ bool BoxCollider::IsHit(Collider* target)
 {
 	if (target->type_ == COLLIDER_BOX)
 		return IsHitBoxVsBox((BoxCollider*)target, this);
-	else
+	else if (target->type_ == COLLIDER_CIRCLE)
 		return IsHitBoxVsCircle(this, (SphereCollider*)target);
+	else 
+		return IsHitBoxVsLine(this, (LineCollider*)target);
 }

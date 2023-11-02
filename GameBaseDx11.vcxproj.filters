@@ -20,6 +20,10 @@
     <Filter Include="01Engine\ResourceManager">
       <UniqueIdentifier>{bedee914-5063-4c08-95bb-79c861b4969c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02Shader">
+      <UniqueIdentifier>{47a6a3f5-8cfd-436b-8d58-beccd108f3f3}</UniqueIdentifier>
+      <Extensions>hlsl</Extensions>
+    </Filter>
     <Filter Include="Player">
       <UniqueIdentifier>{e04af741-50b7-426b-8ed5-0d84c1ba486c}</UniqueIdentifier>
     </Filter>
@@ -28,6 +32,9 @@
     </Filter>
     <Filter Include="Enemy\EnemyBase">
       <UniqueIdentifier>{45e1984c-0a58-4c08-9b28-222eb7b2751e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enemy\Enemies">
+      <UniqueIdentifier>{bba5f4f1-692c-4c4d-8c84-026ee8023168}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{8b8e6f8e-5c92-4eb7-8beb-f190033fe076}</UniqueIdentifier>
@@ -50,18 +57,11 @@
     <Filter Include="Weapon\Bullet">
       <UniqueIdentifier>{6dd57487-9671-4a91-b667-b5c85bbb2e66}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Weapon\Base">
-      <UniqueIdentifier>{a118e3ac-eb0d-48c9-96c9-a693c123e341}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Weapon\Weapon">
-      <UniqueIdentifier>{0ad40fca-bfa2-4aa9-a457-d57e0e105098}</UniqueIdentifier>
+      <UniqueIdentifier>{4c9605a3-36b8-48d2-915e-a1299ca77da3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01Engine\02Shader">
-      <UniqueIdentifier>{47a6a3f5-8cfd-436b-8d58-beccd108f3f3}</UniqueIdentifier>
-      <Extensions>hlsl</Extensions>
-    </Filter>
-    <Filter Include="Enemy\Enemies">
-      <UniqueIdentifier>{bba5f4f1-692c-4c4d-8c84-026ee8023168}</UniqueIdentifier>
+    <Filter Include="Weapon\Base">
+      <UniqueIdentifier>{c3450bad-3506-4e41-8646-7fe925f04220}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -195,14 +195,17 @@
     <ClCompile Include="TestBullet.cpp">
       <Filter>Weapon\Bullet</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponBase.cpp">
-      <Filter>Weapon\Base</Filter>
-    </ClCompile>
     <ClCompile Include="TestWeaponMain.cpp">
       <Filter>Weapon\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="TestWeaponSub.cpp">
       <Filter>Weapon\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponBase.cpp">
+      <Filter>Weapon\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\LineCollider.cpp">
+      <Filter>01Engine\Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -342,37 +345,40 @@
     <ClInclude Include="TestBullet.h">
       <Filter>Weapon\Bullet</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponBase.h">
-      <Filter>Weapon\Base</Filter>
-    </ClInclude>
     <ClInclude Include="TestWeaponMain.h">
       <Filter>Weapon\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="TestWeaponSub.h">
       <Filter>Weapon\Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponBase.h">
+      <Filter>Weapon\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\LineCollider.h">
+      <Filter>01Engine\Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">
-      <Filter>01Engine\02Shader</Filter>
+      <Filter>02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\Simple3D.hlsl">
-      <Filter>01Engine\02Shader</Filter>
+      <Filter>02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\Debug3D.hlsl">
-      <Filter>01Engine\02Shader</Filter>
+      <Filter>02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">
-      <Filter>01Engine\02Shader</Filter>
+      <Filter>02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\OutLine.hlsl">
-      <Filter>01Engine\02Shader</Filter>
+      <Filter>02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\Chara3D.hlsl">
-      <Filter>01Engine\02Shader</Filter>
+      <Filter>02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\BillBoard2D.hlsl">
-      <Filter>01Engine\02Shader</Filter>
+      <Filter>02Shader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

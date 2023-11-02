@@ -1,13 +1,17 @@
 #pragma once
 #include "WeaponBase.h"
 #include "StateBase.h"
+
 class DamageCtrl;
 class Player;
+class LineCollider;
 
 class TestWeaponMain : public WeaponBase
 {
     Player* pPlayer_;
     DamageCtrl* pDamageCtrl_;
+    LineCollider* line_;
+
 public:
     TestWeaponMain(GameObject* parent);
     ~TestWeaponMain() override;

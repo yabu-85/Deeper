@@ -1,16 +1,17 @@
+#include "LineCollider.h"
 #include "SphereCollider.h"
 #include "BoxCollider.h"
-#include "LineCollider.h"
 #include "Model.h"
 
 //コンストラクタ（当たり判定の作成）
 //引数：basePos	当たり判定の中心位置（ゲームオブジェクトの原点から見た位置）
 //引数：size	当たり判定のサイズ
-SphereCollider::SphereCollider(XMFLOAT3 center, float radius)
+LineCollider::LineCollider(XMFLOAT3 center, XMFLOAT3 vec, float range)
 {
 	center_ = center;
-	size_ = XMFLOAT3(radius, radius, radius);
-	type_ = COLLIDER_CIRCLE;
+	size_ = XMFLOAT3(range, range, range);
+	vec_ = vec;
+	type_ = COLLIDER_LINE;
 
 	//リリース時は判定枠は表示しない
 #ifdef _DEBUG
@@ -22,12 +23,12 @@ SphereCollider::SphereCollider(XMFLOAT3 center, float radius)
 //接触判定
 //引数：target	相手の当たり判定
 //戻値：接触してればtrue
-bool SphereCollider::IsHit(Collider* target)
+bool LineCollider::IsHit(Collider* target)
 {
 	if (target->type_ == COLLIDER_BOX)
-		return IsHitBoxVsCircle((BoxCollider*)target, this);
+		return IsHitBoxVsLine((BoxCollider*)target, this);
 	else if (target->type_ == COLLIDER_CIRCLE)
-		return IsHitCircleVsCircle((SphereCollider*)target, this);
-	else
-		return IsHitCircleVsLine(this, (LineCollider*)target);
+		return IsHitCircleVsLine((SphereCollider*)target, this);
+	else 
+		return IsHitLineVsLine((LineCollider*)target, this);
 }

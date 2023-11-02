@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "PlayerCommand.h"
 #include "Engine/VFX.h"
+#include "Engine/LineCollider.h"
 
 TestWeaponMain::TestWeaponMain(GameObject* parent)
 	:WeaponBase(parent)
@@ -35,6 +36,10 @@ void TestWeaponMain::Initialize()
     pPlayer_ = (Player*)GetParent();
     GameManager* pGameManager = (GameManager*)FindObject("GameManager");
     pDamageCtrl_ = pGameManager->GetDamageCtrl();
+
+    line_ = new LineCollider(XMFLOAT3(), XMFLOAT3(), 10.0f);
+    AddCollider(line_);
+
 }
 
 void TestWeaponMain::Update()
@@ -45,9 +50,6 @@ void TestWeaponMain::Update()
 
 void TestWeaponMain::Draw()
 {
-    //Drawの直前にやらないとひとつ前のフレームの座標が返ってくる
-    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "hand.L");
-    
     XMMATRIX matrix = Model::GetBoneAnimRotateMatrix(pPlayer_->GetModelHandle(), "hand.L");
     XMFLOAT4X4 matrix4x4;
 
@@ -65,7 +67,9 @@ void TestWeaponMain::Draw()
     transform_.rotate_ = rotation;
 
     Transform t = transform_;
+    t.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "hand.L");
     CalcOffset(t);
+
     Model::SetTransform(hModel_, t);
     Model::Draw(hModel_);
 
@@ -92,10 +96,16 @@ void TestWeaponMain::CalcDamage(float range)
     XMVECTOR vVec = XMLoadFloat3(&vec);
     vVec = XMVector3Normalize(vVec);
     XMStoreFloat3(&vec, vVec);
-    pDamageCtrl_->CalcSword(transform_.position_, vec, range);
+    
+    line_->SetVec(vec);
+    pDamageCtrl_->CalcSword(line_);
 
     EmitterData  data;
     data.position = transform_.position_;
+    data.position.x += Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "hand.L").x;
+    data.position.y += Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "hand.L").y;
+    data.position.z += Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "hand.L").z;
+
     data.delay = 0;
     data.number = 1;
     data.lifeTime = 10;

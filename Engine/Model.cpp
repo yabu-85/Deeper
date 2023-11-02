@@ -184,7 +184,7 @@ namespace Model
 
 	XMFLOAT3 GetBoneAnimPosition(int handle, std::string boneName)
 	{
-		XMFLOAT3 pos = _datas[handle]->pFbx->GetBoneAnimPosition(boneName, _datas[handle]->nowFrame); //相対座標（ボーンの中心からの位置）
+		XMFLOAT3 pos = _datas[handle]->pFbx->GetBoneAnimPosition(boneName, (int)_datas[handle]->nowFrame); //相対座標（ボーンの中心からの位置）
 		XMVECTOR vec = XMVector3TransformCoord(XMLoadFloat3(&pos), _datas[handle]->transform.GetWorldMatrix()); //posをワールドマトリックスで計算する
 		XMStoreFloat3(&pos, vec);
 		return pos;
@@ -192,7 +192,7 @@ namespace Model
 
 	XMMATRIX GetBoneAnimRotateMatrix(int handle, std::string boneName)
 	{
-		return _datas[handle]->pFbx->GetBoneAnimRotateMatrix(boneName, _datas[handle]->nowFrame); //相対座標（ボーンの中心からの位置）
+		return _datas[handle]->pFbx->GetBoneAnimRotateMatrix(boneName, (int)_datas[handle]->nowFrame); //相対座標（ボーンの中心からの位置）
 	}
 
 

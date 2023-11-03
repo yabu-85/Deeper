@@ -20,7 +20,7 @@ Aim::Aim(GameObject* parent)
     upMouselimit_ = -89.0f;
     donwMouselimit_ = 70.0f;
     mouseSpeed_ = 0.05f;
-    defPerspectDistance_ = 7.0f;
+    defPerspectDistance_ = 10.0f;
     perspectiveDistance_ = defPerspectDistance_;
     heightRay_ = 0.1f;
     numSupress_ = 0.002f;
@@ -46,6 +46,8 @@ void Aim::Update()
 {
     //デバッグ用
     if (Input::IsKeyDown(DIK_T)) aimMove_ = !aimMove_;
+    if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
+    if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
     
     if (!aimMove_) return;
 

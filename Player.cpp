@@ -27,6 +27,7 @@ Player::Player(GameObject* parent)
     pMainWeapon_(nullptr), pSubWeapon_(nullptr)
 {
     moveSpeed_ = 0.15f;
+    rotateRatio_ = 0.2f;
 }
 
 Player::~Player()
@@ -36,12 +37,22 @@ Player::~Player()
 void Player::Initialize()
 {
     //モデルデータのロード
-    hModel_[0] = Model::Load("Model/FiterTest2Up.fbx");
+    hModel_[0] = Model::Load("Model/FiterTestUp.fbx");
     assert(hModel_[0] >= 0);
 
-    hModel_[1] = Model::Load("Model/FiterTest2Down.fbx");
+    hModel_[1] = Model::Load("Model/FiterTestDown.fbx");
     assert(hModel_[1] >= 0);
     transform_.rotate_.y += 180.0f;
+
+    Model::SetAnimFrame(hModel_[0], 0, 150, 0.1f);
+    Model::SetAnimFrame(hModel_[1], 0, 150, 0.1f);
+
+    pMainWeapon_ = Instantiate<TestWeaponMain>(this);
+    pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
+    pMainWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 0.0f, 0.0f));
+    pSubWeapon_ = Instantiate<TestWeaponSub>(this);
+    pSubWeapon_->SetOffsetScale(XMFLOAT3(0.0f, 0.0f, 0.0f));
+    pSubWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 180.0f, 0.0f));
 
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
@@ -66,6 +77,7 @@ void Player::Update()
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
 
+    if(pStateManager_->GetName() == "Wait" || pStateManager_->GetName() == "Walk")
     if (pCommand_->CmdCenterUp()) {
         if (pMainWeapon_ == nullptr) {
             pMainWeapon_ = Instantiate<TestWeaponMain>(this);
@@ -77,8 +89,7 @@ void Player::Update()
             pMainWeapon_ = nullptr;
         }
     }
-
-    if (pCommand_->CmdCenterDown()) {
+    else if (pCommand_->CmdCenterDown()) {
         if (pSubWeapon_ == nullptr) {
             pSubWeapon_ = Instantiate<TestWeaponSub>(this);
             pSubWeapon_->SetOffsetScale(XMFLOAT3(0.0f, 0.0f, 0.0f));
@@ -92,8 +103,8 @@ void Player::Update()
 
     //デバッグ用
     if (Input::IsKeyDown(DIK_G)) {
-        Model::SetAnimFrame(hModel_[0], 0, 120, 1.0f);
-        Model::SetBlendingAnimFrame(hModel_[1], 0, 120, 160, 1.0f, 0.5f);
+        Model::SetAnimFrame(hModel_[0], 0, 150, 1.0f);
+        Model::SetBlendingAnimFrame(hModel_[1], 0, 150, 0, 1.0f, 0.2f);
     }
 
     if (Input::IsKeyDown(DIK_F)) {
@@ -110,7 +121,30 @@ void Player::Update()
 
 void Player::Draw()
 {
-    Model::SetTransform(hModel_[1], transform_);
+    Transform under = transform_;
+    if (pAim_->IsTarget()) {
+        float aimRotate = pAim_->GetRotate().y;
+        float currentRotate = transform_.rotate_.y;
+        float angleDifference = aimRotate - currentRotate;
+
+        std::string strNumber = std::to_string(angleDifference);
+        OutputDebugStringA(strNumber.c_str());
+        OutputDebugString(" , ");
+
+        while (angleDifference > 180.0f) {
+            angleDifference -= 360.0f;
+        }
+        while (angleDifference < -180.0f) {
+            angleDifference += 360.0f;
+        }
+
+        angleDifference = abs(angleDifference);
+
+        if (angleDifference < 90) {
+            under.rotate_.y += 180.0f;
+        }
+    }
+    Model::SetTransform(hModel_[1], under);
     Model::Draw(hModel_[1]);
 
     //ターゲット状態の場合はAim方向に強制
@@ -136,22 +170,22 @@ void Player::Release()
 {
 }
 
+//rotateRatioの比率で回転させる
 void Player::Rotate()
 {
-    const XMVECTOR vFront{ 0, 0, 1, 0 };
-    XMVECTOR playerForward = XMVectorSet(sinf(XMConvertToRadians(transform_.rotate_.y)), 0.0f, cosf(XMConvertToRadians(transform_.rotate_.y)), 0.0f);
+    XMFLOAT2 b(transform_.position_.x - prePos.x, transform_.position_.z - prePos.z);
+    XMVECTOR vB = XMLoadFloat2(&b);
+    //移動量が０なら回転しない
+    if (XMVectorGetX(XMVector3Length(vB)) == 0.0f) return;
+    vB = XMVector2Normalize(XMLoadFloat2(&b));
 
-    XMVECTOR vDot = XMVector3Dot(vFront, playerForward);
-    float dot = XMVectorGetX(vDot);
-    float angle = (float)acos(dot);
-
-    //外積求めて半回転だったら angle に -1 掛ける
-    XMVECTOR vCross = XMVector3Cross(vFront, playerForward); //外積求めるやつ 外積はベクトル型
-    if (XMVectorGetY(vCross) < 0) {
-        angle *= -1;
-    }
-    transform_.rotate_.y = XMConvertToDegrees(angle);
-
+    XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(transform_.rotate_.y)), cosf(XMConvertToRadians(transform_.rotate_.y)));
+    XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
+    XMStoreFloat2(&a, vA);
+    XMStoreFloat2(&b, vB);
+    float cross = a.x * b.y - a.y * b.x;
+    float dot = a.x * b.x + a.y * b.y;
+    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * rotateRatio_);
 }
 
 void Player::Move(float f)
@@ -159,25 +193,6 @@ void Player::Move(float f)
     prePos = transform_.position_;
     transform_.position_.x += ((playerMovement_.x * moveSpeed_) * f);
     transform_.position_.z += ((playerMovement_.z * moveSpeed_) * f);
-
-    //進行方向を向かせる
-    if (pCommand_->CmdWalk()) {
-        XMFLOAT3 fAimPos = XMFLOAT3(prePos.x - transform_.position_.x, 0.0f, prePos.z - transform_.position_.z);
-        XMVECTOR vAimPos = XMLoadFloat3(&fAimPos);  //正規化用の変数にfloatの値を入れる
-        vAimPos = XMVector3Normalize(vAimPos);
-        XMVECTOR vFront{ 0,0,1,0 };
-        XMVECTOR vDot = XMVector3Dot(vFront, vAimPos);
-        float dot = XMVectorGetX(vDot);
-        float angle = (float)acos(dot);
-
-        //外積求めて半回転だったら angle に -1 掛ける
-        XMVECTOR vCross = XMVector3Cross(vFront, vAimPos); //外積求めるやつ 外積はベクトル型
-        if (XMVectorGetY(vCross) < 0) {
-            angle *= -1;
-        }
-        transform_.rotate_.y = XMConvertToDegrees(angle);
-        transform_.rotate_.y += 180.0f;
-    }
 }
 
 bool Player::IsMoveKeyPushed(XMFLOAT3& key)
@@ -266,4 +281,8 @@ void Player::InitAvo()
     else {
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0);
     }
+    float preRatio = rotateRatio_;
+    rotateRatio_ = 1.0f;
+    Rotate();
+    rotateRatio_ = preRatio;
 }

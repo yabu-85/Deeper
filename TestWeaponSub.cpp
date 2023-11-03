@@ -42,8 +42,10 @@ void TestWeaponSub::Update()
 
 void TestWeaponSub::Draw()
 {
-    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "hand.L");
-    
+    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Sword");
+    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Sword");
+    transform_.rotate_.y += pPlayer_->GetUpRotate().y;
+
     Transform t = transform_;
     CalcOffset(t);
     Model::SetTransform(hModel_, t);
@@ -108,8 +110,8 @@ void TestWeaponSubCombo1::Update()
     if (time_ <= 0) {
         if (next_ == true) owner_->ChangeState("Combo2");
         else {
-            pTestWeaponSub_->SetAtkEnd(true);
             owner_->ChangeState("Wait");
+            pTestWeaponSub_->SetAtkEnd(true);
         }
         return;
     }
@@ -127,7 +129,7 @@ void TestWeaponSubCombo1::OnEnter()
 
 void TestWeaponSubCombo1::OnExit()
 {
-    pTestWeaponSub_->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
+    pTestWeaponSub_->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
 }
 
 //---------------------------------------------------------------
@@ -148,8 +150,8 @@ void TestWeaponSubCombo2::Update()
     if (time_ <= 0) {
         if (next_ == true) owner_->ChangeState("Combo1");
         else {
-            pTestWeaponSub_->SetAtkEnd(true);
             owner_->ChangeState("Wait");
+            pTestWeaponSub_->SetAtkEnd(true);
         }
         return;
     }
@@ -167,5 +169,5 @@ void TestWeaponSubCombo2::OnEnter()
 
 void TestWeaponSubCombo2::OnExit()
 {
-    pTestWeaponSub_->SetScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
+    pTestWeaponSub_->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
 }

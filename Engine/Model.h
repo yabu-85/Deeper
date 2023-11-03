@@ -123,6 +123,9 @@ namespace Model
 	//アニメーション時のボーンの位置を取得
 	XMFLOAT3 GetBoneAnimPosition(int handle, std::string boneName);
 	
+	//アニメーション時のボーンの回転を取得
+	XMFLOAT3 GetBoneAnimRotate(int handle, std::string boneName);
+
 	//アニメーション時のボーンの回転Matrixを取得
 	XMMATRIX GetBoneAnimRotateMatrix(int handle, std::string boneName);
 

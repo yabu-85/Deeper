@@ -190,6 +190,11 @@ namespace Model
 		return pos;
 	}
 
+	XMFLOAT3 GetBoneAnimRotate(int handle, std::string boneName)
+	{
+		return _datas[handle]->pFbx->GetBoneAnimRotate(boneName, (int)_datas[handle]->nowFrame); //相対座標（ボーンの中心からの位置）
+	}
+
 	XMMATRIX GetBoneAnimRotateMatrix(int handle, std::string boneName)
 	{
 		return _datas[handle]->pFbx->GetBoneAnimRotateMatrix(boneName, (int)_datas[handle]->nowFrame); //相対座標（ボーンの中心からの位置）

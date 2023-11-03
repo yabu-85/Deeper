@@ -9,6 +9,7 @@ class LineCollider;
 class TestWeaponMain : public WeaponBase
 {
     int damage_;
+    XMFLOAT3 wandPos_;
     Player* pPlayer_;
     DamageCtrl* pDamageCtrl_;
     LineCollider* line_;

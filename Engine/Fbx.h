@@ -95,6 +95,9 @@ public:
 	//任意のアニメーション時のボーンの位置を取得
 	XMFLOAT3 GetBoneAnimPosition(std::string boneName, int frame);
 
+	//任意のアニメーション時のボーンの回転を取得
+	XMFLOAT3 GetBoneAnimRotate(std::string boneName, int frame);
+
 	//任意のアニメーション時のボーンの回転Matrixを取得
 	XMMATRIX GetBoneAnimRotateMatrix(std::string boneName, int frame);
 

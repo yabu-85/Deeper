@@ -155,6 +155,9 @@ public:
 	//任意のボーンの位置を取得
 	bool GetBonePosition(std::string boneName, FbxTime time, XMFLOAT3* position);
 
+	//任意のボーンの回転を取得
+	bool GetBoneRotate(std::string boneName, FbxTime time, XMFLOAT3* rotate);
+
 	//任意のボーンの回転Matrixを取得
 	bool GetBoneRotateMatrix(std::string boneName, FbxTime time, XMMATRIX* rotate);
 

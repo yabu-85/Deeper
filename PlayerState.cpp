@@ -120,7 +120,6 @@ PlayerAtk::PlayerAtk(StateManager* owner)
 
 void PlayerAtk::Update()
 {
-	pPlayer_->CalcNoMove();
 	pPlayer_->GetMainWeapon()->UpdateState();
 
 	if (pPlayer_->GetCommand()->CmdAvo()) nextCmd_ = 1;
@@ -164,8 +163,6 @@ PlayerSubAtk::PlayerSubAtk(StateManager* owner)
 
 void PlayerSubAtk::Update()
 {
-	pPlayer_->CalcMove();
-	pPlayer_->Move();
 	pPlayer_->GetSubWeapon()->UpdateState();
 
 	//クールタイム終わり

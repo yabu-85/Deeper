@@ -11,6 +11,7 @@ class Player :
 {
     int hModel_[2];
     float moveSpeed_;           //移動スピード
+    float rotateRatio_;         //回転の比率
     XMFLOAT3 playerMovement_;   //今の移動量
     XMFLOAT3 moveVec_;          //移動キーの値を取得
     Transform upTrans_;         //上半身のTransform

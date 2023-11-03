@@ -27,7 +27,6 @@ namespace {
     int numZ = 0;
 
     CellBox* pBox;
-    std::vector<CPolygon*> polyList;
 }
 
 CollisionMap::CollisionMap(GameObject* parent)
@@ -120,9 +119,8 @@ void CollisionMap::Initialize()
 
 void CollisionMap::Update()
 {
-    XMFLOAT3 plaPos = pPlayer->GetPosition();
-
     //プレイヤーの位置を取得して、判定距離内に入った分割ブロックを取得
+    XMFLOAT3 plaPos = pPlayer->GetPosition();
     float fBox[polySize] = { plaPos.x / boxSize, plaPos.y / boxSize, plaPos.z / boxSize };
     int iBox[polySize] = { (int)fBox[0], (int)fBox[1], (int)fBox[2] };
     for (int i = 0; i < polySize; i++) if (fBox[i] < 0) iBox[i] -= 1;
@@ -135,10 +133,6 @@ void CollisionMap::Update()
 
 void CollisionMap::Draw()
 {
-    for (auto e : polyList) {
-        e->Draw();
-    }
-
 }
 
 void CollisionMap::Release()
@@ -154,6 +148,8 @@ float CollisionMap::GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data)
     int x = int((pos.x - minX) / boxSize);
     int y = int((pos.y - minY) / boxSize);
     int z = int((pos.z - minZ) / boxSize);
+
+    //ここ最大を超えないようにしてるけど、将来なくてもいいように設計したならいらないデバッグ用
     if (x < 0 || y < 0 || z < 0 || x > maxX / boxSize || y > maxY / boxSize || z > maxZ / boxSize) return minRange;
 
     std::vector<Triangle*> triList;

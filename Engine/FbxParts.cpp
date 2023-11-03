@@ -398,12 +398,6 @@ void FbxParts::InitSkelton(FbxMesh * pMesh)
 		pBoneArray_[i].bindPose = XMLoadFloat4x4(&pose);
 	}
 
-	for (int i = 0; i < numBone_; i++) {
-		std::string strNumber = ppCluster_[i]->GetLink()->GetName();
-		OutputDebugStringA(strNumber.c_str());
-		OutputDebugString("\n");
-	}
-
 	// 一時的なメモリ領域を解放する
 	for (DWORD i = 0; i < vertexCount_; i++)
 	{
@@ -688,7 +682,7 @@ bool FbxParts::GetBonePosition(std::string boneName, FbxTime time, XMFLOAT3* pos
 	return false;
 }
 
-bool FbxParts::GetBoneRotate(std::string boneName, FbxTime time, XMFLOAT3* rotate)
+bool FbxParts::GetBoneRotate(std::string boneName, FbxTime time, XMFLOAT3* rotationAxis)
 {
 	for (int i = 0; i < numBone_; i++)
 	{
@@ -697,36 +691,26 @@ bool FbxParts::GetBoneRotate(std::string boneName, FbxTime time, XMFLOAT3* rotat
 			FbxAnimEvaluator* evaluator = ppCluster_[i]->GetLink()->GetScene()->GetAnimationEvaluator();
 			FbxMatrix mCurrentOrentation = evaluator->GetNodeGlobalTransform(ppCluster_[i]->GetLink(), time);
 
-			// 行列コピー（Fbx形式からDirectXへの変換）
-			XMFLOAT4X4 pose;
-			for (DWORD x = 0; x < 4; x++)
-			{
-				for (DWORD y = 0; y < 4; y++)
-				{
-					pose(x, y) = (float)mCurrentOrentation.Get(x, y);
-				}
-			}
+			// Extract rotation axis from the rotation matrix
+			FbxVector4 rotationRow0 = mCurrentOrentation.GetRow(0);
+			FbxVector4 rotationRow1 = mCurrentOrentation.GetRow(1);
+			FbxVector4 rotationRow2 = mCurrentOrentation.GetRow(2);
 
-			// オフセット時のポーズの差分を計算する
-			XMMATRIX pos = XMLoadFloat4x4(&pose);
-			XMMATRIX newPos = XMMatrixInverse(nullptr, pBoneArray_[i].bindPose);
-			newPos *= pos;
+			// Calculate the rotation angles in degrees
+			float pitch = static_cast<float>(atan2(rotationRow2[1], rotationRow2[2]));
+			float yaw = static_cast<float>(asin(-rotationRow2[0]));
+			float roll = static_cast<float>(atan2(rotationRow1[0], rotationRow0[0]));
 
-			//回転のみ摘出する
-			XMFLOAT4X4 matrix4x4;
-			XMStoreFloat4x4(&matrix4x4, newPos);
-			XMFLOAT3 rotation;
-			rotation.x = XMConvertToDegrees(atan2f(matrix4x4._32, matrix4x4._33));
-			rotation.y = XMConvertToDegrees(asinf(-matrix4x4._31));
-			rotation.z = XMConvertToDegrees(atan2f(matrix4x4._21, matrix4x4._11));
+			rotationAxis->x = -XMConvertToDegrees(pitch);
+			rotationAxis->y = -XMConvertToDegrees(yaw);
+			rotationAxis->z = XMConvertToDegrees(roll);
 
-			*rotate = rotation;
 			return true;
 		}
 	}
-
 	return false;
 }
+
 
 bool FbxParts::GetBoneRotateMatrix(std::string boneName, FbxTime time, XMMATRIX* rotate)
 {

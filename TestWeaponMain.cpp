@@ -51,11 +51,15 @@ void TestWeaponMain::Draw()
 {
     wandPos_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Sword");
     transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Sword");
+    
+    if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
+        transform_.rotate_.y *= -1.0f;
+        transform_.rotate_.z *= -1.0f;
+    }
     transform_.rotate_.y += pPlayer_->GetUpRotate().y;
 
     Transform t = transform_;
     t.position_ = wandPos_;
-
     Model::SetTransform(hModel_, t);
     Model::Draw(hModel_);
 }
@@ -72,18 +76,25 @@ void TestWeaponMain::ResetState()
 
 void TestWeaponMain::CalcDamage(float range)
 {
-    XMFLOAT3 tar;
-    tar.x = (float)sin(XMConvertToRadians(transform_.rotate_.y + offsetTrans_.rotate_.y));
-    tar.y = -(float)tan(XMConvertToRadians(transform_.rotate_.x + offsetTrans_.rotate_.x));
-    tar.z = (float)cos(XMConvertToRadians(transform_.rotate_.y + offsetTrans_.rotate_.y));
+    XMFLOAT3 tar = XMFLOAT3(transform_.rotate_.x + offsetTrans_.rotate_.x, transform_.rotate_.y + offsetTrans_.rotate_.y, 0.0f);
+    XMFLOAT3 target;
+    target.x = (float)sin(XMConvertToRadians(tar.y));
+    target.y = -(float)tan(XMConvertToRadians(tar.x));
+    target.z = (float)cos(XMConvertToRadians(tar.y));
 
-    XMFLOAT3 vec = tar;
+    if (tar.x >= 90.0f || tar.x <= -90.0f) {
+        target.x *= -1.0f;
+        target.y *= -1.0f;
+        target.z *= -1.0f;
+    }
+
+    XMFLOAT3 vec = target;
     XMVECTOR vVec = XMLoadFloat3(&vec);
     vVec = XMVector3Normalize(vVec);
     XMStoreFloat3(&vec, vVec);
     
     line_->SetVec(vec);
-    line_->SetSize(XMFLOAT3(range, range, range));
+    line_->SetSize(100.0f);
     pDamageCtrl_->CalcSword(line_, damage_);
 
     EmitterData  data;
@@ -159,10 +170,12 @@ void TestWeaponCombo1::OnEnter()
 {
     time_ = comboTime_;
     next_ = false;
+    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 40, 1.0f);
 }
 
 void TestWeaponCombo1::OnExit()
 {
+    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 0, 1.0f);
 }
 
 //---------------------------------------------
@@ -173,7 +186,7 @@ TestWeaponCombo2::TestWeaponCombo2(StateManager* owner)
     owner_ = owner;
     pTestWeaponMain_ = static_cast<TestWeaponMain*>(owner_->GetGameObject());
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    comboTime_ = 25;
+    comboTime_ = 40;
 }
 
 void TestWeaponCombo2::Update()
@@ -200,10 +213,12 @@ void TestWeaponCombo2::OnEnter()
 {
     time_ = comboTime_;
     next_ = false;
+    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 40, 80, 1.0f);
 }
 
 void TestWeaponCombo2::OnExit()
 {
+    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 0, 1.0f);
 }
 
 //---------------------------------------------
@@ -214,7 +229,7 @@ TestWeaponCombo3::TestWeaponCombo3(StateManager* owner)
     owner_ = owner;
     pTestWeaponMain_ = static_cast<TestWeaponMain*>(owner_->GetGameObject());
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    comboTime_ = 50;
+    comboTime_ = 70;
 }
 
 void TestWeaponCombo3::Update()
@@ -240,8 +255,10 @@ void TestWeaponCombo3::OnEnter()
 {
     time_ = comboTime_;
     next_ = false;
+    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 80, 150, 1.0f);
 }
 
 void TestWeaponCombo3::OnExit()
 {
+    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 0, 1.0f);
 }

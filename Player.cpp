@@ -44,9 +44,6 @@ void Player::Initialize()
     assert(hModel_[1] >= 0);
     transform_.rotate_.y += 180.0f;
 
-    Model::SetAnimFrame(hModel_[0], 0, 150, 0.1f);
-    Model::SetAnimFrame(hModel_[1], 0, 150, 0.1f);
-
     pMainWeapon_ = Instantiate<TestWeaponMain>(this);
     pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
     pMainWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 0.0f, 0.0f));
@@ -102,17 +99,6 @@ void Player::Update()
     }
 
     //デバッグ用
-    if (Input::IsKeyDown(DIK_G)) {
-        Model::SetAnimFrame(hModel_[0], 0, 150, 1.0f);
-        Model::SetBlendingAnimFrame(hModel_[1], 0, 150, 0, 1.0f, 0.2f);
-    }
-
-    if (Input::IsKeyDown(DIK_F)) {
-        bool flag = Model::IsAnimeStop(hModel_[0]);
-        Model::SetAnimeStop(hModel_[0], !flag);
-        Model::SetAnimeStop(hModel_[1], !flag);
-    }
-
     if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;
     if (Input::IsKey(DIK_DOWNARROW)) transform_.position_.y -= 0.1f;
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
@@ -126,10 +112,6 @@ void Player::Draw()
         float aimRotate = pAim_->GetRotate().y;
         float currentRotate = transform_.rotate_.y;
         float angleDifference = aimRotate - currentRotate;
-
-        std::string strNumber = std::to_string(angleDifference);
-        OutputDebugStringA(strNumber.c_str());
-        OutputDebugString(" , ");
 
         while (angleDifference > 180.0f) {
             angleDifference -= 360.0f;

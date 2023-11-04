@@ -23,6 +23,7 @@ public:
 class PlayerAvo : public StateBase
 {
 	int avoTime_;
+	int nextCmd_;
 	Player* pPlayer_;
 public:
 	PlayerAvo(StateManager* owner);

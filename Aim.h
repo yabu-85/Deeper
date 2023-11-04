@@ -23,6 +23,7 @@ class Aim :
     float stopAimTime_;             //止まる時の抑制の値
     float targetRange_;             //ターゲットの有効範囲
     float fovRadian_;               //Targetの範囲
+    float rotateRatio_;             //Target時の回転率
     bool aimMove_;                  //エイムを動かすかどうか
     bool isTarget_;                 //ターゲット状態か
 

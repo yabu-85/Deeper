@@ -77,7 +77,7 @@ void PlayerWalk::Update()
 //--------------------------------------------------------------------------------
 
 PlayerAvo::PlayerAvo(StateManager* owner)
-	:avoTime_(0)
+	:avoTime_(0), nextCmd_(0)
 {
 	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
@@ -85,22 +85,38 @@ PlayerAvo::PlayerAvo(StateManager* owner)
 
 void PlayerAvo::Update()
 {
-	avoTime_--;
-	if (avoTime_ <= 0) {
-		owner_->ChangeState("Wait");
-		return;
-	}
-
 	const float endValue = 0.1f; //１．０～この値ガとれるようにする
 	float t = (float)avoTime_ / (float)defAvoTime;
 	float value = endValue + ((1.0f - endValue) * t);
 	pPlayer_->Move(value * defAvoSpeed);
+
+	if (pPlayer_->GetCommand()->CmdAvo()) nextCmd_ = 1;
+	if (pPlayer_->GetCommand()->CmdAtk()) nextCmd_ = 2;
+	if (pPlayer_->GetCommand()->CmdSubAtk()) nextCmd_ = 3;
+
+	avoTime_--;
+	if (avoTime_ <= 0) {
+		if (nextCmd_ == 1) {
+			owner_->ChangeState("Avo");
+			return;
+		}
+		if (nextCmd_ == 2) {
+			owner_->ChangeState("Atk");
+			return;
+		}
+		if (nextCmd_ == 3) {
+			owner_->ChangeState("SubAtk");
+			return;
+		}
+		owner_->ChangeState("Wait");
+		return;
+	}
 }
 
 void PlayerAvo::OnEnter()
 {
 	pPlayer_->InitAvo();
-	
+	nextCmd_ = 0;
 	avoTime_ = defAvoTime;
 }
 
@@ -122,6 +138,7 @@ void PlayerAtk::Update()
 {
 	pPlayer_->GetMainWeapon()->UpdateState();
 
+	if (pPlayer_->GetCommand()->CmdAtk()) nextCmd_ = 0;
 	if (pPlayer_->GetCommand()->CmdAvo()) nextCmd_ = 1;
 	if (pPlayer_->GetCommand()->CmdSubAtk()) nextCmd_ = 2;
 	
@@ -165,9 +182,21 @@ void PlayerSubAtk::Update()
 {
 	pPlayer_->GetSubWeapon()->UpdateState();
 
-	//クールタイム終わり
+	if (pPlayer_->GetCommand()->CmdSubAtk()) nextCmd_ = 0;
+	if (pPlayer_->GetCommand()->CmdAvo()) nextCmd_ = 1;
+	if (pPlayer_->GetCommand()->CmdAtk()) nextCmd_ = 2;
+
+	//コンボ終了NextCmdのステートへ
 	if (pPlayer_->GetSubWeapon()->IsAtkEnd()) {
-		owner_->ChangeState("Walk");
+		if (nextCmd_ == 1) {
+			owner_->ChangeState("Avo");
+			return;
+		}
+		if (nextCmd_ == 2) {
+			owner_->ChangeState("Atk");
+			return;
+		}
+		owner_->ChangeState("Wait");
 		return;
 	}
 }

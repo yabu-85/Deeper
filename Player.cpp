@@ -74,6 +74,7 @@ void Player::Update()
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
 
+    //テスト用武器の持ち替え
     if(pStateManager_->GetName() == "Wait" || pStateManager_->GetName() == "Walk")
     if (pCommand_->CmdCenterUp()) {
         if (pMainWeapon_ == nullptr) {

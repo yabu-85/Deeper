@@ -29,6 +29,7 @@ Aim::Aim(GameObject* parent)
     stopAimTime_ = 0.035f;
     targetRange_ = 50.0f;
     fovRadian_ = XMConvertToRadians(60) / 2;
+    rotateRatio_ = 0.2f;
 }
 
 Aim::~Aim()
@@ -54,9 +55,13 @@ void Aim::Update()
     if (isTarget_) {
         CalcCameraOffset(0.0f);
 
-        //isTarget状態なのにTargetとなるEnemyがいない場合reset
+        //ターゲットが生きてるならそいつにAim合わせる
         if (!pEnemyBase_->IsDead()) FacingTarget();
-        else isTarget_ = false;
+        else {
+            //死んでたら今向いている方向にターゲットできるEnemyがいるならそいつをターゲットにする
+            isTarget_ = false;
+            SetTargetEnemy();
+        }
     }
     else {
         XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
@@ -194,7 +199,16 @@ void Aim::FacingTarget()
     if (XMVectorGetY(vCross) < 0) {
         angle *= -1;
     }
-    transform_.rotate_.y = XMConvertToDegrees(angle);
+   
+    XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(transform_.rotate_.y)), cosf(XMConvertToRadians(transform_.rotate_.y)));
+    XMFLOAT2 b = XMFLOAT2(sinf(angle), cosf(angle));
+    XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
+    XMVECTOR vB = XMVector2Normalize(XMLoadFloat2(&b));
+    XMStoreFloat2(&a, vA);
+    XMStoreFloat2(&b, vB);
+    float cross = a.x * b.y - a.y * b.x;
+    dot = a.x * b.x + a.y * b.y;
+    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * rotateRatio_);
 
     //-----------------------------X軸計算-----------------------------
     // カメラからターゲットへの方向ベクトルを計算
@@ -202,19 +216,22 @@ void Aim::FacingTarget()
     XMFLOAT3 taCamPos = XMFLOAT3(cameraPos_.x, 0.0f, cameraPos_.z);
     XMVECTOR direction = XMVectorSubtract(XMLoadFloat3(&taTarget), XMLoadFloat3(&taCamPos));
 
-    // カメラとターゲット間の距離を計算
     float distance = XMVectorGetX(XMVector3Length(direction));
-
-    // カメラとターゲット間の高さ差を計算
     float height = cameraPos_.y - targetPos.y;
 
     // 距離と高さに基づいてX軸回転角度を計算
     float rotationX = (float)atan2(height, distance);
 
-    // 回転角度を度数に変換
-    rotationX = -XMConvertToDegrees(rotationX);
+    a = XMFLOAT2(sinf(XMConvertToRadians(transform_.rotate_.x)), cosf(XMConvertToRadians(transform_.rotate_.x)));
+    b = XMFLOAT2(sinf(-rotationX), cosf(-rotationX));
+    vA = XMVector2Normalize(XMLoadFloat2(&a));
+    vB = XMVector2Normalize(XMLoadFloat2(&b));
+    XMStoreFloat2(&a, vA);
+    XMStoreFloat2(&b, vB);
+    cross = a.x * b.y - a.y * b.x;
+    dot = a.x * b.x + a.y * b.y;
+    transform_.rotate_.x += XMConvertToDegrees(-atan2f(cross, dot) * rotateRatio_);
 
-    transform_.rotate_.x = rotationX;
     if (transform_.rotate_.x <= upMouselimit_) transform_.rotate_.x = upMouselimit_;
     if (transform_.rotate_.x >= donwMouselimit_) transform_.rotate_.x = donwMouselimit_;
 

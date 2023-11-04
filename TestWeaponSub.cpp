@@ -107,6 +107,9 @@ TestWeaponSubCombo1::TestWeaponSubCombo1(StateManager* owner)
 
 void TestWeaponSubCombo1::Update()
 {
+    pPlayer_->CalcMove();
+    pPlayer_->Move();
+
     time_--;
     if (pPlayer_->GetCommand()->CmdSubAtk()) next_ = true;
 
@@ -147,6 +150,9 @@ TestWeaponSubCombo2::TestWeaponSubCombo2(StateManager* owner)
 
 void TestWeaponSubCombo2::Update()
 {
+    pPlayer_->CalcMove();
+    pPlayer_->Move();
+
     time_--;
     if (pPlayer_->GetCommand()->CmdSubAtk()) next_ = true;
 

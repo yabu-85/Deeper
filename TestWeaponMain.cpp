@@ -151,7 +151,7 @@ void TestWeaponCombo1::Update()
 
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
-    pTestWeaponMain_->CalcDamage(3.0f);
+    pTestWeaponMain_->CalcDamage(7.0f);
 
     time_--;
     if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;
@@ -191,10 +191,10 @@ TestWeaponCombo2::TestWeaponCombo2(StateManager* owner)
 
 void TestWeaponCombo2::Update()
 {
-    pPlayer_->CalcMove();
+    pPlayer_->CalcNoMove();
     pPlayer_->Move();
     pPlayer_->Rotate();
-    pTestWeaponMain_->CalcDamage(5.0f);
+    pTestWeaponMain_->CalcDamage(7.0f);
 
     time_--;
     if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;
@@ -236,7 +236,7 @@ void TestWeaponCombo3::Update()
 {
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
-    pTestWeaponMain_->CalcDamage(8.0f);
+    pTestWeaponMain_->CalcDamage(7.0f);
 
     time_--;
     if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;

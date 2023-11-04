@@ -98,33 +98,37 @@ bool Collider::IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circ
 //戻値：接触していればtrue
 bool Collider::IsHitCircleVsLine(SphereCollider* circle, LineCollider* line)
 {
-	XMFLOAT3 p = circle->center_; //中心点の座標
-	p.x += circle->pGameObject_->GetWorldPosition().x;
-	p.y += circle->pGameObject_->GetWorldPosition().y;
-	p.z += circle->pGameObject_->GetWorldPosition().z;
+	//球の中心座標
+	XMFLOAT3 cCenter = circle->center_;
+	XMFLOAT3 cWorldPos = circle->pGameObject_->GetWorldPosition();
+	cCenter.x += cWorldPos.x;
+	cCenter.y += cWorldPos.y;
+	cCenter.z += cWorldPos.z;
 
-	XMFLOAT3 l = line->center_;
-	XMFLOAT3 linePos = line->pGameObject_->GetWorldPosition();
-	l.x += linePos.x;
-	l.y += linePos.y;
-	l.z += linePos.z;
+	//直線の始点
+	XMFLOAT3 lStart = line->center_;
+	XMFLOAT3 lWorldPos = line->pGameObject_->GetWorldPosition();
+	lStart.x += lWorldPos.x;
+	lStart.y += lWorldPos.y;
+	lStart.z += lWorldPos.z;
 
-	float r = circle->size_.x;
+	float r = circle->size_.x; //円の半径
 
 	//これStartがPの半径内に入っていたら無条件で当たってるとみなす
-	double distSquared = pow(p.x - l.x, 2) + pow(p.y - l.y, 2) + pow(p.z - l.z, 2);
+	double distSquared = pow(cCenter.x - lStart.x, 2) + pow(cCenter.y - lStart.y, 2) + pow(cCenter.z - lStart.z, 2);
 	double radSquared = pow(r, 2);
 	if (distSquared < radSquared) {
 		return true;
 	}
 
-	p.x = p.x - l.x;
-	p.y = p.y - l.y;
-	p.z = p.z - l.z;
+	// 球の中心から直線上の最短距離を計算
+	cCenter.x = cCenter.x - lStart.x;
+	cCenter.y = cCenter.y - lStart.y;
+	cCenter.z = cCenter.z - lStart.z;
 
 	float A = line->vec_.x * line->vec_.x + line->vec_.y * line->vec_.y + line->vec_.z * line->vec_.z;
-	float B = line->vec_.x * p.x + line->vec_.y * p.y + line->vec_.z * p.z;
-	float C = p.x * p.x + p.y * p.y + p.z * p.z - r * r;
+	float B = line->vec_.x * cCenter.x + line->vec_.y * cCenter.y + line->vec_.z * cCenter.z;
+	float C = cCenter.x * cCenter.x + cCenter.y * cCenter.y + cCenter.z * cCenter.z - r * r;
 
 	if (A == 0.0f)
 		return false;  //レイの長さが0
@@ -139,28 +143,22 @@ bool Collider::IsHitCircleVsLine(SphereCollider* circle, LineCollider* line)
 	if (a1 < 0.0f || a2 < 0.0f) return false; // レイの反対で衝突
 
 	XMFLOAT3 q1; //衝突開始地点
-	q1.x = l.x + a1 * line->vec_.x;
-	q1.y = l.y + a1 * line->vec_.y;
-	q1.z = l.z + a1 * line->vec_.z;
-
-	//XMFLOAT3 q2; //終了地点
-	//q2.x = start.x + a2 * vec.x;
-	//q2.y = start.y + a2 * vec.y;
-	//q2.z = start.z + a2 * vec.z;
+	q1.x = lStart.x + a1 * line->vec_.x;
+	q1.y = lStart.y + a1 * line->vec_.y;
+	q1.z = lStart.z + a1 * line->vec_.z;
 
 	// ベクトルの差分を計算
-	XMVECTOR difference = XMVectorSubtract(XMLoadFloat3(&l), XMLoadFloat3(&q1));
+	XMVECTOR difference = XMVectorSubtract(XMLoadFloat3(&lStart), XMLoadFloat3(&q1));
+
 	// ベクトルの長さ（距離）を計算
 	XMVECTOR distance = XMVector3Length(difference);
-	// 結果を float に変換して返す
 	float distanceFloat;
 	XMStoreFloat(&distanceFloat, distance);
 
-	//rangeの範囲外だった場合次
+	//rangeの範囲外だった場合 false
 	if (line->size_.x < distanceFloat) return false;
 
 	return true;
-
 }
 
 //直線同士の衝突判定

@@ -41,15 +41,17 @@ public:
     bool IsMoveKeyPushed(XMFLOAT3& key);    //向いている角度を考慮した値
     bool IsMove();                          //移動量が少しでも入ってればtrue
 
+    void SetUpRotate(XMFLOAT3 rot) { upTrans_.rotate_ = rot; }
+
     XMVECTOR GetMoveVec() { return XMLoadFloat3(&moveVec_); }  //移動方向（正規化済み
     XMVECTOR GetDirectionVec();                                 //向いている方向（正規化済み
     XMFLOAT3 GetUpRotate() { return upTrans_.rotate_; }
+    int GetModelHandle() { return hModel_[0]; }
 
     PlayerCommand* GetCommand() { return pCommand_; }
     Aim* GetAim() { return pAim_; }
     WeaponBase* GetMainWeapon() { return pMainWeapon_; }
     WeaponBase* GetSubWeapon() { return pSubWeapon_; }
-    int GetModelHandle() { return hModel_[0]; }
 
 };
 

@@ -70,7 +70,7 @@ void Player::Update()
 {
     pCommand_->Update();
     pStateManager_->Update();
-    
+
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
 

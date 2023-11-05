@@ -40,6 +40,8 @@ namespace Input
 	//戻値：放した瞬間だったらtrue
 	bool IsKeyUp(int keyCode);
 
+	//押したKeyの番号を取得する
+	int KeyButton();
 
 	///////////////////////////　マウス　//////////////////////////////////
 	//マウスのボタンが押されているか調べる
@@ -72,6 +74,8 @@ namespace Input
 
 	float GetScroll();
 
+	bool IsUpScroll();
+	bool IsDownScroll();
 
 	///////////////////////////　コントローラー　//////////////////////////////////
 	//コントローラーのボタンが押されているか調べる

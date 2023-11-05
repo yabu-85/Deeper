@@ -100,11 +100,11 @@ void PlayerAvo::Update()
 			owner_->ChangeState("Avo");
 			return;
 		}
-		if (nextCmd_ == 2) {
+		if (pPlayer_->GetMainWeapon() && nextCmd_ == 2) {
 			owner_->ChangeState("Atk");
 			return;
 		}
-		if (nextCmd_ == 3) {
+		if (pPlayer_->GetSubWeapon() && nextCmd_ == 3) {
 			owner_->ChangeState("SubAtk");
 			return;
 		}
@@ -148,7 +148,7 @@ void PlayerAtk::Update()
 			owner_->ChangeState("Avo");
 			return;
 		}
-		if (nextCmd_ == 2) {
+		if (pPlayer_->GetSubWeapon() && nextCmd_ == 2) {
 			owner_->ChangeState("SubAtk");
 			return;
 		}
@@ -192,7 +192,7 @@ void PlayerSubAtk::Update()
 			owner_->ChangeState("Avo");
 			return;
 		}
-		if (nextCmd_ == 2) {
+		if (pPlayer_->GetMainWeapon() && nextCmd_ == 2) {
 			owner_->ChangeState("Atk");
 			return;
 		}

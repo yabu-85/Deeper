@@ -1,39 +1,60 @@
 #pragma once
-#include <map>
+#include <array>
+#include <vector>
+#include <utility> //std::pair
 
 class PlayerCommand
 {
-	bool atk_;
-	bool subAtk_;
-	bool center_;
-	bool centerUp_;
-	bool centerDown_;
-	bool avo_;
-	bool target_;
+public:
+	enum COMMAND {
+		ATK = 0,
+		SUB_ATK,
+		CENTER,
+		CENTER_UP,
+		CENTER_DOWN,
+		AVO,
+		TARGET,
 
-	bool left_;
-	bool right_;
-	bool up_;
-	bool down_;
+		LEFT,
+		RIGHT,
+		UP,
+		DOWN,
+		
+		CMD_MAX
+	};
+
+private:
+	std::vector<std::pair<int, COMMAND>> pushKeyCommand_;
+	std::vector<std::pair<int, COMMAND>> downKeyCommand_;
+	std::vector<std::pair<int, COMMAND>> pushMouseCommand_;
+	std::vector<std::pair<int, COMMAND>> downMouseCommand_;
+	std::vector<std::pair<int, COMMAND>> scrollCommand_;
+
+	std::array<bool, CMD_MAX> commandFlags = { false };
+
 	bool walk_;
 
 public:
 	PlayerCommand();
 	void Update();
 
-	bool CmdAtk() { return atk_; }
-	bool CmdSubAtk() { return subAtk_; }
-	bool CmdAvo() { return avo_; }
-	bool CmdTarget() { return target_; }
+	//コマンドの変更
+	//Cmdの番号（DIK_A)：0 = key / 1 = mouse：Cmdの名前
+	void ChangeCmd(COMMAND number, int type);
 
-	bool CmdCenter() { return center_; }
-	bool CmdCenterUp() { return centerUp_; }
-	bool CmdCenterDown() { return centerDown_; }
+	bool CmdAtk() { return commandFlags[ATK]; }
+	bool CmdSubAtk() { return commandFlags[SUB_ATK]; }
+	bool CmdAvo() { return commandFlags[AVO]; }
+	bool CmdTarget() { return commandFlags[TARGET]; }
 
-	bool CmdLeft() { return left_; }
-	bool CmdRight() { return right_; }
-	bool CmdUp() { return up_; }
-	bool CmdDown() { return down_; }
+	bool CmdCenter() { return commandFlags[CENTER]; }
+	bool CmdCenterUp() { return commandFlags[CENTER_UP]; }
+	bool CmdCenterDown() { return commandFlags[CENTER_DOWN]; }
+
+	bool CmdLeft() { return commandFlags[LEFT]; }
+	bool CmdRight() { return commandFlags[RIGHT]; }
+	bool CmdUp() { return commandFlags[UP]; }
+	bool CmdDown() { return commandFlags[DOWN]; }
 	bool CmdWalk() { return walk_; }
 
 };

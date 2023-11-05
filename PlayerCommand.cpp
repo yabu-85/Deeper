@@ -3,27 +3,54 @@
 #include <string>
 
 PlayerCommand::PlayerCommand()
-	:atk_(false), subAtk_(false),center_(false), avo_(false), target_(false), left_(false), right_(false), up_(false), down_(false), walk_(false),
-	centerUp_(false), centerDown_(false)
+	: walk_(false)
 {
+	downKeyCommand_.push_back(std::make_pair(DIK_SPACE, AVO));
+	downKeyCommand_.push_back(std::make_pair(DIK_Q, TARGET));
+
+	pushKeyCommand_.push_back(std::make_pair(DIK_A, LEFT));
+	pushKeyCommand_.push_back(std::make_pair(DIK_D, RIGHT));
+	pushKeyCommand_.push_back(std::make_pair(DIK_W, UP));
+	pushKeyCommand_.push_back(std::make_pair(DIK_S, DOWN));
+
+	downMouseCommand_.push_back(std::make_pair(0, ATK));
+	downMouseCommand_.push_back(std::make_pair(1, SUB_ATK));
+	downMouseCommand_.push_back(std::make_pair(2, CENTER));
+
+	scrollCommand_.push_back(std::make_pair(1, CENTER_UP));
+	scrollCommand_.push_back(std::make_pair(-1, CENTER_DOWN));
 }
 
 void PlayerCommand::Update()
 {
-	atk_ = Input::IsMouseButtonDown(0);
-	subAtk_ = Input::IsMouseButtonDown(1);
+	for (const auto& pair : pushKeyCommand_)
+	commandFlags[pair.second] = Input::IsKey(pair.first);
 	
-	centerUp_ = false;
-	centerDown_ = false;
-	if (Input::GetScroll() > 0.0f) centerUp_ = true;
-	if (Input::GetScroll() < 0.0f) centerDown_ = true;
+	for (const auto& pair : downKeyCommand_)
+	commandFlags[pair.second] = Input::IsKeyDown(pair.first);
 	
-	avo_ = Input::IsKeyDown(DIK_SPACE);
-	target_ = Input::IsKeyDown(DIK_Q);
+	for (const auto& pair : pushMouseCommand_)
+	commandFlags[pair.second] = Input::IsMouseButton(pair.first);
+	
+	for (const auto& pair : downMouseCommand_)
+	commandFlags[pair.second] = Input::IsMouseButtonDown(pair.first);
+	
+	//Scroll : Walk
+	commandFlags[CENTER_UP] = Input::IsUpScroll();
+	commandFlags[CENTER_DOWN] = Input::IsDownScroll();
+	walk_ = commandFlags[LEFT] || commandFlags[RIGHT] || commandFlags[UP] || commandFlags[DOWN];
 
-	left_ = Input::IsKey(DIK_A);
-	right_ = Input::IsKey(DIK_D);
-	up_ = Input::IsKey(DIK_W);
-	down_ = Input::IsKey(DIK_S);
-	walk_ = left_ || right_ || up_ || down_;
+	return;
+}
+
+void PlayerCommand::ChangeCmd(COMMAND number, int type)
+{
+	// 特定の要素を削除
+	pushKeyCommand_.erase(pushKeyCommand_.begin() + 1); // 2番目の要素を削除
+
+	// 削除後の要素へのアクセス
+	for (const auto& pair : pushKeyCommand_) {
+		int intValue = pair.first;
+	}
+
 }

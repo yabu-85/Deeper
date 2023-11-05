@@ -121,6 +121,18 @@ namespace Input
 		return false;
 	}
 
+	int KeyButton()
+	{
+		for (int i = DIK_ESCAPE; i <= DIK_MEDIASELECT; i++) //感知する最初から、最後
+		{
+			if (IsKey(i))
+			{
+				return i;
+			}
+		}
+		return 0;
+	}
+
 
 	/////////////////////////////　マウス情報取得　//////////////////////////////////
 
@@ -182,6 +194,18 @@ namespace Input
 	float GetScroll()
 	{
 		return (float)mouseState_.lZ;
+	}
+
+	bool IsUpScroll()
+	{
+		if (Input::GetScroll() > 0.0f) return true;
+		return false;
+	}
+
+	bool IsDownScroll()
+	{
+		if (Input::GetScroll() < 0.0f) return true;
+		return false;
 	}
 
 

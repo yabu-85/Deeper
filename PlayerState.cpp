@@ -108,6 +108,10 @@ void PlayerAvo::Update()
 			owner_->ChangeState("SubAtk");
 			return;
 		}
+		if (pPlayer_->GetCommand()->CmdWalk()) {
+			owner_->ChangeState("Walk");
+			return;
+		}
 		owner_->ChangeState("Wait");
 		return;
 	}
@@ -152,6 +156,10 @@ void PlayerAtk::Update()
 			owner_->ChangeState("SubAtk");
 			return;
 		}
+		if (pPlayer_->GetCommand()->CmdWalk()) {
+			owner_->ChangeState("Walk");
+			return;
+		}
 		owner_->ChangeState("Wait");
 		return;
 	}
@@ -194,6 +202,10 @@ void PlayerSubAtk::Update()
 		}
 		if (pPlayer_->GetMainWeapon() && nextCmd_ == 2) {
 			owner_->ChangeState("Atk");
+			return;
+		}
+		if (pPlayer_->GetCommand()->CmdWalk()) {
+			owner_->ChangeState("Walk");
 			return;
 		}
 		owner_->ChangeState("Wait");

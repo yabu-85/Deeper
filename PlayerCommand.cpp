@@ -5,20 +5,9 @@
 PlayerCommand::PlayerCommand()
 	: walk_(false)
 {
-	downKeyCommand_.push_back(std::make_pair(DIK_SPACE, AVO));
-	downKeyCommand_.push_back(std::make_pair(DIK_Q, TARGET));
-
-	pushKeyCommand_.push_back(std::make_pair(DIK_A, LEFT));
-	pushKeyCommand_.push_back(std::make_pair(DIK_D, RIGHT));
-	pushKeyCommand_.push_back(std::make_pair(DIK_W, UP));
-	pushKeyCommand_.push_back(std::make_pair(DIK_S, DOWN));
-
-	downMouseCommand_.push_back(std::make_pair(0, ATK));
-	downMouseCommand_.push_back(std::make_pair(1, SUB_ATK));
-	downMouseCommand_.push_back(std::make_pair(2, CENTER));
-
-	scrollCommand_.push_back(std::make_pair(1, CENTER_UP));
-	scrollCommand_.push_back(std::make_pair(-1, CENTER_DOWN));
+	SetDefaultKeyConfig();
+	
+	ChangeCmd(ATK, DIK_G, 1);
 }
 
 void PlayerCommand::Update()
@@ -43,14 +32,77 @@ void PlayerCommand::Update()
 	return;
 }
 
-void PlayerCommand::ChangeCmd(COMMAND number, int type)
+void PlayerCommand::SetDefaultKeyConfig()
 {
-	// 特定の要素を削除
-	pushKeyCommand_.erase(pushKeyCommand_.begin() + 1); // 2番目の要素を削除
+	pushKeyCommand_.clear();
+	pushKeyCommand_.push_back(std::make_pair(DIK_A, LEFT));
+	pushKeyCommand_.push_back(std::make_pair(DIK_D, RIGHT));
+	pushKeyCommand_.push_back(std::make_pair(DIK_W, UP));
+	pushKeyCommand_.push_back(std::make_pair(DIK_S, DOWN));
 
-	// 削除後の要素へのアクセス
-	for (const auto& pair : pushKeyCommand_) {
-		int intValue = pair.first;
+	downKeyCommand_.clear();
+	downKeyCommand_.push_back(std::make_pair(DIK_SPACE, AVO));
+	downKeyCommand_.push_back(std::make_pair(DIK_Q, TARGET));
+
+	downMouseCommand_.clear();
+	downMouseCommand_.push_back(std::make_pair(0, ATK));
+	downMouseCommand_.push_back(std::make_pair(1, SUB_ATK));
+	downMouseCommand_.push_back(std::make_pair(2, CENTER));
+}
+
+void PlayerCommand::ChangeCmd(COMMAND number, int conf, int type)
+{
+	//新しく追加した要素と同じものがある場合は・・・なんかやる？
+	
+	commandFlags[number] = false;
+	DeleteCmd(number);
+
+	if (type == 0) {
+		pushKeyCommand_.push_back(std::make_pair(conf, number));
+		return;
+	}
+	if (type == 1) {
+		downKeyCommand_.push_back(std::make_pair(conf, number));
+		return;
+	}
+	if (type == 2) {
+		pushMouseCommand_.push_back(std::make_pair(conf, number));
+		return;
+	}
+	if (type == 3) {
+		downMouseCommand_.push_back(std::make_pair(conf, number));
+		return;
 	}
 
+}
+
+void PlayerCommand::DeleteCmd(COMMAND number)
+{
+	for (int i = 0; i < pushKeyCommand_.size(); i++) {
+		if (pushKeyCommand_[i].second == number) {
+			pushKeyCommand_.erase(pushKeyCommand_.begin() + i);
+			return;
+		}
+	}
+
+	for (int i = 0; i < downKeyCommand_.size(); i++) {
+		if (downKeyCommand_[i].second == number) {
+			downKeyCommand_.erase(downKeyCommand_.begin() + i);
+			return;
+		}
+	}
+
+	for (int i = 0; i < pushMouseCommand_.size(); i++) {
+		if (pushMouseCommand_[i].second == number) {
+			pushMouseCommand_.erase(pushMouseCommand_.begin() + i);
+			return;
+		}
+	}
+
+	for (int i = 0; i < downMouseCommand_.size(); i++) {
+		if (downMouseCommand_[i].second == number) {
+			downMouseCommand_.erase(downMouseCommand_.begin() + i);
+			return;
+		}
+	}
 }

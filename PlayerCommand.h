@@ -14,12 +14,10 @@ public:
 		CENTER_DOWN,
 		AVO,
 		TARGET,
-
 		LEFT,
 		RIGHT,
 		UP,
 		DOWN,
-		
 		CMD_MAX
 	};
 
@@ -28,8 +26,6 @@ private:
 	std::vector<std::pair<int, COMMAND>> downKeyCommand_;
 	std::vector<std::pair<int, COMMAND>> pushMouseCommand_;
 	std::vector<std::pair<int, COMMAND>> downMouseCommand_;
-	std::vector<std::pair<int, COMMAND>> scrollCommand_;
-
 	std::array<bool, CMD_MAX> commandFlags = { false };
 
 	bool walk_;
@@ -38,9 +34,16 @@ public:
 	PlayerCommand();
 	void Update();
 
+	//KeyConfigデータをデフォルトの状態に戻す
+	void SetDefaultKeyConfig();
+
 	//コマンドの変更
-	//Cmdの番号（DIK_A)：0 = key / 1 = mouse：Cmdの名前
-	void ChangeCmd(COMMAND number, int type);
+	//number COMMANDの番号（ATK)
+	//conf	 Key,Mouseの番号（DIK_A：０）
+	//type 0 = p_key : 1 = d_key : 2 = p_mouse : 3 = d_mouse
+	void ChangeCmd(COMMAND number, int conf, int type);
+	//指定したCmdをリスト（pushKeyCommandなど）から削除
+	void DeleteCmd(COMMAND number);
 
 	bool CmdAtk() { return commandFlags[ATK]; }
 	bool CmdSubAtk() { return commandFlags[SUB_ATK]; }

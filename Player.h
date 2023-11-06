@@ -37,6 +37,7 @@ public:
     void CalcNoMove();              //Input考慮してない、滑るやつとかの計算用
     void InitAvo();
     void ResetMovement() { playerMovement_ = XMFLOAT3(0.0f, 0.0f, 0.0f); }
+    void ChangeWeapon(WeaponBase* weapon);
 
     bool IsMoveKeyPushed(XMFLOAT3& key);    //向いている角度を考慮した値
     bool IsMove();                          //移動量が少しでも入ってればtrue

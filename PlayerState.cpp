@@ -52,39 +52,6 @@ void PlayerWait::Update()
 
 //--------------------------------------------------------------------------------
 
-PlayerWeaponChange::PlayerWeaponChange(StateManager* owner)
-	:time_(0)
-{
-	changeTime_ = 100;
-	owner_ = owner;
-	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
-}
-
-void PlayerWeaponChange::Update()
-{
-	pPlayer_->CalcNoMove();
-	pPlayer_->Move(); 
-	
-	if (pPlayer_->GetCommand()->CmdWeaponSelect()) {
-		time_++;
-		if (time_ > changeTime_) {
-
-			owner_->ChangeState("SubAtk");
-			return;
-		}
-	}
-
-	owner_->ChangeState("SubAtk");
-	return;
-}
-
-void PlayerWeaponChange::OnEnter()
-{
-	time_ = 0;
-}
-
-//--------------------------------------------------------------------------------
-
 PlayerWalk::PlayerWalk(StateManager* owner)
 {
 	owner_ = owner;
@@ -121,6 +88,41 @@ void PlayerWalk::Update()
 		}
 	}
 
+}
+
+//--------------------------------------------------------------------------------
+
+PlayerWeaponChange::PlayerWeaponChange(StateManager* owner)
+	:time_(0)
+{
+	changeTime_ = 60;
+	owner_ = owner;
+	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
+}
+
+void PlayerWeaponChange::Update()
+{
+	pPlayer_->CalcNoMove();
+	pPlayer_->Move();
+
+	if (pPlayer_->GetCommand()->CmdWeaponSelect()) {
+		time_++;
+		if (time_ > changeTime_) {
+			GameManager* pGameManager = (GameManager*)pPlayer_->FindObject("GameManager");
+			pPlayer_->ChangeWeapon(pGameManager->GetWeaponObjectManager()->GetNearestWeapon());
+			owner_->ChangeState("Wait");
+			return;
+		}
+		return;
+	}
+
+	owner_->ChangeState("Wait");
+	return;
+}
+
+void PlayerWeaponChange::OnEnter()
+{
+	time_ = 0;
 }
 
 //--------------------------------------------------------------------------------

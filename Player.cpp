@@ -270,3 +270,12 @@ void Player::InitAvo()
     Rotate();
     rotateRatio_ = preRatio;
 }
+
+void Player::ChangeWeapon(WeaponBase* weapon)
+{
+    if (pSubWeapon_) {
+        pSubWeapon_->KillMe();
+    }
+
+    pSubWeapon_ = weapon;
+}

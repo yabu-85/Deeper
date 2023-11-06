@@ -4,6 +4,7 @@
 class WeaponObject : public GameObject
 {
     int hModel_;
+    int type_;      //weapon‚Ìtype
 
 public:
     WeaponObject(GameObject* parent);
@@ -12,6 +13,9 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
+
+    void SetType(int t) { type_ = t; }
+    int GetType() { return type_; }
 
 };
 

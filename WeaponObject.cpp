@@ -2,7 +2,7 @@
 #include "Engine/Model.h"
 
 WeaponObject::WeaponObject(GameObject* parent)
-	: GameObject(parent, "WeaponObject"), hModel_(-1)
+	: GameObject(parent, "WeaponObject"), hModel_(-1), type_(-1)
 {
 }
 
@@ -16,8 +16,8 @@ void WeaponObject::Initialize()
 	assert(hModel_ >= 0);
 
 	transform_.position_.y += 1.0f;
-	transform_.position_.x = 50.0f;
-	transform_.position_.z = 50.0f;
+	transform_.position_.x = 50.0f + rand() % 10;
+	transform_.position_.z = 50.0f + rand() % 10;
 }
 
 void WeaponObject::Update()

@@ -109,7 +109,11 @@ void PlayerWeaponChange::Update()
 		time_++;
 		if (time_ > changeTime_) {
 			GameManager* pGameManager = (GameManager*)pPlayer_->FindObject("GameManager");
-			pPlayer_->ChangeWeapon(pGameManager->GetWeaponObjectManager()->GetNearestWeapon());
+			WeaponBase* weapon = pGameManager->GetWeaponObjectManager()->GetNearestWeapon();
+			if (weapon) {
+				pPlayer_->ChangeWeapon(weapon);
+			}
+
 			owner_->ChangeState("Wait");
 			return;
 		}

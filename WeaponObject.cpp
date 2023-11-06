@@ -12,9 +12,6 @@ WeaponObject::~WeaponObject()
 
 void WeaponObject::Initialize()
 {
-	hModel_ = Model::Load("Model/"  "Hand"  ".fbx");
-	assert(hModel_ >= 0);
-
 	transform_.position_.y += 1.0f;
 	transform_.position_.x = 50.0f + rand() % 10;
 	transform_.position_.z = 50.0f + rand() % 10;
@@ -32,4 +29,10 @@ void WeaponObject::Draw()
 
 void WeaponObject::Release()
 {
+}
+
+void WeaponObject::LoadModel(std::string _name)
+{
+	hModel_ = Model::Load("Model/" + _name + ".fbx");
+	assert(hModel_ >= 0);
 }

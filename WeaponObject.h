@@ -14,6 +14,7 @@ public:
     void Draw() override;
     void Release() override;
 
+    void LoadModel(std::string _name);
     void SetType(int t) { type_ = t; }
     int GetType() { return type_; }
 

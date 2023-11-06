@@ -43,6 +43,7 @@ public:
 	//conf	 Key,Mouseの番号（DIK_A：０）
 	//type 0 = p_key : 1 = d_key : 2 = p_mouse : 3 = d_mouse
 	void ChangeCmd(COMMAND number, int conf, int type);
+	
 	//指定したCmdをリスト（pushKeyCommandなど）から削除
 	void DeleteCmd(COMMAND number);
 

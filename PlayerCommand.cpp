@@ -1,6 +1,5 @@
 #include "PlayerCommand.h"
 #include "Engine/Input.h"
-#include <string>
 
 PlayerCommand::PlayerCommand()
 	: walk_(false)

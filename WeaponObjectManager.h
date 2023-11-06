@@ -9,7 +9,8 @@ class WeaponObjectManager
 {
 	enum WEAPON_TYPE {
 		WT_SUB1 = 0,
-
+		WT_SUB2,
+		WT_MAX,
 	};
 
 	float range_;							//Žæ“¾‚Å‚«‚é”ÍˆÍ

@@ -8,16 +8,19 @@
 WeaponObjectManager::WeaponObjectManager(GameManager* parent)
 	: pParent_(parent), range_(0), nearestObject_(nullptr)
 {
-	range_ = 5.0f;
+	range_ = 3.0f;
 	AddWeaponObject(WT_SUB1);
 	AddWeaponObject(WT_SUB1);
-	AddWeaponObject(WT_SUB1);
-	AddWeaponObject(WT_SUB1);
+	AddWeaponObject(WT_SUB2);
+	AddWeaponObject(WT_SUB2);
 }
 
 void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type)
 {
+	std::string fileName[WT_MAX] = { "Hand", "RedBox" };
+
 	WeaponObject* weapon = Instantiate<WeaponObject>(pParent_);
+	weapon->LoadModel(fileName[type]);
 	weapon->SetType(type);
 	objctList_.push_back(weapon);
 }
@@ -69,6 +72,13 @@ WeaponBase* WeaponObjectManager::GetNearestWeapon()
 		nearestObject_->KillMe();
 		nearestObject_ = nullptr;
 		return Instantiate<TestWeaponSub>((Player*)pParent_->FindObject("Player"));
+	}
+
+	if (nearestObject_->GetType() == WT_SUB2) {
+		RemoveWeaponObject(nearestObject_);
+		nearestObject_->KillMe();
+		nearestObject_ = nullptr;
+		return nullptr; // Instantiate<TestWeaponSub>((Player*)pParent_->FindObject("Player"));
 	}
 
 	return nullptr;

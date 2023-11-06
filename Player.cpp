@@ -125,7 +125,7 @@ void Player::Draw()
         angleDifference = abs(angleDifference);
 
         if (angleDifference < 90) {
-            under.rotate_.y += 180.0f;
+            under.rotate_.y -= 180.0f;
         }
     }
     Model::SetTransform(hModel_[1], under);

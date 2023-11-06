@@ -38,6 +38,15 @@ void WeaponObjectManager::RemoveWeaponObject(WeaponObject* obj)
 	}
 }
 
+void WeaponObjectManager::AllKillWeaponObject()
+{
+	for (WeaponObject* obj : objctList_) {
+		obj->KillMe();
+	}
+	objctList_.clear();
+	nearestObject_ = nullptr;
+}
+
 bool WeaponObjectManager::IsInPlayerRange()
 {
 	Player* pPlayer = (Player*)pParent_->FindObject("Player");
@@ -78,7 +87,7 @@ WeaponBase* WeaponObjectManager::GetNearestWeapon()
 		RemoveWeaponObject(nearestObject_);
 		nearestObject_->KillMe();
 		nearestObject_ = nullptr;
-		return nullptr; // Instantiate<TestWeaponSub>((Player*)pParent_->FindObject("Player"));
+		return nullptr;
 	}
 
 	return nullptr;

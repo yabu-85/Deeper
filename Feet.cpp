@@ -3,6 +3,7 @@
 #include "NavigationAI.h"
 #include "GameManager.h"
 #include "EnemyUi.h"
+#include "DropTable.h"
 
 #include "Engine/SphereCollider.h"
 
@@ -38,6 +39,9 @@ void Feet::Initialize()
 	
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize();
+
+	pDropTable_ = new DropTable(this);
+	pDropTable_->SetParcent(80);
 
 	maxHp_ = 10;
 	hp_ = maxHp_;
@@ -92,6 +96,9 @@ void Feet::ApplyDamage(int da)
 {
 	hp_ -= da;
 	pEnemyUi_->SetParcent((float)(hp_) / (float)(maxHp_));
-	if (hp_ <= 0) KillMe();
+	if (hp_ <= 0) {
+	    pDropTable_->DropItem();
+		KillMe();
+	}
 
 }

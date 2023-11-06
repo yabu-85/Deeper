@@ -216,6 +216,9 @@
     <ClCompile Include="WeaponObject.cpp">
       <Filter>Weapon\Object</Filter>
     </ClCompile>
+    <ClCompile Include="DropTable.cpp">
+      <Filter>Enemy\EnemyBase</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -371,6 +374,9 @@
     </ClInclude>
     <ClInclude Include="WeaponObjectManager.h">
       <Filter>Weapon\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="DropTable.h">
+      <Filter>Enemy\EnemyBase</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

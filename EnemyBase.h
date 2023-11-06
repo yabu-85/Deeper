@@ -3,6 +3,7 @@
 #include <vector>
 
 class EnemyUi;
+class DropTable;
 
 class EnemyBase : public GameObject
 {
@@ -11,9 +12,10 @@ protected:
     int hp_;
     int maxHp_;
     EnemyUi* pEnemyUi_;
+    DropTable* pDropTable_;
 
 public:
-    EnemyBase(GameObject* parent) : GameObject(parent), pEnemyUi_(nullptr), hp_(0), maxHp_(0) {};
+    EnemyBase(GameObject* parent) : GameObject(parent), pEnemyUi_(nullptr), pDropTable_(nullptr), hp_(0), maxHp_(0) {};
     virtual ~EnemyBase() = 0 {};
     virtual void Initialize() override = 0 {};
     virtual void Update() override = 0 {};

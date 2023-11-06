@@ -12,6 +12,7 @@ public:
 		CENTER,
 		CENTER_UP,
 		CENTER_DOWN,
+		WEAPON_SELECT,
 		AVO,
 		TARGET,
 		LEFT,
@@ -49,11 +50,10 @@ public:
 	bool CmdSubAtk() { return commandFlags[SUB_ATK]; }
 	bool CmdAvo() { return commandFlags[AVO]; }
 	bool CmdTarget() { return commandFlags[TARGET]; }
-
 	bool CmdCenter() { return commandFlags[CENTER]; }
 	bool CmdCenterUp() { return commandFlags[CENTER_UP]; }
 	bool CmdCenterDown() { return commandFlags[CENTER_DOWN]; }
-
+	bool CmdWeaponSelect() { return commandFlags[WEAPON_SELECT]; }
 	bool CmdLeft() { return commandFlags[LEFT]; }
 	bool CmdRight() { return commandFlags[RIGHT]; }
 	bool CmdUp() { return commandFlags[UP]; }

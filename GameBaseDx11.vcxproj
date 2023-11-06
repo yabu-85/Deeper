@@ -177,6 +177,8 @@
     <ClCompile Include="UIBase.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="WeaponBase.cpp" />
+    <ClCompile Include="WeaponObject.cpp" />
+    <ClCompile Include="WeaponObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aim.h" />
@@ -233,6 +235,8 @@
     <ClInclude Include="UIBase.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="WeaponBase.h" />
+    <ClInclude Include="WeaponObject.h" />
+    <ClInclude Include="WeaponObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">

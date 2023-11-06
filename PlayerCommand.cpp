@@ -44,6 +44,9 @@ void PlayerCommand::SetDefaultKeyConfig()
 	downKeyCommand_.push_back(std::make_pair(DIK_SPACE, AVO));
 	downKeyCommand_.push_back(std::make_pair(DIK_Q, TARGET));
 
+	pushMouseCommand_.clear();
+	pushMouseCommand_.push_back(std::make_pair(0, WEAPON_SELECT));
+
 	downMouseCommand_.clear();
 	downMouseCommand_.push_back(std::make_pair(0, ATK));
 	downMouseCommand_.push_back(std::make_pair(1, SUB_ATK));

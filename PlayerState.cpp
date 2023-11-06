@@ -4,6 +4,7 @@
 #include "PlayerCommand.h"
 #include "GameManager.h"
 #include "WeaponBase.h"
+#include "WeaponObjectManager.h"
 
 namespace {
 	const int defAvoTime = 30;
@@ -37,9 +38,49 @@ void PlayerWait::Update()
 		owner_->ChangeState("SubAtk");
 		return;
 	}
+	if (pPlayer_->GetCommand()->CmdWeaponSelect()) {
+		GameManager* pGameManager = (GameManager*)pPlayer_->FindObject("GameManager");
+		if (pGameManager->GetWeaponObjectManager()->IsInPlayerRange()) {
+			owner_->ChangeState("Change");
+			return;
+		}
+	}
 
 	pPlayer_->CalcNoMove();
 	pPlayer_->Move();
+}
+
+//--------------------------------------------------------------------------------
+
+PlayerWeaponChange::PlayerWeaponChange(StateManager* owner)
+	:time_(0)
+{
+	changeTime_ = 100;
+	owner_ = owner;
+	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
+}
+
+void PlayerWeaponChange::Update()
+{
+	pPlayer_->CalcNoMove();
+	pPlayer_->Move(); 
+	
+	if (pPlayer_->GetCommand()->CmdWeaponSelect()) {
+		time_++;
+		if (time_ > changeTime_) {
+
+			owner_->ChangeState("SubAtk");
+			return;
+		}
+	}
+
+	owner_->ChangeState("SubAtk");
+	return;
+}
+
+void PlayerWeaponChange::OnEnter()
+{
+	time_ = 0;
 }
 
 //--------------------------------------------------------------------------------
@@ -72,6 +113,14 @@ void PlayerWalk::Update()
 		owner_->ChangeState("SubAtk");
 		return;
 	}
+	if (pPlayer_->GetCommand()->CmdWeaponSelect()) {
+		GameManager* pGameManager = (GameManager*)pPlayer_->FindObject("GameManager");
+		if (pGameManager->GetWeaponObjectManager()->IsInPlayerRange()) {
+			owner_->ChangeState("Change");
+			return;
+		}
+	}
+
 }
 
 //--------------------------------------------------------------------------------

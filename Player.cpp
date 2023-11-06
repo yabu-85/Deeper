@@ -56,6 +56,7 @@ void Player::Initialize()
 
     pStateManager_ = new StateManager(this);
     pStateManager_->AddState(new PlayerWait(pStateManager_));
+    pStateManager_->AddState(new PlayerWeaponChange(pStateManager_));
     pStateManager_->AddState(new PlayerWalk(pStateManager_));
     pStateManager_->AddState(new PlayerAvo(pStateManager_));
     pStateManager_->AddState(new PlayerAtk(pStateManager_));

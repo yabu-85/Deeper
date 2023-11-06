@@ -63,6 +63,9 @@
     <Filter Include="Weapon\Base">
       <UniqueIdentifier>{c3450bad-3506-4e41-8646-7fe925f04220}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Weapon\Object">
+      <UniqueIdentifier>{fb6cf40c-66b7-491c-8a2a-d9febfdecc2e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -206,6 +209,12 @@
     </ClCompile>
     <ClCompile Include="Engine\LineCollider.cpp">
       <Filter>01Engine\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponObjectManager.cpp">
+      <Filter>Weapon\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponObject.cpp">
+      <Filter>Weapon\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -356,6 +365,12 @@
     </ClInclude>
     <ClInclude Include="Engine\LineCollider.h">
       <Filter>01Engine\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponObject.h">
+      <Filter>Weapon\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponObjectManager.h">
+      <Filter>Weapon\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -11,6 +11,18 @@ public:
 	void Update() override;
 };
 
+class PlayerWeaponChange : public StateBase
+{
+	int time_;
+	int changeTime_;
+	Player* pPlayer_;
+public:
+	PlayerWeaponChange(StateManager* owner);
+	const char* GetName() const override { return "Change"; }
+	void Update() override;
+	void OnEnter() override;
+};
+
 class PlayerWalk : public StateBase
 {
 	Player* pPlayer_;

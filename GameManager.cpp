@@ -7,10 +7,11 @@
 #include "CollisionMap.h"
 #include "DamageCtrl.h"
 #include "WeaponObjectManager.h"
+#include "DropTable.h"
 
 GameManager::GameManager(GameObject* parent)
 	: GameObject(parent, "GameManager"), pPlayer_(nullptr), pStage_(nullptr), pEnemySpawnCtrl_(nullptr), pNavigationAI_(nullptr), pDamageCtrl_(nullptr),
-	pWeaponObjectManager_(nullptr)
+	pWeaponObjectManager_(nullptr), pDropTable_(nullptr)
 {
 }
 
@@ -33,10 +34,12 @@ void GameManager::Initialize()
 	pPlayer_->SetPosition(pStage_->GetPlayerStartPos());
 
 	Instantiate<CollisionMap>(this);
+	
+	pDropTable_ = new DropTable(this);
 
 	pNavigationAI_ = new NavigationAI(pStage_);
 	pWeaponObjectManager_ = new WeaponObjectManager(this);
-
+	
 }
 
 void GameManager::Update()

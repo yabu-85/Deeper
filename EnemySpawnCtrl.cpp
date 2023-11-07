@@ -1,8 +1,9 @@
 #include "EnemySpawnCtrl.h"
 #include "MasterHand.h"
 #include "Feet.h"
+#include "GameManager.h"
 
-void EnemySpawnCtrl::Initialize(GameObject* parent)
+void EnemySpawnCtrl::Initialize(GameManager* parent)
 {
 	pParent_ = parent;
 }
@@ -18,11 +19,15 @@ int EnemySpawnCtrl::SpawnEnemy(int type)
 	CleanUpEnemyList();
 
 	if (type == ENEMY_MASTERHAND) {
-		enemyList_.push_back(Instantiate<MasterHand>(pParent_));
+		MasterHand* e = Instantiate<MasterHand>(pParent_);
+		e->SetEnemyType(ENEMY_MASTERHAND);
+		enemyList_.push_back(e);
 		return (int)enemyList_.size() - 1;
 	}
 	else if (type == ENEMY_FEET) {
-		enemyList_.push_back(Instantiate<Feet>(pParent_));
+		Feet* e = Instantiate<Feet>(pParent_);
+		e->SetEnemyType(ENEMY_FEET);
+		enemyList_.push_back(e);
 		return (int)enemyList_.size() - 1;
 	}
 

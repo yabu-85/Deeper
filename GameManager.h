@@ -17,6 +17,7 @@ class EnemySpawnCtrl;
 class NavigationAI;
 class DamageCtrl;
 class WeaponObjectManager;
+class DropTable;
 
 class GameManager : public GameObject
 {
@@ -26,6 +27,7 @@ class GameManager : public GameObject
 	NavigationAI* pNavigationAI_;
 	DamageCtrl* pDamageCtrl_;
 	WeaponObjectManager* pWeaponObjectManager_;
+	DropTable* pDropTable_;
 
 public:
 	GameManager(GameObject* parent);
@@ -39,5 +41,5 @@ public:
 	NavigationAI* GetNavigationAI() { return pNavigationAI_; }
 	DamageCtrl* GetDamageCtrl() { return pDamageCtrl_; }
 	WeaponObjectManager* GetWeaponObjectManager() { return pWeaponObjectManager_ ; }
-
+	DropTable* GetDropTable() { return pDropTable_; }
 };

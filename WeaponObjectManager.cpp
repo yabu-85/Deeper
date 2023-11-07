@@ -9,17 +9,14 @@ WeaponObjectManager::WeaponObjectManager(GameManager* parent)
 	: pParent_(parent), range_(0), nearestObject_(nullptr)
 {
 	range_ = 3.0f;
-	AddWeaponObject(WT_SUB1);
-	AddWeaponObject(WT_SUB1);
-	AddWeaponObject(WT_SUB2);
-	AddWeaponObject(WT_SUB2);
 }
 
-void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type)
+void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos)
 {
 	std::string fileName[WT_MAX] = { "Hand", "RedBox" };
 
 	WeaponObject* weapon = Instantiate<WeaponObject>(pParent_);
+	weapon->SetPosition(pos);
 	weapon->LoadModel(fileName[type]);
 	weapon->SetType(type);
 	objctList_.push_back(weapon);

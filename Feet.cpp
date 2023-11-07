@@ -29,7 +29,7 @@ void Feet::Initialize()
 	hModel_ = Model::Load("Model/Feet.fbx");
 	assert(hModel_ >= 0);
 
-	transform_.rotate_.y = -90;
+	transform_.rotate_.y = -90.0f;
 	transform_.scale_ = XMFLOAT3(0.3f, 0.3f, 0.3f);
 	transform_.position_ = XMFLOAT3(50.0f + (float)(rand() % 10), 0.0f, 50.0f + (float)(rand() % 10));
 	targetPos_ = transform_.position_;
@@ -39,9 +39,6 @@ void Feet::Initialize()
 	
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize();
-
-	pDropTable_ = new DropTable(this);
-	pDropTable_->SetParcent(80);
 
 	maxHp_ = 10;
 	hp_ = maxHp_;
@@ -97,7 +94,8 @@ void Feet::ApplyDamage(int da)
 	hp_ -= da;
 	pEnemyUi_->SetParcent((float)(hp_) / (float)(maxHp_));
 	if (hp_ <= 0) {
-	    pDropTable_->DropItem();
+		GameManager* gm = (GameManager*)FindObject("GameManager");
+		gm->GetDropTable()->DropItem(0, transform_.position_);
 		KillMe();
 	}
 

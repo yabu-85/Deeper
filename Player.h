@@ -10,6 +10,7 @@ class Player :
     public GameObject
 {
     int hModel_[2];
+    int money_;
     float moveSpeed_;           //移動スピード
     float rotateRatio_;         //回転の比率
     XMFLOAT3 playerMovement_;   //今の移動量
@@ -42,6 +43,7 @@ public:
     bool IsMoveKeyPushed(XMFLOAT3& key);    //向いている角度を考慮した値
     bool IsMove();                          //移動量が少しでも入ってればtrue
 
+    void AddMoney(int num) { money_ += num; }
     void SetUpRotate(XMFLOAT3 rot) { upTrans_.rotate_ = rot; }
 
     XMVECTOR GetMoveVec() { return XMLoadFloat3(&moveVec_); }  //移動方向（正規化済み

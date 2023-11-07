@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/GameObject.h"
-#include <vector>
+#include "EnemySpawnCtrl.h"
 
 class EnemyUi;
 class DropTable;
@@ -12,10 +12,10 @@ protected:
     int hp_;
     int maxHp_;
     EnemyUi* pEnemyUi_;
-    DropTable* pDropTable_;
+    ENEMY_TYPE type_;
 
 public:
-    EnemyBase(GameObject* parent) : GameObject(parent), pEnemyUi_(nullptr), pDropTable_(nullptr), hp_(0), maxHp_(0) {};
+    EnemyBase(GameObject* parent) : GameObject(parent), pEnemyUi_(nullptr), hp_(0), maxHp_(0), type_(ENEMY_MAX) {};
     virtual ~EnemyBase() = 0 {};
     virtual void Initialize() override = 0 {};
     virtual void Update() override = 0 {};
@@ -23,6 +23,7 @@ public:
     virtual void Release() override = 0 {};
 
     virtual void ApplyDamage(int da) = 0;
+    void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
 
 };
 

@@ -4,19 +4,27 @@
 #include "GameManager.h"
 #include "WeaponObjectManager.h"
 
-DropTable::DropTable(EnemyBase* parent)
-	:money_(0),parcent_(0), pEnemyBase_(parent)
+DropTable::DropTable(GameManager* parent)
+	: pGameManager_(parent)
 {
+	table_[ENEMY_TYPE::ENEMY_FEET] = { 30, 50, 50 };
+	table_[ENEMY_TYPE::ENEMY_MASTERHAND] = { 50, 50, 50 };
+
 }
 
-void DropTable::DropItem()
+void DropTable::DropItem(int type, XMFLOAT3 pos)
 {
+	Player* pPlayer = static_cast<Player*>(pGameManager_->FindObject("Player"));
+	pPlayer->AddMoney(table_[type].money_);
 
-	if (parcent_ == 0) return;
-	if (rand() % 100 < parcent_) {
-		GameManager* gm = static_cast<GameManager*>(pEnemyBase_->FindObject("GameManager"));
-		WeaponObjectManager* ma = gm->GetWeaponObjectManager();
-		ma->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_SUB1);
+	if (rand() % 100 < (int)table_[type].healingItemParcent_) {
+
 	}
-	
+
+	if (rand() % 100 < (int)table_[type].weaponParcent_) {
+		GameManager* gm = static_cast<GameManager*>(pGameManager_->FindObject("GameManager"));
+		WeaponObjectManager* ma = gm->GetWeaponObjectManager();
+		ma->AddWeaponObject((WEAPON_TYPE)type, pos);
+	}
+
 }

@@ -23,7 +23,7 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr), pCommand_(nullptr),
+    : GameObject(parent, "Player"), hModel_{-1, -1}, money_(0), pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr), pCommand_(nullptr),
     pMainWeapon_(nullptr), pSubWeapon_(nullptr)
 {
     moveSpeed_ = 0.15f;

@@ -2,6 +2,7 @@
 #include "Engine/Model.h"
 #include "GameManager.h"
 #include "EnemyUi.h"
+#include "DropTable.h"
 
 #include "Aim.h"
 #include "Player.h"
@@ -51,6 +52,8 @@ void MasterHand::Update()
 	pEnemyUi_->Update();
 
 	if (lifeTime_ >= killTime) {
+		GameManager* gm = (GameManager*)FindObject("GameManager");
+		gm->GetDropTable()->DropItem(0, transform_.position_);
 		KillMe();
 		return;
 	}

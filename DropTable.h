@@ -1,19 +1,22 @@
 #pragma once
+#include <DirectXMath.h>
+#include "EnemySpawnCtrl.h"
 
-class EnemyBase;
+using namespace DirectX;
+class GameManager;
 
 class DropTable
 {
-	int money_;
-	unsigned parcent_;	//0Å`100
+	struct Table{
+		unsigned money_;
+		unsigned weaponParcent_;	//0Å`100
+		unsigned healingItemParcent_;	//0Å`100
+	} table_[ENEMY_TYPE::ENEMY_MAX];
 
-	EnemyBase* pEnemyBase_;
+	GameManager* pGameManager_;
 
 public:
-	DropTable(EnemyBase* parent);
-	void DropItem();
-
-	void SetMoney(unsigned num) { money_ = num; }
-	void SetParcent(unsigned num) { parcent_ = num; }
+	DropTable(GameManager* parent);
+	void DropItem(int type, XMFLOAT3 pos);
 };
 

@@ -1,20 +1,20 @@
 #pragma once
 #include <vector>
+#include <DirectXMath.h>
 
+using namespace DirectX;
 class WeaponObject;
 class GameManager;
 class WeaponBase;
 
+enum WEAPON_TYPE {
+	WT_SUB1 = 0,
+	WT_SUB2,
+	WT_MAX,
+};
+
 class WeaponObjectManager
 {
-public:
-	enum WEAPON_TYPE {
-		WT_SUB1 = 0,
-		WT_SUB2,
-		WT_MAX,
-	};
-
-private:
 	float range_;							//取得できる範囲
 	WeaponObject* nearestObject_;			//一番近いWeaponObject
 	std::vector<WeaponObject* > objctList_;	//WeaponObjectのリスト
@@ -23,11 +23,11 @@ private:
 public:
 	WeaponObjectManager(GameManager* parent);
 
-	void AddWeaponObject(WEAPON_TYPE type);
+	void AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos);
 	void RemoveWeaponObject(WeaponObject* obj);
 	void AllKillWeaponObject();
 
-	//nearestObject_の計算をして、範囲内に一つでもあればtrue
+	//範囲内に一つでもあればtrue / nearestObjectの更新も担ってる
 	bool IsInPlayerRange();
 
 	//一番近いWeaponObjectのWeaponBaseのポインタを取得

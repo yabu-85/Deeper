@@ -68,3 +68,13 @@ public:
 	void OnEnter() override;
 	void OnExit() override;
 };
+
+class PlayerDead : public StateBase
+{
+	Player* pPlayer_;
+public:
+	PlayerDead(StateManager* owner);
+	const char* GetName() const override { return "Dead"; }
+	void Update() override;
+	void OnEnter() override;
+};

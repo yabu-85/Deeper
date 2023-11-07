@@ -23,8 +23,8 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-    : GameObject(parent, "Player"), hModel_{-1, -1}, money_(0), pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr), pCommand_(nullptr),
-    pMainWeapon_(nullptr), pSubWeapon_(nullptr)
+    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr),
+    pCommand_(nullptr), pMainWeapon_(nullptr), pSubWeapon_{ nullptr, nullptr }, money_(0), hp_(0), maxHp_(0), currentSubIndex_(0)
 {
     moveSpeed_ = 0.15f;
     rotateRatio_ = 0.2f;
@@ -47,9 +47,6 @@ void Player::Initialize()
     pMainWeapon_ = Instantiate<TestWeaponMain>(this);
     pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
     pMainWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 0.0f, 0.0f));
-    pSubWeapon_ = Instantiate<TestWeaponSub>(this);
-    pSubWeapon_->SetOffsetScale(XMFLOAT3(0.0f, 0.0f, 0.0f));
-    pSubWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 180.0f, 0.0f));
 
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
@@ -61,8 +58,12 @@ void Player::Initialize()
     pStateManager_->AddState(new PlayerAvo(pStateManager_));
     pStateManager_->AddState(new PlayerAtk(pStateManager_));
     pStateManager_->AddState(new PlayerSubAtk(pStateManager_));
+    pStateManager_->AddState(new PlayerDead(pStateManager_));
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
+
+    maxHp_ = 60;
+    hp_ = maxHp_;
 
     pText->Initialize();
 }
@@ -75,40 +76,39 @@ void Player::Update()
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
 
-    //テスト用武器の持ち替え
-    if(pStateManager_->GetName() == "Wait" || pStateManager_->GetName() == "Walk")
-    if (pCommand_->CmdCenterUp()) {
-        if (pMainWeapon_ == nullptr) {
-            pMainWeapon_ = Instantiate<TestWeaponMain>(this);
-            pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
-            pMainWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 0.0f, 0.0f));
-        }
-        else {
-            pMainWeapon_->KillMe();
-            pMainWeapon_ = nullptr;
-        }
-    }
-    else if (pCommand_->CmdCenterDown()) {
-        if (pSubWeapon_ == nullptr) {
-            pSubWeapon_ = Instantiate<TestWeaponSub>(this);
-            pSubWeapon_->SetOffsetScale(XMFLOAT3(0.0f, 0.0f, 0.0f));
-            pSubWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 180.0f, 0.0f));
-        }
-        else {
-            pSubWeapon_->KillMe();
-            pSubWeapon_ = nullptr;
-        }
-    }
-
     //デバッグ用
     if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;
     if (Input::IsKey(DIK_DOWNARROW)) transform_.position_.y -= 0.1f;
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
     if (Input::IsKeyDown(DIK_RIGHTARROW)) transform_.position_.y += 10.0f;
+    if (Input::IsKey(DIK_H)) ApplyDamage(1);
+    if (Input::IsKey(DIK_3) && pSubWeapon_[0]) { pSubWeapon_[0]->KillMe(); pSubWeapon_[0] = nullptr; }
+    if (Input::IsKey(DIK_4) && pSubWeapon_[1]) { pSubWeapon_[1]->KillMe(); pSubWeapon_[1] = nullptr; }
+
 }
 
 void Player::Draw()
 {
+    //ターゲット状態の場合はAim方向に強制
+    if (pAim_->IsTarget()) {
+        upTrans_ = transform_;
+        upTrans_.rotate_.y = pAim_->GetRotate().y + 180.0f;
+    }
+    else upTrans_ = transform_;
+    Model::SetTransform(hModel_[0], upTrans_);
+    Model::Draw(hModel_[0]);
+
+    //武器の表示非表示
+    if (currentSubIndex_ == 0) {
+        if (pSubWeapon_[0]) pSubWeapon_[0]->Visible();
+        if (pSubWeapon_[1]) pSubWeapon_[1]->Invisible();
+    }
+    else {
+        if (pSubWeapon_[1]) pSubWeapon_[1]->Visible();
+        if (pSubWeapon_[0]) pSubWeapon_[0]->Invisible();
+    }
+
+    //デバッグ用
     Transform under = transform_;
     if (pAim_->IsTarget()) {
         float aimRotate = pAim_->GetRotate().y;
@@ -131,23 +131,37 @@ void Player::Draw()
     Model::SetTransform(hModel_[1], under);
     Model::Draw(hModel_[1]);
 
-    //ターゲット状態の場合はAim方向に強制
-    if (pAim_->IsTarget()) {
-        upTrans_ = transform_;
-        upTrans_.rotate_.y = pAim_->GetRotate().y + 180.0f;
-    }
-    else upTrans_ = transform_;
-    Model::SetTransform(hModel_[0], upTrans_);
-    Model::Draw(hModel_[0]);
-
-    if (pMainWeapon_ && !pMainWeapon_->IsDead()) pMainWeapon_->Draw();
-    if (pSubWeapon_ && !pSubWeapon_->IsDead()) pSubWeapon_->Draw();
-
-    //デバッグ用
     pText->Draw(30, 30, (int)transform_.position_.x);
     pText->Draw(30, 70, (int)transform_.position_.y);
     pText->Draw(30, 110, (int)transform_.position_.z);
-
+    
+    pText->Draw(1100, 30, money_);
+    pText->Draw(1100, 70, hp_);
+    pText->Draw(1150, 70, " / ");
+    pText->Draw(1200, 70, maxHp_);
+    
+    pText->Draw(1000, 600, currentSubIndex_);
+    if (currentSubIndex_ == 0) {
+        if (pSubWeapon_[0]) {
+            const char* cstr = pSubWeapon_[0]->GetObjectName().c_str();
+            pText->Draw(1000, 650, cstr);
+        }
+        if (pSubWeapon_[1]) {
+            const char* cstr = pSubWeapon_[1]->GetObjectName().c_str();
+            pText->Draw(1000, 700, cstr);
+        }
+    }
+    else {
+        if (pSubWeapon_[1]) {
+            const char* cstr = pSubWeapon_[1]->GetObjectName().c_str();
+            pText->Draw(1000, 650, cstr);
+        }
+        if (pSubWeapon_[0]) {
+            const char* cstr = pSubWeapon_[0]->GetObjectName().c_str();
+            pText->Draw(1000, 700, cstr);
+        }
+    }
+    
 }
 
 void Player::Release()
@@ -212,6 +226,14 @@ bool Player::IsMove()
     return XMVector3NotEqual(XMLoadFloat3(&playerMovement_), XMVectorZero());
 }
 
+void Player::ApplyDamage(int da)
+{
+    hp_ -= da;
+    if (hp_ <= 0) {
+        pStateManager_->ChangeState("Dead");
+    }
+}
+
 XMVECTOR Player::GetDirectionVec()
 {
     XMVECTOR vMove = { 0.0, 0.0, 1.0, 0.0 };
@@ -271,11 +293,36 @@ void Player::InitAvo()
     rotateRatio_ = preRatio;
 }
 
-void Player::ChangeWeapon(WeaponBase* weapon)
+void Player::SetWeapon(WeaponBase* weapon)
 {
-    if (pSubWeapon_) {
-        pSubWeapon_->KillMe();
+    //空いていたら追加する
+    if (pSubWeapon_[0] == nullptr) {
+        pSubWeapon_[0] = weapon;
+        return;
+    }
+    else if (pSubWeapon_[1] == nullptr) {
+        pSubWeapon_[1] = weapon;
+        return;
+    }
+    
+    //上書きする
+    pSubWeapon_[currentSubIndex_]->KillMe();
+    pSubWeapon_[currentSubIndex_] = weapon;
+}
+
+void Player::WeaponChange()
+{
+    if (pCommand_->CmdCenterUp()) {
+        if (pSubWeapon_[0]) {
+            currentSubIndex_ = 0;
+            return;
+        }
+    }
+    if (pCommand_->CmdCenterDown()) {
+        if (pSubWeapon_[1]) {
+            currentSubIndex_ = 1;
+            return;
+        }
     }
 
-    pSubWeapon_ = weapon;
 }

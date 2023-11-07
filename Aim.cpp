@@ -50,27 +50,31 @@ void Aim::Update()
     if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
     if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
     
-    if (!aimMove_) return;
+    //airMove_がオフの状態はAimはついてくるが、動かせることはなくなる状態
+    if (aimMove_) {
+        if (isTarget_) {
+            CalcCameraOffset(0.0f);
 
-    if (isTarget_) {
-        CalcCameraOffset(0.0f);
-
-        //ターゲットが生きてるならそいつにAim合わせる
-        if (!pEnemyBase_->IsDead()) FacingTarget();
+            //ターゲットが生きてるならそいつにAim合わせる
+            if (!pEnemyBase_->IsDead()) FacingTarget();
+            else {
+                //死んでたら今向いている方向にターゲットできるEnemyがいるならそいつをターゲットにする
+                isTarget_ = false;
+                SetTargetEnemy();
+            }
+        }
         else {
-            //死んでたら今向いている方向にターゲットできるEnemyがいるならそいつをターゲットにする
-            isTarget_ = false;
-            SetTargetEnemy();
+            XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
+            transform_.rotate_.y += (mouseMove.x * mouseSpeed_) * mouseSensitivity; //横方向の回転
+            transform_.rotate_.x -= (mouseMove.y * mouseSpeed_) * mouseSensitivity; //縦方向の回転
+            if (transform_.rotate_.x <= upMouselimit_) transform_.rotate_.x = upMouselimit_;
+            if (transform_.rotate_.x >= donwMouselimit_) transform_.rotate_.x = donwMouselimit_;
+
+            CalcCameraOffset(mouseMove.x * numSupress_);
         }
     }
     else {
-        XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
-        transform_.rotate_.y += (mouseMove.x * mouseSpeed_) * mouseSensitivity; //横方向の回転
-        transform_.rotate_.x -= (mouseMove.y * mouseSpeed_) * mouseSensitivity; //縦方向の回転
-        if (transform_.rotate_.x <= upMouselimit_) transform_.rotate_.x = upMouselimit_;
-        if (transform_.rotate_.x >= donwMouselimit_) transform_.rotate_.x = donwMouselimit_;
-
-        CalcCameraOffset(mouseMove.x * numSupress_);
+        CalcCameraOffset(0.0f);
     }
 
     //カメラの回転

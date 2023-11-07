@@ -11,6 +11,9 @@ class Player :
 {
     int hModel_[2];
     int money_;
+    int hp_;
+    int maxHp_;
+    int currentSubIndex_;       //今選択してるSubのIndex
     float moveSpeed_;           //移動スピード
     float rotateRatio_;         //回転の比率
     XMFLOAT3 playerMovement_;   //今の移動量
@@ -22,7 +25,7 @@ class Player :
     PlayerCommand* pCommand_;
 
     WeaponBase* pMainWeapon_;
-    WeaponBase* pSubWeapon_;
+    WeaponBase* pSubWeapon_[2];
 
 public:
     Player(GameObject* parent);
@@ -38,12 +41,12 @@ public:
     void CalcNoMove();              //Input考慮してない、滑るやつとかの計算用
     void InitAvo();
     void ResetMovement() { playerMovement_ = XMFLOAT3(0.0f, 0.0f, 0.0f); }
-    void ChangeWeapon(WeaponBase* weapon);
 
     bool IsMoveKeyPushed(XMFLOAT3& key);    //向いている角度を考慮した値
     bool IsMove();                          //移動量が少しでも入ってればtrue
 
     void AddMoney(int num) { money_ += num; }
+    void ApplyDamage(int da);
     void SetUpRotate(XMFLOAT3 rot) { upTrans_.rotate_ = rot; }
 
     XMVECTOR GetMoveVec() { return XMLoadFloat3(&moveVec_); }  //移動方向（正規化済み
@@ -53,8 +56,10 @@ public:
 
     PlayerCommand* GetCommand() { return pCommand_; }
     Aim* GetAim() { return pAim_; }
+   
+    void SetWeapon(WeaponBase* weapon);
+    void WeaponChange();    //Inputがあった場合currentSubIndexを変える
     WeaponBase* GetMainWeapon() { return pMainWeapon_; }
-    WeaponBase* GetSubWeapon() { return pSubWeapon_; }
-
+    WeaponBase* GetSubWeapon() { return pSubWeapon_[currentSubIndex_]; }
 };
 

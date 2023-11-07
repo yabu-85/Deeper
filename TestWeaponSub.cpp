@@ -11,7 +11,9 @@
 TestWeaponSub::TestWeaponSub(GameObject* parent)
     :WeaponBase(parent)
 {
-    objectName_ = "TestWeaponSub";
+    std::string str;
+    str = std::to_string(rand() % 1000);
+    objectName_ = "TestWeaponSub" + str;
 }
 
 TestWeaponSub::~TestWeaponSub()
@@ -26,6 +28,8 @@ void TestWeaponSub::Initialize()
     pStateManager_->AddState(new TestWeaponSubCombo2(pStateManager_));
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
+
+    offsetTrans_.position_.y += (float)(rand() % 10) * 0.1f;
 
     //モデルデータのロード
     hModel_ = Model::Load("Model/RedBox.fbx");
@@ -42,6 +46,8 @@ void TestWeaponSub::Update()
 
 void TestWeaponSub::Draw()
 {
+    if (!IsVisibled()) return;
+
     transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Sword");
     transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Sword");
     if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
@@ -51,6 +57,7 @@ void TestWeaponSub::Draw()
     transform_.rotate_.y += pPlayer_->GetUpRotate().y;
 
     Transform t = transform_;
+    CalcOffset(t);
     Model::SetTransform(hModel_, t);
     Model::Draw(hModel_);
 

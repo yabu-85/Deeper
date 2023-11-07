@@ -4,6 +4,7 @@
 WeaponBase::WeaponBase(GameObject* parent)
 	: hModel_(-1), pStateManager_(nullptr), atkEnd_(true)
 {
+    offsetTrans_.scale_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 
 void WeaponBase::CalcOffset(Transform& trans)

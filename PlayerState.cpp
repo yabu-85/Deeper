@@ -5,6 +5,7 @@
 #include "GameManager.h"
 #include "WeaponBase.h"
 #include "WeaponObjectManager.h"
+#include "Aim.h"
 
 namespace {
 	const int defAvoTime = 30;
@@ -21,6 +22,8 @@ PlayerWait::PlayerWait(StateManager* owner)
 
 void PlayerWait::Update()
 {
+	pPlayer_->WeaponChange();
+
 	//キー入力でステート切り替え
 	if (pPlayer_->GetCommand()->CmdWalk()) {
 		owner_->ChangeState("Walk");
@@ -60,6 +63,7 @@ PlayerWalk::PlayerWalk(StateManager* owner)
 
 void PlayerWalk::Update()
 {
+	pPlayer_->WeaponChange();
 	pPlayer_->CalcMove();
 	pPlayer_->Move();
 	pPlayer_->Rotate();
@@ -111,7 +115,7 @@ void PlayerWeaponChange::Update()
 			GameManager* pGameManager = (GameManager*)pPlayer_->FindObject("GameManager");
 			WeaponBase* weapon = pGameManager->GetWeaponObjectManager()->GetNearestWeapon();
 			if (weapon) {
-				pPlayer_->ChangeWeapon(weapon);
+				pPlayer_->SetWeapon(weapon);
 			}
 
 			owner_->ChangeState("Wait");
@@ -277,4 +281,22 @@ void PlayerSubAtk::OnEnter()
 void PlayerSubAtk::OnExit()
 {
 	pPlayer_->GetSubWeapon()->ResetState();
+}
+
+//--------------------------------------------------------------------------------
+
+PlayerDead::PlayerDead(StateManager* owner)
+{
+	owner_ = owner;
+	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
+}
+
+void PlayerDead::Update()
+{
+	pPlayer_->CalcNoMove();
+}
+
+void PlayerDead::OnEnter()
+{
+	pPlayer_->GetAim()->SetAimMove(false);
 }

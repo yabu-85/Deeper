@@ -34,7 +34,7 @@ void TestWeaponSub::Initialize()
 
     offsetTrans_.position_.y += (float)(rand() % 10) * 0.1f;
     transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
-    endurance_ = 10;
+    endurance_ = 50;
 
     pPlayer_ = (Player*)GetParent();
 }

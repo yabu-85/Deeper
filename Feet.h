@@ -19,7 +19,6 @@ public:
 
 };
 
-
 //-------------------State----------------------
 
 class FeetWait : public StateBase

@@ -192,9 +192,6 @@
     <ClCompile Include="DamageCtrl.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="BulletBase.cpp">
-      <Filter>Weapon\Bullet</Filter>
-    </ClCompile>
     <ClCompile Include="TestBullet.cpp">
       <Filter>Weapon\Bullet</Filter>
     </ClCompile>
@@ -218,6 +215,9 @@
     </ClCompile>
     <ClCompile Include="DropTable.cpp">
       <Filter>Enemy\EnemyBase</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletBase.cpp">
+      <Filter>Weapon\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -351,9 +351,6 @@
     <ClInclude Include="DamageCtrl.h">
       <Filter>Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="BulletBase.h">
-      <Filter>Weapon\Bullet</Filter>
-    </ClInclude>
     <ClInclude Include="TestBullet.h">
       <Filter>Weapon\Bullet</Filter>
     </ClInclude>
@@ -377,6 +374,9 @@
     </ClInclude>
     <ClInclude Include="DropTable.h">
       <Filter>Enemy\EnemyBase</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletBase.h">
+      <Filter>Weapon\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

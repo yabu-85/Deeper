@@ -189,7 +189,7 @@ void Aim::FacingTarget()
 {
     //ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ÉŒü‚­‚æ‚¤‚É‚·‚é
     XMVECTOR vFront{ 0,0,1,0 };
-    XMFLOAT3 colPos = pEnemyBase_->GetColliderList().front()->GetCenter();
+    XMFLOAT3 colPos = XMFLOAT3(); // pEnemyBase_->GetColliderList().front()->GetCenter();
     XMFLOAT3 targetPos = pEnemyBase_->GetPosition();
     targetPos = XMFLOAT3(targetPos.x + colPos.x, targetPos.y + colPos.y, targetPos.z + colPos.z);
 

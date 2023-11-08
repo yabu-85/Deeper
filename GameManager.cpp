@@ -44,9 +44,6 @@ void GameManager::Initialize()
 
 void GameManager::Update()
 {
-	if(pEnemySpawnCtrl_->GetAllEnemy().empty())
-		pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET);
-
 	//デバッグ用
 	if (Input::IsKeyDown(DIK_M)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND);
 	if (Input::IsKeyDown(DIK_N)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET);

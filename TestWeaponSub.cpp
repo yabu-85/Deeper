@@ -22,6 +22,9 @@ TestWeaponSub::~TestWeaponSub()
 
 void TestWeaponSub::Initialize()
 {
+    hModel_ = Model::Load("Model/RedBox.fbx");
+    assert(hModel_ >= 0);
+
     pStateManager_ = new StateManager(this);
     pStateManager_->AddState(new TestWeaponSubWait(pStateManager_));
     pStateManager_->AddState(new TestWeaponSubCombo1(pStateManager_));
@@ -30,14 +33,10 @@ void TestWeaponSub::Initialize()
     pStateManager_->Initialize();
 
     offsetTrans_.position_.y += (float)(rand() % 10) * 0.1f;
-
-    //モデルデータのロード
-    hModel_ = Model::Load("Model/RedBox.fbx");
-    assert(hModel_ >= 0);
+    transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
+    endurance_ = 10;
 
     pPlayer_ = (Player*)GetParent();
-
-    transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
 }
 
 void TestWeaponSub::Update()
@@ -143,6 +142,10 @@ void TestWeaponSubCombo1::OnEnter()
 void TestWeaponSubCombo1::OnExit()
 {
     pTestWeaponSub_->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
+    pTestWeaponSub_->Endurance();
+    if (pTestWeaponSub_->IsBlockend()) {
+        pTestWeaponSub_->SetAtkEnd(true);
+    }
 }
 
 //---------------------------------------------------------------
@@ -186,4 +189,8 @@ void TestWeaponSubCombo2::OnEnter()
 void TestWeaponSubCombo2::OnExit()
 {
     pTestWeaponSub_->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
+    pTestWeaponSub_->Endurance();
+    if (pTestWeaponSub_->IsBlockend()) {
+        pTestWeaponSub_->SetAtkEnd(true);
+    }
 }

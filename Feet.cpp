@@ -4,8 +4,8 @@
 #include "GameManager.h"
 #include "EnemyUi.h"
 #include "DropTable.h"
-
 #include "Engine/SphereCollider.h"
+#include "StateManager.h"
 
 namespace {	
 	float moveSpeed = 0.2f;
@@ -37,6 +37,11 @@ void Feet::Initialize()
 	GameManager* pGameManager = (GameManager*)FindObject("GameManager");
 	pNavigationAI_ = pGameManager->GetNavigationAI();
 	
+	pStateManager_ = new StateManager(this);
+//	pStateManager_->AddState(new PlayerWait(pStateManager_));
+	pStateManager_->ChangeState("Wait");
+	pStateManager_->Initialize();
+
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize();
 
@@ -99,4 +104,12 @@ void Feet::ApplyDamage(int da)
 		KillMe();
 	}
 
+}
+
+FeetWait::FeetWait(StateManager* owner)
+{
+}
+
+void FeetWait::Update()
+{
 }

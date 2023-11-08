@@ -2,7 +2,7 @@
 #include "StateManager.h"
 
 WeaponBase::WeaponBase(GameObject* parent)
-	: hModel_(-1), pStateManager_(nullptr), atkEnd_(true)
+	: hModel_(-1), pStateManager_(nullptr), atkEnd_(true), endurance_(0)
 {
     offsetTrans_.scale_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
@@ -25,4 +25,10 @@ void WeaponBase::CalcOffset(Transform& trans)
 void WeaponBase::UpdateState()
 {
 	pStateManager_->Update();
+}
+
+bool WeaponBase::IsBlockend()
+{
+    if (endurance_ <= 0) return true;
+    return false;
 }

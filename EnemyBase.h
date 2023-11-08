@@ -4,6 +4,7 @@
 
 class EnemyUi;
 class DropTable;
+class StateManager;
 
 class EnemyBase : public GameObject
 {
@@ -13,9 +14,10 @@ protected:
     int maxHp_;
     EnemyUi* pEnemyUi_;
     ENEMY_TYPE type_;
+    StateManager* pStateManager_;
 
 public:
-    EnemyBase(GameObject* parent) : GameObject(parent), pEnemyUi_(nullptr), hp_(0), maxHp_(0), type_(ENEMY_MAX) {};
+    EnemyBase(GameObject* parent) : GameObject(parent), pEnemyUi_(nullptr), hp_(0), maxHp_(0), type_(ENEMY_MAX), pStateManager_(nullptr) {};
     virtual ~EnemyBase() = 0 {};
     virtual void Initialize() override = 0 {};
     virtual void Update() override = 0 {};

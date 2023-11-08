@@ -128,7 +128,7 @@ XMFLOAT3 Aim::GetTargetPos()
 
 void Aim::SetTargetEnemy()
 {
-    //ターゲット解除の場合はreturn
+    //すでにターゲット状態の場合はターゲット解除してreturn
     if (isTarget_) {
         isTarget_ = false;
         return;
@@ -189,7 +189,9 @@ void Aim::FacingTarget()
 {
     //プレイヤーの方向に向くようにする
     XMVECTOR vFront{ 0,0,1,0 };
+    XMFLOAT3 colPos = pEnemyBase_->GetColliderList().front()->GetCenter();
     XMFLOAT3 targetPos = pEnemyBase_->GetPosition();
+    targetPos = XMFLOAT3(targetPos.x + colPos.x, targetPos.y + colPos.y, targetPos.z + colPos.z);
 
     XMFLOAT3 fAimPos = XMFLOAT3(cameraPos_.x - targetPos.x, 0.0f, cameraPos_.z - targetPos.z);
     XMVECTOR vAimPos = XMLoadFloat3(&fAimPos);  //正規化用の変数にfloatの値を入れる
@@ -203,7 +205,7 @@ void Aim::FacingTarget()
     if (XMVectorGetY(vCross) < 0) {
         angle *= -1;
     }
-   
+    
     XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(transform_.rotate_.y)), cosf(XMConvertToRadians(transform_.rotate_.y)));
     XMFLOAT2 b = XMFLOAT2(sinf(angle), cosf(angle));
     XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));

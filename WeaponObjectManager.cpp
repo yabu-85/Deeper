@@ -9,6 +9,7 @@ WeaponObjectManager::WeaponObjectManager(GameManager* parent)
 	: pParent_(parent), range_(0), nearestObject_(nullptr)
 {
 	range_ = 3.0f;
+	AddWeaponObject(WT_SUB1, XMFLOAT3(60.0f, 0.0f, 60.0f));
 }
 
 void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos)

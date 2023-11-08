@@ -82,8 +82,6 @@ void Player::Update()
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
     if (Input::IsKeyDown(DIK_RIGHTARROW)) transform_.position_.y += 10.0f;
     if (Input::IsKey(DIK_H)) ApplyDamage(1);
-    if (Input::IsKey(DIK_3) && pSubWeapon_[0]) { pSubWeapon_[0]->KillMe(); pSubWeapon_[0] = nullptr; }
-    if (Input::IsKey(DIK_4) && pSubWeapon_[1]) { pSubWeapon_[1]->KillMe(); pSubWeapon_[1] = nullptr; }
 
 }
 
@@ -141,25 +139,13 @@ void Player::Draw()
     pText->Draw(1200, 70, maxHp_);
     
     pText->Draw(1000, 600, currentSubIndex_);
-    if (currentSubIndex_ == 0) {
-        if (pSubWeapon_[0]) {
-            const char* cstr = pSubWeapon_[0]->GetObjectName().c_str();
-            pText->Draw(1000, 650, cstr);
-        }
-        if (pSubWeapon_[1]) {
-            const char* cstr = pSubWeapon_[1]->GetObjectName().c_str();
-            pText->Draw(1000, 700, cstr);
-        }
+    if (pSubWeapon_[0]) {
+        const char* cstr = pSubWeapon_[0]->GetObjectName().c_str();
+        pText->Draw(1000, 650, cstr);
     }
-    else {
-        if (pSubWeapon_[1]) {
-            const char* cstr = pSubWeapon_[1]->GetObjectName().c_str();
-            pText->Draw(1000, 650, cstr);
-        }
-        if (pSubWeapon_[0]) {
-            const char* cstr = pSubWeapon_[0]->GetObjectName().c_str();
-            pText->Draw(1000, 700, cstr);
-        }
+    if (pSubWeapon_[1]) {
+        const char* cstr = pSubWeapon_[1]->GetObjectName().c_str();
+        pText->Draw(1000, 700, cstr);
     }
     
 }
@@ -313,16 +299,18 @@ void Player::SetWeapon(WeaponBase* weapon)
 void Player::WeaponChange()
 {
     if (pCommand_->CmdCenterUp()) {
-        if (pSubWeapon_[0]) {
-            currentSubIndex_ = 0;
-            return;
-        }
+        currentSubIndex_ = 0;
+        return;
     }
     if (pCommand_->CmdCenterDown()) {
-        if (pSubWeapon_[1]) {
-            currentSubIndex_ = 1;
-            return;
-        }
+        currentSubIndex_ = 1;
+        return;
     }
 
+}
+
+void Player::SubWeaponRemove()
+{
+    pSubWeapon_[currentSubIndex_]->KillMe();
+    pSubWeapon_[currentSubIndex_] = nullptr;
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "EnemyBase.h"
+#include "StateBase.h"
 
 class NavigationAI;
 
@@ -26,3 +27,13 @@ public:
 
 };
 
+
+//-------------------State----------------------
+
+class FeetWait : public StateBase
+{
+public:
+    FeetWait(StateManager* owner);
+    const char* GetName() const override { return "Wait"; }
+    void Update() override;
+};

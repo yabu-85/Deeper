@@ -280,6 +280,10 @@ void PlayerSubAtk::OnEnter()
 
 void PlayerSubAtk::OnExit()
 {
+	if (pPlayer_->GetSubWeapon()->IsBlockend()) {
+		pPlayer_->SubWeaponRemove();
+		return;
+	}
 	pPlayer_->GetSubWeapon()->ResetState();
 }
 

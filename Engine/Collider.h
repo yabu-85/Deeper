@@ -98,5 +98,7 @@ public:
 	//セッター
 	void SetGameObject(GameObject* gameObject) { pGameObject_ = gameObject; }
 
+	XMFLOAT3 GetCenter() { return center_; };
+
 };
 

@@ -7,6 +7,7 @@ class WeaponBase : public GameObject
 {
 protected:
 	int hModel_;
+	unsigned endurance_;
 	bool atkEnd_;
 	Transform offsetTrans_;
 	StateManager* pStateManager_;
@@ -27,5 +28,8 @@ public:
 	void UpdateState();
 	void SetAtkEnd(bool b) { atkEnd_ = b; }
 	bool IsAtkEnd() { return atkEnd_; }
+	void Endurance(int val = 1) { endurance_ -= val; }
+	bool IsBlockend();
+
 };
 

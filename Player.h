@@ -59,6 +59,7 @@ public:
    
     void SetWeapon(WeaponBase* weapon);
     void WeaponChange();    //Input‚ª‚ ‚Á‚½ê‡currentSubIndex‚ğ•Ï‚¦‚é
+    void SubWeaponRemove();
     WeaponBase* GetMainWeapon() { return pMainWeapon_; }
     WeaponBase* GetSubWeapon() { return pSubWeapon_[currentSubIndex_]; }
 };

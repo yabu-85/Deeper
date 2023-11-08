@@ -13,7 +13,7 @@ namespace {
 }
 
 Feet::Feet(GameObject* parent)
-	:EnemyBase(parent), hModel_(-1), pNavigationAI_(nullptr), targetPos_(0.0f, 0.0f, 0.0f), currtime_(0), stopTime_(60), flag_(true)
+	:EnemyBase(parent), hModel_(-1)
 {
 	objectName_ = "Feet";
 }
@@ -32,13 +32,9 @@ void Feet::Initialize()
 	transform_.rotate_.y = -90.0f;
 	transform_.scale_ = XMFLOAT3(0.3f, 0.3f, 0.3f);
 	transform_.position_ = XMFLOAT3(50.0f + (float)(rand() % 10), 0.0f, 50.0f + (float)(rand() % 10));
-	targetPos_ = transform_.position_;
-
-	GameManager* pGameManager = (GameManager*)FindObject("GameManager");
-	pNavigationAI_ = pGameManager->GetNavigationAI();
 	
 	pStateManager_ = new StateManager(this);
-//	pStateManager_->AddState(new PlayerWait(pStateManager_));
+	pStateManager_->AddState(new FeetWait(pStateManager_));
 	pStateManager_->ChangeState("Wait");
 	pStateManager_->Initialize();
 
@@ -57,27 +53,7 @@ void Feet::Update()
 	pEnemyUi_->Update();
 
 	return;
-
-	if (currtime_ > 0) {
-		currtime_--;
-		if (currtime_ <= 0) flag_ = true;
-	}
-
-	if (flag_) {
-		flag_ = false;
-		pNavigationAI_->Navi(targetPos_);
-	}
-	else if(currtime_ <= 0){
-		XMVECTOR pos = XMLoadFloat3(&transform_.position_);
-		XMVECTOR tar = XMLoadFloat3(&targetPos_);
-		XMVECTOR vMove = tar - pos;
-		vMove = XMVector3Normalize(vMove) * moveSpeed;
-		XMStoreFloat3(&transform_.position_, pos + vMove);
-
-		float length = XMVectorGetX(XMVector3Length(tar - pos));
-		if (length <= moveSpeed) currtime_ = stopTime_;
-
-	}
+	pStateManager_->Update();
 
 }
 
@@ -106,10 +82,70 @@ void Feet::ApplyDamage(int da)
 
 }
 
+//---------------------------------state-------------------------------
+
 FeetWait::FeetWait(StateManager* owner)
+	:time_(0)
 {
+	owner_ = owner;
+	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
 void FeetWait::Update()
+{
+	time_--;
+	if (time_ <= 0) owner_->ChangeState("Walk");
+}
+
+void FeetWait::OnEnter()
+{
+	time_ = 60;
+}
+
+//---------------------------------------------------------------------
+
+FeetWalk::FeetWalk(StateManager* owner)
+	:targetPos_(0.0f,0.0f,0.0f)
+{
+	owner_ = owner;
+	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
+}
+
+void FeetWalk::Update()
+{
+	XMFLOAT3 pos = pFeet_->GetPosition();
+	XMVECTOR vPos = XMLoadFloat3(&pos);
+	XMVECTOR vTar = XMLoadFloat3(&targetPos_);
+	XMVECTOR vMove = vTar - vPos;
+	vMove = XMVector3Normalize(vMove) * moveSpeed;
+	XMStoreFloat3(&pos, vPos + vMove);
+	pFeet_->SetPosition(pos);
+
+	float length = XMVectorGetX(XMVector3Length(vTar - vPos));
+	if (length <= moveSpeed) owner_->ChangeState("Wait");
+}
+
+void FeetWalk::OnEnter()
+{
+	if (rand() % 2 == 0) return; //‚Ä‚«‚Æ‚¤‚ç‚ñ‚Ç
+
+	GameManager* pGameManager = (GameManager*)pFeet_->FindObject("GameManager");
+	NavigationAI* pNavigationAI = pGameManager->GetNavigationAI();
+	pNavigationAI->Navi(targetPos_);
+}
+
+//---------------------------------------------------------------------
+
+FeetDead::FeetDead(StateManager* owner)
+{
+	owner_ = owner;
+	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
+}
+
+void FeetDead::Update()
+{
+}
+
+void FeetDead::OnEnter()
 {
 }

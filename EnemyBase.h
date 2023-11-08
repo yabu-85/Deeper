@@ -26,6 +26,5 @@ public:
 
     virtual void ApplyDamage(int da) = 0;
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
-
 };
 

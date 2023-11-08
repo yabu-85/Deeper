@@ -66,6 +66,9 @@
     <Filter Include="Weapon\Object">
       <UniqueIdentifier>{fb6cf40c-66b7-491c-8a2a-d9febfdecc2e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BehaviorTree">
+      <UniqueIdentifier>{8b35f917-7762-4bfa-a56f-85218def731f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -218,6 +221,9 @@
     </ClCompile>
     <ClCompile Include="BulletBase.cpp">
       <Filter>Weapon\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviourNode.cpp">
+      <Filter>BehaviorTree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -377,6 +383,9 @@
     </ClInclude>
     <ClInclude Include="BulletBase.h">
       <Filter>Weapon\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviourNode.h">
+      <Filter>BehaviorTree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

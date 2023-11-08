@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClCompile Include="Aim.cpp" />
     <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="BehaviourNode.cpp" />
     <ClCompile Include="BulletBase.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CollisionMap.cpp" />
@@ -184,6 +185,7 @@
   <ItemGroup>
     <ClInclude Include="Aim.h" />
     <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="BehaviourNode.h" />
     <ClInclude Include="BulletBase.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CollisionMap.h" />

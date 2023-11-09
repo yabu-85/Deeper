@@ -4,6 +4,7 @@
 #include "EnemyUi.h"
 #include "Engine/SphereCollider.h"
 #include "FeetActionNode.h"
+#include "BehaviourNode.h"
 
 namespace {	
 	float moveSpeed = 0.2f;
@@ -40,21 +41,21 @@ void Feet::Initialize()
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize();
 
-	seq1_ = new BT::Sequence("seq1");
-	BT::CompositeNode *con1 = new BT::CompositeNode("com1");
-	FeetMove* action1 = new FeetMove("act1");
+	root_ = new Root("root");
+	Sequence* seq1 = new Sequence("seq1");
+	root_->SetRootNode(seq1);
 
-	seq1_->AddChildren(con1);
-
+	FeetMove* action1 = new FeetMove("act1", this);
+	FeetJump* action2 = new FeetJump("act2", this);
+	seq1->AddChildren(action1);
+	seq1->AddChildren(action2);
 
 }
 
 void Feet::Update()
 {
 	pEnemyUi_->Update();
-
-	seq1_->Tick();
-
+	root_->Update();
 }
 
 void Feet::Draw()
@@ -63,17 +64,10 @@ void Feet::Draw()
 	Model::Draw(hModel_);
 
 	CollisionDraw();
-
 }
 
 void Feet::Release()
 {
-}
-
-void Feet::ApplyDamage(int da)
-{
-
-
 }
 
 /*

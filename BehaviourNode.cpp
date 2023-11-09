@@ -1,10 +1,9 @@
 #include "BehaviourNode.h"
-using namespace BT;
 
 //--------------------------Base--------------------------
 
 TreeNode::TreeNode(std::string name)
-    : status_(INVALID), type_(ACTION_NODE)
+    : name_(name), status_(Status::INVALID), type_(NodeType::ACTION_NODE)
 {
 }
 
@@ -12,18 +11,18 @@ TreeNode::~TreeNode()
 {
 }
 
-Status TreeNode::Tick()
+TreeNode::Status TreeNode::Tick()
 {
-    if (status_ == INVALID)
+    if (status_ == Status::INVALID)
     {
         Initialize();
     }
 
     status_ = Update();
 
-    if (status_ != RUNNING)
+    if (status_ != Status::RUNNING)
     {
-        Abort();
+        Terminate();
     }
     return status_;
 }
@@ -33,45 +32,35 @@ Status TreeNode::Tick()
 CompositeNode::CompositeNode(std::string name)
     : TreeNode(name), currentIndex_(0)
 {
-    type_ = CONTROL_NODE;
+    type_ = NodeType::CONTROL_NODE;
 }
 
 CompositeNode::~CompositeNode()
 {
 }
 
-Status CompositeNode::Update()
-{
-    return Status();
-}
-
 void CompositeNode::ResetState()
 {
-    status_ = IDLE;
+    status_ = Status::INVALID;
     for (unsigned i = 0; i < childlenNodes_.size(); i++)
     {
         childlenNodes_[i]->ResetState();
     }
 }
 
-void CompositeNode::AvortChildren(unsigned num)
+void CompositeNode::TerminateChildren(unsigned num)
 {
     for (unsigned j = num; j < childlenNodes_.size(); j++)
     {
-        if (childlenNodes_[j]->GetType() == CONDITION_NODE)
+        if (childlenNodes_[j]->GetType() == NodeType::CONDITION_NODE)
         {
             childlenNodes_[num]->ResetState();
         }
         else
         {
-            if (childlenNodes_[j]->GetStatus() == RUNNING)
+            if (childlenNodes_[j]->GetStatus() == Status::RUNNING)
             {
-                //SENDING HALT TO CHILD " << childNodes_[j]->get_name());
-                childlenNodes_[j]->Abort();
-            }
-            else
-            {
-                //"NO NEED TO HALT " << childNodes_[j]->get_name() "STATUS" << childNodes_[j]->get_status());
+                childlenNodes_[j]->Terminate();
             }
         }
     }
@@ -93,18 +82,18 @@ void Sequence::Initialize()
     currentIndex_ = 0;
 }
 
-Status Sequence::Update()
+Sequence::Status Sequence::Update()
 {
     Status s;
     for (auto& node : this->GetChildren()) {
         s = node->Tick();
-        if (s != SUCCESS) {
+        if (s != Status::SUCCESS) {
             return s;
         }
     }
 
     //ÅŒã‚Ìƒm[ƒh‚Ü‚Å¬Œ÷‚µ‚Ä‚È‚¢ê‡
-    return SUCCESS;
+    return Status::SUCCESS;
 }
 
 //--------------------------Selector--------------------------
@@ -123,34 +112,57 @@ void Selector::Initialize()
     currentIndex_ = 0;
 }
 
-Status Selector::Update()
+Selector::Status Selector::Update()
 {
     Status s;
     for (auto& node : this->GetChildren()) {
         s = node->Tick();
-        if (s != FAILURE) {
+        if (s != Status::FAILURE) {
             return s;
         }
     }
 
     //ÅŒã‚Ìƒm[ƒh‚Ü‚ÅŽ¸”s‚µ‚Ä‚È‚¢ê‡
-    return FAILURE;
+    return Status::FAILURE;
     
 }
 
-//--------------------------Selector--------------------------
+//--------------------------Condition--------------------------
+
+Condition::Condition(std::string name)
+    : TreeNode(name)
+{
+    type_ = NodeType::CONDITION_NODE;
+}
+
+Condition::~Condition()
+{
+}
+
+//--------------------------Root--------------------------
+
+Root::Root(std::string name)
+    : TreeNode(name), root_(nullptr)
+{
+}
+
+Root::~Root()
+{
+}
+
+Root::Status Root::Update()
+{
+    return root_->Tick();
+}
+
+//--------------------------Action--------------------------
 
 Action::Action(std::string name)
     : TreeNode(name)
 {
-    type_ = ACTION_NODE;
+    type_ = NodeType::ACTION_NODE;
 }
 
 Action::~Action()
 {
-}
-
-void BT::Action::ResetState()
-{
-    status_ = IDLE;
 }

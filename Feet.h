@@ -1,12 +1,13 @@
 #pragma once
 #include "EnemyBase.h"
 #include "StateBase.h"
-#include "BehaviourNode.h"
+
+class Root;
 
 class Feet : public EnemyBase
 {
     int hModel_;
-    BT::Sequence* seq1_;
+    Root* root_;
 
 public:
     Feet(GameObject* parent);
@@ -15,7 +16,4 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
-
-    void ApplyDamage(int da) override;
-
 };

@@ -133,6 +133,7 @@
     <ClCompile Include="CollisionMap.cpp" />
     <ClCompile Include="DamageCtrl.cpp" />
     <ClCompile Include="DropTable.cpp" />
+    <ClCompile Include="EnemyBase.cpp" />
     <ClCompile Include="EnemySpawnCtrl.cpp" />
     <ClCompile Include="EnemyUi.cpp" />
     <ClCompile Include="Engine\Audio.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="ExitUIManager.cpp" />
     <ClCompile Include="Feet.cpp" />
+    <ClCompile Include="FeetActionNode.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="MasterHand.cpp" />
     <ClCompile Include="NavigationAI.cpp" />
@@ -220,6 +222,7 @@
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="ExitUIManager.h" />
     <ClInclude Include="Feet.h" />
+    <ClInclude Include="FeetActionNode.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="MasterHand.h" />
     <ClInclude Include="NavigationAI.h" />

@@ -31,34 +31,43 @@ Status TreeNode::Tick()
 //--------------------------Composite--------------------------
 
 CompositeNode::CompositeNode(std::string name)
-    : TreeNode(name), childCount_(0)
+    : TreeNode(name), currentIndex_(0)
 {
     type_ = CONTROL_NODE;
 }
 
-void BT::CompositeNode::ResetState()
+CompositeNode::~CompositeNode()
+{
+}
+
+Status CompositeNode::Update()
+{
+    return Status();
+}
+
+void CompositeNode::ResetState()
 {
     status_ = IDLE;
-    for (unsigned int i = 0; i < childNodes_.size(); i++)
+    for (unsigned i = 0; i < childlenNodes_.size(); i++)
     {
-        childNodes_[i]->ResetState();
+        childlenNodes_[i]->ResetState();
     }
 }
 
-void CompositeNode::AvortChild(unsigned int num)
+void CompositeNode::AvortChildren(unsigned num)
 {
-    for (unsigned int j = num; j < childNodes_.size(); j++)
+    for (unsigned j = num; j < childlenNodes_.size(); j++)
     {
-        if (childNodes_[j]->GetType() == BT::CONDITION_NODE)
+        if (childlenNodes_[j]->GetType() == CONDITION_NODE)
         {
-            childNodes_[num]->ResetState();
+            childlenNodes_[num]->ResetState();
         }
         else
         {
-            if (childNodes_[j]->GetStatus() == RUNNING)
+            if (childlenNodes_[j]->GetStatus() == RUNNING)
             {
                 //SENDING HALT TO CHILD " << childNodes_[j]->get_name());
-                childNodes_[j]->Abort();
+                childlenNodes_[j]->Abort();
             }
             else
             {
@@ -68,24 +77,80 @@ void CompositeNode::AvortChild(unsigned int num)
     }
 }
 
-//--------------------------Selector--------------------------
+//--------------------------Sequence--------------------------
 
-Status Selector::Update()
+Sequence::Sequence(std::string name)
+    : CompositeNode(name)
 {
-    for (auto& node : this->GetChildren()) { if (node->Update() == true) { return SUCCESS; } } //true
-    return RUNNING; //false
 }
 
-//--------------------------Sequence--------------------------
+Sequence::~Sequence()
+{
+}
+
+void Sequence::Initialize()
+{
+    currentIndex_ = 0;
+}
 
 Status Sequence::Update()
 {
-    return Status();
+    Status s;
+    for (auto& node : this->GetChildren()) {
+        s = node->Tick();
+        if (s != SUCCESS) {
+            return s;
+        }
+    }
+
+    //ç≈å„ÇÃÉmÅ[ÉhÇ‹Ç≈ê¨å˜ÇµÇƒÇ»Ç¢èÍçá
+    return SUCCESS;
 }
 
-//--------------------------Root--------------------------
+//--------------------------Selector--------------------------
 
-Status Root::Update()
+Selector::Selector(std::string name)
+    : CompositeNode(name)
 {
-    return Status();
+}
+
+Selector::~Selector()
+{
+}
+
+void Selector::Initialize()
+{
+    currentIndex_ = 0;
+}
+
+Status Selector::Update()
+{
+    Status s;
+    for (auto& node : this->GetChildren()) {
+        s = node->Tick();
+        if (s != FAILURE) {
+            return s;
+        }
+    }
+
+    //ç≈å„ÇÃÉmÅ[ÉhÇ‹Ç≈é∏îsÇµÇƒÇ»Ç¢èÍçá
+    return FAILURE;
+    
+}
+
+//--------------------------Selector--------------------------
+
+Action::Action(std::string name)
+    : TreeNode(name)
+{
+    type_ = ACTION_NODE;
+}
+
+Action::~Action()
+{
+}
+
+void BT::Action::ResetState()
+{
+    status_ = IDLE;
 }

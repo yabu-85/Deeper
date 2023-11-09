@@ -69,6 +69,9 @@
     <Filter Include="BehaviorTree">
       <UniqueIdentifier>{8b35f917-7762-4bfa-a56f-85218def731f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Enemy\ActionNode">
+      <UniqueIdentifier>{91a656d3-7d28-4e32-b103-d838ec5ceef6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -224,6 +227,12 @@
     </ClCompile>
     <ClCompile Include="BehaviourNode.cpp">
       <Filter>BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBase.cpp">
+      <Filter>Enemy\EnemyBase</Filter>
+    </ClCompile>
+    <ClCompile Include="FeetActionNode.cpp">
+      <Filter>Enemy\ActionNode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -386,6 +395,9 @@
     </ClInclude>
     <ClInclude Include="BehaviourNode.h">
       <Filter>BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="FeetActionNode.h">
+      <Filter>Enemy\ActionNode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,22 +3,22 @@
 #include <string>
 
 namespace BT {
-    
-    enum NodeType { 
-        ACTION_NODE, 
-        CONDITION_NODE, 
-        CONTROL_NODE 
+
+    enum NodeType {
+        ACTION_NODE,
+        CONDITION_NODE,
+        CONTROL_NODE
     };
 
-    enum Status { 
-        INVALID, 
+    enum Status {
+        INVALID,
         SUCCESS,
-        FAILURE, 
+        FAILURE,
         IDLE,
         RUNNING,
         ABORTED
     };
-    
+
     //--------------------------Base--------------------------
 
     class TreeNode
@@ -52,26 +52,21 @@ namespace BT {
     {
     public:
         CompositeNode(std::string name);
-        virtual ~CompositeNode() = 0;
-        void AvortChild(unsigned int num);
+        virtual ~CompositeNode();
+        virtual Status Update() override;
+
+        void AvortChildren(unsigned num);
         void ResetState() override;
+        void Abort() override {};
 
-        void AddChild(TreeNode* child) { childNodes_.push_back(child); }
-        unsigned int GetChildrenNumber() { return static_cast<unsigned int>(childNodes_.size()); }
-        std::vector<TreeNode*> GetChildren() { return childNodes_; }
+        void AddChildren(TreeNode* child) { childlenNodes_.push_back(child); }
+        unsigned GetChildrenNumber() { return static_cast<unsigned>(childlenNodes_.size()); }
+        std::vector<TreeNode*> GetChildren() { return childlenNodes_; }
+        TreeNode* GetChild(int index) { return childlenNodes_.at(index); }
 
-    private:
-        std::vector<TreeNode*> childNodes_;
-        unsigned int childCount_;
-    };
-
-    //--------------------------Selector--------------------------
-
-    class Selector final : public CompositeNode
-    {
-    public:
-        virtual ~Selector() = default;
-        Status Update() override final;
+    protected:
+        std::vector<TreeNode*> childlenNodes_;
+        unsigned currentIndex_;
 
     };
 
@@ -80,17 +75,33 @@ namespace BT {
     class Sequence : public CompositeNode
     {
     public:
-        virtual ~Sequence() = default;
+        Sequence(std::string name);
+        virtual ~Sequence();
+        void Initialize() override;
         Status Update() override;
     };
 
-    //--------------------------Root--------------------------
+    //--------------------------Selector--------------------------
 
-    class Root : public Sequence
+    class Selector final : public CompositeNode
     {
     public:
-        virtual ~Root() = default;
+        Selector(std::string name);
+        virtual ~Selector();
+        void Initialize() override;
         Status Update() override final;
+    };
+
+    //--------------------------Action--------------------------
+
+    class Action : public TreeNode
+    {
+    public:
+        Action(std::string name);
+        virtual ~Action();
+        void ResetState() override;
+        void Abort() override {};
+
     };
 
 }

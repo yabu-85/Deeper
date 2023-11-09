@@ -1,11 +1,9 @@
 #include "Feet.h"
 #include "Engine/Model.h"
 #include "NavigationAI.h"
-#include "GameManager.h"
 #include "EnemyUi.h"
-#include "DropTable.h"
 #include "Engine/SphereCollider.h"
-#include "StateManager.h"
+#include "FeetActionNode.h"
 
 namespace {	
 	float moveSpeed = 0.2f;
@@ -32,28 +30,30 @@ void Feet::Initialize()
 	transform_.rotate_.y = -90.0f;
 	transform_.scale_ = XMFLOAT3(0.3f, 0.3f, 0.3f);
 	transform_.position_ = XMFLOAT3(50.0f + (float)(rand() % 10), 0.0f, 50.0f + (float)(rand() % 10));
-	
-	pStateManager_ = new StateManager(this);
-	pStateManager_->AddState(new FeetWait(pStateManager_));
-	pStateManager_->ChangeState("Wait");
-	pStateManager_->Initialize();
-
-	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize();
 
 	maxHp_ = 10;
 	hp_ = maxHp_;
 
 	SphereCollider* collision = new SphereCollider(XMFLOAT3(0, 1, 0), 1.9f);
 	AddCollider(collision);
+
+	pEnemyUi_ = new EnemyUi(this);
+	pEnemyUi_->Initialize();
+
+	seq1_ = new BT::Sequence("seq1");
+	BT::CompositeNode *con1 = new BT::CompositeNode("com1");
+	FeetMove* action1 = new FeetMove("act1");
+
+	seq1_->AddChildren(con1);
+
+
 }
 
 void Feet::Update()
 {
 	pEnemyUi_->Update();
 
-	return;
-	pStateManager_->Update();
+	seq1_->Tick();
 
 }
 
@@ -72,45 +72,11 @@ void Feet::Release()
 
 void Feet::ApplyDamage(int da)
 {
-	hp_ -= da;
-	pEnemyUi_->SetParcent((float)(hp_) / (float)(maxHp_));
-	if (hp_ <= 0) {
-		GameManager* gm = (GameManager*)FindObject("GameManager");
-		gm->GetDropTable()->DropItem(0, transform_.position_);
-		KillMe();
-	}
+
 
 }
 
-//---------------------------------state-------------------------------
-
-FeetWait::FeetWait(StateManager* owner)
-	:time_(0)
-{
-	owner_ = owner;
-	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
-}
-
-void FeetWait::Update()
-{
-	time_--;
-	if (time_ <= 0) owner_->ChangeState("Walk");
-}
-
-void FeetWait::OnEnter()
-{
-	time_ = 60;
-}
-
-//---------------------------------------------------------------------
-
-FeetWalk::FeetWalk(StateManager* owner)
-	:targetPos_(0.0f,0.0f,0.0f)
-{
-	owner_ = owner;
-	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
-}
-
+/*
 void FeetWalk::Update()
 {
 	XMFLOAT3 pos = pFeet_->GetPosition();
@@ -123,29 +89,4 @@ void FeetWalk::Update()
 
 	float length = XMVectorGetX(XMVector3Length(vTar - vPos));
 	if (length <= moveSpeed) owner_->ChangeState("Wait");
-}
-
-void FeetWalk::OnEnter()
-{
-	if (rand() % 2 == 0) return; //‚Ä‚«‚Æ‚¤‚ç‚ñ‚Ç
-
-	GameManager* pGameManager = (GameManager*)pFeet_->FindObject("GameManager");
-	NavigationAI* pNavigationAI = pGameManager->GetNavigationAI();
-	pNavigationAI->Navi(targetPos_);
-}
-
-//---------------------------------------------------------------------
-
-FeetDead::FeetDead(StateManager* owner)
-{
-	owner_ = owner;
-	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
-}
-
-void FeetDead::Update()
-{
-}
-
-void FeetDead::OnEnter()
-{
-}
+}*/

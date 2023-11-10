@@ -165,6 +165,7 @@
     <ClCompile Include="FeetActionNode.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="MasterHand.cpp" />
+    <ClCompile Include="MoveAction.cpp" />
     <ClCompile Include="NavigationAI.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerCommand.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="FeetActionNode.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="MasterHand.h" />
+    <ClInclude Include="MoveAction.h" />
     <ClInclude Include="NavigationAI.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerCommand.h" />

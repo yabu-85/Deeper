@@ -1,10 +1,7 @@
 #include "FeetActionNode.h"
 #include "Feet.h"
 
-FeetMove::FeetMove(std::string name, Feet* owner)
-	: Action(name), pFeet_(owner)
-{
-}
+FeetMove::FeetMove(std::string name, Feet* owner) : Action(name), pFeet_(owner) {}
 
 FeetMove::Status FeetMove::Update()
 {
@@ -15,10 +12,7 @@ FeetMove::Status FeetMove::Update()
 
 //--------------------------Jump--------------------------
 
-FeetJump::FeetJump(std::string name, Feet* owner)
-	: Action(name), pFeet_(owner)
-{
-}
+FeetJump::FeetJump(std::string name, Feet* owner) : Action(name), pFeet_(owner) {}
 
 FeetJump::Status FeetJump::Update()
 {
@@ -28,10 +22,7 @@ FeetJump::Status FeetJump::Update()
 
 //--------------------------FeetCondition1--------------------------
 
-FeetCondition1::FeetCondition1(std::string name, Feet* owner)
-	: Condition(name), pFeet_(owner)
-{
-}
+FeetCondition1::FeetCondition1(std::string name, Feet* owner) : Condition(name), pFeet_(owner) {}
 
 FeetCondition1::Status FeetCondition1::Update()
 {

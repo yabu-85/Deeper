@@ -72,6 +72,12 @@
     <Filter Include="Enemy\ActionNode">
       <UniqueIdentifier>{91a656d3-7d28-4e32-b103-d838ec5ceef6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BehaviorTree\Base">
+      <UniqueIdentifier>{47a31af1-8999-4e87-be2a-9c790f8040b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BehaviorTree\ActionNode">
+      <UniqueIdentifier>{7aa981cb-241b-4e71-a014-851dc0e64640}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -225,14 +231,17 @@
     <ClCompile Include="BulletBase.cpp">
       <Filter>Weapon\Base</Filter>
     </ClCompile>
-    <ClCompile Include="BehaviourNode.cpp">
-      <Filter>BehaviorTree</Filter>
-    </ClCompile>
     <ClCompile Include="EnemyBase.cpp">
       <Filter>Enemy\EnemyBase</Filter>
     </ClCompile>
     <ClCompile Include="FeetActionNode.cpp">
       <Filter>Enemy\ActionNode</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviourNode.cpp">
+      <Filter>BehaviorTree\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveAction.cpp">
+      <Filter>BehaviorTree\ActionNode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -393,11 +402,14 @@
     <ClInclude Include="BulletBase.h">
       <Filter>Weapon\Base</Filter>
     </ClInclude>
-    <ClInclude Include="BehaviourNode.h">
-      <Filter>BehaviorTree</Filter>
-    </ClInclude>
     <ClInclude Include="FeetActionNode.h">
       <Filter>Enemy\ActionNode</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviourNode.h">
+      <Filter>BehaviorTree\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveAction.h">
+      <Filter>BehaviorTree\ActionNode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

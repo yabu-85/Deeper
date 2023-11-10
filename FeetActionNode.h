@@ -13,10 +13,16 @@ public:
 
 class FeetJump : public Action
 {
-	int time_;
 	Feet* pFeet_;
 public:
 	FeetJump(std::string name, Feet* owner);
 	Status Update() override;
-	void Initialize() override;
+};
+
+class FeetCondition1 : public Condition
+{
+	Feet* pFeet_;
+public:
+	FeetCondition1(std::string name, Feet* owner);
+	Status Update() override;
 };

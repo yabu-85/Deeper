@@ -20,6 +20,7 @@ public:
 	void Initialize(GameManager* parent);
 	void Release();
 	
+	void KillEnemy(EnemyBase* enemy);
 	int SpawnEnemy(int type);
 	std::vector<EnemyBase*>& GetAllEnemy();
 	void CleanUpEnemyList();

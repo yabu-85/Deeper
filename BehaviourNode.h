@@ -91,6 +91,7 @@ public:
 };
 
 //--------------------------Condition--------------------------
+//Decoletar‚Ì–ðŠ„
 
 class Condition : public TreeNode
 {

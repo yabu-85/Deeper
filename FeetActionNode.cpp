@@ -16,24 +16,27 @@ FeetMove::Status FeetMove::Update()
 //--------------------------Jump--------------------------
 
 FeetJump::FeetJump(std::string name, Feet* owner)
-	: Action(name), pFeet_(owner), time_(0)
+	: Action(name), pFeet_(owner)
 {
 }
 
 FeetJump::Status FeetJump::Update()
 {
-	time_++;
-	XMFLOAT3 pos = pFeet_->GetPosition();
-	pFeet_->SetPosition(XMFLOAT3(pos.x, pos.y + 0.1f, pos.z));
-	if (time_ >= 60) {
-		pFeet_->SetPosition(XMFLOAT3(50.0f, 0.0f, 50.0f));
-		return Status::INVALID;
-	}
-
-	return Status::RUNNING;
+	pFeet_->SetPosition(XMFLOAT3(50.0f, 0.0f, 50.0f));
+	return Status::SUCCESS;
 }
 
-void FeetJump::Initialize()
+//--------------------------FeetCondition1--------------------------
+
+FeetCondition1::FeetCondition1(std::string name, Feet* owner)
+	: Condition(name), pFeet_(owner)
 {
-	time_ = 0;
+}
+
+FeetCondition1::Status FeetCondition1::Update()
+{
+	if (rand() % 600 == 0) {
+		return Status::SUCCESS;
+	}
+	return Status::FAILURE;
 }

@@ -47,7 +47,9 @@ void Feet::Initialize()
 
 	FeetMove* action1 = new FeetMove("act1", this);
 	FeetJump* action2 = new FeetJump("act2", this);
+	FeetCondition1* condition1 = new FeetCondition1("cnd1", this);
 	seq1->AddChildren(action1);
+	seq1->AddChildren(condition1);
 	seq1->AddChildren(action2);
 
 }

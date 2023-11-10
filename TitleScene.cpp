@@ -16,6 +16,7 @@ void TitleScene::Initialize()
 	AudioManager::Initialize();
 
 	//デバッグ用
+	//これPlayerSceneから戻るやつ使うならfalse にしないとPlayに戻れない
 	if (true) {
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_PLAY);
@@ -38,6 +39,12 @@ void TitleScene::Initialize()
 
 void TitleScene::Update()
 {
+	if (Input::IsKeyDown(DIK_X)) {
+		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		pSceneManager->ChangeScene(SCENE_ID_PLAY);
+		return;
+	}
+
 	if(!pUIManagerList_.empty())
 	pUIManagerList_.back()->Update();
 

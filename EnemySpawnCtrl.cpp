@@ -13,6 +13,15 @@ void EnemySpawnCtrl::Release()
 	enemyList_.clear();
 }
 
+void EnemySpawnCtrl::AllKillEnemy()
+{
+	for (auto it = enemyList_.begin(); it != enemyList_.end();) {
+		(*it)->KillMe();
+		it = enemyList_.erase(it);
+	}
+	enemyList_.clear();
+}
+
 void EnemySpawnCtrl::KillEnemy(EnemyBase* enemy)
 {
 	for (auto it = enemyList_.begin(); it != enemyList_.end();) {

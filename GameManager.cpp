@@ -8,12 +8,14 @@
 #include "WeaponObjectManager.h"
 #include "DropTable.h"
 #include "Engine/GameObject.h"
+#include "Engine/Global.h"
 
 #include "Engine/Input.h"
 
 namespace GameManager {
 	Player* pPlayer_ = nullptr;
 	Stage* pStage_ = nullptr;
+
 	EnemySpawnCtrl* pEnemySpawnCtrl_ = nullptr;
 	NavigationAI* pNavigationAI_ = nullptr;
 	DamageCtrl* pDamageCtrl_ = nullptr;
@@ -25,22 +27,19 @@ namespace GameManager {
 	{
 		pEnemySpawnCtrl_ = new EnemySpawnCtrl;
 		pEnemySpawnCtrl_->Initialize(parent);
-
 		pDamageCtrl_ = new DamageCtrl(pEnemySpawnCtrl_);
 
 		pStage_ = Instantiate<Stage>(parent);
-
 		pPlayer_ = Instantiate<Player>(parent);
 		pPlayer_->SetPosition(pStage_->GetPlayerStartPos());
-
+		pParent_ = parent;
 		Instantiate<CollisionMap>(parent);
 
-		pDropTable_ = new DropTable();
-
-		pNavigationAI_ = new NavigationAI(pStage_);
 		pWeaponObjectManager_ = new WeaponObjectManager();
+	
+		pDropTable_ = new DropTable();
+		pNavigationAI_ = new NavigationAI(pStage_);
 
-		pParent_ = parent;
 	}
 
 	void GameManager::Update()
@@ -49,10 +48,16 @@ namespace GameManager {
 		if (Input::IsKeyDown(DIK_M)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND);
 		if (Input::IsKeyDown(DIK_N)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET);
 		if (Input::IsKeyDown(DIK_K)) pWeaponObjectManager_->AllKillWeaponObject();
+		if (Input::IsKeyDown(DIK_M)) pEnemySpawnCtrl_->AllKillEnemy();
 	}
 
-	void GameManager::Release() { 
+	void GameManager::Release() {
 		pEnemySpawnCtrl_->Release(); 
+		SAFE_DELETE(pEnemySpawnCtrl_);
+		SAFE_DELETE(pDamageCtrl_);
+		SAFE_DELETE(pDropTable_);
+		SAFE_DELETE(pNavigationAI_);
+		SAFE_DELETE(pWeaponObjectManager_);
 	}
 
 	EnemySpawnCtrl* GetEnemySpawnCtrl() { return pEnemySpawnCtrl_; }
@@ -61,6 +66,5 @@ namespace GameManager {
 	WeaponObjectManager* GetWeaponObjectManager() { return pWeaponObjectManager_; }
 	DropTable* GetDropTable() { return pDropTable_; }
 	GameObject* GetParent() { return pParent_; }
-
 }
 

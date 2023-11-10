@@ -21,7 +21,7 @@ void DropTable::DropItem(int type, XMFLOAT3 pos)
 
 	if (rand() % 100 < (int)table_[type].weaponParcent_) {
 		WeaponObjectManager* ma = GameManager::GetWeaponObjectManager();
-		ma->AddWeaponObject((WEAPON_TYPE)type, pos);
+		ma->AddWeaponObject((WeaponObjectManager::WEAPON_TYPE)type, pos);
 	}
 
 }

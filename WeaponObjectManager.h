@@ -6,12 +6,6 @@ using namespace DirectX;
 class WeaponObject;
 class WeaponBase;
 
-enum WEAPON_TYPE {
-	WT_SUB1 = 0,
-	WT_SUB2,
-	WT_MAX,
-};
-
 class WeaponObjectManager
 {
 	float range_;							//Žæ“¾‚Å‚«‚é”ÍˆÍ
@@ -19,7 +13,14 @@ class WeaponObjectManager
 	std::vector<WeaponObject* > objctList_;	//WeaponObject‚ÌƒŠƒXƒg
 
 public:
+	enum class WEAPON_TYPE {
+		WT_SUB1 = 0,
+		WT_SUB2,
+		WT_MAX,
+	};
+
 	WeaponObjectManager();
+	~WeaponObjectManager();
 
 	void AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos);
 	void RemoveWeaponObject(WeaponObject* obj);

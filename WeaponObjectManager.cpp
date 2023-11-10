@@ -9,17 +9,22 @@ WeaponObjectManager::WeaponObjectManager()
 	: range_(0), nearestObject_(nullptr)
 {
 	range_ = 3.0f;
-	AddWeaponObject(WT_SUB1, XMFLOAT3(60.0f, 0.0f, 60.0f));
+	AddWeaponObject(WEAPON_TYPE::WT_SUB1, XMFLOAT3(60.0f, 0.0f, 60.0f));
+}
+
+WeaponObjectManager::~WeaponObjectManager()
+{
+	AllKillWeaponObject();
 }
 
 void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos)
 {
-	std::string fileName[WT_MAX] = { "Hand", "RedBox" };
+	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "Hand", "RedBox" };
 
 	WeaponObject* weapon = Instantiate<WeaponObject>(GameManager::GetParent());
 	weapon->SetPosition(pos);
-	weapon->LoadModel(fileName[type]);
-	weapon->SetType(type);
+	weapon->LoadModel(fileName[(int)type]);
+	weapon->SetType(int(type));
 	objctList_.push_back(weapon);
 }
 
@@ -74,14 +79,14 @@ bool WeaponObjectManager::IsInPlayerRange()
 
 WeaponBase* WeaponObjectManager::GetNearestWeapon()
 {
-	if (nearestObject_->GetType() == WT_SUB1) {
+	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_SUB1) {
 		RemoveWeaponObject(nearestObject_);
 		nearestObject_->KillMe();
 		nearestObject_ = nullptr;
 		return Instantiate<TestWeaponSub>((Player*)GameManager::GetParent()->FindObject("Player"));
 	}
 
-	if (nearestObject_->GetType() == WT_SUB2) {
+	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_SUB2) {
 		RemoveWeaponObject(nearestObject_);
 		nearestObject_->KillMe();
 		nearestObject_ = nullptr;

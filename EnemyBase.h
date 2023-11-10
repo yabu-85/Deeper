@@ -12,9 +12,9 @@ class EnemyBase : public GameObject
 protected:
     int hp_;
     int maxHp_;
-    EnemyUi* pEnemyUi_;
+    XMFLOAT3 targetPos_;
     ENEMY_TYPE type_;
-    StateManager* pStateManager_;
+    EnemyUi* pEnemyUi_;
 
 public:
     EnemyBase(GameObject* parent);
@@ -26,5 +26,6 @@ public:
 
     virtual void ApplyDamage(int da);
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
+    XMFLOAT3 GetTargetPos() { return targetPos_; }
 };
 

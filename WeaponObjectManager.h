@@ -4,7 +4,6 @@
 
 using namespace DirectX;
 class WeaponObject;
-class GameManager;
 class WeaponBase;
 
 enum WEAPON_TYPE {
@@ -18,10 +17,9 @@ class WeaponObjectManager
 	float range_;							//Žæ“¾‚Å‚«‚é”ÍˆÍ
 	WeaponObject* nearestObject_;			//ˆê”Ô‹ß‚¢WeaponObject
 	std::vector<WeaponObject* > objctList_;	//WeaponObject‚ÌƒŠƒXƒg
-	GameManager* pParent_;					//GameManager
 
 public:
-	WeaponObjectManager(GameManager* parent);
+	WeaponObjectManager();
 
 	void AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos);
 	void RemoveWeaponObject(WeaponObject* obj);

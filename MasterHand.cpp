@@ -52,8 +52,7 @@ void MasterHand::Update()
 	pEnemyUi_->Update();
 
 	if (lifeTime_ >= killTime) {
-		GameManager* gm = (GameManager*)FindObject("GameManager");
-		gm->GetDropTable()->DropItem(0, transform_.position_);
+		GameManager::GetDropTable()->DropItem(0, transform_.position_);
 		KillMe();
 		return;
 	}

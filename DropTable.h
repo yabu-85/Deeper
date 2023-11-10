@@ -3,7 +3,6 @@
 #include "EnemySpawnCtrl.h"
 
 using namespace DirectX;
-class GameManager;
 
 class DropTable
 {
@@ -13,10 +12,8 @@ class DropTable
 		unsigned healingItemParcent_;	//0Å`100
 	} table_[ENEMY_TYPE::ENEMY_MAX];
 
-	GameManager* pGameManager_;
-
 public:
-	DropTable(GameManager* parent);
+	DropTable();
 	void DropItem(int type, XMFLOAT3 pos);
 };
 

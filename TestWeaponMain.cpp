@@ -34,8 +34,7 @@ void TestWeaponMain::Initialize()
     assert(hModel_ >= 0);
 
     pPlayer_ = (Player*)GetParent();
-    GameManager* pGameManager = (GameManager*)FindObject("GameManager");
-    pDamageCtrl_ = pGameManager->GetDamageCtrl();
+    pDamageCtrl_ = GameManager::GetDamageCtrl();
     
     line_ = new LineCollider(XMFLOAT3(), XMFLOAT3(), 10.0f);
     AddCollider(line_);

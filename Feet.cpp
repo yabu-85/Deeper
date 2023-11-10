@@ -5,6 +5,9 @@
 #include "Engine/SphereCollider.h"
 #include "FeetActionNode.h"
 #include "BehaviourNode.h"
+#include "MoveAction.h"
+#include "Engine/Global.h"
+#include "Player.h"
 
 namespace {	
 	float moveSpeed = 0.2f;
@@ -41,22 +44,25 @@ void Feet::Initialize()
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize();
 
-	root_ = new Root("root");
-	Sequence* seq1 = new Sequence("seq1");
+	root_ = new Root();
+	Sequence* seq1 = new Sequence();
+	MoveTarget* action1 = new MoveTarget(this, 0.1f, 2.0f);
+	FeetJump* action2 = new FeetJump(this);
+	FeetCondition1* condition1 = new FeetCondition1(this);
+	
 	root_->SetRootNode(seq1);
-
-	FeetMove* action1 = new FeetMove("act1", this);
-	FeetJump* action2 = new FeetJump("act2", this);
-	FeetCondition1* condition1 = new FeetCondition1("cnd1", this);
 	seq1->AddChildren(action1);
 	seq1->AddChildren(condition1);
 	seq1->AddChildren(action2);
-
 }
 
 void Feet::Update()
 {
 	pEnemyUi_->Update();
+
+	Player* pPlayer = (Player*)FindObject("Player");
+	targetPos_ = pPlayer->GetPosition();
+
 	root_->Update();
 }
 
@@ -70,19 +76,5 @@ void Feet::Draw()
 
 void Feet::Release()
 {
+	SAFE_DELETE(root_);
 }
-
-/*
-void FeetWalk::Update()
-{
-	XMFLOAT3 pos = pFeet_->GetPosition();
-	XMVECTOR vPos = XMLoadFloat3(&pos);
-	XMVECTOR vTar = XMLoadFloat3(&targetPos_);
-	XMVECTOR vMove = vTar - vPos;
-	vMove = XMVector3Normalize(vMove) * moveSpeed;
-	XMStoreFloat3(&pos, vPos + vMove);
-	pFeet_->SetPosition(pos);
-
-	float length = XMVectorGetX(XMVector3Length(vTar - vPos));
-	if (length <= moveSpeed) owner_->ChangeState("Wait");
-}*/

@@ -28,8 +28,7 @@ void TestBullet::Initialize()
 	collision_ = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
 	AddCollider(collision_);
 
-	GameManager* pGameManager = (GameManager*)FindObject("GameManager");
-	pDamageCtrl_ = pGameManager->GetDamageCtrl();
+	pDamageCtrl_ = GameManager::GetDamageCtrl();
 
 	damage_ = 1;
 }

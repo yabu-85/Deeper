@@ -1,11 +1,6 @@
 #include "PlayScene.h"
 #include "GameManager.h"
 
-namespace {
-	GameManager* gm = nullptr;
-
-}
-
 PlayScene::PlayScene(GameObject* parent)
 	: GameObject(parent, "PlayScene")
 {
@@ -13,12 +8,14 @@ PlayScene::PlayScene(GameObject* parent)
 
 void PlayScene::Initialize()
 {
-	gm = Instantiate<GameManager>(this);
+	GameManager::Initialize(this);
 
 }
 
 void PlayScene::Update()
 {
+	GameManager::Update();
+
 }
 
 void PlayScene::Draw()

@@ -134,8 +134,7 @@ void Aim::SetTargetEnemy()
         return;
     }
 
-    GameManager* pGM = (GameManager*)FindObject("GameManager");
-    EnemySpawnCtrl* pEnemySpawnCtrl = pGM->GetEnemySpawnCtrl();
+    EnemySpawnCtrl* pEnemySpawnCtrl = GameManager::GetEnemySpawnCtrl();
     std::vector<EnemyBase*> eList = pEnemySpawnCtrl->GetAllEnemy();
 
     // プレイヤーの視線方向を計算

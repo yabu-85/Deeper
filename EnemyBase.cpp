@@ -5,7 +5,7 @@
 #include "EnemySpawnCtrl.h"
 
 EnemyBase::EnemyBase(GameObject* parent)
-	: GameObject(parent), pEnemyUi_(nullptr), hp_(0), maxHp_(0), type_(ENEMY_MAX), pStateManager_(nullptr)
+	: GameObject(parent), pEnemyUi_(nullptr), hp_(0), maxHp_(0), type_(ENEMY_MAX)
 {
 }
 
@@ -14,8 +14,7 @@ void EnemyBase::ApplyDamage(int da)
 	hp_ -= da;
 	pEnemyUi_->SetParcent((float)(hp_) / (float)(maxHp_));
 	if (hp_ <= 0) {
-		GameManager* gm = (GameManager*)FindObject("GameManager");
-		gm->GetDropTable()->DropItem(0, transform_.position_);
-		gm->GetEnemySpawnCtrl()->KillEnemy(this);
+		GameManager::GetDropTable()->DropItem(0, transform_.position_);
+		GameManager::GetEnemySpawnCtrl()->KillEnemy(this);
 	}
 }

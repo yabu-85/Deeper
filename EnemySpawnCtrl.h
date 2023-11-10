@@ -2,7 +2,7 @@
 #include <vector>
 
 class EnemyBase;
-class GameManager;
+class GameObject;
 
 enum ENEMY_TYPE {
 	ENEMY_MASTERHAND = 0,
@@ -14,10 +14,10 @@ enum ENEMY_TYPE {
 class EnemySpawnCtrl
 {
 	std::vector<EnemyBase*> enemyList_;
-	GameManager* pParent_;
+	GameObject* pParent_;
 
 public:
-	void Initialize(GameManager* parent);
+	void Initialize(GameObject* parent);
 	void Release();
 	
 	void KillEnemy(EnemyBase* enemy);

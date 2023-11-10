@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <string>
 
 //--------------------------Base--------------------------
 
@@ -22,15 +21,12 @@ public:
         //TERMINATE     //終了
     };
 
-private:
-    std::string name_;
-
 protected:
     Status status_;
     NodeType type_;
 
 public:
-    TreeNode(std::string name);
+    TreeNode();
     virtual ~TreeNode();
 
     virtual void Initialize() {}
@@ -45,14 +41,14 @@ public:
 };
 
 //--------------------------Composite--------------------------
+
 //SequenceとSelectorを実装するための抽象クラス
 //TreeNodeを継承したタイプを持つことができる
-
 class CompositeNode : public TreeNode
 {
 public:
-    CompositeNode(std::string name);
-    virtual ~CompositeNode();
+    CompositeNode();
+    virtual ~CompositeNode() override;
     virtual Status Update() override = 0;
     virtual void ResetState() override;
 
@@ -65,7 +61,6 @@ public:
 protected:
     std::vector<TreeNode*> childlenNodes_;
     unsigned currentIndex_;
-
 };
 
 //--------------------------Sequence--------------------------
@@ -73,31 +68,31 @@ protected:
 class Sequence : public CompositeNode
 {
 public:
-    Sequence(std::string name);
-    virtual ~Sequence();
+    Sequence();
+    virtual ~Sequence() override;
     void Initialize() override;
     Status Update() override;
 };
 
 //--------------------------Selector--------------------------
 
-class Selector final : public CompositeNode
+class Selector : public CompositeNode
 {
 public:
-    Selector(std::string name);
-    virtual ~Selector();
+    Selector();
+    virtual ~Selector() override;
     void Initialize() override;
-    Status Update() override final;
+    Status Update() override;
 };
 
 //--------------------------Condition--------------------------
-//Decoletarの役割
 
+//Decoletarの役割
 class Condition : public TreeNode
 {
 public:
-    Condition(std::string name);
-    ~Condition();
+    Condition();
+    virtual ~Condition() override;
     virtual Status Update() override = 0;
 };
 
@@ -107,7 +102,7 @@ class Root : public TreeNode
 {
     TreeNode* root_;
 public:
-    Root(std::string name);
+    Root();
     ~Root() override;
     Status Update() override;
     void SetRootNode(TreeNode* root) { root_ = root; }
@@ -118,7 +113,7 @@ public:
 class Action : public TreeNode
 {
 public:
-    Action(std::string name);
+    Action();
     virtual ~Action();
     virtual Status Update() override = 0;
 };

@@ -3,15 +3,14 @@
 #include <DirectXMath.h>
 
 using namespace DirectX;
-class GameObject;
+class EnemyBase;
 
-class MoveAction : public Action
+class MoveTarget : public Action
 {
-	float speed_;
-	GameObject* owner_;
+	float speed_;		//移動スピード
+	float range_;		//移動終了判定の
+	EnemyBase* owner_;
 public:
-	MoveAction(std::string name, GameObject* owner);
+	MoveTarget(EnemyBase* owner, float speed, float range);
 	Status Update() override;
-	void SetSpeed(float speed) { speed_ = speed; }
 };
-

@@ -3,7 +3,7 @@
 #include "Feet.h"
 #include "GameManager.h"
 
-void EnemySpawnCtrl::Initialize(GameManager* parent)
+void EnemySpawnCtrl::Initialize(GameObject* parent)
 {
 	pParent_ = parent;
 }

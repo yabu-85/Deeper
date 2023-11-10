@@ -1,18 +1,26 @@
 #include "MoveAction.h"
-#include "Engine/GameObject.h"
+#include "EnemyBase.h"
 
-MoveAction::MoveAction(std::string name, GameObject* owner)	: Action(name), owner_(owner), speed_(1.0f) {}
+MoveTarget::MoveTarget(EnemyBase* owner, float speed, float range) : Action(), owner_(owner), speed_(speed), range_(range) {}
 
-MoveAction::Status MoveAction::Update()
+MoveTarget::Status MoveTarget::Update()
 {
 	XMFLOAT3 pos = owner_->GetPosition();
 	XMVECTOR vPos = XMLoadFloat3(&pos);
-	XMFLOAT3 targetPos = XMFLOAT3();
+	XMFLOAT3 targetPos = owner_->GetTargetPos();
 	XMVECTOR vTar = XMLoadFloat3(&targetPos);
 	XMVECTOR vMove = vTar - vPos;
+
 	vMove = XMVector3Normalize(vMove) * speed_;
+
+	//ëñÇËèIÇÌÇ¡ÇΩ
+	float length = XMVectorGetX(XMVector3Length(vTar - vPos));
+	if (length <= range_) {
+		return Status::SUCCESS;
+	}
+
 	XMStoreFloat3(&pos, vPos + vMove);
 	owner_->SetPosition(pos);
 
-	return Status::SUCCESS;
+	return Status::RUNNING;
 }

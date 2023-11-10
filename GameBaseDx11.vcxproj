@@ -173,6 +173,7 @@
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StateManager.cpp" />
+    <ClCompile Include="TargetConditionCount.cpp" />
     <ClCompile Include="TestBullet.cpp" />
     <ClCompile Include="TestWeaponMain.cpp" />
     <ClCompile Include="TestWeaponSub.cpp" />
@@ -235,6 +236,7 @@
     <ClInclude Include="Stage.h" />
     <ClInclude Include="StateBase.h" />
     <ClInclude Include="StateManager.h" />
+    <ClInclude Include="TargetConditionCount.h" />
     <ClInclude Include="TestBullet.h" />
     <ClInclude Include="TestWeaponMain.h" />
     <ClInclude Include="TestWeaponSub.h" />

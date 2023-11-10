@@ -42,8 +42,7 @@ void PlayerWait::Update()
 		return;
 	}
 	if (pPlayer_->GetCommand()->CmdWeaponSelect()) {
-		GameManager* pGameManager = (GameManager*)pPlayer_->FindObject("GameManager");
-		if (pGameManager->GetWeaponObjectManager()->IsInPlayerRange()) {
+		if (GameManager::GetWeaponObjectManager()->IsInPlayerRange()) {
 			owner_->ChangeState("Change");
 			return;
 		}
@@ -85,8 +84,7 @@ void PlayerWalk::Update()
 		return;
 	}
 	if (pPlayer_->GetCommand()->CmdWeaponSelect()) {
-		GameManager* pGameManager = (GameManager*)pPlayer_->FindObject("GameManager");
-		if (pGameManager->GetWeaponObjectManager()->IsInPlayerRange()) {
+		if (GameManager::GetWeaponObjectManager()->IsInPlayerRange()) {
 			owner_->ChangeState("Change");
 			return;
 		}
@@ -112,8 +110,7 @@ void PlayerWeaponChange::Update()
 	if (pPlayer_->GetCommand()->CmdWeaponSelect()) {
 		time_++;
 		if (time_ > changeTime_) {
-			GameManager* pGameManager = (GameManager*)pPlayer_->FindObject("GameManager");
-			WeaponBase* weapon = pGameManager->GetWeaponObjectManager()->GetNearestWeapon();
+			WeaponBase* weapon = GameManager::GetWeaponObjectManager()->GetNearestWeapon();
 			if (weapon) {
 				pPlayer_->SetWeapon(weapon);
 			}

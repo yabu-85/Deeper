@@ -1,9 +1,9 @@
 #include "BehaviourNode.h"
+#include <algorithm>  // for_each
 
 //--------------------------Base--------------------------
 
-TreeNode::TreeNode(std::string name)
-    : name_(name), status_(Status::INVALID), type_(NodeType::ACTION_NODE)
+TreeNode::TreeNode() : status_(Status::INVALID), type_(NodeType::ACTION_NODE)
 {
 }
 
@@ -29,14 +29,16 @@ TreeNode::Status TreeNode::Tick()
 
 //--------------------------Composite--------------------------
 
-CompositeNode::CompositeNode(std::string name)
-    : TreeNode(name), currentIndex_(0)
+CompositeNode::CompositeNode() : TreeNode(), currentIndex_(0)
 {
     type_ = NodeType::CONTROL_NODE;
 }
 
 CompositeNode::~CompositeNode()
 {
+    for_each(childlenNodes_.begin(), childlenNodes_.end(), [](TreeNode* node) {
+        delete node;
+    });
 }
 
 void CompositeNode::ResetState()
@@ -68,8 +70,7 @@ void CompositeNode::TerminateChildren(unsigned num)
 
 //--------------------------Sequence--------------------------
 
-Sequence::Sequence(std::string name)
-    : CompositeNode(name)
+Sequence::Sequence() : CompositeNode()
 {
 }
 
@@ -98,8 +99,7 @@ Sequence::Status Sequence::Update()
 
 //--------------------------Selector--------------------------
 
-Selector::Selector(std::string name)
-    : CompositeNode(name)
+Selector::Selector() : CompositeNode()
 {
 }
 
@@ -129,8 +129,7 @@ Selector::Status Selector::Update()
 
 //--------------------------Condition--------------------------
 
-Condition::Condition(std::string name)
-    : TreeNode(name)
+Condition::Condition() : TreeNode()
 {
     type_ = NodeType::CONDITION_NODE;
 }
@@ -141,8 +140,7 @@ Condition::~Condition()
 
 //--------------------------Root--------------------------
 
-Root::Root(std::string name)
-    : TreeNode(name), root_(nullptr)
+Root::Root() : TreeNode(), root_(nullptr)
 {
 }
 
@@ -157,8 +155,7 @@ Root::Status Root::Update()
 
 //--------------------------Action--------------------------
 
-Action::Action(std::string name)
-    : TreeNode(name)
+Action::Action() : TreeNode()
 {
     type_ = NodeType::ACTION_NODE;
 }

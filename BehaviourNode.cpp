@@ -129,13 +129,50 @@ Selector::Status Selector::Update()
 
 //--------------------------Condition--------------------------
 
-Condition::Condition() : TreeNode()
+Condition::Condition(TreeNode* child) : TreeNode(), child_(child)
 {
     type_ = NodeType::CONDITION_NODE;
 }
 
 Condition::~Condition()
 {
+}
+
+//----------Succedder----------
+Succeeder::Succeeder(TreeNode* child) : Condition(child)
+{
+}
+
+Succeeder::Status Succeeder::Update()
+{
+    child_->Tick();
+    return Status::SUCCESS;
+}
+
+//----------Failer----------
+Failer::Failer(TreeNode* child) : Condition(child)
+{
+}
+
+Failer::Status Failer::Update()
+{
+    child_->Tick();
+    return Status::FAILURE;
+}
+
+//----------Inverter----------
+Inverter::Inverter(TreeNode* child) : Condition(child)
+{
+}
+
+Inverter::Status Inverter::Update()
+{
+    auto s = child_->Tick();
+
+    if (s == Status::SUCCESS) return Status::FAILURE;
+    else if (s == Status::FAILURE) return Status::SUCCESS;
+
+    return s;
 }
 
 //--------------------------Root--------------------------

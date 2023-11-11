@@ -13,12 +13,12 @@ FeetJump::Status FeetJump::Update()
 
 //--------------------------FeetCondition1--------------------------
 
-FeetCondition1::FeetCondition1(Feet* owner) : Condition(), pFeet_(owner) {}
+FeetCondition1::FeetCondition1(Feet* owner, TreeNode* child) : Condition(child), pFeet_(owner) {}
 
 FeetCondition1::Status FeetCondition1::Update()
 {
 	if (rand() % 600 == 0) {
-		return Status::SUCCESS;
+		return child_->Tick();
 	}
 	return Status::FAILURE;
 }

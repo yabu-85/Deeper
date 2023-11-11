@@ -228,9 +228,6 @@
     <ClCompile Include="WeaponObject.cpp">
       <Filter>09Weapon\Object</Filter>
     </ClCompile>
-    <ClCompile Include="DropTable.cpp">
-      <Filter>08Enemy\EnemyBase</Filter>
-    </ClCompile>
     <ClCompile Include="BulletBase.cpp">
       <Filter>09Weapon\Base</Filter>
     </ClCompile>
@@ -248,6 +245,9 @@
     </ClCompile>
     <ClCompile Include="TargetConditionCount.cpp">
       <Filter>06BehaviorTree\ConditionNode</Filter>
+    </ClCompile>
+    <ClCompile Include="DropTable.cpp">
+      <Filter>08Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -402,9 +402,6 @@
     <ClInclude Include="WeaponObjectManager.h">
       <Filter>09Weapon\Object</Filter>
     </ClInclude>
-    <ClInclude Include="DropTable.h">
-      <Filter>08Enemy\EnemyBase</Filter>
-    </ClInclude>
     <ClInclude Include="BulletBase.h">
       <Filter>09Weapon\Base</Filter>
     </ClInclude>
@@ -419,6 +416,9 @@
     </ClInclude>
     <ClInclude Include="TargetConditionCount.h">
       <Filter>06BehaviorTree\ConditionNode</Filter>
+    </ClInclude>
+    <ClInclude Include="DropTable.h">
+      <Filter>08Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

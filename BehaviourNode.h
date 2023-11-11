@@ -90,10 +90,36 @@ public:
 //Decoletarの役割
 class Condition : public TreeNode
 {
+protected:
+    TreeNode* child_;
 public:
-    Condition();
+    Condition(TreeNode* child);
     virtual ~Condition() override;
     virtual Status Update() override = 0;
+};
+
+//必ずSUCCESSを返す
+class Succeeder : public Condition
+{
+public:
+    Succeeder(TreeNode* child);
+    Status Update() override;
+};
+
+//必ずFAILUREを返す
+class Failer : public Condition
+{
+public:
+    Failer(TreeNode* child);
+    Status Update() override;
+};
+
+//逆の結果を返す（SuccesだったらFailure）
+class Inverter : public Condition
+{
+public:
+    Inverter(TreeNode* child);
+    Status Update() override;
 };
 
 //--------------------------Root--------------------------

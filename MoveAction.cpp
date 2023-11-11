@@ -21,6 +21,7 @@ MoveTarget::Status MoveTarget::Update()
 
 	XMStoreFloat3(&pos, vPos + vMove);
 	owner_->SetPosition(pos);
+	owner_->SetState(EnemyBase::State::TARGET);
 
 	return Status::RUNNING;
 }

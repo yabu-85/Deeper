@@ -5,7 +5,7 @@
 #include "EnemySpawnCtrl.h"
 
 EnemyBase::EnemyBase(GameObject* parent)
-	: GameObject(parent), pEnemyUi_(nullptr), hp_(0), maxHp_(0), type_(ENEMY_MAX)
+	: GameObject(parent), pEnemyUi_(nullptr), hp_(0), maxHp_(0), type_(ENEMY_MAX), targetPos_(0.0f, 0.0f, 0.0f), state_(State::IDLE)
 {
 }
 

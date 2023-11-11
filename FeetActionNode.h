@@ -15,6 +15,6 @@ class FeetCondition1 : public Condition
 {
 	Feet* pFeet_;
 public:
-	FeetCondition1(Feet* owner);
+	FeetCondition1(Feet* owner, TreeNode* child);
 	Status Update() override;
 };

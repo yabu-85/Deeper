@@ -3,11 +3,12 @@
 #include "NavigationAI.h"
 #include "EnemyUi.h"
 #include "Engine/SphereCollider.h"
-#include "FeetActionNode.h"
-#include "BehaviourNode.h"
 #include "MoveAction.h"
 #include "Engine/Global.h"
 #include "Player.h"
+#include "FeetActionNode.h"
+#include "BehaviourNode.h"
+#include "TargetConditionCount.h"
 
 namespace {	
 	float moveSpeed = 0.2f;
@@ -48,12 +49,16 @@ void Feet::Initialize()
 	Sequence* seq1 = new Sequence();
 	MoveTarget* action1 = new MoveTarget(this, 0.1f, 2.0f);
 	FeetJump* action2 = new FeetJump(this);
-	FeetCondition1* condition1 = new FeetCondition1(this);
 	
+	TargetConditionCount* condition1 = new TargetConditionCount(5, action1);
+	FeetCondition1* condition2 = new FeetCondition1(this, action2);
+	Succeeder* suc1 = new Succeeder(condition1);
+
 	root_->SetRootNode(seq1);
-	seq1->AddChildren(action1);
-	seq1->AddChildren(condition1);
-	seq1->AddChildren(action2);
+
+	seq1->AddChildren(suc1);
+	seq1->AddChildren(condition2);
+	
 }
 
 void Feet::Update()
@@ -63,6 +68,7 @@ void Feet::Update()
 	Player* pPlayer = (Player*)FindObject("Player");
 	targetPos_ = pPlayer->GetPosition();
 
+	state_ = State::IDLE;
 	root_->Update();
 }
 

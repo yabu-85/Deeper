@@ -33,24 +33,6 @@
     <Filter Include="04UI\Base">
       <UniqueIdentifier>{d7ded092-3bdb-499f-b158-284045e8ad77}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05State">
-      <UniqueIdentifier>{8a662b94-36ef-44f4-8b8b-6139c1732c11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05State\Base">
-      <UniqueIdentifier>{bab4fd1d-232e-4963-bec1-cc685a8bc568}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06BehaviorTree">
-      <UniqueIdentifier>{8b35f917-7762-4bfa-a56f-85218def731f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06BehaviorTree\Base">
-      <UniqueIdentifier>{47a31af1-8999-4e87-be2a-9c790f8040b0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06BehaviorTree\ActionNode">
-      <UniqueIdentifier>{7aa981cb-241b-4e71-a014-851dc0e64640}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06BehaviorTree\ConditionNode">
-      <UniqueIdentifier>{40fd9fcb-a992-4e8e-aa78-093baa870b2e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="07Player">
       <UniqueIdentifier>{e04af741-50b7-426b-8ed5-0d84c1ba486c}</UniqueIdentifier>
     </Filter>
@@ -80,6 +62,24 @@
     </Filter>
     <Filter Include="09Weapon\Object">
       <UniqueIdentifier>{fb6cf40c-66b7-491c-8a2a-d9febfdecc2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06State">
+      <UniqueIdentifier>{8a662b94-36ef-44f4-8b8b-6139c1732c11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06State\Base">
+      <UniqueIdentifier>{bab4fd1d-232e-4963-bec1-cc685a8bc568}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05BehaviorTree">
+      <UniqueIdentifier>{8b35f917-7762-4bfa-a56f-85218def731f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05BehaviorTree\Base">
+      <UniqueIdentifier>{47a31af1-8999-4e87-be2a-9c790f8040b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05BehaviorTree\ActionNode">
+      <UniqueIdentifier>{7aa981cb-241b-4e71-a014-851dc0e64640}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05BehaviorTree\ConditionNode">
+      <UniqueIdentifier>{40fd9fcb-a992-4e8e-aa78-093baa870b2e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -174,7 +174,7 @@
       <Filter>04UI\Base</Filter>
     </ClCompile>
     <ClCompile Include="StateManager.cpp">
-      <Filter>05State</Filter>
+      <Filter>06State</Filter>
     </ClCompile>
     <ClCompile Include="PlayerState.cpp">
       <Filter>07Player</Filter>
@@ -238,13 +238,13 @@
       <Filter>08Enemy\ActionNode</Filter>
     </ClCompile>
     <ClCompile Include="BehaviourNode.cpp">
-      <Filter>06BehaviorTree\Base</Filter>
+      <Filter>05BehaviorTree\Base</Filter>
     </ClCompile>
     <ClCompile Include="MoveAction.cpp">
-      <Filter>06BehaviorTree\ActionNode</Filter>
+      <Filter>05BehaviorTree\ActionNode</Filter>
     </ClCompile>
     <ClCompile Include="TargetConditionCount.cpp">
-      <Filter>06BehaviorTree\ConditionNode</Filter>
+      <Filter>05BehaviorTree\ConditionNode</Filter>
     </ClCompile>
     <ClCompile Include="DropTable.cpp">
       <Filter>08Enemy</Filter>
@@ -345,10 +345,10 @@
       <Filter>04UI\Base</Filter>
     </ClInclude>
     <ClInclude Include="StateBase.h">
-      <Filter>05State\Base</Filter>
+      <Filter>06State\Base</Filter>
     </ClInclude>
     <ClInclude Include="StateManager.h">
-      <Filter>05State</Filter>
+      <Filter>06State</Filter>
     </ClInclude>
     <ClInclude Include="PlayerState.h">
       <Filter>07Player</Filter>
@@ -409,13 +409,13 @@
       <Filter>08Enemy\ActionNode</Filter>
     </ClInclude>
     <ClInclude Include="BehaviourNode.h">
-      <Filter>06BehaviorTree\Base</Filter>
+      <Filter>05BehaviorTree\Base</Filter>
     </ClInclude>
     <ClInclude Include="MoveAction.h">
-      <Filter>06BehaviorTree\ActionNode</Filter>
+      <Filter>05BehaviorTree\ActionNode</Filter>
     </ClInclude>
     <ClInclude Include="TargetConditionCount.h">
-      <Filter>06BehaviorTree\ConditionNode</Filter>
+      <Filter>05BehaviorTree\ConditionNode</Filter>
     </ClInclude>
     <ClInclude Include="DropTable.h">
       <Filter>08Enemy</Filter>

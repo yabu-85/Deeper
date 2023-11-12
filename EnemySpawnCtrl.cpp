@@ -56,9 +56,5 @@ int EnemySpawnCtrl::SpawnEnemy(int type)
 
 std::vector<EnemyBase*>& EnemySpawnCtrl::GetAllEnemy()
 {
-	std::string strNumber = std::to_string(enemyList_.size());
-	OutputDebugStringA(strNumber.c_str());
-	OutputDebugString("\n");
-
 	return enemyList_;
 }

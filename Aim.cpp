@@ -13,7 +13,7 @@
 
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 },
-    plaPos_{ 0,0,0 }, pPlayer_(nullptr), hPict_(-1), aimMove_(false), cameraOffset_{0,0,0}, isTarget_(false), pEnemyBase_(nullptr), pCollisionMap_(nullptr)
+    plaPos_{ 0,0,0 }, pPlayer_(nullptr), aimMove_(false), cameraOffset_{0,0,0}, isTarget_(false), pEnemyBase_(nullptr), pCollisionMap_(nullptr)
 {
     mouseSensitivity = 2.0f;
     heightDistance_ = 3.0f;
@@ -188,9 +188,9 @@ void Aim::FacingTarget()
 {
     //プレイヤーの方向に向くようにする
     XMVECTOR vFront{ 0,0,1,0 };
-    XMFLOAT3 colPos = XMFLOAT3(); // pEnemyBase_->GetColliderList().front()->GetCenter();
+    float aimTarPos = pEnemyBase_->GetAimTargetPos();
     XMFLOAT3 targetPos = pEnemyBase_->GetPosition();
-    targetPos = XMFLOAT3(targetPos.x + colPos.x, targetPos.y + colPos.y, targetPos.z + colPos.z);
+    targetPos = XMFLOAT3(targetPos.x, targetPos.y + aimTarPos, targetPos.z);
 
     XMFLOAT3 fAimPos = XMFLOAT3(cameraPos_.x - targetPos.x, 0.0f, cameraPos_.z - targetPos.z);
     XMVECTOR vAimPos = XMLoadFloat3(&fAimPos);  //正規化用の変数にfloatの値を入れる
@@ -249,7 +249,8 @@ void Aim::CalcCameraOffset(float _aimMove)
     cameraOffset_.z += (cameraOffset_.z * -1.0f) * abs(_aimMove);
     
     XMVECTOR vCameraOffset = XMLoadFloat3(&cameraOffset_);
-    XMVECTOR vTargetOffset = pPlayer_->GetMoveVec();
+    XMFLOAT3 pMove = pPlayer_->GetMovement();
+    XMVECTOR vTargetOffset = XMLoadFloat3(&pMove);
     vTargetOffset *= maxCameraOffset_ * -1;
 
     if(pPlayer_->IsMove()) vCameraOffset += (vTargetOffset - vCameraOffset) * moveAimTime_;   //move

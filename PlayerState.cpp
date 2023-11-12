@@ -22,7 +22,9 @@ PlayerWait::PlayerWait(StateManager* owner)
 
 void PlayerWait::Update()
 {
-	pPlayer_->WeaponChange();
+	pPlayer_->WeaponChangeIndex();
+	pPlayer_->CalcNoMove();
+	pPlayer_->Move();
 
 	//キー入力でステート切り替え
 	if (pPlayer_->GetCommand()->CmdWalk()) {
@@ -47,9 +49,6 @@ void PlayerWait::Update()
 			return;
 		}
 	}
-
-	pPlayer_->CalcNoMove();
-	pPlayer_->Move();
 }
 
 //--------------------------------------------------------------------------------
@@ -62,7 +61,7 @@ PlayerWalk::PlayerWalk(StateManager* owner)
 
 void PlayerWalk::Update()
 {
-	pPlayer_->WeaponChange();
+	pPlayer_->WeaponChangeIndex();
 	pPlayer_->CalcMove();
 	pPlayer_->Move();
 	pPlayer_->Rotate();
@@ -89,7 +88,6 @@ void PlayerWalk::Update()
 			return;
 		}
 	}
-
 }
 
 //--------------------------------------------------------------------------------
@@ -109,6 +107,8 @@ void PlayerWeaponChange::Update()
 
 	if (pPlayer_->GetCommand()->CmdWeaponSelect()) {
 		time_++;
+
+		//切り替え時間までボタン押し続けた
 		if (time_ > changeTime_) {
 			WeaponBase* weapon = GameManager::GetWeaponObjectManager()->GetNearestWeapon();
 			if (weapon) {
@@ -118,11 +118,13 @@ void PlayerWeaponChange::Update()
 			owner_->ChangeState("Wait");
 			return;
 		}
+
+		//押してる
 		return;
 	}
 
+	//押してないからWaitへ
 	owner_->ChangeState("Wait");
-	return;
 }
 
 void PlayerWeaponChange::OnEnter()

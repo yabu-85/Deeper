@@ -5,10 +5,8 @@ class Player;
 class EnemyBase;
 class CollisionMap;
 
-class Aim :
-    public GameObject
+class Aim : public GameObject
 {
-    int hPict_;                     //画像番号
     float mouseSensitivity;         //マウス感度
     float perspectiveDistance_;     //どのくらい後ろから映すか
     float heightDistance_;          //焦点の高さ
@@ -60,5 +58,7 @@ public:
     //Targetの更新
     void SetTargetEnemy();
     bool IsTarget() { return isTarget_; };
+
+    EnemyBase* GetTargetEnemy() { return pEnemyBase_; }
 
 };

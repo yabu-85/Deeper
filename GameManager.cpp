@@ -47,8 +47,8 @@ namespace GameManager {
 		//デバッグ用
 		if (Input::IsKeyDown(DIK_M)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND);
 		if (Input::IsKeyDown(DIK_N)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET);
-		if (Input::IsKeyDown(DIK_K)) pWeaponObjectManager_->AllKillWeaponObject();
-		if (Input::IsKeyDown(DIK_M)) pEnemySpawnCtrl_->AllKillEnemy();
+		if (Input::IsKeyDown(DIK_B)) pWeaponObjectManager_->AllKillWeaponObject();
+		if (Input::IsKeyDown(DIK_V)) pEnemySpawnCtrl_->AllKillEnemy();
 	}
 
 	void GameManager::Release() {

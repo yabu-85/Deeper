@@ -8,17 +8,19 @@ class Aim;
 class EnemyUi
 {
 	int vHandle_[2];
-	EmitterData data_;
+	float height_;			//uiの高さ
+	float parcent;			//hpのパーセント
+	XMFLOAT2 size;			//UiのHpに合わせたサイズ
 	Transform transform_;
 	EnemyBase* pParent_;
+	EmitterData data_;
 
-	float parcent;
-	XMFLOAT2 size;
+
 
 public:
 	EnemyUi(EnemyBase* parent);
 	~EnemyUi();
-	void Initialize();
+	void Initialize(float height); //height：Uiの高さ
 	void Update();
 
 	void SetParcent(float f) { parcent = f; };

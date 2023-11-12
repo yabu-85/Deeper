@@ -12,7 +12,7 @@ namespace {
 }
 
 EnemyUi::EnemyUi(EnemyBase* parent)
-	:vHandle_{-1, -1}, pParent_(parent), size{0.0f, 0.0f}, parcent(1.0f)
+	:vHandle_{-1, -1}, pParent_(parent), size{0.0f, 0.0f}, parcent(1.0f), height_(0.0f)
 {
 }
 
@@ -20,7 +20,7 @@ EnemyUi::~EnemyUi()
 {
 }
 
-void EnemyUi::Initialize()
+void EnemyUi::Initialize(float height)
 {
     data_.textureFileName = "Png/Gauge2.png";
     data_.delay = 0;
@@ -38,14 +38,14 @@ void EnemyUi::Initialize()
     data_.isBillBoard = true;
 	vHandle_[0] = VFX::Start(data_);	//エミッターを設置
 
-    size = XMFLOAT2(maxSizeX, 0.3f);
-
+    size = XMFLOAT2(maxSizeX, 0.3f); 
+    height_ = height;
 }
 
 void EnemyUi::Update()
 {
     XMFLOAT3 pos = pParent_->GetPosition();
-    pos.y += 3.0f;
+    pos.y += height_;
     size.x = maxSizeX * parcent;
 
     data_.position = pos;

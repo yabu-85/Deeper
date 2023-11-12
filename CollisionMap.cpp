@@ -99,7 +99,9 @@ void CollisionMap::Initialize()
             }
         }
     }
+
     std::string strNumber = std::to_string(triList.size());
+    OutputDebugString("polygon : ");
     OutputDebugStringA(strNumber.c_str());
     OutputDebugString("\n");
 

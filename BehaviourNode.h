@@ -28,11 +28,11 @@ protected:
 public:
     TreeNode();
     virtual ~TreeNode();
-
-    virtual void Initialize() {}
     Status Tick();
-    virtual Status Update() = 0;
-    virtual void Terminate() {};
+
+    virtual Status Update() = 0;    //本体処理
+    virtual void Initialize() {}    //Invalidの時だけ実行
+    virtual void Terminate() {};    //Running以外の時実行
 
     virtual void ResetState() { status_ = Status::INVALID; }
     void SetStatus(Status newState) { status_ = newState; }
@@ -52,7 +52,6 @@ public:
     virtual Status Update() override = 0;
     virtual void ResetState() override;
 
-    void TerminateChildren(unsigned num);
     void AddChildren(TreeNode* child) { childlenNodes_.push_back(child); }
     unsigned GetChildrenNumber() { return static_cast<unsigned>(childlenNodes_.size()); }
     std::vector<TreeNode*> GetChildren() { return childlenNodes_; }

@@ -50,24 +50,6 @@ void CompositeNode::ResetState()
     }
 }
 
-void CompositeNode::TerminateChildren(unsigned num)
-{
-    for (unsigned j = num; j < childlenNodes_.size(); j++)
-    {
-        if (childlenNodes_[j]->GetType() == NodeType::CONDITION_NODE)
-        {
-            childlenNodes_[num]->ResetState();
-        }
-        else
-        {
-            if (childlenNodes_[j]->GetStatus() == Status::RUNNING)
-            {
-                childlenNodes_[j]->Terminate();
-            }
-        }
-    }
-}
-
 //--------------------------Sequence--------------------------
 
 Sequence::Sequence() : CompositeNode()

@@ -7,6 +7,7 @@
 #include "PlayerCommand.h"
 #include "TestBullet.h"
 #include "Aim.h"
+#include "EnemyBase.h"
 
 TestWeaponSub::TestWeaponSub(GameObject* parent)
     :WeaponBase(parent)
@@ -78,6 +79,8 @@ void TestWeaponSub::ShotBullet()
     XMFLOAT3 tar;
     if (pAim->IsTarget()) {
         tar = pAim->GetTargetPos();
+        float aimTarPos =  pAim->GetTargetEnemy()->GetAimTargetPos();
+        tar = XMFLOAT3(tar.x, tar.y + aimTarPos, tar.z);
     }
     else {
         XMFLOAT3 pos = transform_.position_;

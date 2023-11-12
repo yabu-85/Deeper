@@ -23,7 +23,7 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, moveVec_(0, 0, 0), pStateManager_(nullptr),
+    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, pStateManager_(nullptr),
     pCommand_(nullptr), pMainWeapon_(nullptr), pSubWeapon_{ nullptr, nullptr }, money_(0), hp_(0), maxHp_(0), currentSubIndex_(0)
 {
     moveSpeed_ = 0.15f;
@@ -87,14 +87,13 @@ void Player::Update()
 
 void Player::Draw()
 {
-    //ターゲット状態の場合はAim方向に強制
-    if (pAim_->IsTarget()) {
-        upTrans_ = transform_;
-        upTrans_.rotate_.y = pAim_->GetRotate().y + 180.0f;
-    }
-    else upTrans_ = transform_;
+    upTrans_ = transform_;
+    if (pAim_->IsTarget()) upTrans_.rotate_.y = pAim_->GetRotate().y + 180.0f;
+
     Model::SetTransform(hModel_[0], upTrans_);
     Model::Draw(hModel_[0]);
+    Model::SetTransform(hModel_[1], downTrans_);
+    Model::Draw(hModel_[1]);
 
     //武器の表示非表示
     if (currentSubIndex_ == 0) {
@@ -106,29 +105,8 @@ void Player::Draw()
         if (pSubWeapon_[0]) pSubWeapon_[0]->Invisible();
     }
 
+
     //デバッグ用
-    Transform under = transform_;
-    if (pAim_->IsTarget()) {
-        float aimRotate = pAim_->GetRotate().y;
-        float currentRotate = transform_.rotate_.y;
-        float angleDifference = aimRotate - currentRotate;
-
-        while (angleDifference > 180.0f) {
-            angleDifference -= 360.0f;
-        }
-        while (angleDifference < -180.0f) {
-            angleDifference += 360.0f;
-        }
-
-        angleDifference = abs(angleDifference);
-
-        if (angleDifference < 90) {
-            under.rotate_.y -= 180.0f;
-        }
-    }
-    Model::SetTransform(hModel_[1], under);
-    Model::Draw(hModel_[1]);
-
     pText->Draw(30, 30, (int)transform_.position_.x);
     pText->Draw(30, 70, (int)transform_.position_.y);
     pText->Draw(30, 110, (int)transform_.position_.z);
@@ -147,7 +125,6 @@ void Player::Draw()
         const char* cstr = pSubWeapon_[1]->GetObjectName().c_str();
         pText->Draw(1000, 700, cstr);
     }
-    
 }
 
 void Player::Release()
@@ -170,6 +147,40 @@ void Player::Rotate()
     float cross = a.x * b.y - a.y * b.x;
     float dot = a.x * b.x + a.y * b.y;
     transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * rotateRatio_);
+
+
+    while (transform_.rotate_.y > 180.0f) {
+        transform_.rotate_.y -= 360.0f;
+    }
+    while (transform_.rotate_.y < -180.0f) {
+        transform_.rotate_.y += 360.0f;
+    }
+
+    downTrans_ = transform_;
+    if (pCommand_->CmdDown() && pAim_->IsTarget()) {
+        float aimRotate = pAim_->GetRotate().y;
+        float currentRotate = transform_.rotate_.y;
+        float angleDifference = aimRotate - currentRotate;
+
+        while (angleDifference > 180.0f) {
+            angleDifference -= 360.0f;
+        }
+        while (angleDifference < -180.0f) {
+            angleDifference += 360.0f;
+        }
+
+        downTrans_.rotate_.y *= -1.0f;
+        downTrans_.rotate_.y += 180.0f - angleDifference;
+
+        std::string strNumber = std::to_string(angleDifference);
+        OutputDebugStringA(strNumber.c_str());
+        OutputDebugString(" : ");
+
+        strNumber = std::to_string(downTrans_.rotate_.y);
+        OutputDebugStringA(strNumber.c_str());
+        OutputDebugString("\n");
+    }
+
 }
 
 void Player::Move(float f)
@@ -177,34 +188,6 @@ void Player::Move(float f)
     prePos = transform_.position_;
     transform_.position_.x += ((playerMovement_.x * moveSpeed_) * f);
     transform_.position_.z += ((playerMovement_.z * moveSpeed_) * f);
-}
-
-bool Player::IsMoveKeyPushed(XMFLOAT3& key)
-{
-    XMFLOAT3 aimDirection = pAim_->GetAimDirection();
-
-    bool flag = false;
-    if (pCommand_->CmdUp()) {
-        key.x += aimDirection.x;
-        key.z += aimDirection.z;
-        flag = true;
-    }
-    if (pCommand_->CmdLeft()) {
-        key.x -= aimDirection.z;
-        key.z += aimDirection.x;
-        flag = true;
-    }
-    if (pCommand_->CmdDown()) {
-        key.x -= aimDirection.x;
-        key.z -= aimDirection.z;
-        flag = true;
-    }
-    if (pCommand_->CmdRight()) {
-        key.x += aimDirection.z;
-        key.z -= aimDirection.x;
-        flag = true;
-    }
-    return flag;
 }
 
 bool Player::IsMove()
@@ -231,18 +214,38 @@ XMVECTOR Player::GetDirectionVec()
 
 void Player::CalcMove()
 {
-    //fMoveの値を取る＆ graduallyを設定
     gradually = stopGradually;
-    XMFLOAT3 fMove = { 0,0,0 };
-    if (IsMoveKeyPushed(fMove)) gradually = moveGradually;
 
-    XMVECTOR vMove = XMLoadFloat3(&fMove);
+    //fMoveの値を取る
+    fMove_ = { 0,0,0 };
+    if (pCommand_->CmdWalk()) {
+        gradually = moveGradually;
+
+        XMFLOAT3 aimDirection = pAim_->GetAimDirection();
+        if (pCommand_->CmdUp()) {
+            fMove_.x += aimDirection.x;
+            fMove_.z += aimDirection.z;
+        }
+        if (pCommand_->CmdLeft()) {
+            fMove_.x -= aimDirection.z;
+            fMove_.z += aimDirection.x;
+        }
+        if (pCommand_->CmdDown()) {
+            fMove_.x -= aimDirection.x;
+            fMove_.z -= aimDirection.z;
+        }
+        if (pCommand_->CmdRight()) {
+            fMove_.x += aimDirection.z;
+            fMove_.z -= aimDirection.x;
+        }
+    }
+
+    XMVECTOR vMove = XMLoadFloat3(&fMove_);
     vMove = XMVector3Normalize(vMove);
-    XMStoreFloat3(&fMove, vMove);
-    moveVec_ = fMove;
+    XMStoreFloat3(&fMove_, vMove);
 
-    fMove = { ((fMove.x - playerMovement_.x) * gradually) , 0.0f , ((fMove.z - playerMovement_.z) * gradually) };
-    playerMovement_ = { playerMovement_.x + fMove.x , 0.0f , playerMovement_.z + fMove.z };
+    fMove_ = { ((fMove_.x - playerMovement_.x) * gradually) , 0.0f , ((fMove_.z - playerMovement_.z) * gradually) };
+    playerMovement_ = { playerMovement_.x + fMove_.x , 0.0f , playerMovement_.z + fMove_.z };
 
     //MaxSpeed超えていたら正規化・MaxSpeedの値にする
     float currentSpeed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerMovement_)));
@@ -259,7 +262,6 @@ void Player::CalcNoMove()
 {
     XMFLOAT3 fMove = { 0,0,0 };
     gradually = stopGradually;
-    moveVec_ = fMove;
     fMove = { ((fMove.x - playerMovement_.x) * gradually) , 0.0f , ((fMove.z - playerMovement_.z) * gradually) };
     playerMovement_ = { playerMovement_.x + fMove.x , 0.0f , playerMovement_.z + fMove.z };
 }
@@ -268,7 +270,7 @@ void Player::InitAvo()
 {
     if (pCommand_->CmdWalk()) {
         CalcMove();
-        XMStoreFloat3(&playerMovement_, GetMoveVec());
+        playerMovement_ = fMove_;
     }
     else {
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0);
@@ -296,7 +298,7 @@ void Player::SetWeapon(WeaponBase* weapon)
     pSubWeapon_[currentSubIndex_] = weapon;
 }
 
-void Player::WeaponChange()
+void Player::WeaponChangeIndex()
 {
     if (pCommand_->CmdCenterUp()) {
         currentSubIndex_ = 0;

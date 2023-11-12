@@ -41,7 +41,7 @@ void MasterHand::Initialize()
 	transform_.position_ = pPlayer->GetPosition();
 
 	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize();
+	pEnemyUi_->Initialize(3.0f);
 
 	maxHp_ = 10;
 	hp_ = maxHp_;
@@ -53,7 +53,7 @@ void MasterHand::Update()
 
 	if (lifeTime_ >= killTime) {
 		GameManager::GetDropTable()->DropItem(0, transform_.position_);
-		KillMe();
+		GameManager::GetEnemySpawnCtrl()->KillEnemy(this);
 		return;
 	}
 	lifeTime_++;
@@ -76,9 +76,5 @@ void MasterHand::Draw()
 }
 
 void MasterHand::Release()
-{
-}
-
-void MasterHand::ApplyDamage(int da)
 {
 }

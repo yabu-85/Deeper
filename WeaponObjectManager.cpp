@@ -14,14 +14,17 @@ WeaponObjectManager::WeaponObjectManager()
 
 WeaponObjectManager::~WeaponObjectManager()
 {
-	AllKillWeaponObject();
 }
 
 void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos)
 {
-	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "Hand", "RedBox" };
+	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "Feet", "RedBox" };
 
 	WeaponObject* weapon = Instantiate<WeaponObject>(GameManager::GetParent());
+
+	//デバッグ用
+	if ((int)type == 0) weapon->SetScale(0.2f, 0.2f, 0.2f);
+
 	weapon->SetPosition(pos);
 	weapon->LoadModel(fileName[(int)type]);
 	weapon->SetType(int(type));

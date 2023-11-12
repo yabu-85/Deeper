@@ -10,11 +10,6 @@
 #include "BehaviourNode.h"
 #include "TargetConditionCount.h"
 
-namespace {	
-	float moveSpeed = 0.2f;
-
-}
-
 Feet::Feet(GameObject* parent)
 	:EnemyBase(parent), hModel_(-1)
 {
@@ -29,22 +24,29 @@ Feet::~Feet()
 void Feet::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("Model/Feet.fbx");
+	hModel_ = Model::Load("Model/StoneGolem.fbx");
 	assert(hModel_ >= 0);
 
 	transform_.rotate_.y = -90.0f;
-	transform_.scale_ = XMFLOAT3(0.3f, 0.3f, 0.3f);
+	transform_.scale_ = XMFLOAT3(2.0f, 2.0f, 2.0f);
 	transform_.position_ = XMFLOAT3(50.0f + (float)(rand() % 10), 0.0f, 50.0f + (float)(rand() % 10));
 
 	maxHp_ = 10;
 	hp_ = maxHp_;
+	aimTargetPos_ = 3.0f;
+	moveSpeed_ = 0.07f;
+	moveRange_ = 5.0f;
+	rotateRatio_ = 0.1f;
 
-	SphereCollider* collision = new SphereCollider(XMFLOAT3(0, 1, 0), 1.9f);
-	AddCollider(collision);
+	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 3, 0), 1.5f);
+	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 1, 0), 1.5f);
+	AddCollider(collision1);
+	AddCollider(collision2);
 
 	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize();
+	pEnemyUi_->Initialize(5.5f);
 
+	//ビヘイビアツリーの設定
 	root_ = new Root();
 	Sequence* seq1 = new Sequence();
 	MoveTarget* action1 = new MoveTarget(this, 0.1f, 2.0f);
@@ -63,13 +65,13 @@ void Feet::Initialize()
 
 void Feet::Update()
 {
-	pEnemyUi_->Update();
-
 	Player* pPlayer = (Player*)FindObject("Player");
-	targetPos_ = pPlayer->GetPosition();
+	moveTargetPos_ = pPlayer->GetPosition();
 
 	state_ = State::IDLE;
 	root_->Update();
+	pEnemyUi_->Update();
+	Rotate();
 }
 
 void Feet::Draw()

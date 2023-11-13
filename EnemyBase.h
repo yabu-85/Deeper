@@ -10,9 +10,11 @@ class EnemyBase : public GameObject
 {
 public:
     enum class State {
-        IDLE = 0,
-        TARGET,
-        DEAD,
+        APPEAR = 0, //èoåªÇ∑ÇÈ
+        IDLE,       //ìÆÇ©Ç»Ç¢
+        PATROL,     //å©âÒÇÈ
+        COMBAT,     //êÌì¨èÛë‘
+        DEAD,       //Ç≈Ç∑
     };
 
 protected:

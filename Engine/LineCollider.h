@@ -24,6 +24,5 @@ public:
 	LineCollider(XMFLOAT3 center, XMFLOAT3 vec, float range);
 
 	void SetVec(XMFLOAT3 _vec) { vec_ = _vec; }
-	void SetSize(float _size) { size_ = XMFLOAT3(_size, _size, _size); }
 
 };

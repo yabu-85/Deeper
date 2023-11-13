@@ -9,6 +9,5 @@ MoveTarget::Status MoveTarget::Update()
 		return Status::SUCCESS;
 	}
 
-	owner_->SetState(EnemyBase::State::TARGET);
 	return Status::RUNNING;
 }

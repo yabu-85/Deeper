@@ -45,9 +45,6 @@
     <Filter Include="08Enemy\Enemies">
       <UniqueIdentifier>{bba5f4f1-692c-4c4d-8c84-026ee8023168}</UniqueIdentifier>
     </Filter>
-    <Filter Include="08Enemy\ActionNode">
-      <UniqueIdentifier>{91a656d3-7d28-4e32-b103-d838ec5ceef6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="09Weapon">
       <UniqueIdentifier>{aa00871e-525a-4d86-8143-3ca9980ffc6c}</UniqueIdentifier>
     </Filter>
@@ -72,14 +69,23 @@
     <Filter Include="05BehaviorTree">
       <UniqueIdentifier>{8b35f917-7762-4bfa-a56f-85218def731f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05BehaviorTree\Base">
+    <Filter Include="05BehaviorTree\01Base">
       <UniqueIdentifier>{47a31af1-8999-4e87-be2a-9c790f8040b0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05BehaviorTree\ActionNode">
+    <Filter Include="05BehaviorTree\02ActionNode">
       <UniqueIdentifier>{7aa981cb-241b-4e71-a014-851dc0e64640}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05BehaviorTree\ConditionNode">
+    <Filter Include="05BehaviorTree\03ConditionNode">
       <UniqueIdentifier>{40fd9fcb-a992-4e8e-aa78-093baa870b2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05BehaviorTree\04EnemyNode">
+      <UniqueIdentifier>{cb683f36-c430-4f40-9c4c-9fae1e333f12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05BehaviorTree\04EnemyNode\Action">
+      <UniqueIdentifier>{d31125e0-5f26-42f7-bdc5-8e422ba511ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05BehaviorTree\04EnemyNode\Condition">
+      <UniqueIdentifier>{10c64783-407c-4c52-ac94-d324bfe39d15}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -234,20 +240,20 @@
     <ClCompile Include="EnemyBase.cpp">
       <Filter>08Enemy\EnemyBase</Filter>
     </ClCompile>
-    <ClCompile Include="FeetActionNode.cpp">
-      <Filter>08Enemy\ActionNode</Filter>
-    </ClCompile>
     <ClCompile Include="BehaviourNode.cpp">
-      <Filter>05BehaviorTree\Base</Filter>
+      <Filter>05BehaviorTree\01Base</Filter>
     </ClCompile>
     <ClCompile Include="MoveAction.cpp">
-      <Filter>05BehaviorTree\ActionNode</Filter>
+      <Filter>05BehaviorTree\02ActionNode</Filter>
     </ClCompile>
     <ClCompile Include="TargetConditionCount.cpp">
-      <Filter>05BehaviorTree\ConditionNode</Filter>
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClCompile>
     <ClCompile Include="DropTable.cpp">
       <Filter>08Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="FeetActionNode.cpp">
+      <Filter>05BehaviorTree\04EnemyNode\Action</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -405,20 +411,20 @@
     <ClInclude Include="BulletBase.h">
       <Filter>09Weapon\Base</Filter>
     </ClInclude>
-    <ClInclude Include="FeetActionNode.h">
-      <Filter>08Enemy\ActionNode</Filter>
-    </ClInclude>
     <ClInclude Include="BehaviourNode.h">
-      <Filter>05BehaviorTree\Base</Filter>
+      <Filter>05BehaviorTree\01Base</Filter>
     </ClInclude>
     <ClInclude Include="MoveAction.h">
-      <Filter>05BehaviorTree\ActionNode</Filter>
+      <Filter>05BehaviorTree\02ActionNode</Filter>
     </ClInclude>
     <ClInclude Include="TargetConditionCount.h">
-      <Filter>05BehaviorTree\ConditionNode</Filter>
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClInclude>
     <ClInclude Include="DropTable.h">
       <Filter>08Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="FeetActionNode.h">
+      <Filter>05BehaviorTree\04EnemyNode\Action</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -25,7 +25,7 @@ bool DamageCtrl::CalcSword(LineCollider* line, int damage)
         //Collider‚È‚©‚Á‚½‚çŽŸ
         if (col.empty()) continue;
 
-		int size = col.size();
+		int size = (int)col.size();
 		for (int j = 0; j < size; j++) {
 			if (col.front()->IsHit(line)) {
 				enemyList.at(i)->ApplyDamage(damage);
@@ -49,7 +49,7 @@ bool DamageCtrl::CalcBullet(SphereCollider* sphere, int damage)
 		//Collider‚È‚©‚Á‚½‚çŽŸ
 		if (col.empty()) continue;
 
-		int size = col.size();
+		int size = (int)col.size();
 		for (int j = 0; j < size; j++) {
 			if (col.front()->IsHit(sphere)) {
 				enemyList.at(i)->ApplyDamage(damage);

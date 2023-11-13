@@ -99,6 +99,9 @@ public:
 	void SetGameObject(GameObject* gameObject) { pGameObject_ = gameObject; }
 
 	XMFLOAT3 GetCenter() { return center_; };
+	void SetCenter(XMFLOAT3 pos) { center_ = pos; }
+
+	void SetSize(float _size) { size_ = XMFLOAT3(_size, _size, _size); }
 
 };
 

@@ -6,7 +6,7 @@
 #include "Player.h"
 
 EnemyBase::EnemyBase(GameObject* parent)
-	: GameObject(parent), pEnemyUi_(nullptr), hp_(0), maxHp_(0), type_(ENEMY_MAX), moveTargetPos_(0.0f, 0.0f, 0.0f), state_(State::IDLE),
+	: GameObject(parent), pEnemyUi_(nullptr), hp_(0), maxHp_(0), type_(ENEMY_MAX), moveTargetPos_(0.0f, 0.0f, 0.0f), state_(State::APPEAR),
 	moveSpeed_(0.1f), moveRange_(1.0f), prePos_(0.0f, 0.0f, 0.0f), rotateRatio_(1.0f), aimTargetPos_(0.0f)
 {
 }

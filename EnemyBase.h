@@ -8,15 +8,6 @@ class StateManager;
 
 class EnemyBase : public GameObject
 {
-public:
-    enum class State {
-        APPEAR = 0, //èoåªÇ∑ÇÈ
-        IDLE,       //ìÆÇ©Ç»Ç¢
-        PATROL,     //å©âÒÇÈ
-        COMBAT,     //êÌì¨èÛë‘
-        DEAD,       //Ç≈Ç∑
-    };
-
 protected:
     int hp_;
     int maxHp_;
@@ -27,12 +18,13 @@ protected:
     XMFLOAT3 moveTargetPos_;    //à⁄ìÆ
     XMFLOAT3 prePos_;
     ENEMY_TYPE type_;
+
     EnemyUi* pEnemyUi_;
-    State state_;
+    StateManager* pStateManager_;
 
 public:
     EnemyBase(GameObject* parent);
-    virtual ~EnemyBase() = 0 {};
+    virtual ~EnemyBase();
     virtual void Initialize() override = 0 {};
     virtual void Update() override = 0 {};
     virtual void Draw() override = 0 {};
@@ -44,8 +36,7 @@ public:
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
     XMFLOAT3 GetTargetPos() { return moveTargetPos_; }
     float GetAimTargetPos() { return aimTargetPos_; }
+    StateManager* GetStateManager() { return pStateManager_; }
 
-    State IsState() { return state_; }
-    void SetState(State state) { state_ = state; }
 };
 

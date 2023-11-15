@@ -8,6 +8,12 @@ StateManager::StateManager(GameObject* owner)
 
 StateManager::~StateManager()
 {
+	for (auto& entry : stateMap_) {
+		delete entry.second;
+	}
+	currentState_ = nullptr;
+	stateMap_.clear();
+
 }
 
 void StateManager::Initialize()

@@ -78,14 +78,20 @@
     <Filter Include="05BehaviorTree\03ConditionNode">
       <UniqueIdentifier>{40fd9fcb-a992-4e8e-aa78-093baa870b2e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05BehaviorTree\04EnemyNode">
-      <UniqueIdentifier>{cb683f36-c430-4f40-9c4c-9fae1e333f12}</UniqueIdentifier>
+    <Filter Include="10Action">
+      <UniqueIdentifier>{d2fbf88a-f8e5-4a0d-96bc-8443ea48cc0e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05BehaviorTree\04EnemyNode\Action">
-      <UniqueIdentifier>{d31125e0-5f26-42f7-bdc5-8e422ba511ef}</UniqueIdentifier>
+    <Filter Include="10Action\Base">
+      <UniqueIdentifier>{4d1447ee-e60c-42b8-8149-ac36e8e9155e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05BehaviorTree\04EnemyNode\Condition">
-      <UniqueIdentifier>{10c64783-407c-4c52-ac94-d324bfe39d15}</UniqueIdentifier>
+    <Filter Include="10Action\Actions">
+      <UniqueIdentifier>{57f338e4-fc08-46dd-9016-2e884d279241}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06State\Enemy">
+      <UniqueIdentifier>{39a37125-5190-4e89-ae15-671ab9bb9fb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06State\Player">
+      <UniqueIdentifier>{a3b99297-e4e2-4533-b267-eae497f6f730}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -182,9 +188,6 @@
     <ClCompile Include="StateManager.cpp">
       <Filter>06State</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerState.cpp">
-      <Filter>07Player</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerCommand.cpp">
       <Filter>07Player</Filter>
     </ClCompile>
@@ -252,8 +255,17 @@
     <ClCompile Include="DropTable.cpp">
       <Filter>08Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="FeetActionNode.cpp">
-      <Filter>05BehaviorTree\04EnemyNode\Action</Filter>
+    <ClCompile Include="BaseAction.cpp">
+      <Filter>10Action\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionMove.cpp">
+      <Filter>10Action\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="FeetState.cpp">
+      <Filter>06State\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerState.cpp">
+      <Filter>06State\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -356,9 +368,6 @@
     <ClInclude Include="StateManager.h">
       <Filter>06State</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerState.h">
-      <Filter>07Player</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerCommand.h">
       <Filter>07Player</Filter>
     </ClInclude>
@@ -423,8 +432,17 @@
     <ClInclude Include="DropTable.h">
       <Filter>08Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="FeetActionNode.h">
-      <Filter>05BehaviorTree\04EnemyNode\Action</Filter>
+    <ClInclude Include="BaseAction.h">
+      <Filter>10Action\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionMove.h">
+      <Filter>10Action\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="FeetState.h">
+      <Filter>06State\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerState.h">
+      <Filter>06State\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -15,8 +15,6 @@ class EnemyUi
 	EnemyBase* pParent_;
 	EmitterData data_;
 
-
-
 public:
 	EnemyUi(EnemyBase* parent);
 	~EnemyUi();

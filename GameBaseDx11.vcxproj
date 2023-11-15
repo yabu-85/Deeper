@@ -125,8 +125,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActionMove.cpp" />
     <ClCompile Include="Aim.cpp" />
     <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="BaseAction.cpp" />
     <ClCompile Include="BehaviourNode.cpp" />
     <ClCompile Include="BulletBase.cpp" />
     <ClCompile Include="Cell.cpp" />
@@ -162,7 +164,7 @@
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="ExitUIManager.cpp" />
     <ClCompile Include="Feet.cpp" />
-    <ClCompile Include="FeetActionNode.cpp" />
+    <ClCompile Include="FeetState.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="MasterHand.cpp" />
     <ClCompile Include="MoveAction.cpp" />
@@ -187,8 +189,10 @@
     <ClCompile Include="WeaponObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActionMove.h" />
     <ClInclude Include="Aim.h" />
     <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="BaseAction.h" />
     <ClInclude Include="BehaviourNode.h" />
     <ClInclude Include="BulletBase.h" />
     <ClInclude Include="Cell.h" />
@@ -224,7 +228,7 @@
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="ExitUIManager.h" />
     <ClInclude Include="Feet.h" />
-    <ClInclude Include="FeetActionNode.h" />
+    <ClInclude Include="FeetState.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="MasterHand.h" />
     <ClInclude Include="MoveAction.h" />

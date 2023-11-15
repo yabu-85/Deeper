@@ -1,8 +1,5 @@
 #pragma once
 
-class Player;
-class Stage;
-class EnemyBase;
 class EnemySpawnCtrl;
 class NavigationAI;
 class DamageCtrl;

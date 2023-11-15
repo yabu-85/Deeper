@@ -8,6 +8,7 @@ protected:
 	StateManager* owner_;
 
 public:
+	virtual ~StateBase() {};
 	virtual const char* GetName() const = 0;
 	virtual void Update() = 0;
 	virtual void OnEnter() {};

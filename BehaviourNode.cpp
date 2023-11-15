@@ -165,6 +165,7 @@ Root::Root() : TreeNode(), root_(nullptr)
 
 Root::~Root()
 {
+    delete root_;
 }
 
 Root::Status Root::Update()

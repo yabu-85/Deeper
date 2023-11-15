@@ -4,11 +4,18 @@
 #include "DropTable.h"
 #include "EnemySpawnCtrl.h"
 #include "Player.h"
+#include "StateManager.h"
 
 EnemyBase::EnemyBase(GameObject* parent)
-	: GameObject(parent), pEnemyUi_(nullptr), hp_(0), maxHp_(0), type_(ENEMY_MAX), moveTargetPos_(0.0f, 0.0f, 0.0f), state_(State::APPEAR),
-	moveSpeed_(0.1f), moveRange_(1.0f), prePos_(0.0f, 0.0f, 0.0f), rotateRatio_(1.0f), aimTargetPos_(0.0f)
+	: GameObject(parent), hp_(0), maxHp_(0), type_(ENEMY_MAX), moveTargetPos_(0.0f, 0.0f, 0.0f), moveSpeed_(0.1f),
+	moveRange_(1.0f), prePos_(0.0f, 0.0f, 0.0f), rotateRatio_(1.0f), aimTargetPos_(0.0f), pEnemyUi_(nullptr), pStateManager_(nullptr)
 {
+}
+
+EnemyBase::~EnemyBase()
+{
+	delete pStateManager_;
+	delete pEnemyUi_;
 }
 
 bool EnemyBase::Move()

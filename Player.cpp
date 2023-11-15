@@ -32,6 +32,8 @@ Player::Player(GameObject* parent)
 
 Player::~Player()
 {
+    delete pStateManager_;
+    delete pCommand_;
 }
 
 void Player::Initialize()

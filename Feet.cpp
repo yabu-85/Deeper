@@ -3,12 +3,8 @@
 #include "NavigationAI.h"
 #include "EnemyUi.h"
 #include "Engine/SphereCollider.h"
-#include "MoveAction.h"
-#include "Engine/Global.h"
-#include "Player.h"
-#include "FeetActionNode.h"
-#include "BehaviourNode.h"
-#include "TargetConditionCount.h"
+#include "StateManager.h"
+#include "FeetState.h"
 
 Feet::Feet(GameObject* parent)
 	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr)
@@ -28,7 +24,6 @@ void Feet::Initialize()
 	assert(hModel_ >= 0);
 //	Model::SetAnimFrame(hModel_, 0, 100, 1.0f);
 
-
 	transform_.rotate_.y = -90.0f;
 	transform_.scale_ = XMFLOAT3(2.0f, 2.0f, 2.0f);
 	transform_.position_ = XMFLOAT3(50.0f + (float)(rand() % 10), 0.0f, 50.0f + (float)(rand() % 10));
@@ -40,6 +35,10 @@ void Feet::Initialize()
 	moveRange_ = 5.0f;
 	rotateRatio_ = 0.05f;
 
+	pEnemyUi_ = new EnemyUi(this);
+	pEnemyUi_->Initialize(5.5f);
+
+	//Colliderの設定
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 3, 0), 1.5f);
 	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 1, 0), 1.5f);
 	pHandCollider_ = new SphereCollider(XMFLOAT3(0, 0, 0), 1.0f);
@@ -47,47 +46,21 @@ void Feet::Initialize()
 	AddCollider(collision2);
 	AddCollider(pHandCollider_);
 
-	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize(5.5f);
+	//ステートの設定
+	pStateManager_ = new StateManager(this);
+	pStateManager_->AddState(new FeetAppear(pStateManager_));
+	pStateManager_->AddState(new FeetIdle(pStateManager_));
+	pStateManager_->AddState(new FeetPatrol(pStateManager_));
+	pStateManager_->AddState(new FeetCombat(pStateManager_));
+	pStateManager_->AddState(new FeetDead(pStateManager_));
+	pStateManager_->ChangeState("Appear");
+	pStateManager_->Initialize();
 
-	//ビヘイビアツリーの設定
-	root_ = new Root();
-	Sequence* seq1 = new Sequence();
-	MoveTarget* action1 = new MoveTarget(this, 0.1f, 2.0f);
-	FeetJump* action2 = new FeetJump(this);
-	
-	CombatEnemyCount* condition1 = new CombatEnemyCount(3, action1);
-	Inverter* inv1 = new Inverter(condition1);
-	FeetCondition1* condition2 = new FeetCondition1(this, action2);
-	Succeeder* suc1 = new Succeeder(inv1);
-
-	root_->SetRootNode(seq1);
-	seq1->AddChildren(suc1);
-	seq1->AddChildren(condition2);
-	
 }
 
 void Feet::Update()
 {
-	switch (state_)
-	{
-	case State::APPEAR:
-		break;
-	case State::PATROL:
-		break;
-	case State::COMBAT:
-		Player* pPlayer = (Player*)FindObject("Player");
-		moveTargetPos_ = pPlayer->GetPosition();
-		root_->Update();
-		Rotate();
-		break;
-	case State::DEAD:
-		break;
-	default:
-		break;
-	}
-	
-
+	if(pStateManager_) pStateManager_->Update();
 	if(pEnemyUi_) pEnemyUi_->Update();
 
 }
@@ -106,5 +79,4 @@ void Feet::Draw()
 
 void Feet::Release()
 {
-	SAFE_DELETE(root_);
 }

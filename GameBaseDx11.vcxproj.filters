@@ -246,10 +246,10 @@
     <ClCompile Include="BehaviourNode.cpp">
       <Filter>05BehaviorTree\01Base</Filter>
     </ClCompile>
-    <ClCompile Include="MoveAction.cpp">
+    <ClCompile Include="MoveActionNode.cpp">
       <Filter>05BehaviorTree\02ActionNode</Filter>
     </ClCompile>
-    <ClCompile Include="TargetConditionCount.cpp">
+    <ClCompile Include="TargetConditionCountNode.cpp">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClCompile>
     <ClCompile Include="DropTable.cpp">
@@ -266,6 +266,9 @@
     </ClCompile>
     <ClCompile Include="PlayerState.cpp">
       <Filter>06State\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="RotateAction.cpp">
+      <Filter>10Action\Actions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -423,10 +426,10 @@
     <ClInclude Include="BehaviourNode.h">
       <Filter>05BehaviorTree\01Base</Filter>
     </ClInclude>
-    <ClInclude Include="MoveAction.h">
+    <ClInclude Include="MoveActionNode.h">
       <Filter>05BehaviorTree\02ActionNode</Filter>
     </ClInclude>
-    <ClInclude Include="TargetConditionCount.h">
+    <ClInclude Include="TargetConditionCountNode.h">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClInclude>
     <ClInclude Include="DropTable.h">
@@ -443,6 +446,9 @@
     </ClInclude>
     <ClInclude Include="PlayerState.h">
       <Filter>06State\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="RotateAction.h">
+      <Filter>10Action\Actions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

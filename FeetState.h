@@ -7,6 +7,7 @@ class Root;
 
 class FeetAppear : public StateBase
 {
+	int time_;
 	Feet* pFeet_;
 public:
 	FeetAppear(StateManager* owner);
@@ -35,7 +36,6 @@ public:
 class FeetCombat : public StateBase
 {
 	Feet* pFeet_;
-	StateManager* pCombatStateManager_;
 	Root* root_;
 public:
 	FeetCombat(StateManager* owner);
@@ -55,11 +55,29 @@ public:
 
 //---------------------------------------------------------------------------------
 
+class FeetWait : public StateBase
+{
+	Feet* pFeet_;
+public:
+	FeetWait(StateManager* owner);
+	const char* GetName() const override { return "Wait"; }
+	void Update() override;
+};
+
 class FeetMove : public StateBase
 {
 	Feet* pFeet_;
 public:
 	FeetMove(StateManager* owner);
-	const char* GetName() const override { return "Dead"; }
+	const char* GetName() const override { return "Move"; }
+	void Update() override;
+};
+
+class FeetAttack : public StateBase
+{
+	Feet* pFeet_;
+public:
+	FeetAttack(StateManager* owner);
+	const char* GetName() const override { return "Attack"; }
 	void Update() override;
 };

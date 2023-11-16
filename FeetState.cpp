@@ -2,7 +2,11 @@
 #include "StateManager.h"
 #include "Feet.h"
 
-FeetAppear::FeetAppear(StateManager* owner)
+namespace {
+	int appearTime = 60;
+}
+
+FeetAppear::FeetAppear(StateManager* owner) : time_(0)
 {
 	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
@@ -10,6 +14,9 @@ FeetAppear::FeetAppear(StateManager* owner)
 
 void FeetAppear::Update()
 {
+	time_++;
+	if (time_ > appearTime) owner_->ChangeState("Idle");
+
 }
 
 //--------------------------------------------------------------------------------
@@ -22,6 +29,7 @@ FeetIdle::FeetIdle(StateManager* owner)
 
 void FeetIdle::Update()
 {
+	owner_->ChangeState("Combat");
 }
 
 //--------------------------------------------------------------------------------
@@ -38,16 +46,14 @@ void FeetPatrol::Update()
 
 //--------------------------------------------------------------------------------
 
-#include "MoveAction.h"
+#include "MoveActionNode.h"
 #include "BehaviourNode.h"
-#include "TargetConditionCount.h"
-#include "BaseAction.h"
+#include "TargetConditionCountNode.h"
 
 FeetCombat::FeetCombat(StateManager* owner)
 {
 	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
-	pCombatStateManager_ = new StateManager(pFeet_);
 
 	//ビヘイビアツリーの設定
 	root_ = new Root();
@@ -58,12 +64,13 @@ FeetCombat::FeetCombat(StateManager* owner)
 	Succeeder* suc1 = new Succeeder(inv1);
 	root_->SetRootNode(seq1);
 	seq1->AddChildren(suc1);
+
 }
 
 void FeetCombat::Update()
 {
 	root_->Update();
-	pCombatStateManager_->Update();
+	pFeet_->GetCombatStateManager()->Update();
 
 }
 
@@ -84,7 +91,21 @@ void FeetDead::Update()
 {
 }
 
+//-------------------------------------CombatState-------------------------------------------
+
+FeetWait::FeetWait(StateManager* owner)
+{
+	owner_ = owner;
+	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
+}
+
+void FeetWait::Update()
+{
+}
+
 //--------------------------------------------------------------------------------
+
+#include "ActionMove.h"
 
 FeetMove::FeetMove(StateManager* owner)
 {
@@ -94,7 +115,19 @@ FeetMove::FeetMove(StateManager* owner)
 
 void FeetMove::Update()
 {
+	pFeet_->GetActionMove()->Update();
 }
 
 //--------------------------------------------------------------------------------
 
+FeetAttack::FeetAttack(StateManager* owner)
+{
+	owner_ = owner;
+	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
+}
+
+void FeetAttack::Update()
+{
+}
+
+//--------------------------------------------------------------------------------

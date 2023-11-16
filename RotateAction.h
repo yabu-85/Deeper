@@ -3,14 +3,15 @@
 
 class Player;
 
-class ActionRotate : public BaseAction
+class RotateAction : public BaseAction
 {
     float rotateRatio_;         //‰ñ“]—¦
     Player* pPlayer_;
 
 public:
-    ActionRotate(GameObject* obj);
-    virtual ~ActionRotate() override {};
+    RotateAction(GameObject* obj);
+    RotateAction(GameObject* obj, float ratio);
+    virtual ~RotateAction() override {};
     virtual void Update() override;
     virtual void Initialize() override;
     virtual void Terminate() override;

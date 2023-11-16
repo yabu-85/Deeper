@@ -3,7 +3,7 @@
 
 class Player;
 
-class ActionMove : public BaseAction
+class MoveAction : public BaseAction
 {
     bool isInRange_;    //Targetについていたらtrue
     float moveSpeed_;   //移動スピード
@@ -11,8 +11,9 @@ class ActionMove : public BaseAction
     Player* pPlayer_;
 
 public:
-    ActionMove(GameObject* obj);
-    virtual ~ActionMove() override {};
+    MoveAction(GameObject* obj);
+    MoveAction(GameObject* obj, float speed, float range);
+    virtual ~MoveAction() override {};
     virtual void Update() override;
     virtual void Initialize() override;
     virtual void Terminate() override;

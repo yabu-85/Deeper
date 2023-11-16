@@ -2,11 +2,7 @@
 #include "StateManager.h"
 #include "Feet.h"
 
-namespace {
-	int appearTime = 60;
-}
-
-FeetAppear::FeetAppear(StateManager* owner) : time_(0)
+FeetAppear::FeetAppear(StateManager* owner) : time_(0), appearTime_(0)
 {
 	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
@@ -15,8 +11,13 @@ FeetAppear::FeetAppear(StateManager* owner) : time_(0)
 void FeetAppear::Update()
 {
 	time_++;
-	if (time_ > appearTime) owner_->ChangeState("Idle");
+	if (time_ > appearTime_) owner_->ChangeState("Idle");
 
+}
+
+void FeetAppear::Initialize()
+{
+	appearTime_ = 60;
 }
 
 //--------------------------------------------------------------------------------
@@ -49,21 +50,31 @@ void FeetPatrol::Update()
 #include "MoveActionNode.h"
 #include "BehaviourNode.h"
 #include "TargetConditionCountNode.h"
+#include "PlayerConditionNode.h"
+#include "Player.h"
 
 FeetCombat::FeetCombat(StateManager* owner)
 {
 	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
+	Player* pPlayer = static_cast<Player*>(pFeet_->FindObject("Player"));
 
 	//ビヘイビアツリーの設定
 	root_ = new Root();
-	Sequence* seq1 = new Sequence();
-	MoveTarget* action1 = new MoveTarget(pFeet_, 0.1f, 2.0f);
-	CombatEnemyCount* condition1 = new CombatEnemyCount(3, action1);
-	Inverter* inv1 = new Inverter(condition1);
-	Succeeder* suc1 = new Succeeder(inv1);
-	root_->SetRootNode(seq1);
-	seq1->AddChildren(suc1);
+	Selector* selector1 = new Selector();
+	root_->SetRootNode(selector1);			//rootを設定
+
+	Selector* selector2 = new Selector();
+	Succeeder* succeeder1 = new Succeeder(selector2);
+	selector1->AddChildren(succeeder1);		//攻撃可能だったら	eeeeeeeeeeee
+
+	MoveTarget* action1 = new MoveTarget(pFeet_);
+	IsPlayerInRangeNode* condition1 = new IsPlayerInRangeNode(10.0f, action1, pFeet_, pPlayer);
+	Inverter* inverter1 = new Inverter(condition1);
+	selector2->AddChildren(inverter1);		//プレイヤーの近くにいないなら移動する
+
+	Selector* selector3 = new Selector();
+	selector2->AddChildren(selector3);		//近くにいるから攻撃のどれかを選択する	eeeeeeeeeeeee
 
 }
 
@@ -105,7 +116,8 @@ void FeetWait::Update()
 
 //--------------------------------------------------------------------------------
 
-#include "ActionMove.h"
+#include "MoveAction.h"
+#include "RotateAction.h"
 
 FeetMove::FeetMove(StateManager* owner)
 {
@@ -115,10 +127,13 @@ FeetMove::FeetMove(StateManager* owner)
 
 void FeetMove::Update()
 {
-	pFeet_->GetActionMove()->Update();
+	pFeet_->GetMoveAction()->Update();
+	pFeet_->GetRotateAction()->Update();
 }
 
 //--------------------------------------------------------------------------------
+
+class ActionAttack;
 
 FeetAttack::FeetAttack(StateManager* owner)
 {

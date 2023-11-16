@@ -3,19 +3,17 @@
 #include "StateBase.h"
 
 class SphereCollider;
-
-class ActionRotate;
-class ActionMove;
-class ActionAttack;
+class MoveAction;
+class RotateAction;
 
 class Feet : public EnemyBase
 {
     int hModel_;
     SphereCollider* pHandCollider_;
-
-    ActionRotate* pActionRotate_;
-    ActionMove* pActionMove_;
-    ActionAttack* pActionAttack_;
+    
+    //Action
+    MoveAction* pMoveAction_;
+    RotateAction* pRotateAction_;
 
 public:
     Feet(GameObject* parent);
@@ -25,8 +23,7 @@ public:
     void Draw() override;
     void Release() override;
 
-    ActionRotate* GetActionRotate() { return pActionRotate_; }
-    ActionMove* GetActionMove() { return pActionMove_; }
-    ActionAttack* GetActionAttack() { return pActionAttack_; }
+    MoveAction* GetMoveAction() { return pMoveAction_; }
+    RotateAction* GetRotateAction() { return pRotateAction_; }
 
 };

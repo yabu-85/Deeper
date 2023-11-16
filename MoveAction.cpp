@@ -1,11 +1,16 @@
-#include "ActionMove.h"
+#include "MoveAction.h"
 #include "Player.h"
 
-ActionMove::ActionMove(GameObject* obj) : BaseAction(obj), pPlayer_(nullptr), isInRange_(false), moveSpeed_(0.1f), moveRange_(1.0f)
+MoveAction::MoveAction(GameObject* obj) : BaseAction(obj), pPlayer_(nullptr), isInRange_(false), moveSpeed_(0.1f), moveRange_(1.0f)
 {
 }
 
-void ActionMove::Update()
+MoveAction::MoveAction(GameObject* obj, float speed, float range)
+	: BaseAction(obj), pPlayer_(nullptr), isInRange_(false), moveSpeed_(speed), moveRange_(range)
+{
+}
+
+void MoveAction::Update()
 {
 	XMFLOAT3 pos = pGameObject_->GetPosition();
 	XMVECTOR vPos = XMLoadFloat3(&pos);
@@ -26,11 +31,11 @@ void ActionMove::Update()
 	isInRange_ = false;;
 }
 
-void ActionMove::Initialize()
+void MoveAction::Initialize()
 {
 	pPlayer_ = static_cast<Player*>(pGameObject_->FindObject("Player"));
 }
 
-void ActionMove::Terminate()
+void MoveAction::Terminate()
 {
 }

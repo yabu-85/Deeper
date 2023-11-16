@@ -5,12 +5,12 @@
 #include "Engine/SphereCollider.h"
 #include "StateManager.h"
 #include "FeetState.h"
-#include "BaseAction.h"
-#include "ActionMove.h"
+
+#include "MoveAction.h"
 #include "RotateAction.h"
 
 Feet::Feet(GameObject* parent)
-	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr), pActionMove_(nullptr), pActionAttack_(nullptr)
+	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr)
 {
 	objectName_ = "Feet";
 }
@@ -58,22 +58,17 @@ void Feet::Initialize()
 	pCombatStateManager_->AddState(new FeetWait(pCombatStateManager_));
 	pCombatStateManager_->AddState(new FeetMove(pCombatStateManager_));
 	pCombatStateManager_->AddState(new FeetAttack(pCombatStateManager_));
-	pCombatStateManager_->ChangeState("Move");
+	pCombatStateManager_->ChangeState("Wait");
 	pCombatStateManager_->Initialize();
 	
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize(5.5f);
 
-	//Action’B‚ð“o˜^
-	pActionRotate_ = new ActionRotate(this);
-	pActionRotate_->Initialize();
-	pActionRotate_->SetRatio(0.07f);
-
-	pActionMove_ = new ActionMove(this);
-	pActionMove_->Initialize();
-	pActionMove_->SetMoveSpeed(0.07f);
-	pActionMove_->SetMoveRange(3.0f);
-
+	//Action‚ÌÝ’è
+	pMoveAction_ = new MoveAction(this, 0.07f, 3.0f);
+	pRotateAction_ = new RotateAction(this, 0.07f);
+	pMoveAction_->Initialize();
+	pRotateAction_->Initialize();
 
 }
 

@@ -2,13 +2,10 @@
 #include "EnemyBase.h"
 #include "StateManager.h"
 
-MoveTarget::MoveTarget(EnemyBase* owner, float speed, float range) : Action(), owner_(owner) {}
+MoveTarget::MoveTarget(EnemyBase* owner) : Action(), owner_(owner) {}
 
 MoveTarget::Status MoveTarget::Update()
 {
-	if (owner_->GetCombatStateManager()->GetName() == "Move") {
-		return Status::SUCCESS;
-	}
-
-	return Status::RUNNING;
+	owner_->GetCombatStateManager()->ChangeState("Move");
+	return Status::SUCCESS;
 }

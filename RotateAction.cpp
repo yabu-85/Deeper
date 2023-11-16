@@ -1,11 +1,15 @@
 #include "RotateAction.h"
 #include "Player.h"
 
-ActionRotate::ActionRotate(GameObject* obj) : BaseAction(obj), pPlayer_(nullptr), rotateRatio_(1.0f)
+RotateAction::RotateAction(GameObject* obj) : BaseAction(obj), pPlayer_(nullptr), rotateRatio_(1.0f)
 {
 }
 
-void ActionRotate::Update()
+RotateAction::RotateAction(GameObject* obj, float ratio) : BaseAction(obj), pPlayer_(nullptr), rotateRatio_(ratio)
+{
+}
+
+void RotateAction::Update()
 {
     XMFLOAT3 plaPos = pPlayer_->GetPosition();
     XMFLOAT3 pos = pGameObject_->GetPosition();
@@ -23,12 +27,12 @@ void ActionRotate::Update()
     pGameObject_->SetRotateY(rotateY);
 }
 
-void ActionRotate::Initialize()
+void RotateAction::Initialize()
 {
     pPlayer_ = static_cast<Player*>(pGameObject_->FindObject("Player"));
 
 }
 
-void ActionRotate::Terminate()
+void RotateAction::Terminate()
 {
 }

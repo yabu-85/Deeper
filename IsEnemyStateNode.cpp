@@ -2,13 +2,13 @@
 #include "EnemyBase.h"
 #include "StateManager.h"
 
-IsCombatState::IsCombatState(TreeNode* child, EnemyBase* enemy) : Condition(child), pEnemyBase_(enemy)
+IsCombatState::IsCombatState(TreeNode* child, EnemyBase* enemy, bool flag) : Condition(child), pEnemyBase_(enemy), isInCombat_(flag)
 {
 }
 
 IsCombatState::Status IsCombatState::Update()
 {
-	if (pEnemyBase_->GetStateManager()->GetName() == "Combat") {
+	if ((pEnemyBase_->GetStateManager()->GetName() == "Combat") == isInCombat_ ) {
 		return child_->Tick();
 	}
 

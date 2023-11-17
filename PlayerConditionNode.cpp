@@ -2,8 +2,8 @@
 #include "Player.h"
 #include "EnemyBase.h"
 
-IsPlayerInRangeNode::IsPlayerInRangeNode(float range, TreeNode* child, EnemyBase* enemy, Player* player)
-    : Condition(child), range_(range),pEnemyBase_(enemy), pPlayer_(player)
+IsPlayerInRangeNode::IsPlayerInRangeNode(float range, TreeNode* child, bool flag, EnemyBase* enemy, Player* player)
+    : Condition(child), range_(range),pEnemyBase_(enemy), pPlayer_(player), isInPlayer_(flag)
 {
 }
 
@@ -16,7 +16,7 @@ IsPlayerInRangeNode::Status IsPlayerInRangeNode::Update()
     XMVECTOR vPos = XMLoadFloat3(&pos);
 
     float length = XMVectorGetX(XMVector3Length(vPlaPos - vPos));
-    if (length <= range_) {
+    if ((length <= range_) == isInPlayer_) {
         return child_->Tick();
     }
 

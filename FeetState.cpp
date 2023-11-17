@@ -66,20 +66,17 @@ FeetCombat::FeetCombat(StateManager* owner)
 	root_->SetRootNode(selector1);			//rootを設定
 
 	Selector* selector2 = new Selector();
-	IsNormalAttackState* condition1 = new IsNormalAttackState(selector2, pFeet_);
+	IsNormalAttackState* condition1 = new IsNormalAttackState(selector2, pFeet_, false);
 	Inverter* inverter1 = new Inverter(condition1);
 	selector1->AddChildren(inverter1);		//攻撃可能だったら
 	
 	MoveTarget* action1 = new MoveTarget(pFeet_);
-	IsPlayerInRangeNode* condition2 = new IsPlayerInRangeNode(10.0f, action1, pFeet_, pPlayer);
-	Inverter* inverter2 = new Inverter(condition2);
-	selector2->AddChildren(inverter2);		//プレイヤーの近くにいないなら移動する
+	IsPlayerInRangeNode* condition2 = new IsPlayerInRangeNode(5.0f, action1, false, pFeet_, pPlayer);
+	selector2->AddChildren(condition2);		//プレイヤーの近くにいないなら移動する
 
-	Selector* selector3 = new Selector();
-	selector2->AddChildren(selector3);		//近くにいるから攻撃のどれかを選択する
 	FeetNormalAttack* action2 = new FeetNormalAttack(pFeet_);
-	selector3->AddChildren(action2);
-
+	selector2->AddChildren(action2);		//近くにいるから攻撃のどれかを選択する
+	
 	//攻撃２
 
 }

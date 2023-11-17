@@ -14,14 +14,13 @@ FeetNormalAttack::Status FeetNormalAttack::Update()
 
 //-------------------------------------------------------------------------------------------------
 
-IsNormalAttackState::IsNormalAttackState(TreeNode* child, Feet* enemy) : Condition(child), owner_(enemy)
+IsNormalAttackState::IsNormalAttackState(TreeNode* child, Feet* enemy, bool flag) : Condition(child), owner_(enemy), isInAttack_(flag)
 {
 }
 
 IsNormalAttackState::Status IsNormalAttackState::Update()
 {
-	std::string name = owner_->GetCombatStateManager()->GetName();
-	if (name != "Attack") {
+	if ((owner_->GetCombatStateManager()->GetName() == "Attack") == isInAttack_) {
 		return child_->Tick();
 	}
 

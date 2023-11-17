@@ -51,6 +51,7 @@ void FeetPatrol::Update()
 #include "BehaviourNode.h"
 #include "TargetConditionCountNode.h"
 #include "PlayerConditionNode.h"
+#include "IsEnemyStateNode.h"
 #include "Player.h"
 
 FeetCombat::FeetCombat(StateManager* owner)
@@ -65,16 +66,18 @@ FeetCombat::FeetCombat(StateManager* owner)
 	root_->SetRootNode(selector1);			//rootを設定
 
 	Selector* selector2 = new Selector();
-	Succeeder* succeeder1 = new Succeeder(selector2);
-	selector1->AddChildren(succeeder1);		//攻撃可能だったら	eeeeeeeeeeee
+	IsAttackState* condition1 = new IsAttackState(selector2, pFeet_);
+	selector1->AddChildren(condition1);		//攻撃可能だったら
 
 	MoveTarget* action1 = new MoveTarget(pFeet_);
-	IsPlayerInRangeNode* condition1 = new IsPlayerInRangeNode(10.0f, action1, pFeet_, pPlayer);
-	Inverter* inverter1 = new Inverter(condition1);
+	IsPlayerInRangeNode* condition2 = new IsPlayerInRangeNode(10.0f, action1, pFeet_, pPlayer);
+	Inverter* inverter1 = new Inverter(condition2);
 	selector2->AddChildren(inverter1);		//プレイヤーの近くにいないなら移動する
 
 	Selector* selector3 = new Selector();
-	selector2->AddChildren(selector3);		//近くにいるから攻撃のどれかを選択する	eeeeeeeeeeeee
+	selector2->AddChildren(selector3);		//近くにいるから攻撃のどれかを選択する
+	//攻撃１
+	//攻撃２
 
 }
 

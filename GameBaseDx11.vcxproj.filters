@@ -93,6 +93,9 @@
     <Filter Include="06State\Player">
       <UniqueIdentifier>{a3b99297-e4e2-4533-b267-eae497f6f730}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05BehaviorTree\Feet">
+      <UniqueIdentifier>{34df25bd-a856-4404-8bc6-f2f625611e02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -258,9 +261,6 @@
     <ClCompile Include="BaseAction.cpp">
       <Filter>10Action\Base</Filter>
     </ClCompile>
-    <ClCompile Include="ActionMove.cpp">
-      <Filter>10Action\Actions</Filter>
-    </ClCompile>
     <ClCompile Include="FeetState.cpp">
       <Filter>06State\Enemy</Filter>
     </ClCompile>
@@ -269,6 +269,19 @@
     </ClCompile>
     <ClCompile Include="RotateAction.cpp">
       <Filter>10Action\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveAction.cpp" />
+    <ClCompile Include="PlayerConditionNode.cpp">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClCompile>
+    <ClCompile Include="StateCountNode.cpp">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClCompile>
+    <ClCompile Include="IsEnemyStateNode.cpp">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClCompile>
+    <ClCompile Include="FeetNode.cpp">
+      <Filter>05BehaviorTree\Feet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -438,9 +451,6 @@
     <ClInclude Include="BaseAction.h">
       <Filter>10Action\Base</Filter>
     </ClInclude>
-    <ClInclude Include="ActionMove.h">
-      <Filter>10Action\Actions</Filter>
-    </ClInclude>
     <ClInclude Include="FeetState.h">
       <Filter>06State\Enemy</Filter>
     </ClInclude>
@@ -449,6 +459,19 @@
     </ClInclude>
     <ClInclude Include="RotateAction.h">
       <Filter>10Action\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveAction.h" />
+    <ClInclude Include="PlayerConditionNode.h">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClInclude>
+    <ClInclude Include="StateCountNode.h">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClInclude>
+    <ClInclude Include="IsEnemyStateNode.h">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClInclude>
+    <ClInclude Include="FeetNode.h">
+      <Filter>05BehaviorTree\Feet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

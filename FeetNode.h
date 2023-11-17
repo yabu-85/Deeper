@@ -11,3 +11,11 @@ public:
 	Status Update() override;
 };
 
+class IsNormalAttackState : public Condition
+{
+	Feet* owner_;
+public:
+	IsNormalAttackState(TreeNode* child, Feet* enemy);
+	Status Update() override;
+};
+

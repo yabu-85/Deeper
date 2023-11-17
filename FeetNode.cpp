@@ -11,3 +11,19 @@ FeetNormalAttack::Status FeetNormalAttack::Update()
 
     return Status::SUCCESS;
 }
+
+//-------------------------------------------------------------------------------------------------
+
+IsNormalAttackState::IsNormalAttackState(TreeNode* child, Feet* enemy) : Condition(child), owner_(enemy)
+{
+}
+
+IsNormalAttackState::Status IsNormalAttackState::Update()
+{
+	std::string name = owner_->GetCombatStateManager()->GetName();
+	if (name != "Attack") {
+		return child_->Tick();
+	}
+
+	return Status::FAILURE;
+}

@@ -77,9 +77,11 @@ public:
 
 class FeetAttack : public StateBase
 {
+	int time_;
 	Feet* pFeet_;
 public:
 	FeetAttack(StateManager* owner);
 	const char* GetName() const override { return "Attack"; }
 	void Update() override;
+	void OnEnter() override;
 };

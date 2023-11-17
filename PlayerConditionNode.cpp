@@ -17,7 +17,7 @@ IsPlayerInRangeNode::Status IsPlayerInRangeNode::Update()
 
     float length = XMVectorGetX(XMVector3Length(vPlaPos - vPos));
     if (length <= range_) {
-        child_->Tick();
+        return child_->Tick();
     }
 
     return Status::FAILURE;

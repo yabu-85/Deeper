@@ -3,11 +3,11 @@
 
 class EnemyBase;
 
-class IsAttackState : public Condition
+class IsCombatState : public Condition
 {
 	EnemyBase* pEnemyBase_;
 public:
-	IsAttackState(TreeNode* child, EnemyBase* enemy);
+	IsCombatState(TreeNode* child, EnemyBase* enemy);
 	Status Update() override;
 };
 

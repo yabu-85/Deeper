@@ -23,7 +23,6 @@ void MoveAction::Update()
 	float length = XMVectorGetX(XMVector3Length(vTar - vPos));
 	if (length <= moveRange_) {
 		isInRange_ = true;
-		return;
 	}
 
 	XMStoreFloat3(&pos, vPos + vMove);

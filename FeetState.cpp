@@ -1,5 +1,12 @@
 #include "FeetState.h"
 #include "StateManager.h"
+#include "MoveActionNode.h"
+#include "BehaviourNode.h"
+#include "TargetConditionCountNode.h"
+#include "PlayerConditionNode.h"
+#include "IsEnemyStateNode.h"
+#include "Player.h"
+#include "FeetNode.h"
 #include "Feet.h"
 
 FeetAppear::FeetAppear(StateManager* owner) : time_(0), appearTime_(0)
@@ -47,13 +54,6 @@ void FeetPatrol::Update()
 
 //--------------------------------------------------------------------------------
 
-#include "MoveActionNode.h"
-#include "BehaviourNode.h"
-#include "TargetConditionCountNode.h"
-#include "PlayerConditionNode.h"
-#include "IsEnemyStateNode.h"
-#include "Player.h"
-
 FeetCombat::FeetCombat(StateManager* owner)
 {
 	owner_ = owner;
@@ -66,17 +66,20 @@ FeetCombat::FeetCombat(StateManager* owner)
 	root_->SetRootNode(selector1);			//rootÇê›íË
 
 	Selector* selector2 = new Selector();
-	IsAttackState* condition1 = new IsAttackState(selector2, pFeet_);
-	selector1->AddChildren(condition1);		//çUåÇâ¬î\ÇæÇ¡ÇΩÇÁ
-
+	IsNormalAttackState* condition1 = new IsNormalAttackState(selector2, pFeet_);
+	Inverter* inverter1 = new Inverter(condition1);
+	selector1->AddChildren(inverter1);		//çUåÇâ¬î\ÇæÇ¡ÇΩÇÁ
+	
 	MoveTarget* action1 = new MoveTarget(pFeet_);
 	IsPlayerInRangeNode* condition2 = new IsPlayerInRangeNode(10.0f, action1, pFeet_, pPlayer);
-	Inverter* inverter1 = new Inverter(condition2);
-	selector2->AddChildren(inverter1);		//ÉvÉåÉCÉÑÅ[ÇÃãﬂÇ≠Ç…Ç¢Ç»Ç¢Ç»ÇÁà⁄ìÆÇ∑ÇÈ
+	Inverter* inverter2 = new Inverter(condition2);
+	selector2->AddChildren(inverter2);		//ÉvÉåÉCÉÑÅ[ÇÃãﬂÇ≠Ç…Ç¢Ç»Ç¢Ç»ÇÁà⁄ìÆÇ∑ÇÈ
 
 	Selector* selector3 = new Selector();
 	selector2->AddChildren(selector3);		//ãﬂÇ≠Ç…Ç¢ÇÈÇ©ÇÁçUåÇÇÃÇ«ÇÍÇ©ÇëIëÇ∑ÇÈ
-	//çUåÇÇP
+	FeetNormalAttack* action2 = new FeetNormalAttack(pFeet_);
+	selector3->AddChildren(action2);
+
 	//çUåÇÇQ
 
 }
@@ -138,7 +141,7 @@ void FeetMove::Update()
 
 class ActionAttack;
 
-FeetAttack::FeetAttack(StateManager* owner)
+FeetAttack::FeetAttack(StateManager* owner) : time_(0)
 {
 	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
@@ -146,6 +149,21 @@ FeetAttack::FeetAttack(StateManager* owner)
 
 void FeetAttack::Update()
 {
+	time_--;
+	float random = time_ / 60.0f + 1.0f;
+	pFeet_->SetScale(XMFLOAT3(random, random, random));
+	
+	if (time_ <= 0) {
+		pFeet_->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
+		owner_->ChangeState("Wait");
+		return;
+	}
+
+}
+
+void FeetAttack::OnEnter()
+{
+	time_ = 60;
 }
 
 //--------------------------------------------------------------------------------

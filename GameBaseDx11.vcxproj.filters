@@ -270,7 +270,6 @@
     <ClCompile Include="RotateAction.cpp">
       <Filter>10Action\Actions</Filter>
     </ClCompile>
-    <ClCompile Include="MoveAction.cpp" />
     <ClCompile Include="PlayerConditionNode.cpp">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClCompile>
@@ -282,6 +281,9 @@
     </ClCompile>
     <ClCompile Include="FeetNode.cpp">
       <Filter>05BehaviorTree\Feet</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveAction.cpp">
+      <Filter>10Action\Actions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -460,7 +462,6 @@
     <ClInclude Include="RotateAction.h">
       <Filter>10Action\Actions</Filter>
     </ClInclude>
-    <ClInclude Include="MoveAction.h" />
     <ClInclude Include="PlayerConditionNode.h">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClInclude>
@@ -472,6 +473,9 @@
     </ClInclude>
     <ClInclude Include="FeetNode.h">
       <Filter>05BehaviorTree\Feet</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveAction.h">
+      <Filter>10Action\Actions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

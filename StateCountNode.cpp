@@ -5,16 +5,36 @@
 #include "GameManager.h"
 #include <vector>
 
-AttackStateCountNode::AttackStateCountNode(int count, TreeNode* child) : Condition(child), countThreshold_(count)
+StateCountNode::StateCountNode(TreeNode* child, int count, std::string name)
+	: Condition(child), countThreshold_(count), stateName_(name)
 {
 }
 
-AttackStateCountNode::Status AttackStateCountNode::Update()
+StateCountNode::Status StateCountNode::Update()
 {
 	std::vector<EnemyBase*> eneList = GameManager::GetEnemySpawnCtrl()->GetAllEnemy();
 	int con = 0;
 	for (auto e : eneList) {
-		if (e->GetCombatStateManager()->GetName() == "Attack") con++;
+		if (e->GetCombatStateManager()->GetName() == stateName_) con++;
+	}
+
+	if (countThreshold_ >= con) return child_->Tick();
+	return Status::FAILURE;
+}
+
+//--------------------------------------------------------------------------------------------
+
+CombatStateCountNode::CombatStateCountNode(TreeNode* child, int count, std::string name)
+	: Condition(child), countThreshold_(count), stateName_(name)
+{
+}
+
+CombatStateCountNode::Status CombatStateCountNode::Update()
+{
+	std::vector<EnemyBase*> eneList = GameManager::GetEnemySpawnCtrl()->GetAllEnemy();
+	int con = 0;
+	for (auto e : eneList) {
+		if (e->GetCombatStateManager()->GetName() == stateName_) con++;
 	}
 
 	if (countThreshold_ >= con) return child_->Tick();

@@ -252,9 +252,6 @@
     <ClCompile Include="MoveActionNode.cpp">
       <Filter>05BehaviorTree\02ActionNode</Filter>
     </ClCompile>
-    <ClCompile Include="TargetConditionCountNode.cpp">
-      <Filter>05BehaviorTree\03ConditionNode</Filter>
-    </ClCompile>
     <ClCompile Include="DropTable.cpp">
       <Filter>08Enemy</Filter>
     </ClCompile>
@@ -443,9 +440,6 @@
     </ClInclude>
     <ClInclude Include="MoveActionNode.h">
       <Filter>05BehaviorTree\02ActionNode</Filter>
-    </ClInclude>
-    <ClInclude Include="TargetConditionCountNode.h">
-      <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClInclude>
     <ClInclude Include="DropTable.h">
       <Filter>08Enemy</Filter>

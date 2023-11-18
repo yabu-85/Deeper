@@ -2,7 +2,6 @@
 #include "StateManager.h"
 #include "MoveActionNode.h"
 #include "BehaviourNode.h"
-#include "TargetConditionCountNode.h"
 #include "PlayerConditionNode.h"
 #include "IsEnemyStateNode.h"
 #include "Player.h"
@@ -60,24 +59,30 @@ FeetCombat::FeetCombat(StateManager* owner)
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 	Player* pPlayer = static_cast<Player*>(pFeet_->FindObject("Player"));
 
-	//ビヘイビアツリーの設定
+	//-----------------------------ビヘイビアツリーの設定--------------------------------------
 	root_ = new Root();
 	Selector* selector1 = new Selector();
-	root_->SetRootNode(selector1);			//rootを設定
+	root_->SetRootNode(selector1);
 
+	//---------------------------------------攻撃可能------------------------------------------------
 	Selector* selector2 = new Selector();
-	IsNormalAttackState* condition1 = new IsNormalAttackState(selector2, pFeet_, false);
+	IsNotEnemyCombatState* condition1 = new IsNotEnemyCombatState(selector2, "Attack", pFeet_);
 	Inverter* inverter1 = new Inverter(condition1);
-	selector1->AddChildren(inverter1);		//攻撃可能だったら
+	selector1->AddChildren(inverter1);
 	
+	//--------------------プレイヤーの近くではない（移動）/　近くなら攻撃を選ぶ-----------------------
 	MoveTarget* action1 = new MoveTarget(pFeet_);
-	IsPlayerInRangeNode* condition2 = new IsPlayerInRangeNode(5.0f, action1, false, pFeet_, pPlayer);
-	selector2->AddChildren(condition2);		//プレイヤーの近くにいないなら移動する
+	IsPlayerNotInRangeNode* condition2 = new IsPlayerNotInRangeNode(action1, 5.0f, pFeet_, pPlayer);
+	selector2->AddChildren(condition2);
 
+	Selector* selector3 = new Selector();
+	selector2->AddChildren(selector3);
+
+	//--------------------------------攻撃のどれかを選ぶ-------------------------------------------
 	FeetNormalAttack* action2 = new FeetNormalAttack(pFeet_);
-	selector2->AddChildren(action2);		//近くにいるから攻撃のどれかを選択する
-	
-	//攻撃２
+	selector3->AddChildren(action2);
+
+	//--------------------------------設定終わり-------------------------------------------
 
 }
 
@@ -147,8 +152,11 @@ FeetAttack::FeetAttack(StateManager* owner) : time_(0)
 void FeetAttack::Update()
 {
 	time_--;
-	float random = time_ / 60.0f + 1.0f;
-	pFeet_->SetScale(XMFLOAT3(random, random, random));
+
+	if (time_ > 0 + 30) {
+		float random = time_ / 60.0f + 1.0f;
+		pFeet_->SetScale(XMFLOAT3(random, random, random));
+	}
 	
 	if (time_ <= 0) {
 		pFeet_->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
@@ -160,7 +168,7 @@ void FeetAttack::Update()
 
 void FeetAttack::OnEnter()
 {
-	time_ = 60;
+	time_ = 90;
 }
 
 //--------------------------------------------------------------------------------

@@ -13,6 +13,11 @@ TreeNode::~TreeNode()
 
 TreeNode::Status TreeNode::Tick()
 {
+    
+    return status_ = Update();
+    //Initalize / Terminate¡‚Ì‚Æ‚±g‚¤—\’è‚ª‚È‚¢A‚»‚Ì‚Ü‚Ü‚È‚ç–³‚­‚Ä‚à‚¢‚¢‚ñ‚¶‚á‚È‚¢‚©‚È
+
+
     if (status_ == Status::INVALID)
     {
         Initialize();

@@ -17,8 +17,8 @@ Aim::Aim(GameObject* parent)
 {
     mouseSensitivity = 2.0f;
     heightDistance_ = 3.0f;
-    upMouselimit_ = -89.0f;
-    donwMouselimit_ = 70.0f;
+    upMouselimit_ = -30.0f;
+    donwMouselimit_ = 30.0f;
     mouseSpeed_ = 0.05f;
     defPerspectDistance_ = 10.0f;
     perspectiveDistance_ = defPerspectDistance_;

@@ -1,14 +1,45 @@
 #pragma once
+#include <string>
 #include "BehaviourNode.h"
 
 class EnemyBase;
 
-class IsCombatState : public Condition
+class IsEnemyState : public Condition
 {
-	bool isInCombat_;		//Combat‚©‚»‚êˆÈŠO‚©‚ðŒˆ‚ß‚é
+	std::string stateName_;
 	EnemyBase* pEnemyBase_;
 public:
-	IsCombatState(TreeNode* child, EnemyBase* enemy, bool flag);
+	IsEnemyState(TreeNode* child, std::string name, EnemyBase* enemy);
 	Status Update() override;
 };
 
+class IsNotEnemyState : public Condition
+{
+	std::string stateName_;
+	EnemyBase* pEnemyBase_;
+public:
+	IsNotEnemyState(TreeNode* child, std::string name, EnemyBase* enemy);
+	Status Update() override;
+};
+
+//--------------------------------------------------------------------------------------------
+
+class IsEnemyCombatState : public Condition
+{
+	std::string stateName_;
+	EnemyBase* pEnemyBase_;
+public:
+	IsEnemyCombatState(TreeNode* child, std::string name, EnemyBase* enemy);
+	Status Update() override;
+};
+
+class IsNotEnemyCombatState : public Condition
+{
+	std::string stateName_;
+	EnemyBase* pEnemyBase_;
+public:
+	IsNotEnemyCombatState(TreeNode* child, std::string name, EnemyBase* enemy);
+	Status Update() override;
+};
+
+//--------------------------------------------------------------------------------------------

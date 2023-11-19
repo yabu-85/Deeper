@@ -23,7 +23,7 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, pStateManager_(nullptr), fMove_{ 0,0,0 },
+    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, pStateManager_(nullptr),
     pCommand_(nullptr), pMainWeapon_(nullptr), pSubWeapon_{ nullptr, nullptr }, money_(0), hp_(0), maxHp_(0), currentSubIndex_(0)
     , moveSpeed_(0.0f), rotateRatio_(0.0f)
 {
@@ -159,6 +159,52 @@ void Player::Rotate(float ratio)
     transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * ratio);
 }
 
+XMFLOAT3 Player::GetInputMove()
+{
+    XMFLOAT3 fMove = { 0,0,0 };
+    if (pCommand_->CmdWalk()) {
+        gradually = moveGradually;
+
+        XMFLOAT3 aimDirection = pAim_->GetAimDirection();
+        if (pCommand_->CmdUp()) {
+            fMove.x += aimDirection.x;
+            fMove.z += aimDirection.z;
+        }
+        if (pCommand_->CmdLeft()) {
+            fMove.x -= aimDirection.z;
+            fMove.z += aimDirection.x;
+        }
+        if (pCommand_->CmdDown()) {
+            fMove.x -= aimDirection.x;
+            fMove.z -= aimDirection.z;
+        }
+        if (pCommand_->CmdRight()) {
+            fMove.x += aimDirection.z;
+            fMove.z -= aimDirection.x;
+        }
+    }
+
+    XMVECTOR vMove = XMLoadFloat3(&fMove);
+    vMove = XMVector3Normalize(vMove);
+    XMStoreFloat3(&fMove, vMove);
+
+    return fMove;
+}
+
+void Player::FrontMove(float f)
+{
+    XMVECTOR vMove = { 0.0, 0.0, 1.0, 0.0 };
+    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+    vMove = XMVector3TransformCoord(vMove, mRotY);
+    vMove = XMVector3Normalize(vMove);
+    vMove = XMVector3Normalize(vMove + XMLoadFloat3(&playerMovement_));
+    XMFLOAT3 move{};
+    XMStoreFloat3(&move, vMove);
+
+    transform_.position_.x += ((move.x * moveSpeed_) * f);
+    transform_.position_.z += ((move.z * moveSpeed_) * f);
+}
+
 void Player::Move(float f)
 {
     transform_.position_.x += ((playerMovement_.x * moveSpeed_) * f);
@@ -182,40 +228,19 @@ XMVECTOR Player::GetDirectionVec()
     return vMove;
 }
 
+void Player::CalcRotate()
+{
+    rotateMove = GetInputMove();
+}
+
 void Player::CalcMove()
 {
     gradually = stopGradually;
 
-    //fMoveÇÃílÇéÊÇÈ
-    fMove_ = { 0,0,0 };
-    if (pCommand_->CmdWalk()) {
-        gradually = moveGradually;
+    XMFLOAT3 fMove = GetInputMove();
+    rotateMove = fMove;
 
-        XMFLOAT3 aimDirection = pAim_->GetAimDirection();
-        if (pCommand_->CmdUp()) {
-            fMove_.x += aimDirection.x;
-            fMove_.z += aimDirection.z;
-        }
-        if (pCommand_->CmdLeft()) {
-            fMove_.x -= aimDirection.z;
-            fMove_.z += aimDirection.x;
-        }
-        if (pCommand_->CmdDown()) {
-            fMove_.x -= aimDirection.x;
-            fMove_.z -= aimDirection.z;
-        }
-        if (pCommand_->CmdRight()) {
-            fMove_.x += aimDirection.z;
-            fMove_.z -= aimDirection.x;
-        }
-        rotateMove = fMove_;
-    }
-
-    XMVECTOR vMove = XMLoadFloat3(&fMove_);
-    vMove = XMVector3Normalize(vMove);
-    XMStoreFloat3(&fMove_, vMove);
-
-    XMFLOAT3 move = { ((fMove_.x - playerMovement_.x) * gradually) , 0.0f , ((fMove_.z - playerMovement_.z) * gradually) };
+    XMFLOAT3 move = { ((fMove.x - playerMovement_.x) * gradually) , 0.0f , ((fMove.z - playerMovement_.z) * gradually) };
     playerMovement_ = { playerMovement_.x + move.x , 0.0f , playerMovement_.z + move.z };
 
     //MaxSpeedí¥Ç¶ÇƒÇ¢ÇΩÇÁê≥ãKâªÅEMaxSpeedÇÃílÇ…Ç∑ÇÈ

@@ -152,6 +152,14 @@ void TestWeaponCombo1::Update()
     pPlayer_->Move();
     pTestWeaponMain_->CalcDamage(7.0f);
 
+    if (time_ > (comboTime_ - 10)) {
+        pPlayer_->CalcRotate();
+        pPlayer_->Rotate(0.15f);
+    }
+    
+    float speed = (float)time_ / (float)comboTime_;
+    pPlayer_->FrontMove(speed);
+
     time_--;
     if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;
     
@@ -194,6 +202,13 @@ void TestWeaponCombo2::Update()
     pPlayer_->Move();
     pTestWeaponMain_->CalcDamage(7.0f);
 
+    if (time_ > (comboTime_ - 10)) {
+        pPlayer_->CalcRotate();
+        pPlayer_->Rotate(0.15f);
+    }
+    float speed = (float)time_ / (float)comboTime_;
+    pPlayer_->FrontMove(speed * 0.5f);
+
     time_--;
     if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;
     
@@ -235,6 +250,13 @@ void TestWeaponCombo3::Update()
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
     pTestWeaponMain_->CalcDamage(7.0f);
+
+    if (time_ > (comboTime_ - 10)) {
+        pPlayer_->CalcRotate();
+        pPlayer_->Rotate(0.15f);
+    }
+    float speed = (float)time_ / (float)comboTime_;
+    pPlayer_->FrontMove(speed);
 
     time_--;
     if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;

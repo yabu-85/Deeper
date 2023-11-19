@@ -6,7 +6,7 @@ PlayerCommand::PlayerCommand()
 {
 	SetDefaultKeyConfig();
 	
-	ChangeCmd(ATK, DIK_G, 1);
+	//ChangeCmd(ATK, DIK_G, 1);
 }
 
 void PlayerCommand::Update()

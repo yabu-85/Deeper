@@ -1,15 +1,12 @@
 #include "Aim.h"
 #include "Engine/Camera.h"
-#include "Engine/Input.h"
-#include "Engine/Model.h"
 #include "Player.h"
-#include "Stage.h"
 #include "CollisionMap.h"
-#include "Triangle.h"
 #include <vector>
 #include "EnemyBase.h"
 #include "EnemySpawnCtrl.h"
 #include "GameManager.h"
+#include "PlayerCommand.h"
 
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 },
@@ -26,7 +23,7 @@ Aim::Aim(GameObject* parent)
     numSupress_ = 0.002f;
     maxCameraOffset_ = 2.0f;
     moveAimTime_ = 0.04f;
-    stopAimTime_ = 0.035f;
+    stopAimTime_ = 0.08f;
     targetRange_ = 50.0f;
     fovRadian_ = XMConvertToRadians(60) / 2;
     rotateRatio_ = 0.2f;
@@ -42,6 +39,8 @@ void Aim::Initialize()
     aimMove_ = true;
 	
 }
+
+#include "Engine/Input.h"
 
 void Aim::Update()
 {
@@ -253,7 +252,7 @@ void Aim::CalcCameraOffset(float _aimMove)
     XMVECTOR vTargetOffset = XMLoadFloat3(&pMove);
     vTargetOffset *= maxCameraOffset_ * -1;
 
-    if(pPlayer_->IsMove()) vCameraOffset += (vTargetOffset - vCameraOffset) * moveAimTime_;   //move
+    if(pPlayer_->GetCommand()->CmdWalk()) vCameraOffset += (vTargetOffset - vCameraOffset) * moveAimTime_;   //move
     else vCameraOffset += (vTargetOffset - vCameraOffset) * stopAimTime_;                     //stop
 
     XMStoreFloat3(&cameraOffset_, vCameraOffset);

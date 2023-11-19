@@ -54,7 +54,7 @@ void TestWeaponSub::Draw()
         transform_.rotate_.y *= -1.0f;
         transform_.rotate_.z *= -1.0f;
     }
-    transform_.rotate_.y += pPlayer_->GetUpRotate().y;
+    transform_.rotate_.y += pPlayer_->GetRotate().y;
 
     Transform t = transform_;
     CalcOffset(t);

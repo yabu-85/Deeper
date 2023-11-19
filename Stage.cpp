@@ -46,6 +46,7 @@ void Stage::Draw()
         int handle = intersectDatas_.at(i).hModelNum;
         Transform trans;
         trans.position_ = intersectDatas_.at(i).position;
+        trans.scale_ = intersectDatas_.at(i).scale;
         Model::SetTransform(handle, trans);
         Model::Draw(handle, 0);
     }
@@ -56,6 +57,7 @@ void Stage::Draw()
             int handle = intersectDatas_.at(i).hModelNum + MAX;
             Transform trans;
             trans.position_ = intersectDatas_.at(i).position;
+            trans.scale_ = intersectDatas_.at(i).scale;
             Model::SetTransform(handle, trans);
             Model::Draw(handle, 2);
         }
@@ -106,17 +108,17 @@ void Stage::CreatStage()
                 mapData_[z][x] = 1;
                 intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
             }
-            else if (data == 21)
+            else if (data == 2)
             {
                 mapData_[z][x] = 1;
                 intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
                 intersectDatas_.push_back({ hModel_[T2], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
             }
-            else if (data == 31)
+            else if (data == 3)
             {
                 mapData_[z][x] = 1;
                 intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
-                intersectDatas_.push_back({ hModel_[T3], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
+                intersectDatas_.push_back({ hModel_[T3], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f, 0.1f, 1.0f) });
             }
             else
             {

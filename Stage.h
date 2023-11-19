@@ -19,6 +19,11 @@ enum RayStageNum {
 struct IntersectData {
     int hModelNum;
     XMFLOAT3 position;
+    XMFLOAT3 scale;
+
+    IntersectData() : hModelNum(-1), position{ 0.0f, 0.0f, 0.0f }, scale{ 1.0f, 1.0f, 1.0f } { }
+    IntersectData(int num, XMFLOAT3 pos) : hModelNum(num), position(pos), scale{1.0f, 1.0f, 1.0f} { }
+    IntersectData(int num, XMFLOAT3 pos, XMFLOAT3 sca) : hModelNum(num), position(pos), scale(sca) { }
 };
 
 class Stage :

@@ -7,7 +7,6 @@
 #include "Stage.h"
 
 namespace {
-    const float playerRadius = 8.0f;
     const float boxSize = 10.0f;
     const int polySize = 3;
 
@@ -84,8 +83,11 @@ void CollisionMap::Initialize()
 
             //IntersectÇ≤Ç∆ÇÃç¿ïWÇåvéZ
             XMFLOAT3 interPos = inteDatas[i].position;
+            XMFLOAT3 interScale = inteDatas[i].scale;
             for (int j = 0; j < polygons.size(); j++)
-                polygons[j] = XMFLOAT3(polygons[j].x + interPos.x, polygons[j].y + interPos.y, polygons[j].z + interPos.z);
+                polygons[j] = XMFLOAT3(polygons[j].x * interScale.x + interPos.x,
+                                       polygons[j].y * interScale.y + interPos.y,
+                                       polygons[j].z * interScale.z + interPos.z);
 
             int polygonsSize = (int)polygons.size() / polySize;
             for (int h = 0; h < polygonsSize; h++) {

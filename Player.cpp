@@ -44,6 +44,9 @@ void Player::Initialize()
     hModel_[1] = Model::Load("Model/FiterTestDown.fbx");
     assert(hModel_[1] >= 0);
     transform_.rotate_.y += 180.0f;
+    
+    Model::SetBlendingAnimFrame(hModel_[1], 0, 100, 50, 1.0f, 0.2f);
+   // Model::SetAnimFrame(hModel_[1], 50, 150, 1.0f);
 
     pMainWeapon_ = Instantiate<TestWeaponMain>(this);
     pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));

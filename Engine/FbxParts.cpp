@@ -524,6 +524,15 @@ void FbxParts::DrawBlendedSkinAnime(Transform& transform, FbxTime time1, FbxTime
 
 	//-----------------------------こっから二つのアニメーションを合わせる---------------------------------------------------
 
+	std::vector<XMMATRIX> newDiffPos;
+	for (int i = 0; i < (int)numBone_; i++) {
+		XMMATRIX pos = pBoneArray_[i].newPose * (pBoneArray_[i].newPose2 * blendFactor);
+		pos /= 1.0f + blendFactor;
+		XMMATRIX diff = XMMatrixInverse(nullptr, pBoneArray_[i].bindPose);
+		diff *= pos;
+		newDiffPos.push_back(diff);
+	}
+
 	for (DWORD i = 0; i < vertexCount_; i++)
 	{
 		// 各頂点ごとに、「影響するボーン×ウェイト値」を反映させた関節行列を作成する
@@ -535,10 +544,8 @@ void FbxParts::DrawBlendedSkinAnime(Transform& transform, FbxTime time1, FbxTime
 			{
 				break;
 			}
-			matrix += pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose * pWeightArray_[i].pBoneWeight[m] +
-					  pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose2 * pWeightArray_[i].pBoneWeight[m] * blendFactor;
-
-			matrix /= 1.0f + blendFactor;
+			matrix += newDiffPos[m] * pWeightArray_[i].pBoneWeight[m];
+			
 		}
 
 		// 作成された関節行列を使って、頂点を変形する

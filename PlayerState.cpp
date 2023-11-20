@@ -61,11 +61,6 @@ PlayerWalk::PlayerWalk(StateManager* owner)
 
 void PlayerWalk::Update()
 {
-	pPlayer_->WeaponChangeIndex();
-	pPlayer_->CalcMove();
-	pPlayer_->Move();
-	pPlayer_->Rotate();
-
 	if (!pPlayer_->GetCommand()->CmdWalk()) {
 		owner_->ChangeState("Wait");
 		return;
@@ -88,6 +83,12 @@ void PlayerWalk::Update()
 			return;
 		}
 	}
+	
+	pPlayer_->WeaponChangeIndex();
+	pPlayer_->CalcMove();
+	pPlayer_->Move(); 
+	pPlayer_->Rotate();
+
 }
 
 //--------------------------------------------------------------------------------

@@ -7,6 +7,7 @@
 #include "PlayerCommand.h"
 #include "TestWeaponMain.h"
 #include "TestWeaponSub.h"
+#include "Engine/BoxCollider.h"
 
 #include "Engine/Text.h"
 
@@ -68,6 +69,9 @@ void Player::Initialize()
     moveSpeed_ = 0.15f;
     rotateRatio_ = 0.2f;
 
+    BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.5f, 0.0f), XMFLOAT3(0.5f, 2.0f, 0.5f));
+    AddCollider(collider);
+
     pText->Initialize();
 }
 
@@ -85,7 +89,6 @@ void Player::Update()
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
     if (Input::IsKeyDown(DIK_RIGHTARROW)) transform_.position_.y += 10.0f;
     if (Input::IsKey(DIK_H)) ApplyDamage(1);
-
 }
 
 void Player::Draw()
@@ -94,6 +97,8 @@ void Player::Draw()
     Model::Draw(hModel_[0]);
     Model::SetTransform(hModel_[1], transform_);
     Model::Draw(hModel_[1]);
+
+    CollisionDraw();
 
     //ïêäÌÇÃï\é¶îÒï\é¶
     if (currentSubIndex_ == 0) {

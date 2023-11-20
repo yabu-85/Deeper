@@ -77,19 +77,17 @@ namespace Model
 		//アニメーションを進める
 		if (!_datas[handle]->isAimeStop) {
 			_datas[handle]->nowFrame += _datas[handle]->animSpeed;
-			_datas[handle]->nowFrame2 += _datas[handle]->animSpeed;
 		
 			//最後までアニメーションしたら戻す
 			if (_datas[handle]->nowFrame > (float)_datas[handle]->endFrame) {
 				_datas[handle]->nowFrame = (float)_datas[handle]->startFrame;
-				_datas[handle]->nowFrame2 = (float)_datas[handle]->startFrame2;
 			}
 		}
 		
 		if (_datas[handle]->pFbx)
 		{
 			if (_datas[handle]->isBlending) {
-				_datas[handle]->pFbx->Draw(_datas[handle]->transform, type, (int)_datas[handle]->nowFrame, (int)_datas[handle]->nowFrame2, _datas[handle]->blendWeight);
+				_datas[handle]->pFbx->Draw(_datas[handle]->transform, type, (int)_datas[handle]->nowFrame, (int)_datas[handle]->blendFrame, _datas[handle]->blendWeight);
 				return;
 			}
 

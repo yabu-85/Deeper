@@ -45,9 +45,6 @@ void Player::Initialize()
     assert(hModel_[1] >= 0);
     transform_.rotate_.y += 180.0f;
     
-    Model::SetBlendingAnimFrame(hModel_[1], 0, 100, 50, 1.0f, 0.2f);
-   // Model::SetAnimFrame(hModel_[1], 50, 150, 1.0f);
-
     pMainWeapon_ = Instantiate<TestWeaponMain>(this);
     pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
     pMainWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 0.0f, 0.0f));
@@ -78,6 +75,15 @@ void Player::Update()
 {
     pCommand_->Update();
     pStateManager_->Update();
+
+    if(Input::IsKeyDown(DIK_G))
+    Model::SetBlendingAnimFrame(hModel_[1], 0, 150, 0, 1.0f, 1.0f);
+    
+    if (Input::IsKeyDown(DIK_F))
+    Model::SetBlendingAnimFrame(hModel_[1], 0, 150, 0, 1.0f, 0.2f);
+
+    if (Input::IsKeyDown(DIK_H))
+    Model::SetAnimFrame(hModel_[1], 0, 300, 1.0f);
 
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();

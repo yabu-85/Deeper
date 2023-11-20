@@ -30,13 +30,12 @@ namespace Model
 
 		// ブレンディング用フィールド
 		bool isBlending;
-		float nowFrame2;
-		int startFrame2;
+		float blendFrame;
 		float blendWeight;
 
 		//初期化
 		ModelData() : pFbx(nullptr), isAimeStop(false), nowFrame(0), startFrame(0), endFrame(0), animSpeed(0),
-			isBlending(false), nowFrame2(0.0f), startFrame2(0), blendWeight(0.0f)
+			isBlending(false), blendFrame(0.0f), blendWeight(0.0f)
 		{
 		}
 
@@ -46,9 +45,8 @@ namespace Model
 			isBlending = true;
 
 			nowFrame = (float)_startFrame1;
-			nowFrame2 = (float)_startFrame2;
+			blendFrame = (float)_startFrame2;
 			startFrame = _startFrame1;
-			startFrame2 = _startFrame2;
 			endFrame = _endFrame1;
 
 			animSpeed = _blendSpeed;

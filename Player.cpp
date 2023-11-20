@@ -76,14 +76,15 @@ void Player::Update()
     pCommand_->Update();
     pStateManager_->Update();
 
+    //40,80,150
     if(Input::IsKeyDown(DIK_G))
-    Model::SetBlendingAnimFrame(hModel_[1], 0, 150, 0, 1.0f, 1.0f);
+    Model::SetBlendingAnimFrame(hModel_[0], 0, 150, 0, 1.0f, 0.05f);
     
     if (Input::IsKeyDown(DIK_F))
-    Model::SetBlendingAnimFrame(hModel_[1], 0, 150, 0, 1.0f, 0.2f);
+    Model::SetBlendingAnimFrame(hModel_[0], 0, 150, 0, 1.0f, 0.8f);
 
     if (Input::IsKeyDown(DIK_H))
-    Model::SetAnimFrame(hModel_[1], 0, 300, 1.0f);
+    Model::SetAnimFrame(hModel_[0], 0, 300, 1.0f);
 
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();

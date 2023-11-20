@@ -154,6 +154,11 @@ namespace Model
 		_datas[handle]->SetAnimFrame(startFrame, endFrame, animSpeed);
 	}
 
+	void SetBlendFactor(int handle, float weight)
+	{
+		_datas[handle]->blendWeight = weight;
+	}
+
 	void SetAnimeStop(int handle, bool b)
 	{
 		_datas[handle]->isAimeStop = b;

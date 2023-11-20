@@ -105,6 +105,8 @@ namespace Model
 	//引数：animSpeed	アニメーション速度
 	void SetAnimFrame(int handle, int startFrame, int endFrame, float animSpeed);
 
+	void SetBlendFactor(int handle, float weight);
+
 	//アニメーション停止
 	void SetAnimeStop(int handle, bool b);
 	bool IsAnimeStop(int handle);

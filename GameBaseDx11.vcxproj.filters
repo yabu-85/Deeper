@@ -96,6 +96,12 @@
     <Filter Include="05BehaviorTree\Feet">
       <UniqueIdentifier>{34df25bd-a856-4404-8bc6-f2f625611e02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="11Animation">
+      <UniqueIdentifier>{f2fd3b5b-9812-4d61-8d08-0a1f902da6c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="12Stage">
+      <UniqueIdentifier>{f17cee51-8ce2-41ab-b564-b00204fc3e6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -167,10 +173,6 @@
     <ClCompile Include="Engine\VFX.cpp">
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="Cell.cpp" />
-    <ClCompile Include="Triangle.cpp" />
-    <ClCompile Include="CollisionMap.cpp" />
     <ClCompile Include="NavigationAI.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="MasterHand.cpp">
@@ -282,6 +284,21 @@
     <ClCompile Include="MoveAction.cpp">
       <Filter>10Action\Actions</Filter>
     </ClCompile>
+    <ClCompile Include="AnimationController.cpp">
+      <Filter>11Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Cell.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionMap.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -353,10 +370,6 @@
     <ClInclude Include="Engine\VFX.h">
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="Stage.h" />
-    <ClInclude Include="Cell.h" />
-    <ClInclude Include="Triangle.h" />
-    <ClInclude Include="CollisionMap.h" />
     <ClInclude Include="NavigationAI.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="EnemyBase.h">
@@ -470,6 +483,21 @@
     </ClInclude>
     <ClInclude Include="MoveAction.h">
       <Filter>10Action\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationController.h">
+      <Filter>11Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Cell.h">
+      <Filter>12Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionMap.h">
+      <Filter>12Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>12Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>12Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

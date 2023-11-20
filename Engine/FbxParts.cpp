@@ -535,10 +535,9 @@ void FbxParts::DrawBlendedSkinAnime(Transform& transform, FbxTime time1, FbxTime
 			{
 				break;
 			}
-			matrix += pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose * pWeightArray_[i].pBoneWeight[m] +
+			
+			matrix += pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose * pWeightArray_[i].pBoneWeight[m] * (1.0f - blendFactor) +
 					  pBoneArray_[pWeightArray_[i].pBoneIndex[m]].diffPose2 * pWeightArray_[i].pBoneWeight[m] * blendFactor;
-
-			matrix /= 1.0f + blendFactor;
 		}
 
 		// 作成された関節行列を使って、頂点を変形する

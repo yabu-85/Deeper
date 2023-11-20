@@ -45,7 +45,7 @@ void Player::Initialize()
     hModel_[1] = Model::Load("Model/FiterTestDown.fbx");
     assert(hModel_[1] >= 0);
     transform_.rotate_.y += 180.0f;
-
+    
     pMainWeapon_ = Instantiate<TestWeaponMain>(this);
     pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
     pMainWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 0.0f, 0.0f));
@@ -79,6 +79,16 @@ void Player::Update()
 {
     pCommand_->Update();
     pStateManager_->Update();
+
+    //40,80,150
+    if(Input::IsKeyDown(DIK_G))
+    Model::SetBlendingAnimFrame(hModel_[0], 0, 150, 0, 1.0f, 0.05f);
+    
+    if (Input::IsKeyDown(DIK_F))
+    Model::SetBlendingAnimFrame(hModel_[0], 0, 150, 0, 1.0f, 0.8f);
+
+    if (Input::IsKeyDown(DIK_H))
+    Model::SetAnimFrame(hModel_[0], 0, 300, 1.0f);
 
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();

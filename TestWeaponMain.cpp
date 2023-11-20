@@ -110,7 +110,7 @@ void TestWeaponMain::CalcDamage(float range)
     data.speed = data.lifeTime * range / 40;
     data.speedRnd = 0.0f;
     data.accel = 1.0f;
-    data.size = XMFLOAT2(0.4f, 0.4f);
+    data.size = XMFLOAT2(0.1f, 0.1f);
     data.sizeRnd = XMFLOAT2(0.4f, 0.4f);
     data.scale = XMFLOAT2(1.0f, 1.0f);
     data.color = XMFLOAT4(1.0f, 1.0f, 0.1f, 1.0f);

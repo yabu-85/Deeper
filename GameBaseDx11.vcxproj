@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="FeetNode.cpp" />
     <ClCompile Include="IsEnemyStateNode.cpp" />
     <ClCompile Include="MoveAction.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="WeaponObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationController.h" />
     <ClInclude Include="FeetNode.h" />
     <ClInclude Include="IsEnemyStateNode.h" />
     <ClInclude Include="MoveAction.h" />

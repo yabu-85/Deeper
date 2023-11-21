@@ -64,12 +64,12 @@ void Player::Initialize()
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 
-    maxHp_ = 60;
+    maxHp_ = 100;
     hp_ = maxHp_;
     moveSpeed_ = 0.15f;
     rotateRatio_ = 0.2f;
 
-    BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.5f, 0.0f), XMFLOAT3(0.5f, 2.0f, 0.5f));
+    BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.5f, 0.0f), XMFLOAT3(0.6f, 2.0f, 0.6f));
     AddCollider(collider);
 
     pText->Initialize();
@@ -229,6 +229,8 @@ void Player::Move(float f)
 void Player::ApplyDamage(int da)
 {
     hp_ -= da;
+    return;
+
     if (hp_ <= 0) {
         pStateManager_->ChangeState("Dead");
     }

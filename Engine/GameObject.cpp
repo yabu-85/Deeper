@@ -212,12 +212,17 @@ void GameObject::KillObjectSub(GameObject * obj)
 }
 
 
-
 //コライダー（衝突判定）を追加する
 void GameObject::AddCollider(Collider* collider)
 {
 	collider->SetGameObject(this);
 	colliderList_.push_back(collider);
+}
+
+void GameObject::AddAttackCollider(Collider* collider)
+{
+	collider->SetGameObject(this);
+	attackColliderList_.push_back(collider);
 }
 
 //コライダー（衝突判定）を削除
@@ -243,6 +248,7 @@ void GameObject::CollisionDraw()
 	Direct3D::SetShader(Direct3D::SHADER_3D);
 }
 
+
 //RootJobを取得
 GameObject * GameObject::GetRootJob()
 {
@@ -252,9 +258,6 @@ GameObject * GameObject::GetRootJob()
 	}
 	else return GetParent()->GetRootJob();
 }
-
-
-
 
 void GameObject::UpdateSub()
 {
@@ -276,9 +279,6 @@ void GameObject::UpdateSub()
 		}
 		else
 		{
-			//当たり判定
-			//(*it)->Collision(GetParent());
-			
 			it++;
 		}
 	}
@@ -287,16 +287,6 @@ void GameObject::UpdateSub()
 void GameObject::DrawSub()
 {
 	Draw();
-
-
-	//リリース時は削除
-#ifdef _DEBUG
-		//コリジョンの描画
-	if (Direct3D::isDrawCollision_)
-	{
-		CollisionDraw();
-	}
-#endif
 
 	//その子オブジェクトの描画処理
 	for (auto it = childList_.begin(); it != childList_.end(); it++)
@@ -309,7 +299,6 @@ void GameObject::ReleaseSub()
 {
 	//コライダーを削除
 	ClearCollider();
-
 
 	for (auto it = childList_.begin(); it != childList_.end(); it++)
 	{

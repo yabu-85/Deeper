@@ -7,6 +7,8 @@
 #include "Player.h"
 #include "FeetNode.h"
 #include "Feet.h"
+#include "DamageCtrl.h"
+#include "GameManager.h"
 
 FeetAppear::FeetAppear(StateManager* owner) : time_(0), appearTime_(0)
 {
@@ -155,7 +157,9 @@ void FeetAttack::Update()
 
 	if (time_ > 0 + 30) {
 		float random = time_ / 60.0f + 1.0f;
-		pFeet_->SetScale(XMFLOAT3(random, random, random));
+		pFeet_->SetScale(XMFLOAT3(random * random, pFeet_->GetScale().y, random * random));
+
+		GameManager::GetDamageCtrl()->CalcPlyaer(pFeet_->GetSphereCollider(), 1);
 	}
 	
 	if (time_ <= 0) {

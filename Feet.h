@@ -23,6 +23,8 @@ public:
     void Draw() override;
     void Release() override;
 
+    SphereCollider* GetSphereCollider() { return pHandCollider_; }
+
     MoveAction* GetMoveAction() { return pMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }
 

@@ -60,10 +60,6 @@ namespace Direct3D
 	//その他
 	extern int		screenWidth_;		//スクリーンの幅
 	extern int		screenHeight_;		//スクリーンの高さ
-	extern bool		isDrawCollision_;	//コリジョンを表示するかフラグ
-
-
-
 
 
 

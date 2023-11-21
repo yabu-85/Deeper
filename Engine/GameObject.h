@@ -29,7 +29,10 @@ protected:
 	std::string				objectName_;
 
 	//衝突判定リスト
-	std::list<Collider*>	colliderList_;	
+	std::list<Collider*>	colliderList_;
+
+	//攻撃判定用のコライダー
+	std::list<Collider*>	attackColliderList_;
 
 public:
 	//コンストラクタ
@@ -108,11 +111,12 @@ public:
 	void KillAllChildren();
 
 
-
 	//コライダー（衝突判定）を追加する
 	void AddCollider(Collider * collider);
+	void AddAttackCollider(Collider * collider);
 
 	std::list<Collider*> GetColliderList() { return colliderList_; }
+	std::list<Collider*> GetAttackColliderList() { return colliderList_; }
 
 	//コライダー（衝突判定）を削除
 	void ClearCollider();
@@ -120,9 +124,9 @@ public:
 	//テスト用の衝突判定枠を表示
 	void CollisionDraw();
 
+
 	//RootJobを取得
 	GameObject* GetRootJob();
-
 
 	//各アクセス関数
 	XMFLOAT3 GetPosition() { return transform_.position_; }

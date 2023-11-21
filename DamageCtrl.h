@@ -17,5 +17,6 @@ public:
 	bool CalcSword(LineCollider* line, int damage);
 	bool CalcBullet(SphereCollider* sphere, int damage);
 
-};
+	bool CalcPlyaer(SphereCollider* sphere, int damage);
 
+};

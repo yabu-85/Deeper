@@ -83,7 +83,7 @@ void Stage::CreatStage()
 {
     //CSVファイル読み込み
     CsvReader csv;
-    csv.Load("Csv/Map1.csv");
+    csv.Load("Csv/Map2.csv");
 
     //ステージの幅と高さを設定
     mapSizeX_ = (int)csv.GetWidth();
@@ -126,4 +126,10 @@ void Stage::CreatStage()
             }
         }
     }
+
+    int data = mapData_[mapSizeZ_ / 2][mapSizeX_ / 2] == 0;
+    if (data == 1) {
+        int a = 0;
+    }
+
 }

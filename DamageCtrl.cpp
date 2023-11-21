@@ -4,6 +4,8 @@
 #include <vector>
 #include <list>
 #include "Engine/LineCollider.h"
+#include "Player.h"
+#include "GameManager.h"
 
 DamageCtrl::DamageCtrl(EnemySpawnCtrl* p)
 	: pEnemySpawnCtrl_(p)
@@ -59,5 +61,27 @@ bool DamageCtrl::CalcBullet(SphereCollider* sphere, int damage)
 			col.pop_front();
 		}
 	}
+	return hit;
+}
+
+bool DamageCtrl::CalcPlyaer(SphereCollider* sphere, int damage)
+{
+	bool hit = false;
+	Player* pPlayer = (Player*)GameManager::GetParent()->FindObject("Player");
+	std::list<Collider*> col = pPlayer->GetColliderList();
+
+	//Collider‚È‚©‚Á‚½‚çŽŸ
+	if (col.empty()) return false;
+
+	int size = (int)col.size();
+	for (int j = 0; j < size; j++) {
+		if (col.front()->IsHit(sphere)) {
+			pPlayer->ApplyDamage(damage);
+			hit = true;
+			break;
+		}
+		col.pop_front();
+	}
+	
 	return hit;
 }

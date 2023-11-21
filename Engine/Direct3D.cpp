@@ -199,15 +199,6 @@ namespace Direct3D
 		pContext_->OMSetRenderTargets(1, &pRenderTargetView_, pDepthStencilView);            // 描画先を設定（今後はレンダーターゲットビューを介して描画してね）
 		pContext_->RSSetViewports(1, &vp);                                      // ビューポートのセット
 
-
-
-
-
-
-		//コリジョン表示するか
-		isDrawCollision_ = GetPrivateProfileInt("DEBUG", "ViewCollider", 0, ".\\setup.ini") != 0;
-
-
 		screenWidth_ = screenWidth;
 		screenHeight_ = screenHeight;
 

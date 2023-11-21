@@ -1,6 +1,5 @@
 #include "Feet.h"
 #include "Engine/Model.h"
-#include "NavigationAI.h"
 #include "EnemyUi.h"
 #include "Engine/SphereCollider.h"
 #include "StateManager.h"
@@ -10,7 +9,7 @@
 #include "RotateAction.h"
 
 Feet::Feet(GameObject* parent)
-	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr)
+	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr)
 {
 	objectName_ = "Feet";
 }
@@ -42,7 +41,7 @@ void Feet::Initialize()
 	AddCollider(collision1);
 	AddCollider(collision2);
 	AddCollider(pHandCollider_);
-
+	
 	//ステートの設定
 	pStateManager_ = new StateManager(this);
 	pStateManager_->AddState(new FeetAppear(pStateManager_));

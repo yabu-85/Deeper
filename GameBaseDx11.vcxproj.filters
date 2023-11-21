@@ -218,9 +218,6 @@
     <ClCompile Include="ExitUIManager.cpp">
       <Filter>04UI</Filter>
     </ClCompile>
-    <ClCompile Include="DamageCtrl.cpp">
-      <Filter>08Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="TestBullet.cpp">
       <Filter>09Weapon\Bullet</Filter>
     </ClCompile>
@@ -298,6 +295,10 @@
     </ClCompile>
     <ClCompile Include="Triangle.cpp">
       <Filter>12Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="DamageCtrl.cpp" />
+    <ClCompile Include="AStarMan.cpp">
+      <Filter>08Enemy\Enemies</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -421,9 +422,6 @@
     <ClInclude Include="ExitUIManager.h">
       <Filter>04UI</Filter>
     </ClInclude>
-    <ClInclude Include="DamageCtrl.h">
-      <Filter>08Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="TestBullet.h">
       <Filter>09Weapon\Bullet</Filter>
     </ClInclude>
@@ -498,6 +496,10 @@
     </ClInclude>
     <ClInclude Include="Triangle.h">
       <Filter>12Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageCtrl.h" />
+    <ClInclude Include="AStarMan.h">
+      <Filter>08Enemy\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

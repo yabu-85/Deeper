@@ -11,9 +11,9 @@
 
 #include <vector>
 #include "Stage.h"
+#include "GameManager.h"
 namespace {
-	std::vector<std::vector<int>> mapData;
-	
+
 }
 
 AStarMan::AStarMan(GameObject* parent)
@@ -33,31 +33,33 @@ void AStarMan::Initialize()
 	
 	aimTargetPos_ = 1.0f;
 	
-	transform_.position_ = XMFLOAT3(55.0f, 0.0f, 60.0f);
-	//targetPos_ = XMFLOAT3((rand() % 24 + 1) * 5, 0.0f, (rand() % 24 + 1) * 5);
-	targetPos_ = XMFLOAT3(5.0f, 0.0f, 5.0f);
-
-	Stage* pStage = (Stage*)FindObject("Stage");
-	mapData = pStage->GetMapData();
+	transform_.position_ = XMFLOAT3(11.0f, 0.0f, 12.0f);
+	targetPos_ = XMFLOAT3(10.0f, 0.0f, 22.0f);
 
 }
 
 void AStarMan::Update()
 {
+	XMFLOAT3 target = GameManager::GetNavigationAI()->Navi(targetPos_, transform_.position_);
 
-
+	XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
+	XMVECTOR vTar = XMLoadFloat3(&target);
+	XMVECTOR vMove = vTar - vPos;
+	vMove = XMVector3Normalize(vMove) * 0.02f;
+	XMStoreFloat3(&transform_.position_, vPos + vMove);
+	
 }
 
 void AStarMan::Draw()
 {
 	Transform draw = transform_;
-	draw.position_.y += 0.5f;
-	Model::SetTransform(hModel_, transform_);
+	draw.position_.y += 1.0f;
+	Model::SetTransform(hModel_, draw);
 	Model::Draw(hModel_);
 
 	Transform target;
 	target.position_ = targetPos_;
-	target.position_.y += 0.5f;
+	target.position_.y += 1.0f;
 	Model::SetTransform(hModel_, target);
 	Model::Draw(hModel_);
 

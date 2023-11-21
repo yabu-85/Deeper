@@ -32,17 +32,17 @@ class Stage :
     int hModel_[MAX + RMAX];
     std::vector<IntersectData> intersectDatas_; //ローポリのデータ集
 
-    enum MAP {
-        NONE = 0,
-        FLOAR,
-    };
-
     int mapSizeX_;
     int mapSizeZ_;
     XMFLOAT3 startPos_;
     std::vector<std::vector<int>> mapData_;
 
 public:
+    enum MAP {
+        FLOAR,
+        WALL,
+    };
+
     Stage(GameObject* parent);
     ~Stage();
     void Initialize() override;

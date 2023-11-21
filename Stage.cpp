@@ -6,9 +6,11 @@
 
 namespace {
     bool drawCell = true;
-    const float floarSize = 5.0f;
+    const float floarSize = 1.0f;
     const int StartsizeX = 5;
     const int StartsizeZ = 3;
+
+    const float smallSize = 5.0f;
 
 }
 
@@ -94,31 +96,29 @@ void Stage::CreatStage()
     for (int i = 0; i < mapSizeZ_; i++) mapData_[i].resize(mapSizeX_, FLOAR);
 
     //CSVデータをテーブルに格納
-    for (int z = 0; z < mapSizeZ_; z++) {
-        for (int x = 0; x < mapSizeX_; x++) {
+    for (int x = 0; x < mapSizeX_; x++) {
+        for (int z = 0; z < mapSizeZ_; z++) {
             int data = csv.GetValue(z, x);
             if (data == 10)
             {
-                mapData_[z][x] = 1;
-                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
+                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 0.1f, 1.0f / smallSize) });
                 startPos_ = XMFLOAT3((float)x, 0.0f, (float)z);
             }
             else if (data == 1)
             {
-                mapData_[z][x] = 1;
-                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
+                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 0.1f, 1.0f / smallSize) });
             }
             else if (data == 2)
             {
-                mapData_[z][x] = 1;
+                mapData_[z][x] = WALL;
                 intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
                 intersectDatas_.push_back({ hModel_[T2], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
             }
             else if (data == 3)
             {
-                mapData_[z][x] = 1;
-                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize) });
-                intersectDatas_.push_back({ hModel_[T3], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f, 0.1f, 1.0f) });
+                mapData_[z][x] = WALL;
+                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 0.1f, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[T3], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 0.1f, 1.0f / smallSize) });
             }
             else
             {

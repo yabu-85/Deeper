@@ -9,7 +9,6 @@ WeaponObjectManager::WeaponObjectManager()
 	: range_(0), nearestObject_(nullptr)
 {
 	range_ = 3.0f;
-	AddWeaponObject(WEAPON_TYPE::WT_SUB1, XMFLOAT3(60.0f, 0.0f, 60.0f));
 }
 
 WeaponObjectManager::~WeaponObjectManager()

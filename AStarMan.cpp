@@ -13,7 +13,7 @@
 #include "Stage.h"
 #include "GameManager.h"
 namespace {
-
+	XMFLOAT3 currentTar{};
 }
 
 AStarMan::AStarMan(GameObject* parent)
@@ -33,14 +33,24 @@ void AStarMan::Initialize()
 	
 	aimTargetPos_ = 1.0f;
 	
-	transform_.position_ = XMFLOAT3(11.0f, 0.0f, 12.0f);
-	targetPos_ = XMFLOAT3(10.0f, 0.0f, 22.0f);
+	transform_.position_ = XMFLOAT3(24.0f, 0.0f, 24.0f);
+	targetPos_ = XMFLOAT3(1.0f, 0.0f, 1.0f);
 
 }
 
 void AStarMan::Update()
 {
 	XMFLOAT3 target = GameManager::GetNavigationAI()->Navi(targetPos_, transform_.position_);
+	if (currentTar.x != target.x || currentTar.z != target.z) {
+		currentTar = target;
+		std::string strNumber = std::to_string(currentTar.x);
+		OutputDebugStringA(strNumber.c_str());
+		OutputDebugString(" , ");
+
+		strNumber = std::to_string(currentTar.z);
+		OutputDebugStringA(strNumber.c_str());
+		OutputDebugString("\n");
+	}
 
 	XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
 	XMVECTOR vTar = XMLoadFloat3(&target);

@@ -173,7 +173,6 @@
     <ClCompile Include="Engine\VFX.cpp">
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="NavigationAI.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="MasterHand.cpp">
       <Filter>08Enemy\Enemies</Filter>
@@ -300,6 +299,9 @@
     <ClCompile Include="AStarMan.cpp">
       <Filter>08Enemy\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="NavigationAI.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -371,7 +373,6 @@
     <ClInclude Include="Engine\VFX.h">
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="NavigationAI.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="EnemyBase.h">
       <Filter>08Enemy\EnemyBase</Filter>
@@ -500,6 +501,9 @@
     <ClInclude Include="DamageCtrl.h" />
     <ClInclude Include="AStarMan.h">
       <Filter>08Enemy\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="NavigationAI.h">
+      <Filter>12Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

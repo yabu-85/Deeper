@@ -69,15 +69,6 @@ XMFLOAT3 NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 			if (path.size() >= 2) {
 				XMFLOAT3 nextPos = path[path.size() - 2];
 				nextPos = XMFLOAT3(nextPos.x * floarSize, 0.0f, nextPos.z * floarSize);
-
-				std::string strNumber = std::to_string(nextPos.x);
-				OutputDebugStringA(strNumber.c_str());
-				OutputDebugString(" , ");
-
-				strNumber = std::to_string(nextPos.z);
-				OutputDebugStringA(strNumber.c_str());
-				OutputDebugString("\n");
-
 				return nextPos;
 			}
 			else {
@@ -97,11 +88,15 @@ XMFLOAT3 NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 				// 隣接ノードが範囲内かつ通行可能か確認
 				if (newX >= 0 && newX < stageWidth && newZ >= 0 && newZ < stageHeight) {
 					if (!closedList[newX][newZ] && mapData_[newX][newZ] == Stage::MAP::FLOAR) {
-						int tentativeG = value[x][z] + mapCost[newX][newZ];
+						int tentativeA = value[x][z];
+						int tentativeB = mapCost[newX][newZ];
+						int tentativeG = tentativeA + tentativeB;
 						int currentCost = value[newX][newZ];
+						
+						bool flag = tentativeG < currentCost;
 
 						// 新しい経路が現在の最良経路より短いか確認
-						if (tentativeG < currentCost) {
+						if (flag) {
 							// 隣接ノードの情報を更新
 							value[newX][newZ] = tentativeG;
 							parentX[newX][newZ] = x;

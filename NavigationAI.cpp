@@ -37,9 +37,12 @@ XMFLOAT3 NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 
 	std::vector<std::vector<bool>> closedList(stageWidth, std::vector<bool>(stageHeight, false));	//探索済みか
 	std::vector<std::vector<int>> mapCost(stageHeight, std::vector<int>(stageWidth, 1));			//マップのコストすべて１
-	std::vector<std::vector<int>> value(stageHeight, std::vector<int>(stageWidth, 2147483647));		//スタート地点からの最短距離
-	std::vector<std::vector<int>> parentX(stageWidth, std::vector<int>(stageHeight, -1));			//そのノードの親ノードの座標
-	std::vector<std::vector<int>> parentZ(stageWidth, std::vector<int>(stageHeight, -1));			//親の座標
+	
+	std::vector<std::vector<int>> allCost(stageHeight, std::vector<int>(stageWidth, 2147483647));	//ノードのコスト
+	std::vector<std::vector<int>> value(stageHeight, std::vector<int>(stageWidth, 0));				//スタート地点からの最短距離
+	
+	std::vector<std::vector<int>> parentX(stageWidth, std::vector<int>(stageHeight, -1));			//そのノードの親ノードの座標X
+	std::vector<std::vector<int>> parentZ(stageWidth, std::vector<int>(stageHeight, -1));			//そのノードの親ノードの座標Z
 
 	std::vector<Node> openList;
 	openList.push_back({ startX, startZ, 0 });
@@ -92,8 +95,20 @@ XMFLOAT3 NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 						int tentativeB = mapCost[newX][newZ];
 						int tentativeG = tentativeA + tentativeB;
 						int currentCost = value[newX][newZ];
-						
 						bool flag = tentativeG < currentCost;
+
+						//ここ変える
+						//計算結果がallCostより小さければpushBackする
+						//計算方法が、親ノードのスタート地点からの距離＋推定コスト(ゴール - 座標 : x,zで高い値)
+						
+						int cellCost = value[x][z] + 1;
+						int dxValue = targetX - newX;
+						int dzValue = targetZ - newZ;
+						int dValue = 0;
+						if (dxValue >= dzValue) dValue = dxValue;
+						else dValue = dzValue;
+						
+						flag = dValue < allCost[newX][newZ];
 
 						// 新しい経路が現在の最良経路より短いか確認
 						if (flag) {
@@ -101,6 +116,7 @@ XMFLOAT3 NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 							value[newX][newZ] = tentativeG;
 							parentX[newX][newZ] = x;
 							parentZ[newX][newZ] = z;
+							allCost[newX][newZ] = dValue;
 
 							// 隣接ノードをopenListに追加
 							openList.push_back({ newX, newZ, tentativeG });

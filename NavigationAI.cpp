@@ -1,5 +1,6 @@
 #include "NavigationAI.h"
 #include "Stage.h"
+#include "Player.h"
 
 namespace {
 	const int stageWidth = 25;
@@ -28,12 +29,24 @@ NavigationAI::NavigationAI(Stage* s)
 
 }
 
+//これAStar探索のやつ
 XMFLOAT3 NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 {
+	Player* pPlayer = (Player*)pStage_->FindObject("Player");
+	target = pPlayer->GetPosition();
+
 	int startX = static_cast<int>(pos.x / floarSize);
 	int startZ = static_cast<int>(pos.z / floarSize);
 	int targetX = static_cast<int>(target.x / floarSize);
 	int targetZ = static_cast<int>(target.z / floarSize);
+
+	std::string strNumber = std::to_string(targetX);
+	OutputDebugStringA(strNumber.c_str());
+	OutputDebugString(" , ");
+
+	strNumber = std::to_string(targetZ);
+	OutputDebugStringA(strNumber.c_str());
+	OutputDebugString("\n");
 
 	std::vector<std::vector<bool>> closedList(stageWidth, std::vector<bool>(stageHeight, false));	//探索済みか
 	std::vector<std::vector<int>> mapCost(stageHeight, std::vector<int>(stageWidth, 1));			//マップのコストすべて１
@@ -90,7 +103,7 @@ XMFLOAT3 NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 
 				// 隣接ノードが範囲内かつ通行可能か確認
 				if (newX >= 0 && newX < stageWidth && newZ >= 0 && newZ < stageHeight) {
-					if (!closedList[newX][newZ] && mapData_[newX][newZ] == Stage::MAP::FLOAR) {
+					if (!closedList[newX][newZ] && mapData_[newZ][newX] == Stage::MAP::FLOAR) {
 						int tentativeA = value[x][z];
 						int tentativeB = mapCost[newX][newZ];
 						int tentativeG = tentativeA + tentativeB;

@@ -12,6 +12,7 @@
 #include <vector>
 #include "Stage.h"
 #include "GameManager.h"
+#include "Engine/Input.h"
 namespace {
 	XMFLOAT3 currentTar{};
 	float floarSize = 1.0f;
@@ -34,8 +35,27 @@ void AStarMan::Initialize()
 	
 	aimTargetPos_ = 1.0f;
 	
-	transform_.position_ = XMFLOAT3(24.0f * floarSize, 0.0f, 24.0f * floarSize);
-	targetPos_ = XMFLOAT3(1.0f * floarSize, 0.0f, 1.0f * floarSize);
+	struct Cell
+	{
+		float x, z;
+	};
+	std::vector<Cell> posList;
+	Stage* pStage = (Stage*)FindObject("Stage");
+	std::vector<std::vector<int>> mapData = pStage->GetMapData();
+	for (int x = 0; x < 25; x++) {
+		for (int z = 0; z < 25; z++) {
+			if (mapData[x][z] == Stage::MAP::FLOAR) {
+				Cell cell;
+				cell.x = (float)x;
+				cell.z = (float)z;
+				posList.push_back(cell);
+			}
+		}
+	}
+	int index = rand() % posList.size();
+	transform_.position_ = XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize);
+	index = rand() % posList.size();
+	targetPos_ = XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize);
 
 }
 
@@ -73,19 +93,16 @@ void AStarMan::Update()
 
 	if (currentTar.x != target.x || currentTar.z != target.z) {
 		currentTar = target;
-		std::string strNumber = std::to_string(currentTar.x);
-		OutputDebugStringA(strNumber.c_str());
-		OutputDebugString(" , ");
-
-		strNumber = std::to_string(currentTar.z);
-		OutputDebugStringA(strNumber.c_str());
-		OutputDebugString("\n");
 	}
 
 	XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
 	XMVECTOR vTar = XMLoadFloat3(&target);
 	XMVECTOR vMove = vTar - vPos;
-	vMove = XMVector3Normalize(vMove) * 0.2f;
+	float length = XMVectorGetX(XMVector3Length(vMove));
+	if (length > 0.2f) {
+		vMove = XMVector3Normalize(vMove) * 0.2f;
+	}
+
 	XMStoreFloat3(&transform_.position_, vPos + vMove);
 	
 }
@@ -97,11 +114,14 @@ void AStarMan::Draw()
 	Model::SetTransform(hModel_, draw);
 	Model::Draw(hModel_);
 
-	Transform target;
-	target.position_ = targetPos_;
-	target.position_.y += 1.0f;
-	Model::SetTransform(hModel_, target);
-	Model::Draw(hModel_);
+	if (!Input::IsKey(DIK_F)) {
+		Transform target;
+		target.position_ = targetPos_;
+		target.position_.y += 1.0f;
+		Model::SetTransform(hModel_, target);
+		Model::Draw(hModel_);
+	}
+	
 
 }
 

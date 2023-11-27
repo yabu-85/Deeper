@@ -98,7 +98,7 @@ void Stage::CreatStage()
     //CSVデータをテーブルに格納
     for (int x = 0; x < mapSizeX_; x++) {
         for (int z = 0; z < mapSizeZ_; z++) {
-            int data = csv.GetValue(z, x);
+            int data = csv.GetValue(x, z);
             if (data == 10)
             {
                 intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 0.1f, 1.0f / smallSize) });

@@ -137,7 +137,10 @@ FeetMove::FeetMove(StateManager* owner)
 
 void FeetMove::Update()
 {
+	Player* pPlayer = (Player*)pFeet_->FindObject("Player");
+	pFeet_->GetMoveAction()->SetTarget(pPlayer->GetPosition());
 	pFeet_->GetMoveAction()->Update();
+
 	pFeet_->GetRotateAction()->Update();
 }
 

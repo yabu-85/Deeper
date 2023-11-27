@@ -1,5 +1,8 @@
 #pragma once
 #include "BaseAction.h"
+#include <DirectXMath.h>
+
+using namespace DirectX;
 
 class Player;
 
@@ -8,7 +11,7 @@ class MoveAction : public BaseAction
     bool isInRange_;    //Targetについていたらtrue
     float moveSpeed_;   //移動スピード
     float moveRange_;   //移動終了判定の範囲
-    Player* pPlayer_;
+    XMFLOAT3 targetPos_;//ターゲットの場所
 
 public:
     MoveAction(GameObject* obj);
@@ -20,5 +23,6 @@ public:
 
     void SetMoveSpeed(float speed) { moveSpeed_ = speed; }
     void SetMoveRange(float range) { moveRange_ = range; }
+    void SetTarget(XMFLOAT3 target) { targetPos_ = target; }
     bool IsInRange() { return isInRange_; }
 };

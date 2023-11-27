@@ -1,6 +1,5 @@
 #include "NavigationAI.h"
 #include "Stage.h"
-#include "Player.h"
 
 namespace {
 	const int stageWidth = 25;
@@ -30,11 +29,8 @@ NavigationAI::NavigationAI(Stage* s)
 }
 
 //これAStar探索のやつ
-XMFLOAT3 NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
+std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 {
-	Player* pPlayer = (Player*)pStage_->FindObject("Player");
-	target = pPlayer->GetPosition();
-
 	int startX = static_cast<int>(pos.x / floarSize);
 	int startZ = static_cast<int>(pos.z / floarSize);
 	int targetX = static_cast<int>(target.x / floarSize);
@@ -83,13 +79,13 @@ XMFLOAT3 NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 
 			// 次に進む座標を返す
 			if (path.size() >= 2) {
-				XMFLOAT3 nextPos = path[path.size() - 2];
-				nextPos = XMFLOAT3(nextPos.x * floarSize, 0.0f, nextPos.z * floarSize);
-				return nextPos;
+				path.pop_back();
+				return path;
 			}
 			else {
 				// パスが短すぎる場合は目標自体を返す
-				return target;
+				path.clear();
+				return path;
 			}
 		}
 
@@ -140,7 +136,8 @@ XMFLOAT3 NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 		}
 	}
 
-	return pos;
+	std::vector<XMFLOAT3> none;
+	return none;
 }
 
 void NavigationAI::Navi(XMFLOAT3& target)

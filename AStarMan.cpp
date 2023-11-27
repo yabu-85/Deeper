@@ -13,13 +13,14 @@
 #include "Stage.h"
 #include "GameManager.h"
 #include "Engine/Input.h"
+#include "Player.h"
 namespace {
 	XMFLOAT3 currentTar{};
 	float floarSize = 1.0f;
 }
 
 AStarMan::AStarMan(GameObject* parent)
-	:EnemyBase(parent), hModel_(-1), targetPos_{0.0f, 0.0f, 0.0f}
+	:EnemyBase(parent), hModel_(-1), pAstarMoveAction_(nullptr)
 {
 }
 
@@ -35,6 +36,9 @@ void AStarMan::Initialize()
 	
 	aimTargetPos_ = 1.0f;
 	
+	pAstarMoveAction_ = new AstarMoveAction(this, 0.07f, 0.1f);
+	pAstarMoveAction_->Initialize();
+
 	struct Cell
 	{
 		float x, z;
@@ -55,56 +59,19 @@ void AStarMan::Initialize()
 	int index = rand() % posList.size();
 	transform_.position_ = XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize);
 	index = rand() % posList.size();
-	targetPos_ = XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize);
+	pAstarMoveAction_->SetTarget(XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize));
 
 }
 
 void AStarMan::Update()
 {
-	XMFLOAT3 target = GameManager::GetNavigationAI()->Navi(targetPos_, transform_.position_);
-
-	//ìûíÖÇµÇΩÇ©ÇÁtargetPosïœçX
-	if (targetPos_.x == target.x && targetPos_.z == target.z) {
-
-		struct Cell
-		{
-			float x, z;
-		};
-		std::vector<Cell> posList;
-		
-		Stage* pStage = (Stage*)FindObject("Stage");
-		std::vector<std::vector<int>> mapData = pStage->GetMapData();
-		
-		for (int x = 0; x < 25; x++) {
-			for (int z = 0; z < 25; z++) {
-				if (mapData[x][z] == Stage::MAP::FLOAR) {
-					Cell cell;
-					cell.x = (float)x;
-					cell.z = (float)z;
-					posList.push_back(cell);
-				}
-			}
-		}
-
-		int index = rand() % posList.size();
-		targetPos_ = XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize);
-		return;
+	if (pAstarMoveAction_->IsInRange() && rand() % 180 == 0) {
+		Player* pPlayer = (Player*)FindObject("Player");
+		pAstarMoveAction_->SetTarget(pPlayer->GetPosition());
 	}
-
-	if (currentTar.x != target.x || currentTar.z != target.z) {
-		currentTar = target;
-	}
-
-	XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
-	XMVECTOR vTar = XMLoadFloat3(&target);
-	XMVECTOR vMove = vTar - vPos;
-	float length = XMVectorGetX(XMVector3Length(vMove));
-	if (length > 0.2f) {
-		vMove = XMVector3Normalize(vMove) * 0.2f;
-	}
-
-	XMStoreFloat3(&transform_.position_, vPos + vMove);
 	
+	pAstarMoveAction_->Update();
+
 }
 
 void AStarMan::Draw()
@@ -116,10 +83,15 @@ void AStarMan::Draw()
 
 	if (!Input::IsKey(DIK_F)) {
 		Transform target;
-		target.position_ = targetPos_;
-		target.position_.y += 1.0f;
-		Model::SetTransform(hModel_, target);
-		Model::Draw(hModel_);
+		target.scale_ = XMFLOAT3(0.2f, 0.2f, 0.2f);
+		std::vector<XMFLOAT3> targetList = pAstarMoveAction_->GetTarget();
+		if (targetList.empty()) return;
+		for (auto pos : targetList) {
+			target.position_ = XMFLOAT3(pos.x * floarSize, pos.y, pos.z * floarSize);
+			target.position_.y += 1.0f;
+			Model::SetTransform(hModel_, target);
+			Model::Draw(hModel_);
+		}
 	}
 	
 

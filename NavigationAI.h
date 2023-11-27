@@ -20,7 +20,7 @@ class NavigationAI
 
 public:
 	NavigationAI(Stage* s);
-	XMFLOAT3 Navi(XMFLOAT3 target, XMFLOAT3 pos);
+	std::vector<XMFLOAT3> Navi(XMFLOAT3 target, XMFLOAT3 pos);
 	void Navi(XMFLOAT3& target);
 
 };

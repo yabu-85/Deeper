@@ -45,8 +45,8 @@ namespace GameManager {
 	void GameManager::Update()
 	{
 		//デバッグ用
-		//if (Input::IsKeyDown(DIK_M)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND);
-		//if (Input::IsKeyDown(DIK_N)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET);
+		if (Input::IsKeyDown(DIK_M)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND);
+		if (Input::IsKeyDown(DIK_N)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET);
 		if (Input::IsKeyDown(DIK_K)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_ASTAR);
 		if (Input::IsKeyDown(DIK_B)) pWeaponObjectManager_->AllKillWeaponObject();
 		if (Input::IsKeyDown(DIK_V)) pEnemySpawnCtrl_->AllKillEnemy();

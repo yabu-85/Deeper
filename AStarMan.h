@@ -8,11 +8,8 @@ class SphereCollider;
 class AStarMan : public EnemyBase
 {
     int hModel_;
-    XMFLOAT3 targetPos_;
-
-    class AstarMoveAction : public MoveAction {
-
-    };
+    
+    AstarMoveAction* pAstarMoveAction_;
 
 public:
     AStarMan(GameObject* parent);

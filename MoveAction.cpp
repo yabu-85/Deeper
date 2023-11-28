@@ -68,10 +68,11 @@ void AstarMoveAction::Update()
 	float currentSpeed = XMVectorGetX(XMVector3Length(vTar - vPos));
 	if (currentSpeed > moveSpeed_ * floarSize) vMove = XMVector3Normalize(vMove) * (moveSpeed_ * floarSize);
 
-	//Target位置ついた
+	//Target位置ついた：カクカクしないように再起処理する
 	float length = XMVectorGetX(XMVector3Length(vTar - vPos));
 	if (length <= moveRange_) {
 		targetList_.pop_back();
+		Update();
 		return;
 	}
 

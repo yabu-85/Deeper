@@ -3,7 +3,7 @@
 #include "StateBase.h"
 
 class SphereCollider;
-class MoveAction;
+class AstarMoveAction;
 class RotateAction;
 
 class Feet : public EnemyBase
@@ -12,7 +12,7 @@ class Feet : public EnemyBase
     SphereCollider* pHandCollider_;
     
     //Action
-    MoveAction* pMoveAction_;
+    AstarMoveAction* pMoveAction_;
     RotateAction* pRotateAction_;
 
 public:
@@ -25,7 +25,7 @@ public:
 
     SphereCollider* GetSphereCollider() { return pHandCollider_; }
 
-    MoveAction* GetMoveAction() { return pMoveAction_; }
+    AstarMoveAction* GetMoveAction() { return pMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }
 
 };

@@ -64,7 +64,7 @@ void Feet::Initialize()
 	pEnemyUi_->Initialize(5.5f);
 
 	//Action‚ÌÝ’è
-	pMoveAction_ = new MoveAction(this, 0.07f, 3.0f);
+	pMoveAction_ = new AstarMoveAction(this, 0.07f, 2.0f);
 	pRotateAction_ = new RotateAction(this, 0.07f);
 	pMoveAction_->Initialize();
 	pRotateAction_->Initialize();

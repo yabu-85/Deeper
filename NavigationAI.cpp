@@ -29,10 +29,21 @@ int NavigationAI::GetMinCostNodeIndex(std::vector<Node>& openList)
 
 std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 {
+	target.x += (float)floarSize / 2.0f;
+	target.z += (float)floarSize / 2.0f;
+	pos.x += (float)floarSize / 2.0f;
+	pos.z += (float)floarSize / 2.0f;
+
 	int startX = static_cast<int>(pos.x / floarSize);
 	int startZ = static_cast<int>(pos.z / floarSize);
 	int targetX = static_cast<int>(target.x / floarSize);
 	int targetZ = static_cast<int>(target.z / floarSize);
+
+	//targetが壁の場合
+	if (mapData_[targetZ][targetX] == Stage::MAP::WALL) {
+		std::vector<XMFLOAT3> none;
+		return none;
+	}
 
 	std::vector<std::vector<bool>> closedList(stageWidth, std::vector<bool>(stageHeight, false));	//探索済みか
 	std::vector<std::vector<int>> mapCost(stageHeight, std::vector<int>(stageWidth, 1));			//マップのコストすべて１
@@ -70,6 +81,11 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 			// 次に進む座標を返す
 			if (path.size() >= 2) {
 				path.pop_back();
+				for (auto p : path) {
+					p.x -= (floarSize) / 2.0f;
+					p.z -= (floarSize) / 2.0f;
+				}
+
 				return path;
 			}
 			else {
@@ -90,29 +106,26 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 				// 隣接ノードが範囲内かつ通行可能か確認
 				if (newX >= 0 && newX < stageWidth && newZ >= 0 && newZ < stageHeight) {
 					if (!closedList[newX][newZ] && mapData_[newZ][newX] == Stage::MAP::FLOAR) {
-						int tentativeG = value[x][z] + mapCost[newX][newZ];
+						int nodeCost = value[x][z] + mapCost[newX][newZ];
 
 						//計算結果がallCostより小さければpushBackする
 						//計算方法：親ノードのスタート地点からの距離＋推定コスト(ゴール - 座標 : x,zで高い値)
-						int cellCost = value[x][z] + abs(i) + abs(j);
+						int cellCost = value[x][z] + abs(i) + abs(j);	//斜め移動はプラス２
 						int dxValue = targetX - newX;
 						int dzValue = targetZ - newZ;
-						int dValue = cellCost;
-						if (dxValue >= dzValue) dValue += dxValue;
-						else dValue += dzValue;
+						if (dxValue >= dzValue) cellCost += dxValue;
+						else cellCost += dzValue;
 						
-						bool flag = dValue < allCost[newX][newZ];
-
 						// 新しい経路が現在の最良経路より短いか確認
-						if (flag) {
+						if (cellCost < allCost[newX][newZ]) {
 							// 隣接ノードの情報を更新
-							value[newX][newZ] = tentativeG;
+							value[newX][newZ] = nodeCost;
 							parentX[newX][newZ] = x;
 							parentZ[newX][newZ] = z;
-							allCost[newX][newZ] = dValue;
+							allCost[newX][newZ] = cellCost;
 
 							// 隣接ノードをopenListに追加
-							openList.push_back({ newX, newZ, tentativeG });
+							openList.push_back({ newX, newZ, nodeCost });
 						}
 					}
 				}

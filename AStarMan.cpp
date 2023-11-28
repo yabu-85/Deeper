@@ -36,7 +36,7 @@ void AStarMan::Initialize()
 	
 	aimTargetPos_ = 1.0f;
 	
-	pAstarMoveAction_ = new AstarMoveAction(this, 0.07f, 0.1f);
+	pAstarMoveAction_ = new AstarMoveAction(this, 0.05f, 0.1f);
 	pAstarMoveAction_->Initialize();
 
 	struct Cell

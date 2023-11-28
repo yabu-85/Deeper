@@ -36,7 +36,7 @@ void MoveAction::Update()
 #include "NavigationAI.h"
 
 namespace {
-	float floarSize = 1.0f;
+	float floarSize = 5.0f;
 }
 
 AstarMoveAction::AstarMoveAction(GameObject* obj) : MoveAction(obj)
@@ -66,7 +66,7 @@ void AstarMoveAction::Update()
 	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) * floarSize;
 	XMVECTOR vMove = vTar - vPos;
 	float currentSpeed = XMVectorGetX(XMVector3Length(vTar - vPos));
-	if (currentSpeed > moveSpeed_) vMove = XMVector3Normalize(vMove) * (moveSpeed_ * 1.0f);
+	if (currentSpeed > moveSpeed_ * floarSize) vMove = XMVector3Normalize(vMove) * (moveSpeed_ * floarSize);
 
 	//TargetˆÊ’u‚Â‚¢‚½
 	float length = XMVectorGetX(XMVector3Length(vTar - vPos));

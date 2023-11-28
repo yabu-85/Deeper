@@ -57,5 +57,4 @@ public:
     void ResetStage();
     void CreatStage();
 
-
 };

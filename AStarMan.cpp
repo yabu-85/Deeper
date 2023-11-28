@@ -16,7 +16,7 @@
 #include "Player.h"
 namespace {
 	XMFLOAT3 currentTar{};
-	float floarSize = 1.0f;
+	float floarSize = 5.0f;
 }
 
 AStarMan::AStarMan(GameObject* parent)

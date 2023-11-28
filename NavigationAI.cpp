@@ -4,7 +4,15 @@
 namespace {
 	const int stageWidth = 25;
 	const int stageHeight = 25;
-	const int floarSize = 1;	//一マスのサイズ
+	const int floarSize = 5;	//一マスのサイズ
+
+}
+
+NavigationAI::NavigationAI(Stage* s)
+{
+	pStage_ = s;
+	mapData_ = pStage_->GetMapData();
+	pStage_ = s;
 
 }
 
@@ -20,29 +28,12 @@ int NavigationAI::GetMinCostNodeIndex(std::vector<Node>& openList)
 	return minIndex;
 }
 
-NavigationAI::NavigationAI(Stage* s)
-{
-	pStage_ = s;
-	mapData_ = pStage_->GetMapData();
-	pStage_ = s;
-
-}
-
-//これAStar探索のやつ
 std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 {
 	int startX = static_cast<int>(pos.x / floarSize);
 	int startZ = static_cast<int>(pos.z / floarSize);
 	int targetX = static_cast<int>(target.x / floarSize);
 	int targetZ = static_cast<int>(target.z / floarSize);
-
-	std::string strNumber = std::to_string(targetX);
-	OutputDebugStringA(strNumber.c_str());
-	OutputDebugString(" , ");
-
-	strNumber = std::to_string(targetZ);
-	OutputDebugStringA(strNumber.c_str());
-	OutputDebugString("\n");
 
 	std::vector<std::vector<bool>> closedList(stageWidth, std::vector<bool>(stageHeight, false));	//探索済みか
 	std::vector<std::vector<int>> mapCost(stageHeight, std::vector<int>(stageWidth, 1));			//マップのコストすべて１
@@ -109,13 +100,12 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 						//ここ変える
 						//計算結果がallCostより小さければpushBackする
 						//計算方法が、親ノードのスタート地点からの距離＋推定コスト(ゴール - 座標 : x,zで高い値)
-						
-						int cellCost = value[x][z] + 1;
+						int cellCost = value[x][z] + abs(i) + abs(j);
 						int dxValue = targetX - newX;
 						int dzValue = targetZ - newZ;
-						int dValue = 0;
-						if (dxValue >= dzValue) dValue = dxValue;
-						else dValue = dzValue;
+						int dValue = cellCost;
+						if (dxValue >= dzValue) dValue += dxValue;
+						else dValue += dzValue;
 						
 						flag = dValue < allCost[newX][newZ];
 
@@ -139,10 +129,3 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 	std::vector<XMFLOAT3> none;
 	return none;
 }
-
-void NavigationAI::Navi(XMFLOAT3& target)
-{
-	target = XMFLOAT3(target.x + (float)(rand() % 20 -10 ), 0.0f, target.z + (float)(rand() % 20 - 10));
-
-}
-

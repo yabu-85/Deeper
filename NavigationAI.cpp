@@ -12,7 +12,6 @@ NavigationAI::NavigationAI(Stage* s)
 {
 	pStage_ = s;
 	mapData_ = pStage_->GetMapData();
-	pStage_ = s;
 
 }
 
@@ -91,15 +90,10 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 				// 隣接ノードが範囲内かつ通行可能か確認
 				if (newX >= 0 && newX < stageWidth && newZ >= 0 && newZ < stageHeight) {
 					if (!closedList[newX][newZ] && mapData_[newZ][newX] == Stage::MAP::FLOAR) {
-						int tentativeA = value[x][z];
-						int tentativeB = mapCost[newX][newZ];
-						int tentativeG = tentativeA + tentativeB;
-						int currentCost = value[newX][newZ];
-						bool flag = tentativeG < currentCost;
+						int tentativeG = value[x][z] + mapCost[newX][newZ];
 
-						//ここ変える
 						//計算結果がallCostより小さければpushBackする
-						//計算方法が、親ノードのスタート地点からの距離＋推定コスト(ゴール - 座標 : x,zで高い値)
+						//計算方法：親ノードのスタート地点からの距離＋推定コスト(ゴール - 座標 : x,zで高い値)
 						int cellCost = value[x][z] + abs(i) + abs(j);
 						int dxValue = targetX - newX;
 						int dzValue = targetZ - newZ;
@@ -107,7 +101,7 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 						if (dxValue >= dzValue) dValue += dxValue;
 						else dValue += dzValue;
 						
-						flag = dValue < allCost[newX][newZ];
+						bool flag = dValue < allCost[newX][newZ];
 
 						// 新しい経路が現在の最良経路より短いか確認
 						if (flag) {

@@ -5,11 +5,12 @@
 #include "Engine/CsvReader.h"
 
 namespace {
-    bool drawCell = true;
-    const float floarSize = 5.0f;
     const int StartsizeX = 5;
     const int StartsizeZ = 3;
 
+    //デバッグ用
+    bool drawCell = true;
+    const float floarSize = 5.0f;
     const float smallSize = 1.0f;
 }
 
@@ -125,10 +126,4 @@ void Stage::CreatStage()
             }
         }
     }
-
-    int data = mapData_[mapSizeZ_ / 2][mapSizeX_ / 2] == 0;
-    if (data == 1) {
-        int a = 0;
-    }
-
 }

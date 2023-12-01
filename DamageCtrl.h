@@ -13,11 +13,15 @@ class SphereCollider;
 
 class DamageCtrl
 {
+public:
+	enum DamageType {
+		DA_Player = 0,
+		DA_Enemy,
+	};
+
+private:
 	EnemySpawnCtrl* pEnemySpawnCtrl_;
 
-	enum DamageType {
-
-	};
 	struct Character {
 		DamageType type;
 		GameObject* objct;
@@ -28,6 +32,8 @@ public:
 	DamageCtrl(EnemySpawnCtrl* p);
 	~DamageCtrl();
 	void Update();
+	void AddCharacter(GameObject* obj, DamageType _type);
+	void RemoveCharacter(GameObject* obj);
 
 	//‚à‚¤Žg‚í‚È‚¢—\’è‚Ì‚â‚Â‚ç
 	bool CalcSword(LineCollider* line, int damage);

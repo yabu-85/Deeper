@@ -19,29 +19,42 @@ DamageCtrl::~DamageCtrl()
 void DamageCtrl::Update()
 {
 	for (Character chara : calcCharacters_) {
-		std::list<Collider*> col = chara.objct->GetColliderList();
+		std::list<Collider*> sCollider = chara.objct->GetColliderList();
+		if (sCollider.empty()) continue;
 
-		//‚±‚±‚ÅCharaˆÈŠO‚ÌCharacter‚Ìvector‚ğì‚Á‚Ä‚»‚ê“n‚¹‚Î‰BÒ‚Ë
-		std::vector<Collider*> collList;
-		bool hit = false;
+		// ©•ªˆÈŠO‚ÌColliderEˆá‚¤DamageType‚ÌCollider ‚ğæ“¾
+		std::list<Collider*> tCollider;
+		for (Character c : calcCharacters_) {
+			if (c.objct == chara.objct || c.type == chara.type) continue;
+			std::list<Collider*> col = c.objct->GetColliderList();
+			tCollider.splice(tCollider.end(), col);
+		}
+		if (tCollider.empty()) continue;
 
-		//Collider‚È‚©‚Á‚½‚çŸ
-		if (col.empty()) continue;
-		int size = (int)col.size();
-		for (int j = 0; j < size; j++) {
-			if (col.front()->IsHit(/*‚ ‚½‚è”»’è‚·‚é‚â‚Â*/)) {
-				hit = true;
-				break;
+		for (Collider* sc : sCollider) {
+			for (Collider* tc : tCollider) {
+				if (sc->IsHit(tc)) {
+					//‚±‚±‚Å‚ ‚½‚Á‚½‚æŠÖ”‚ğŒÄ‚Ô
+					chara.objct->OnCollision(tc->GetGameObject());
+					sCollider.clear();
+					break;
+				}
 			}
-			col.pop_front();
+			if (sCollider.empty()) break;
 		}
-
-		if (hit) {
-			//‚±‚±‚Å“–‚½‚Á‚½‚æŠÖ”‚ğŒÄ‚Ô
-			col;
-		}
-
 	}
+}
+
+void DamageCtrl::AddCharacter(GameObject* obj, DamageType _type)
+{
+	Character chara;
+	chara.objct = obj;
+	chara.type = _type;
+	calcCharacters_.push_back(chara);
+}
+
+void DamageCtrl::RemoveCharacter(GameObject* obj)
+{
 
 }
 

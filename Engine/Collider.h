@@ -95,8 +95,8 @@ public:
 	//引数：position	オブジェクトの位置
 	void Draw(XMFLOAT3 position);
 
-	//セッター
 	void SetGameObject(GameObject* gameObject) { pGameObject_ = gameObject; }
+	GameObject* GetGameObject() { return pGameObject_; }
 
 	XMFLOAT3 GetCenter() { return center_; };
 	void SetCenter(XMFLOAT3 pos) { center_ = pos; }

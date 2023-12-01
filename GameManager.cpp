@@ -32,6 +32,8 @@ namespace GameManager {
 		pStage_ = Instantiate<Stage>(parent);
 		pPlayer_ = Instantiate<Player>(parent);
 		pPlayer_->SetPosition(pStage_->GetPlayerStartPos());
+		pDamageCtrl_->AddCharacter(pPlayer_, DamageCtrl::DA_Player);
+
 		pParent_ = parent;
 		Instantiate<CollisionMap>(parent);
 
@@ -44,6 +46,8 @@ namespace GameManager {
 
 	void GameManager::Update()
 	{
+		pDamageCtrl_->Update();
+
 		//デバッグ用
 		if (Input::IsKeyDown(DIK_M)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND);
 		if (Input::IsKeyDown(DIK_N)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET);

@@ -55,3 +55,9 @@ void TestBullet::Release()
 {
 	Model::Release(hModel_);
 }
+
+void TestBullet::OnCollision(GameObject* pTarget)
+{
+	pTarget->KillMe();
+
+}

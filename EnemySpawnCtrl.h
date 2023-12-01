@@ -17,13 +17,15 @@ class EnemySpawnCtrl
 	std::vector<EnemyBase*> enemyList_;
 	GameObject* pParent_;
 
+	void AddEnemyList(EnemyBase* e, int type);
+
 public:
 	void Initialize(GameObject* parent);
 	void Release();
 	
 	void AllKillEnemy();
 	void KillEnemy(EnemyBase* enemy);
-	int SpawnEnemy(int type);
+	void SpawnEnemy(int type);
 	std::vector<EnemyBase*>& GetAllEnemy();
 	void CleanUpEnemyList();
 

@@ -16,6 +16,35 @@ DamageCtrl::~DamageCtrl()
 {
 }
 
+void DamageCtrl::Update()
+{
+	for (Character chara : calcCharacters_) {
+		std::list<Collider*> col = chara.objct->GetColliderList();
+
+		//‚±‚±‚ÅCharaˆÈŠO‚ÌCharacter‚Ìvector‚ğì‚Á‚Ä‚»‚ê“n‚¹‚Î‰BÒ‚Ë
+		std::vector<Collider*> collList;
+		bool hit = false;
+
+		//Collider‚È‚©‚Á‚½‚çŸ
+		if (col.empty()) continue;
+		int size = (int)col.size();
+		for (int j = 0; j < size; j++) {
+			if (col.front()->IsHit(/*‚ ‚½‚è”»’è‚·‚é‚â‚Â*/)) {
+				hit = true;
+				break;
+			}
+			col.pop_front();
+		}
+
+		if (hit) {
+			//‚±‚±‚Å“–‚½‚Á‚½‚æŠÖ”‚ğŒÄ‚Ô
+			col;
+		}
+
+	}
+
+}
+
 bool DamageCtrl::CalcSword(LineCollider* line, int damage)
 {
     std::vector<EnemyBase*> enemyList = pEnemySpawnCtrl_->GetAllEnemy();

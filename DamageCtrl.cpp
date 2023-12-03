@@ -7,6 +7,8 @@
 #include "Player.h"
 #include "GameManager.h"
 
+#include "Engine/Input.h"
+
 DamageCtrl::DamageCtrl(EnemySpawnCtrl* p)
 	: pEnemySpawnCtrl_(p)
 {
@@ -18,24 +20,51 @@ DamageCtrl::~DamageCtrl()
 
 void DamageCtrl::Update()
 {
-	for (Character chara : calcCharacters_) {
-		std::list<Collider*> sCollider = chara.objct->GetColliderList();
+	for (CollisionData chara : collisionList_) {
+		//自分のAttackColliderがあればlistに入れて次へ
+		std::list<Collider*> sCollider = chara.objct->GetAttackColliderList();
 		if (sCollider.empty()) continue;
 
-		// 自分以外のCollider・違うDamageTypeのCollider を取得
+		std::vector<CollisionData> calcList = collisionList_;
 		std::list<Collider*> tCollider;
-		for (Character c : calcCharacters_) {
-			if (c.objct == chara.objct || c.type == chara.type) continue;
-			std::list<Collider*> col = c.objct->GetColliderList();
-			tCollider.splice(tCollider.end(), col);
+		Character* target = calcList.front().objct;
+		if (target == chara.objct) {
+			continue;
 		}
-		if (tCollider.empty()) continue;
 
+		for (auto it = calcList.begin(); it != calcList.end();) {
+			if (it->objct == target) {
+
+				// targetが charaとtypeが違うならtColliderに追加
+				if (it != calcList.end() && it->type != chara.type) {
+					std::list<Collider*> col = it->objct->GetColliderList();
+
+					// 連結する関数
+					tCollider.splice(tCollider.end(), col);
+				}
+
+				//リストから削除:ここ連結する処理の前にやるとitが次のイテレータになるから注意
+				it = calcList.erase(it);
+
+			}
+			else {
+				++it;
+			}
+		}
+		
 		for (Collider* sc : sCollider) {
+			if (tCollider.empty()) continue;
+
 			for (Collider* tc : tCollider) {
 				if (sc->IsHit(tc)) {
-					//ここであたったよ関数を呼ぶ
-					chara.objct->OnCollision(tc->GetGameObject());
+
+					OutputDebugString("tCollider : ");
+					OutputDebugStringA(std::to_string(tCollider.size()).c_str());
+					OutputDebugString("	,	sCollider : ");
+					OutputDebugStringA(std::to_string(sCollider.size()).c_str());
+					OutputDebugString("\n");
+
+					target->ApplyDamage(1);
 					sCollider.clear();
 					break;
 				}
@@ -45,28 +74,43 @@ void DamageCtrl::Update()
 	}
 }
 
-void DamageCtrl::AddCharacter(GameObject* obj, DamageType _type)
+void DamageCtrl::AddCharacter(Character* obj, DamageType _type)
 {
-	Character chara;
+	CollisionData chara;
 	chara.objct = obj;
 	chara.type = _type;
-	calcCharacters_.push_back(chara);
+	collisionList_.push_back(chara);
 }
 
-void DamageCtrl::RemoveCharacter(GameObject* obj)
+void DamageCtrl::RemoveCharacter(Character* obj)
 {
+	for (auto it = collisionList_.begin(); it != collisionList_.end();) {
+		if (it->objct == obj) {
+			it = collisionList_.erase(it);
+			break;
+		}
+		else {
+			++it;
+		}
+	}
+}
 
+void DamageCtrl::AllRemoveCharacter()
+{
+	collisionList_.clear();
 }
 
 bool DamageCtrl::CalcSword(LineCollider* line, int damage)
 {
+	return false;
+
     std::vector<EnemyBase*> enemyList = pEnemySpawnCtrl_->GetAllEnemy();
 	bool hit = false;
 
     for (int i = 0; i < enemyList.size(); i++) {
         std::list<Collider*> col = enemyList.at(i)->GetColliderList();
 
-        //Colliderなかったら次
+        // Colliderなかったら次
         if (col.empty()) continue;
 
 		int size = (int)col.size();
@@ -84,6 +128,8 @@ bool DamageCtrl::CalcSword(LineCollider* line, int damage)
 
 bool DamageCtrl::CalcBullet(SphereCollider* sphere, int damage)
 {
+	return false;
+	
 	std::vector<EnemyBase*> enemyList = pEnemySpawnCtrl_->GetAllEnemy();
 	bool hit = false;
 
@@ -108,6 +154,8 @@ bool DamageCtrl::CalcBullet(SphereCollider* sphere, int damage)
 
 bool DamageCtrl::CalcPlyaer(SphereCollider* sphere, int damage)
 {
+	return false;
+	
 	bool hit = false;
 	Player* pPlayer = (Player*)GameManager::GetParent()->FindObject("Player");
 	std::list<Collider*> col = pPlayer->GetColliderList();

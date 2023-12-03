@@ -4,7 +4,7 @@
 using namespace DirectX;
 
 class EnemySpawnCtrl;
-class GameObject;
+class Character;
 
 //•s—v
 //‚µ‚å‚¤‚ç‚¢namespace‚É‚µ‚æ‚¤‚Ë
@@ -22,18 +22,19 @@ public:
 private:
 	EnemySpawnCtrl* pEnemySpawnCtrl_;
 
-	struct Character {
+	struct CollisionData {
 		DamageType type;
-		GameObject* objct;
+		Character* objct;
 	};
-	std::vector<Character> calcCharacters_;
+	std::vector<CollisionData> collisionList_;
 
 public:
 	DamageCtrl(EnemySpawnCtrl* p);
 	~DamageCtrl();
 	void Update();
-	void AddCharacter(GameObject* obj, DamageType _type);
-	void RemoveCharacter(GameObject* obj);
+	void AddCharacter(Character* obj, DamageType _type);
+	void RemoveCharacter(Character* obj);
+	void AllRemoveCharacter();
 
 	//‚à‚¤Žg‚í‚È‚¢—\’è‚Ì‚â‚Â‚ç
 	bool CalcSword(LineCollider* line, int damage);

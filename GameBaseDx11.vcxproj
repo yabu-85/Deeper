@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AStarMan.cpp" />
+    <ClCompile Include="Character.cpp" />
     <ClCompile Include="FeetNode.cpp" />
     <ClCompile Include="IsEnemyStateNode.cpp" />
     <ClCompile Include="MoveAction.cpp" />
@@ -197,6 +198,7 @@
   <ItemGroup>
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AStarMan.h" />
+    <ClInclude Include="Character.h" />
     <ClInclude Include="FeetNode.h" />
     <ClInclude Include="IsEnemyStateNode.h" />
     <ClInclude Include="MoveAction.h" />

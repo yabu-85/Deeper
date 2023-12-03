@@ -244,6 +244,10 @@ void GameObject::CollisionDraw()
 	{
 		(*i)->Draw(GetWorldPosition());
 	}
+	for (auto i = this->attackColliderList_.begin(); i != this->attackColliderList_.end(); i++)
+	{
+		(*i)->Draw(GetWorldPosition());
+	}
 
 	Direct3D::SetShader(Direct3D::SHADER_3D);
 }

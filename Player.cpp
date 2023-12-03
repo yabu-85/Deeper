@@ -20,14 +20,14 @@ namespace {
 
     Text* pText = new Text;
     XMFLOAT3 rotateMove = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    
 }
 
 Player::Player(GameObject* parent)
-    : GameObject(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, pStateManager_(nullptr),
-    pCommand_(nullptr), pMainWeapon_(nullptr), pSubWeapon_{ nullptr, nullptr }, money_(0), hp_(0), maxHp_(0), currentSubIndex_(0)
+    : Character(parent), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, pStateManager_(nullptr),
+    pCommand_(nullptr), pMainWeapon_(nullptr), pSubWeapon_{ nullptr, nullptr }, money_(0), currentSubIndex_(0)
     , moveSpeed_(0.0f), rotateRatio_(0.0f)
 {
+    objectName_ = "Player";
 }
 
 Player::~Player()

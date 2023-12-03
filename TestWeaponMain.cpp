@@ -37,7 +37,7 @@ void TestWeaponMain::Initialize()
     pDamageCtrl_ = GameManager::GetDamageCtrl();
     
     line_ = new LineCollider(XMFLOAT3(), XMFLOAT3(), 10.0f);
-    AddCollider(line_);
+    AddAttackCollider(line_);
 
     damage_ = 1;
 }

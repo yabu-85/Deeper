@@ -40,7 +40,7 @@ void Feet::Initialize()
 	pHandCollider_ = new SphereCollider(XMFLOAT3(0, 0, 0), 1.0f);
 	AddCollider(collision1);
 	AddCollider(collision2);
-	AddCollider(pHandCollider_);
+	AddAttackCollider(pHandCollider_);
 	
 	//ステートの設定
 	pStateManager_ = new StateManager(this);

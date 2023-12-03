@@ -119,7 +119,7 @@ public:
 	void AddAttackCollider(Collider * collider);
 
 	std::list<Collider*> GetColliderList() { return colliderList_; }
-	std::list<Collider*> GetAttackColliderList() { return colliderList_; }
+	std::list<Collider*> GetAttackColliderList() { return attackColliderList_; }
 
 	//コライダー（衝突判定）を削除
 	void ClearCollider();

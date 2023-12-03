@@ -1,16 +1,14 @@
 #pragma once
-#include "Engine/GameObject.h"
+#include "Character.h"
 #include "EnemySpawnCtrl.h"
 
 class EnemyUi;
 class DropTable;
 class StateManager;
 
-class EnemyBase : public GameObject
+class EnemyBase : public Character
 {
 protected:
-    int hp_;
-    int maxHp_;
     float aimTargetPos_;        //Aim‚ÌTarget‚·‚é‚ÌêŠ
     XMFLOAT3 prePos_;
     ENEMY_TYPE type_;
@@ -27,11 +25,10 @@ public:
     virtual void Draw() override = 0 {};
     virtual void Release() override = 0 {};
 
-    virtual void ApplyDamage(int da);
+    virtual void ApplyDamage(int da) override;
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
     float GetAimTargetPos() { return aimTargetPos_; }
     StateManager* GetStateManager() { return pStateManager_; }
     StateManager* GetCombatStateManager() { return pCombatStateManager_; }
-
 };
 

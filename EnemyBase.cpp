@@ -5,11 +5,14 @@
 #include "EnemySpawnCtrl.h"
 #include "Player.h"
 #include "StateManager.h"
+#include "GameManager.h"
+#include "DamageCtrl.h"
 
 EnemyBase::EnemyBase(GameObject* parent)
-	: GameObject(parent), pEnemyUi_(nullptr), pStateManager_(nullptr),
-	hp_(0), maxHp_(0), type_(ENEMY_MAX), prePos_(0.0f, 0.0f, 0.0f), aimTargetPos_(0.0f)
+	: Character(parent), pEnemyUi_(nullptr), pStateManager_(nullptr),
+	type_(ENEMY_MAX), prePos_(0.0f, 0.0f, 0.0f), aimTargetPos_(0.0f)
 {
+	GameManager::GetDamageCtrl()->AddCharacter(this, DamageCtrl::DamageType::DA_Enemy);
 }
 
 EnemyBase::~EnemyBase()

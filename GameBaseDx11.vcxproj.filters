@@ -302,6 +302,7 @@
     <ClCompile Include="NavigationAI.cpp">
       <Filter>12Stage</Filter>
     </ClCompile>
+    <ClCompile Include="Character.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -505,6 +506,7 @@
     <ClInclude Include="NavigationAI.h">
       <Filter>12Stage</Filter>
     </ClInclude>
+    <ClInclude Include="Character.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

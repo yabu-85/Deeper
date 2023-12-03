@@ -1,18 +1,15 @@
 #pragma once
-#include "Engine/GameObject.h"
+#include "Character.h"
 
 class Aim;
 class StateManager;
 class PlayerCommand;
 class WeaponBase;
 
-class Player :
-    public GameObject
+class Player : public Character
 {
     int hModel_[2];
     int money_;
-    int hp_;
-    int maxHp_;
     int currentSubIndex_;       //今選択してるSubのIndex
     float moveSpeed_;           //移動スピード
     float rotateRatio_;         //回転の比率
@@ -47,9 +44,9 @@ public:
     XMFLOAT3 GetMovement() { return playerMovement_; }
     XMVECTOR GetDirectionVec();     //向いている方向（正規化済み
 
+    void ApplyDamage(int da) override;
     void InitAvo();
     void AddMoney(int num) { money_ += num; }
-    void ApplyDamage(int da);
     int GetModelHandle() { return hModel_[0]; }
 
     void SetWeapon(WeaponBase* weapon);

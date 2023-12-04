@@ -27,7 +27,7 @@ void Feet::Initialize()
 //	Model::SetAnimFrame(hModel_, 0, 100, 1.0f);
 
 	transform_.rotate_.y = -90.0f;
-	transform_.scale_ = XMFLOAT3(2.0f, 2.0f, 2.0f);
+	transform_.scale_ = XMFLOAT3(5.0f, 5.0f, 5.0f);
 	transform_.position_ = XMFLOAT3(50.0f + (float)(rand() % 10), 0.0f, 50.0f + (float)(rand() % 10));
 
 	maxHp_ = 10;

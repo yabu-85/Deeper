@@ -168,7 +168,7 @@ void FeetAttack::Update()
 	}
 	
 	if (time_ <= 0) {
-		pFeet_->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
+		pFeet_->SetScale(XMFLOAT3(5.0f, 5.0f, 5.0f));
 		owner_->ChangeState("Wait");
 		return;
 	}

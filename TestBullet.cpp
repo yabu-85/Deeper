@@ -26,7 +26,7 @@ void TestBullet::Initialize()
 	lifeTime_ = 100;
 
 	collision_ = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
-	AddCollider(collision_);
+	AddAttackCollider(collision_);
 
 	pDamageCtrl_ = GameManager::GetDamageCtrl();
 

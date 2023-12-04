@@ -20,6 +20,9 @@ DamageCtrl::~DamageCtrl()
 
 void DamageCtrl::Update()
 {
+	//‚¢‚Á‚½‚ñ‚È‚µ
+	return;
+
 	for (CollisionData chara : collisionList_) {
 		//Ž©•ª‚ÌAttackCollider‚ª‚ ‚ê‚Îlist‚É“ü‚ê‚ÄŽŸ‚Ö
 		std::list<Collider*> sCollider = chara.objct->GetAttackColliderList();
@@ -57,13 +60,6 @@ void DamageCtrl::Update()
 
 			for (Collider* tc : tCollider) {
 				if (sc->IsHit(tc)) {
-
-					OutputDebugString("tCollider : ");
-					OutputDebugStringA(std::to_string(tCollider.size()).c_str());
-					OutputDebugString("	,	sCollider : ");
-					OutputDebugStringA(std::to_string(sCollider.size()).c_str());
-					OutputDebugString("\n");
-
 					target->ApplyDamage(1);
 					sCollider.clear();
 					break;
@@ -102,8 +98,6 @@ void DamageCtrl::AllRemoveCharacter()
 
 bool DamageCtrl::CalcSword(LineCollider* line, int damage)
 {
-	return false;
-
     std::vector<EnemyBase*> enemyList = pEnemySpawnCtrl_->GetAllEnemy();
 	bool hit = false;
 
@@ -128,8 +122,6 @@ bool DamageCtrl::CalcSword(LineCollider* line, int damage)
 
 bool DamageCtrl::CalcBullet(SphereCollider* sphere, int damage)
 {
-	return false;
-	
 	std::vector<EnemyBase*> enemyList = pEnemySpawnCtrl_->GetAllEnemy();
 	bool hit = false;
 
@@ -154,8 +146,6 @@ bool DamageCtrl::CalcBullet(SphereCollider* sphere, int damage)
 
 bool DamageCtrl::CalcPlyaer(SphereCollider* sphere, int damage)
 {
-	return false;
-	
 	bool hit = false;
 	Player* pPlayer = (Player*)GameManager::GetParent()->FindObject("Player");
 	std::list<Collider*> col = pPlayer->GetColliderList();

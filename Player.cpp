@@ -8,6 +8,7 @@
 #include "TestWeaponMain.h"
 #include "TestWeaponSub.h"
 #include "Engine/BoxCollider.h"
+#include "Engine/SphereCollider.h"
 
 #include "Engine/Text.h"
 
@@ -69,7 +70,7 @@ void Player::Initialize()
     moveSpeed_ = 0.15f;
     rotateRatio_ = 0.2f;
 
-    BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.5f, 0.0f), XMFLOAT3(0.6f, 2.0f, 0.6f));
+    SphereCollider* collider = new SphereCollider(XMFLOAT3(0.0f, 1.5f, 0.0f), 1.0f);
     AddCollider(collider);
 
     pText->Initialize();

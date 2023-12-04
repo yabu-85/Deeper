@@ -36,7 +36,7 @@ void MoveAction::Update()
 #include "NavigationAI.h"
 
 namespace {
-	float floarSize = 5.0f;
+	float floarSize = 1.0f;
 }
 
 AstarMoveAction::AstarMoveAction(GameObject* obj) : MoveAction(obj)

@@ -23,6 +23,8 @@ namespace GameManager {
 	DropTable* pDropTable_ = nullptr;
 	GameObject* pParent_ = nullptr;
 
+	int entityCount = 0;
+
 	void GameManager::Initialize(GameObject* parent)
 	{
 		pEnemySpawnCtrl_ = new EnemySpawnCtrl;
@@ -48,12 +50,18 @@ namespace GameManager {
 	{
 		pDamageCtrl_->Update();
 
+		OutputDebugString("entity : ");
+		OutputDebugStringA(std::to_string(entityCount).c_str());
+		OutputDebugString("\n");
+
 		//デバッグ用
-		if (Input::IsKeyDown(DIK_M)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND);
-		if (Input::IsKeyDown(DIK_N)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET);
-		if (Input::IsKeyDown(DIK_K)) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_ASTAR);
+		if (Input::IsKeyDown(DIK_M)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND); entityCount++; }
+		if (Input::IsKeyDown(DIK_N)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET); entityCount++; }
+		if (Input::IsKeyDown(DIK_K)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_ASTAR); entityCount++; }
+		if (Input::IsKeyDown(DIK_L)) { for(int i = 0;i < 20;i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_ASTAR);  entityCount+= 20; }
+
 		if (Input::IsKeyDown(DIK_B)) pWeaponObjectManager_->AllKillWeaponObject();
-		if (Input::IsKeyDown(DIK_V)) pEnemySpawnCtrl_->AllKillEnemy();
+		if (Input::IsKeyDown(DIK_V)) { pEnemySpawnCtrl_->AllKillEnemy(); entityCount = 0; }
 	}
 
 	void GameManager::Release() {

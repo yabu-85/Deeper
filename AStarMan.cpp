@@ -16,7 +16,7 @@
 #include "Player.h"
 namespace {
 	XMFLOAT3 currentTar{};
-	float floarSize = 5.0f;
+	float floarSize = 1.0f;
 }
 
 AStarMan::AStarMan(GameObject* parent)
@@ -65,7 +65,7 @@ void AStarMan::Initialize()
 
 void AStarMan::Update()
 {
-	if (pAstarMoveAction_->IsInRange() && rand() % 180 == 0) {
+	if (pAstarMoveAction_->IsInRange() && rand() % 60 == 0) {
 		Player* pPlayer = (Player*)FindObject("Player");
 		pAstarMoveAction_->SetTarget(pPlayer->GetPosition());
 	}

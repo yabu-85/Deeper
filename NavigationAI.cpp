@@ -4,9 +4,11 @@
 namespace {
 	const int stageWidth = 25;
 	const int stageHeight = 25;
-	const int floarSize = 5;	//一マスのサイズ
+	const int floarSize = 1;	//一マスのサイズ
 
 }
+
+void PathSmoothing(std::vector<XMFLOAT3>& path);
 
 NavigationAI::NavigationAI(Stage* s)
 {
@@ -78,7 +80,7 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 				z = tempY;
 			}
 
-			// 次に進む座標を返す
+			// 一番後列のデータはstartPosだから削除、マスのサイズを合わせる
 			if (path.size() >= 2) {
 				path.pop_back();
 				for (auto p : path) {
@@ -86,6 +88,7 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 					p.z -= (floarSize) / 2.0f;
 				}
 
+				PathSmoothing(path);
 				return path;
 			}
 			else {
@@ -135,4 +138,34 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 
 	std::vector<XMFLOAT3> none;
 	return none;
+}
+
+void PathSmoothing(std::vector<XMFLOAT3>& path) {
+	const float alpha = 0.2f;			// 大きいほど、現在のパスが元のパスに迅速に近づきます。 大きいほど処理が速い
+	const float beta = 0.1f;			// 大きいほど、隣接する点間での滑らかさが向上します。   大きいほど処理が遅い
+	const float tolerance = 0.5;		// 変化量がこの値以下の時平滑化を終了。　　　　　　　　 大きいほど処理が速い
+	float change = tolerance;			// パスの位置の変化量
+
+	while (change >= tolerance) {
+		change = 0.0f;
+
+		for (int i = 1; i < path.size() - 1; ++i) {
+			XMFLOAT3 prePath = path[i];
+
+			XMVECTOR prePathVector = XMLoadFloat3(&prePath);
+			XMVECTOR currentPathVector = XMLoadFloat3(&path[i]);
+			XMVECTOR previousPathVector = XMLoadFloat3(&path[i - 1]);
+			XMVECTOR nextPathVector = XMLoadFloat3(&path[i + 1]);
+
+			XMVECTOR smoothedPathVector = currentPathVector - alpha * (currentPathVector - prePathVector);
+			smoothedPathVector = smoothedPathVector - beta * (2.0f * smoothedPathVector - previousPathVector - nextPathVector);
+
+			XMFLOAT3 smoothedPath;
+			XMStoreFloat3(&smoothedPath, smoothedPathVector);
+
+			path[i] = smoothedPath;
+
+			change += XMVectorGetX(XMVector3LengthEst(smoothedPathVector - prePathVector));
+		}
+	}
 }

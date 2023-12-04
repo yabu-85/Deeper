@@ -10,8 +10,8 @@ namespace {
 
     //デバッグ用
     bool drawCell = true;
-    const float floarSize = 5.0f;
-    const float smallSize = 1.0f;
+    const float floarSize = 1.0f;
+    const float smallSize = 5.0f;
 }
 
 Stage::Stage(GameObject* parent)

@@ -20,7 +20,12 @@ class NavigationAI
 
 public:
 	NavigationAI(Stage* s);
+
+	//AStar‚Ìc‰¡ˆÚ“®‚Ì‚İ
 	std::vector<XMFLOAT3> Navi(XMFLOAT3 target, XMFLOAT3 pos);
+	
+	//AStar‚ÌÎ‚ßˆÚ“®‚ ‚è
+	std::vector<XMFLOAT3> NaviDiagonal(XMFLOAT3 target, XMFLOAT3 pos);
 
 };
 

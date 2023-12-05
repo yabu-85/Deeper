@@ -60,6 +60,7 @@ void AStarMan::Initialize()
 	transform_.position_ = XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize);
 	index = rand() % posList.size();
 	pAstarMoveAction_->SetTarget(XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize));
+	transform_.scale_ = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
 }
 

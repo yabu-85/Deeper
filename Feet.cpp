@@ -4,6 +4,7 @@
 #include "Engine/SphereCollider.h"
 #include "StateManager.h"
 #include "FeetState.h"
+#include "Stage.h"
 
 #include "MoveAction.h"
 #include "RotateAction.h"
@@ -24,10 +25,6 @@ void Feet::Initialize()
 	//モデルデータのロード
 	hModel_ = Model::Load("Model/StoneGolem.fbx");
 	assert(hModel_ >= 0);
-
-	transform_.rotate_.y = -90.0f;
-	transform_.scale_ = XMFLOAT3(2.0f, 2.0f, 2.0f);
-	transform_.position_ = XMFLOAT3(50.0f + (float)(rand() % 10), 0.0f, 50.0f + (float)(rand() % 10));
 
 	maxHp_ = 10;
 	hp_ = maxHp_;
@@ -61,6 +58,11 @@ void Feet::Initialize()
 	
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize(5.5f);
+
+	Stage* pStage = (Stage*)FindObject("Stage");
+	XMFLOAT3 startPos = pStage->GetRandomFloarPosition();
+	transform_.position_ = startPos;
+	transform_.rotate_.y = -90.0f;
 
 	//Actionの設定
 	pMoveAction_ = new AstarMoveAction(this, 0.07f, 2.0f);

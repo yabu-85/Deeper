@@ -27,5 +27,5 @@ public:
 
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }
-
+    int GetModelHandle() { return hModel_; }
 };

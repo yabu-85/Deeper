@@ -26,8 +26,11 @@ struct IntersectData {
     IntersectData(int num, XMFLOAT3 pos, XMFLOAT3 sca) : hModelNum(num), position(pos), scale(sca) { }
 };
 
-class Stage :
-    public GameObject
+//デバッグ用
+const float floarSize = 5.0f;
+const float smallSize = 1.0f;
+
+class Stage : public GameObject
 {
     int hModel_[MAX + RMAX];
     std::vector<IntersectData> intersectDatas_; //ローポリのデータ集
@@ -51,8 +54,9 @@ public:
     void Release() override;
 
     std::vector<IntersectData> GetIntersectDatas() { return intersectDatas_; };
-    XMFLOAT3 GetPlayerStartPos();
     std::vector<std::vector<int>> GetMapData() { return mapData_; };
+    XMFLOAT3 GetPlayerStartPos();
+    XMFLOAT3 GetRandomFloarPosition();
 
     void ResetStage();
     void CreatStage();

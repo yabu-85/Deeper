@@ -5,13 +5,8 @@
 #include "Engine/CsvReader.h"
 
 namespace {
-    const int StartsizeX = 5;
-    const int StartsizeZ = 3;
-
     //デバッグ用
     bool drawCell = true;
-    const float floarSize = 1.0f;
-    const float smallSize = 5.0f;
 }
 
 Stage::Stage(GameObject* parent)
@@ -126,4 +121,26 @@ void Stage::CreatStage()
             }
         }
     }
+}
+
+XMFLOAT3 Stage::GetRandomFloarPosition()
+{
+    struct Cell
+    {
+        float x, z;
+    };
+    std::vector<Cell> posList;
+    for (int x = 0; x < mapSizeX_; x++) {
+        for (int z = 0; z < mapSizeZ_; z++) {
+            if (mapData_[z][x] == Stage::MAP::FLOAR) {
+                Cell cell;
+                cell.x = (float)x;
+                cell.z = (float)z;
+                posList.push_back(cell);
+            }
+        }
+    }
+
+    int index = rand() % posList.size();
+    return XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize);
 }

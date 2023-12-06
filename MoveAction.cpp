@@ -34,10 +34,7 @@ void MoveAction::Update()
 
 #include "GameManager.h"
 #include "NavigationAI.h"
-
-namespace {
-	float floarSize = 1.0f;
-}
+#include "Stage.h"
 
 AstarMoveAction::AstarMoveAction(GameObject* obj) : MoveAction(obj)
 {

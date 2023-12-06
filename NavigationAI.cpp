@@ -4,7 +4,6 @@
 namespace {
 	const int stageWidth = 25;
 	const int stageHeight = 25;
-	const int floarSize = 1;	//一マスのサイズ
 	const int DIRX[] = { 0, +1,  0, -1 };
 	const int DIRY[] = { -1,  0, +1,  0 };
 }

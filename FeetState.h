@@ -73,6 +73,7 @@ public:
 	FeetMove(StateManager* owner);
 	const char* GetName() const override { return "Move"; }
 	void Update() override;
+	void OnExit() override;
 };
 
 class FeetAttack : public StateBase

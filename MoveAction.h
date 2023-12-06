@@ -42,5 +42,6 @@ public:
     void Update() override;
     void SetTarget(XMFLOAT3 target) override;
     std::vector<XMFLOAT3> GetTarget() { return targetList_; }
+    void StopMove() { targetList_.clear(); }
 
 };

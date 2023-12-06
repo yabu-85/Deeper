@@ -5,19 +5,15 @@
 #include "Engine/SphereCollider.h"
 #include "StateManager.h"
 #include "FeetState.h"
+#include "Stage.h"
 
 #include "MoveAction.h"
 #include "RotateAction.h"
 
+//デバッグ用
 #include <vector>
-#include "Stage.h"
-#include "GameManager.h"
 #include "Engine/Input.h"
 #include "Player.h"
-namespace {
-	XMFLOAT3 currentTar{};
-	float floarSize = 1.0f;
-}
 
 AStarMan::AStarMan(GameObject* parent)
 	:EnemyBase(parent), hModel_(-1), pAstarMoveAction_(nullptr)
@@ -35,32 +31,15 @@ void AStarMan::Initialize()
 	assert(hModel_ >= 0);
 	
 	aimTargetPos_ = 1.0f;
-	
+
+	Stage* pStage = (Stage*)FindObject("Stage");
+	XMFLOAT3 startPos = pStage->GetRandomFloarPosition();
+	transform_.position_ = startPos;
+	transform_.scale_ = XMFLOAT3(0.5f, 0.5f, 0.5f);
+
 	pAstarMoveAction_ = new AstarMoveAction(this, 0.05f, 0.1f);
 	pAstarMoveAction_->Initialize();
-
-	struct Cell
-	{
-		float x, z;
-	};
-	std::vector<Cell> posList;
-	Stage* pStage = (Stage*)FindObject("Stage");
-	std::vector<std::vector<int>> mapData = pStage->GetMapData();
-	for (int x = 0; x < 25; x++) {
-		for (int z = 0; z < 25; z++) {
-			if (mapData[x][z] == Stage::MAP::FLOAR) {
-				Cell cell;
-				cell.x = (float)x;
-				cell.z = (float)z;
-				posList.push_back(cell);
-			}
-		}
-	}
-	int index = rand() % posList.size();
-	transform_.position_ = XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize);
-	index = rand() % posList.size();
-	pAstarMoveAction_->SetTarget(XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize));
-	transform_.scale_ = XMFLOAT3(0.5f, 0.5f, 0.5f);
+	pAstarMoveAction_->SetTarget(startPos);
 
 }
 
@@ -94,8 +73,6 @@ void AStarMan::Draw()
 			Model::Draw(hModel_);
 		}
 	}
-	
-
 }
 
 void AStarMan::Release()

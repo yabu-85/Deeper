@@ -10,6 +10,10 @@
 #include "DamageCtrl.h"
 #include "GameManager.h"
 
+#include "MoveAction.h"
+#include "RotateAction.h"
+#include "Engine/Model.h"
+
 FeetAppear::FeetAppear(StateManager* owner) : time_(0), appearTime_(0)
 {
 	owner_ = owner;
@@ -126,9 +130,6 @@ void FeetWait::Update()
 
 //--------------------------------------------------------------------------------
 
-#include "MoveAction.h"
-#include "RotateAction.h"
-
 FeetMove::FeetMove(StateManager* owner)
 {
 	owner_ = owner;
@@ -141,9 +142,14 @@ void FeetMove::Update()
 		Player* pPlayer = (Player*)pFeet_->FindObject("Player");
 		pFeet_->GetMoveAction()->SetTarget(pPlayer->GetPosition());
 	}
-	pFeet_->GetMoveAction()->Update();
 
+	pFeet_->GetMoveAction()->Update();
 	pFeet_->GetRotateAction()->Update();
+}
+
+void FeetMove::OnExit()
+{
+	pFeet_->GetMoveAction()->StopMove();
 }
 
 //--------------------------------------------------------------------------------
@@ -158,26 +164,24 @@ FeetAttack::FeetAttack(StateManager* owner) : time_(0)
 
 void FeetAttack::Update()
 {
-	time_--;
+	time_++;
 
-	if (time_ > 0 + 30) {
-		float random = time_ / 60.0f + 1.0f;
-		pFeet_->SetScale(XMFLOAT3(random * random, pFeet_->GetScale().y, random * random));
-
+	//AttackFrame=65 ` 90
+	if (time_ > 65 && time_ < 90) {
 		GameManager::GetDamageCtrl()->CalcPlyaer(pFeet_->GetSphereCollider(), 1);
 	}
 	
-	if (time_ <= 0) {
-		pFeet_->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
+	if (time_ >= 200) {
+		Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 0, 1.0f);
 		owner_->ChangeState("Wait");
 		return;
 	}
-
 }
 
 void FeetAttack::OnEnter()
 {
-	time_ = 90;
+	time_ = 0;
+	Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 200, 1.0f);
 }
 
 //--------------------------------------------------------------------------------

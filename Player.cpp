@@ -7,8 +7,10 @@
 #include "PlayerCommand.h"
 #include "TestWeaponMain.h"
 #include "TestWeaponSub.h"
-#include "Engine/BoxCollider.h"
 
+#include "Engine/BoxCollider.h"
+#include "Engine/SphereCollider.h"
+#include "CollisionMap.h"
 #include "Engine/Text.h"
 
 namespace {
@@ -20,6 +22,7 @@ namespace {
 
     Text* pText = new Text;
     XMFLOAT3 rotateMove = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    SphereCollider* collid = nullptr;
 }
 
 Player::Player(GameObject* parent)
@@ -69,8 +72,11 @@ void Player::Initialize()
     moveSpeed_ = 0.15f;
     rotateRatio_ = 0.2f;
 
-    BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), XMFLOAT3(0.5f, 2.6f, 0.5f));
-    AddCollider(collider);
+//    BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), XMFLOAT3(0.5f, 2.6f, 0.5f));
+//    AddCollider(collider);
+
+    collid = new SphereCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), 0.5f);
+    AddCollider(collid);
 
     pText->Initialize();
 }
@@ -89,6 +95,9 @@ void Player::Update()
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
     if (Input::IsKeyDown(DIK_RIGHTARROW)) transform_.position_.y += 10.0f;
     if (Input::IsKey(DIK_H)) ApplyDamage(1);
+
+    CollisionMap* map = (CollisionMap*)FindObject("CollisionMap");
+    map->MapDataVsSphere(collid);
 
     return;
     //40,80,150

@@ -3,17 +3,23 @@
 #include "Engine/Fbx.h"
 
 using namespace DirectX;
+class BoxCollider;
+class SphereCollider;
 
 class Triangle
 {
-	XMFLOAT3 position_[3];
+	//３頂点の座標
+	XMVECTOR position_[3];
+	
+	//法線ベクトル
+	XMVECTOR normal_;
 
 public:
 	void CreatTriangle(XMVECTOR& p1, XMVECTOR& p2, XMVECTOR& p3);
-	void RayCast(RayCastData* data, Triangle& tri);
+	XMFLOAT3* GetPosition();
 
-	void SetPosition(XMFLOAT3* pos);
-	XMFLOAT3* GetPosition() { return position_; };
+	void RayCast(RayCastData* data);
+	bool TestSphereTriangle(SphereCollider* collid);
 
 };
 

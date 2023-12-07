@@ -102,6 +102,6 @@ public:
 	void SetCenter(XMFLOAT3 pos) { center_ = pos; }
 
 	void SetSize(float _size) { size_ = XMFLOAT3(_size, _size, _size); }
-
+	XMFLOAT3 GetSize() { return size_; }
 };
 

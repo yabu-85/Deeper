@@ -21,7 +21,7 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-    std::string fileName[] = { "StageT1", "StageT2", "StageT3", "RayStageT1", "RayStageT2", "RayStageT3" };
+    std::string fileName[] = { "StageT1", "StageT2", "StageT3", "StageT4", "RayStageT1", "RayStageT2", "RayStageT3", "StageT4" };
     for (int i = 0; i < MAX + RMAX; i++) {
         hModel_[i] = Model::Load("Model/Stage/" + fileName[i] + ".fbx");
         assert(hModel_[i] >= 0);
@@ -96,12 +96,12 @@ void Stage::CreatStage()
             int data = csv.GetValue(x, z);
             if (data == 10)
             {
-                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 0.1f, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f, 1.0f / smallSize) });
                 startPos_ = XMFLOAT3((float)x, 0.0f, (float)z);
             }
             else if (data == 1)
             {
-                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 0.1f, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f, 1.0f / smallSize) });
             }
             else if (data == 2)
             {
@@ -112,8 +112,14 @@ void Stage::CreatStage()
             else if (data == 3)
             {
                 mapData_[z][x] = WALL;
-                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 0.1f, 1.0f / smallSize) });
-                intersectDatas_.push_back({ hModel_[T3], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 0.1f, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[T3], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f, 1.0f / smallSize) });
+            }
+            else if (data == 4)
+            {
+                mapData_[z][x] = WALL;
+                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[T4], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f, 1.0f / smallSize) });
             }
             else
             {

@@ -48,15 +48,7 @@ bool Cell::SetTriangle(Triangle& t)
 		return false;
 	}
 
-	Triangle* tri = new Triangle;
-	tri->SetPosition(tp);
-
-	XMVECTOR vec[3];
-	for (int i = 0; i < 3; i++) vec[i] = XMLoadFloat3(&tp[i]);
-	tri->CreatTriangle(vec[0], vec[1], vec[2]);
-
-	Triangles.push_back(tri);
-
+	Triangles.push_back(&t);
 	return true;
 }
 
@@ -67,6 +59,34 @@ void Cell::ResetTriangles()
 	}
 
 	Triangles.clear();
+}
+
+float Cell::SegmentVsTriangle(RayCastData* _data)
+{
+	float minRange = FBXSDK_FLOAT_MAX;
+
+	for (int i = 0; i < (int)Triangles.size(); i++) {
+		Triangles.at(i)->RayCast(_data);
+
+		//ƒŒƒC“–‚½‚Á‚½E”»’è‹——£“à‚¾‚Á‚½‚ç
+		if (_data->hit && minRange > _data->dist) {
+			minRange = _data->dist;
+		}
+	}
+
+	return minRange;
+}
+
+void Cell::MapDataVsBox(BoxCollider* collid)
+{
+}
+
+void Cell::MapDataVsSphere(SphereCollider* collid)
+{
+	for (int i = 0; i < (int)Triangles.size(); i++) {
+		Triangles.at(i)->TestSphereTriangle(collid);
+	}
+
 }
 
 

@@ -72,16 +72,18 @@ void CollisionMap::Initialize()
         }
     }
 
-    std::vector<Triangle> triList;
+    //Cellに追加する予定のTriangleをすべて計算してCreatする
+    std::vector<Triangle*> triList;
     std::vector<IntersectData> inteDatas = pStage->GetIntersectDatas();
     for (int i = 0; i < inteDatas.size(); i++) {
         pFbx = Model::GetFbx(inteDatas[i].hModelNum + StageNum::MAX);
         std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
 
+        //IntersectDataのCollision用モデルのパーツをすべて取得し、その全ポリゴンの座標を計算
         for (int n = 0; n < pFbxParts.size(); n++) {
             std::vector<XMFLOAT3> polygons = pFbxParts[n]->GetAllPositions();
 
-            //Intersectごとの座標を計算
+            //モデルデータの座標を計算
             XMFLOAT3 interPos = inteDatas[i].position;
             XMFLOAT3 interScale = inteDatas[i].scale;
             for (int j = 0; j < polygons.size(); j++)
@@ -89,22 +91,22 @@ void CollisionMap::Initialize()
                                        polygons[j].y * interScale.y + interPos.y,
                                        polygons[j].z * interScale.z + interPos.z);
 
+            //Triangleに割当たるポリゴンを取得しCreatしてリストに追加
             int polygonsSize = (int)polygons.size() / polySize;
             for (int h = 0; h < polygonsSize; h++) {
                 XMVECTOR vpoly[polySize];
                 for (int t = 0; t < polySize; t++)
                     vpoly[t] = XMLoadFloat3(&polygons[h * polySize + t]);
 
-                Triangle tri;
-                tri.CreatTriangle(vpoly[0], vpoly[1], vpoly[2]);
+                Triangle *tri = new Triangle();
+                tri->CreatTriangle(vpoly[0], vpoly[1], vpoly[2]);
                 triList.push_back(tri);
             }
         }
     }
 
-    std::string strNumber = std::to_string(triList.size());
     OutputDebugString("polygon : ");
-    OutputDebugStringA(strNumber.c_str());
+    OutputDebugStringA(std::to_string(triList.size()).c_str());
     OutputDebugString("\n");
 
     //「各CELL」に含まれる三角ポリゴンを登録
@@ -112,7 +114,7 @@ void CollisionMap::Initialize()
         for (int z = 0; z < numZ; z++) {
             for (int x = 0; x < numX; x++) {
                 for (int i = 0; i < (int)triList.size(); i++) {
-                    cells_[y][z][x].SetTriangle(triList[i]);
+                    cells_[y][z][x].SetTriangle(*triList[i]);
                 }
             }
         }
@@ -145,33 +147,32 @@ void CollisionMap::Release()
 
 float CollisionMap::GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data)
 {
-    RayCastData data;
-    const float minRangeMax = FBXSDK_FLOAT_MAX;
-    float minRange = minRangeMax;
-    
     int x = int((pos.x - minX) / boxSize);
     int y = int((pos.y - minY) / boxSize);
     int z = int((pos.z - minZ) / boxSize);
 
-    //ここ最大を超えないようにしてるけど、将来なくてもいいように設計したならいらないデバッグ用
-    if (x < 0 || y < 0 || z < 0 || x > maxX / boxSize || y > maxY / boxSize || z > maxZ / boxSize) return minRange;
+    //デバッグ用
+    //ここ最大を超えないようにしてるけど、将来なくてもいいように設計したならいらない
+    if (x < 0 || y < 0 || z < 0 || x > maxX / boxSize || y > maxY / boxSize || z > maxZ / boxSize) return FBXSDK_FLOAT_MAX;
 
-    std::vector<Triangle*> triList;
-    triList = cells_[y][z][x].GetTriangles();
+    return cells_[y][z][x].SegmentVsTriangle(_data);
+}
 
-    for (int i = 0; i < (int)triList.size(); i++) {
-        data.start = _data->start;
-        data.dir = _data->dir;
+void CollisionMap::MapDataVsBox(BoxCollider* collid)
+{
 
-        Triangle tri = *triList.at(i);
-        tri.RayCast(&data, tri);
+}
 
-        //レイ当たった・判定距離内だったら
-        if (data.hit && minRange > data.dist )
-        {
-            minRange = data.dist;
-        }
+void CollisionMap::MapDataVsSphere(SphereCollider* collid)
+{
+    XMFLOAT3 pos = collid->GetGameObject()->GetPosition();
+    int x = int((pos.x - minX) / boxSize);
+    int y = int((pos.y - minY) / boxSize);
+    int z = int((pos.z - minZ) / boxSize);
+    
+    if (x < 0 || y < 0 || z < 0 || x > maxX / boxSize || y > maxY / boxSize || z > maxZ / boxSize) {
+        return;
     }
 
-    return minRange;
+    cells_[y][z][x].MapDataVsSphere(collid);
 }

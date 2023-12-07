@@ -169,7 +169,7 @@ void FeetAttack::Update()
 	}
 	
 	if (time_ >= 200) {
-	//	Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 0, 1.0f);
+		Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 0, 1.0f);
 		owner_->ChangeState("Wait");
 		return;
 	}
@@ -178,7 +178,7 @@ void FeetAttack::Update()
 void FeetAttack::OnEnter()
 {
 	time_ = 0;
-//	Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 200, 1.0f);
+	Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 200, 1.0f);
 }
 
 //--------------------------------------------------------------------------------

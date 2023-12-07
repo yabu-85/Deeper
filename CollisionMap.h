@@ -5,6 +5,8 @@
 
 class Triangle;
 class Cell;
+class BoxCollider;
+class SphereCollider;
 
 class CollisionMap : public GameObject
 {
@@ -20,8 +22,11 @@ public:
 
     float GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data); //当たらなかった場合FLOATの最大値が返ってくる
     
-    //コリジョンマップと立方体（AABB/OBB）とのあたり判定
-    //コリジョンマップと円とのあたり判定を実装したい
+    //コリジョンマップとの接触判定：めり込んでたら追い出す
+    void MapDataVsBox(BoxCollider* collid);
+    
+    //コリジョンマップとの接触判定：めり込んでたら追い出す
+    void MapDataVsSphere(SphereCollider* collid);
 
 };
 

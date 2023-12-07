@@ -5,6 +5,9 @@
 #include <vector>
 #include "Triangle.h"
 
+class BoxCollider;
+class SphereCollider;
+
 class Cell
 {
 	//¶‰œ‰º‚ÌÀ•W
@@ -34,6 +37,12 @@ public:
 	//Getter
 	XMFLOAT3 GetPosision() { return position_; };
 	std::vector<Triangle*>& GetTriangles() { return Triangles; };
+
+	//“–‚½‚Á‚½ê‡‚ÌÅ¬‹——£‚ğ•Ô‚·
+	float SegmentVsTriangle(RayCastData* _data);
+
+	void MapDataVsBox(BoxCollider* collid);
+	void MapDataVsSphere(SphereCollider* collid);
 
 };
 

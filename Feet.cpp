@@ -56,8 +56,8 @@ void Feet::Initialize()
 	pCombatStateManager_->ChangeState("Wait");
 	pCombatStateManager_->Initialize();
 	
-	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize(5.5f);
+//	pEnemyUi_ = new EnemyUi(this);
+//	pEnemyUi_->Initialize(5.5f);
 
 	Stage* pStage = (Stage*)FindObject("Stage");
 	XMFLOAT3 startPos = pStage->GetRandomFloarPosition();

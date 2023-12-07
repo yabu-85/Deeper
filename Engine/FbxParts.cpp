@@ -624,19 +624,6 @@ void FbxParts::DrawSkinAnime(Transform& transform, FbxTime time)
 
 void FbxParts::DrawMeshAnime(Transform& transform, FbxTime time, FbxScene * scene)
 {
-	//// その瞬間の自分の姿勢行列を得る
-	//FbxAnimEvaluator *evaluator = scene->GetAnimationEvaluator();
-	//FbxMatrix mCurrentOrentation = evaluator->GetNodeGlobalTransform(_pNode, time);
-
-	//// Fbx形式の行列からDirectX形式の行列へのコピー（4×4の行列）
-	//for (DWORD x = 0; x < 4; x++)
-	//{
-	//	for (DWORD y = 0; y < 4; y++)
-	//	{
-	//		_localMatrix(x, y) = (float)mCurrentOrentation.Get(x, y);
-	//	}
-	//}
-
 	Draw(transform);
 }
 

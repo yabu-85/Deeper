@@ -8,7 +8,6 @@
 namespace {
     const unsigned maxTime = 4294967295;
     const float maxSizeX = 5.0f;
-
 }
 
 EnemyUi::EnemyUi(EnemyBase* parent)

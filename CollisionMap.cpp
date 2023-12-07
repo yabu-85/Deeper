@@ -146,9 +146,9 @@ void CollisionMap::Release()
 float CollisionMap::GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data)
 {
     RayCastData data;
-    const float minRangeMax = 100000000;
+    const float minRangeMax = FBXSDK_FLOAT_MAX;
     float minRange = minRangeMax;
-
+    
     int x = int((pos.x - minX) / boxSize);
     int y = int((pos.y - minY) / boxSize);
     int z = int((pos.z - minZ) / boxSize);

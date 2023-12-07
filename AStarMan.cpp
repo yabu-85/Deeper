@@ -1,10 +1,5 @@
 #include "AStarMan.h"
 #include "Engine/Model.h"
-#include "NavigationAI.h"
-#include "EnemyUi.h"
-#include "Engine/SphereCollider.h"
-#include "StateManager.h"
-#include "FeetState.h"
 #include "Stage.h"
 
 #include "MoveAction.h"

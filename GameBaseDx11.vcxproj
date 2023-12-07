@@ -128,7 +128,6 @@
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AStarMan.cpp" />
     <ClCompile Include="Character.cpp" />
-    <ClCompile Include="FeetNode.cpp" />
     <ClCompile Include="IsEnemyStateNode.cpp" />
     <ClCompile Include="MoveAction.cpp" />
     <ClCompile Include="Aim.cpp" />
@@ -172,7 +171,7 @@
     <ClCompile Include="FeetState.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="MasterHand.cpp" />
-    <ClCompile Include="MoveActionNode.cpp" />
+    <ClCompile Include="ChangeStateNode.cpp" />
     <ClCompile Include="NavigationAI.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerCommand.cpp" />
@@ -199,7 +198,6 @@
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AStarMan.h" />
     <ClInclude Include="Character.h" />
-    <ClInclude Include="FeetNode.h" />
     <ClInclude Include="IsEnemyStateNode.h" />
     <ClInclude Include="MoveAction.h" />
     <ClInclude Include="Aim.h" />
@@ -243,7 +241,7 @@
     <ClInclude Include="FeetState.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="MasterHand.h" />
-    <ClInclude Include="MoveActionNode.h" />
+    <ClInclude Include="ChangeStateNode.h" />
     <ClInclude Include="NavigationAI.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerCommand.h" />

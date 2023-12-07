@@ -10,7 +10,6 @@
 namespace {
 	const int killTime = 60;
 	const float moveSpeed = 5.0f;
-
 }
 
 MasterHand::MasterHand(GameObject* parent)

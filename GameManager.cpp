@@ -56,7 +56,11 @@ namespace GameManager {
 
 		//デバッグ用
 		if (Input::IsKeyDown(DIK_M)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND); entityCount++; }
+		if (Input::IsKeyDown(DIK_J)) { for (int i = 0; i < 20; i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND);  entityCount += 20; }
+
 		if (Input::IsKeyDown(DIK_N)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET); entityCount++; }
+		if (Input::IsKeyDown(DIK_H)) { for (int i = 0; i < 20; i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET);  entityCount += 20; }
+		
 		if (Input::IsKeyDown(DIK_K)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_ASTAR); entityCount++; }
 		if (Input::IsKeyDown(DIK_L)) { for(int i = 0;i < 20;i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_ASTAR);  entityCount+= 20; }
 

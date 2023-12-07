@@ -9,7 +9,7 @@
 #include "DamageCtrl.h"
 
 EnemyBase::EnemyBase(GameObject* parent)
-	: Character(parent), pEnemyUi_(nullptr), pStateManager_(nullptr),
+	: Character(parent), pEnemyUi_(nullptr), pStateManager_(nullptr), pCombatStateManager_(nullptr),
 	type_(ENEMY_MAX), prePos_(0.0f, 0.0f, 0.0f), aimTargetPos_(0.0f)
 {
 	GameManager::GetDamageCtrl()->AddCharacter(this, DamageCtrl::DamageType::DA_Enemy);
@@ -24,7 +24,9 @@ EnemyBase::~EnemyBase()
 void EnemyBase::ApplyDamage(int da)
 {
 	hp_ -= da;
-	pEnemyUi_->SetParcent((float)(hp_) / (float)(maxHp_));
+	
+	if(pEnemyUi_) pEnemyUi_->SetParcent((float)(hp_) / (float)(maxHp_));
+	
 	if (hp_ <= 0) {
 		GameManager::GetDropTable()->DropItem(0, transform_.position_);
 		GameManager::GetEnemySpawnCtrl()->KillEnemy(this);

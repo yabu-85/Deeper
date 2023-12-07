@@ -93,9 +93,6 @@
     <Filter Include="06State\Player">
       <UniqueIdentifier>{a3b99297-e4e2-4533-b267-eae497f6f730}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05BehaviorTree\Feet">
-      <UniqueIdentifier>{34df25bd-a856-4404-8bc6-f2f625611e02}</UniqueIdentifier>
-    </Filter>
     <Filter Include="11Animation">
       <UniqueIdentifier>{f2fd3b5b-9812-4d61-8d08-0a1f902da6c9}</UniqueIdentifier>
     </Filter>
@@ -247,7 +244,7 @@
     <ClCompile Include="BehaviourNode.cpp">
       <Filter>05BehaviorTree\01Base</Filter>
     </ClCompile>
-    <ClCompile Include="MoveActionNode.cpp">
+    <ClCompile Include="ChangeStateNode.cpp">
       <Filter>05BehaviorTree\02ActionNode</Filter>
     </ClCompile>
     <ClCompile Include="DropTable.cpp">
@@ -273,9 +270,6 @@
     </ClCompile>
     <ClCompile Include="IsEnemyStateNode.cpp">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
-    </ClCompile>
-    <ClCompile Include="FeetNode.cpp">
-      <Filter>05BehaviorTree\Feet</Filter>
     </ClCompile>
     <ClCompile Include="MoveAction.cpp">
       <Filter>10Action\Actions</Filter>
@@ -451,7 +445,7 @@
     <ClInclude Include="BehaviourNode.h">
       <Filter>05BehaviorTree\01Base</Filter>
     </ClInclude>
-    <ClInclude Include="MoveActionNode.h">
+    <ClInclude Include="ChangeStateNode.h">
       <Filter>05BehaviorTree\02ActionNode</Filter>
     </ClInclude>
     <ClInclude Include="DropTable.h">
@@ -477,9 +471,6 @@
     </ClInclude>
     <ClInclude Include="IsEnemyStateNode.h">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
-    </ClInclude>
-    <ClInclude Include="FeetNode.h">
-      <Filter>05BehaviorTree\Feet</Filter>
     </ClInclude>
     <ClInclude Include="MoveAction.h">
       <Filter>10Action\Actions</Filter>

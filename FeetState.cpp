@@ -1,11 +1,10 @@
 #include "FeetState.h"
 #include "StateManager.h"
-#include "MoveActionNode.h"
+#include "ChangeStateNode.h"
 #include "BehaviourNode.h"
 #include "PlayerConditionNode.h"
 #include "IsEnemyStateNode.h"
 #include "Player.h"
-#include "FeetNode.h"
 #include "Feet.h"
 #include "DamageCtrl.h"
 #include "GameManager.h"
@@ -77,7 +76,7 @@ FeetCombat::FeetCombat(StateManager* owner)
 	selector1->AddChildren(inverter1);
 	
 	//--------------------プレイヤーの近くではない（移動）/　近くなら攻撃を選ぶ-----------------------
-	MoveTarget* action1 = new MoveTarget(pFeet_);
+	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(pFeet_, "Move");
 	IsPlayerNotInRangeNode* condition2 = new IsPlayerNotInRangeNode(action1, 5.0f, pFeet_, pPlayer);
 	selector2->AddChildren(condition2);
 
@@ -85,10 +84,8 @@ FeetCombat::FeetCombat(StateManager* owner)
 	selector2->AddChildren(selector3);
 
 	//--------------------------------攻撃のどれかを選ぶ-------------------------------------------
-	FeetNormalAttack* action2 = new FeetNormalAttack(pFeet_);
+	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(pFeet_, "Attack");
 	selector3->AddChildren(action2);
-
-	//--------------------------------設定終わり-------------------------------------------
 
 }
 
@@ -172,7 +169,7 @@ void FeetAttack::Update()
 	}
 	
 	if (time_ >= 200) {
-		Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 0, 1.0f);
+	//	Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 0, 1.0f);
 		owner_->ChangeState("Wait");
 		return;
 	}
@@ -181,7 +178,7 @@ void FeetAttack::Update()
 void FeetAttack::OnEnter()
 {
 	time_ = 0;
-	Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 200, 1.0f);
+//	Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 200, 1.0f);
 }
 
 //--------------------------------------------------------------------------------

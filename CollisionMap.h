@@ -18,6 +18,10 @@ public:
     void Draw() override;
     void Release() override;
 
-    float GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data); //当たらなかった場合minMaxRang(100000000)が返ってくる
+    float GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data); //当たらなかった場合FLOATの最大値が返ってくる
+    
+    //コリジョンマップと立方体（AABB/OBB）とのあたり判定
+    //コリジョンマップと円とのあたり判定を実装したい
+
 };
 

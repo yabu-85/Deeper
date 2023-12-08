@@ -271,7 +271,8 @@ void Aim::RayCastStage(XMFLOAT3 _start)
     XMStoreFloat3(&dir, vDir);
     data.start = start;
     data.dir = dir;
-    float min = pCollisionMap_->GetRayCastMinDist(cameraPos_, &data);
+    float min = 0.0f;
+    pCollisionMap_->GetRayCastMinDist(cameraPos_, pPlayer_->GetPosition(), &data, min);
 
     //ƒŒƒC“–‚½‚Á‚½E”»’è‹——£“à‚¾‚Á‚½‚ç
     if (min <= (defPerspectDistance_)) {

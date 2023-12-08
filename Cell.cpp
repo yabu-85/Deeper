@@ -83,18 +83,22 @@ void Cell::MapDataVsBox(BoxCollider* collider)
 {
 }
 
-void Cell::MapDataVsSphere(SphereCollider* collider)
+void Cell::MapDataVsSphere(SphereCollider* collider, XMFLOAT3 prePos)
 {
 	XMFLOAT3 pos = collider->GetGameObject()->GetPosition();
-	pos.y += 1.0f;
+	float height = 3.0f;
+	pos.y += height;
 
 	RayCastData data;
 	data.start = pos;
 	data.dir = XMFLOAT3(0.0f, -1.0f, 0.0f);
 	float dist = 0.0f;
+	bool hit = SegmentVsTriangle(&data, dist);
 
-	if(SegmentVsTriangle(&data, dist) && dist < 1.0f)
-	collider->GetGameObject()->SetPosition(pos.x, pos.y + 1.0f - dist - 1.0f, pos.z);
+	if (hit) {
+		if (dist < height) collider->GetGameObject()->SetPosition(pos.x, pos.y + height - dist - height, pos.z);
+	//	else collider->GetGameObject()->SetPosition(prePos);
+	}
 
 	for (int i = 0; i < (int)Triangles.size(); i++) {
 	//	Triangles.at(i)->TestSphereTriangle(collider);

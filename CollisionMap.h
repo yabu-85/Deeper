@@ -22,13 +22,13 @@ public:
 
     Cell* GetCell(XMFLOAT3 pos);
 
-    float GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data); //当たらなかった場合FLOATの最大値が返ってくる
+    bool GetRayCastMinDist(XMFLOAT3 camPos, XMFLOAT3 plaPos, RayCastData* _data, float& minDist);
+
+    //コリジョンマップとの接触判定：めり込んでたら追い出す
+    void MapDataVsBox(BoxCollider* collider);
     
     //コリジョンマップとの接触判定：めり込んでたら追い出す
-    void MapDataVsBox(BoxCollider* collid);
-    
-    //コリジョンマップとの接触判定：めり込んでたら追い出す
-    void MapDataVsSphere(SphereCollider* collid);
+    void MapDataVsSphere(SphereCollider* collider, XMFLOAT3 prePos);
 
 };
 

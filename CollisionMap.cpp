@@ -161,23 +161,31 @@ Cell* CollisionMap::GetCell(XMFLOAT3 pos)
     return &cells_[y][z][x];
 }
 
-float CollisionMap::GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data)
+bool CollisionMap::GetRayCastMinDist(XMFLOAT3 camPos, XMFLOAT3 plaPos, RayCastData* _data, float& minDist)
 {
-    float dist = 0.0f;
-    Cell* cell = GetCell(pos);
-    cell->SegmentVsTriangle(_data, dist);
+    bool hitC = false;
+    float distC = FBXSDK_FLOAT_MAX;
+    Cell* cell = GetCell(camPos);
+    hitC = cell->SegmentVsTriangle(_data, distC);
 
-    return dist;
+    cell = GetCell(plaPos);
+    float distP = FBXSDK_FLOAT_MAX;
+    bool hitP = cell->SegmentVsTriangle(_data, distP);
+    
+    if (distC > distP) minDist = distC;
+    else minDist = distP;
+
+    return hitC || hitP;
 }
 
-void CollisionMap::MapDataVsBox(BoxCollider* collid)
+void CollisionMap::MapDataVsBox(BoxCollider* collider)
 {
 
 }
 
-void CollisionMap::MapDataVsSphere(SphereCollider* collid)
+void CollisionMap::MapDataVsSphere(SphereCollider* collider, XMFLOAT3 prePos)
 {
-    XMFLOAT3 pos = collid->GetGameObject()->GetPosition();
+    XMFLOAT3 pos = collider->GetGameObject()->GetPosition();
     Cell* cell = GetCell(pos);
-    cell->MapDataVsSphere(collid);
+    cell->MapDataVsSphere(collider, prePos);
 }

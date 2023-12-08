@@ -23,6 +23,7 @@ namespace {
     Text* pText = new Text;
     XMFLOAT3 rotateMove = XMFLOAT3(0.0f, 0.0f, 0.0f);
     SphereCollider* collid = nullptr;
+    XMFLOAT3 prePos = XMFLOAT3();
 }
 
 Player::Player(GameObject* parent)
@@ -97,19 +98,7 @@ void Player::Update()
     if (Input::IsKey(DIK_H)) ApplyDamage(1);
 
     CollisionMap* map = (CollisionMap*)FindObject("CollisionMap");
-    map->MapDataVsSphere(collid);
-
-    return;
-    //40,80,150
-    if (Input::IsKeyDown(DIK_G))
-        Model::SetBlendingAnimFrame(hModel_[0], 0, 150, 0, 1.0f, 0.05f);
-
-    if (Input::IsKeyDown(DIK_F))
-        Model::SetBlendingAnimFrame(hModel_[0], 0, 150, 0, 1.0f, 0.8f);
-
-    if (Input::IsKeyDown(DIK_H))
-        Model::SetAnimFrame(hModel_[0], 0, 300, 1.0f);
-
+    map->MapDataVsSphere(collid, prePos);
 }
 
 void Player::Draw()
@@ -233,6 +222,8 @@ void Player::FrontMove(float f)
 
 void Player::Move(float f)
 {
+    prePos = transform_.position_;
+
     transform_.position_.x += ((playerMovement_.x * moveSpeed_) * f);
     transform_.position_.z += ((playerMovement_.z * moveSpeed_) * f);
 }

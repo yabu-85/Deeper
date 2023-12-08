@@ -48,6 +48,13 @@ bool Cell::SetTriangle(Triangle& t)
 		return false;
 	}
 
+	if (tp[0].y >= 9.0f && tp[1].y >= 9.0f && tp[2].y >= 9.0f) {
+		XMFLOAT3 p1 = tp[0];
+		XMFLOAT3 p2 = tp[1];
+		XMFLOAT3 p3 = tp[2];
+		int aaaaa = 0;
+	}
+
 	Triangles.push_back(&t);
 	return true;
 }
@@ -94,12 +101,17 @@ void Cell::MapDataVsSphere(SphereCollider* collider, XMFLOAT3 prePos)
 	data.dir = XMFLOAT3(0.0f, -1.0f, 0.0f);
 	float dist = 0.0f;
 	bool hit = SegmentVsTriangle(&data, dist);
-
-	if (hit) {
-		if (dist < height) collider->GetGameObject()->SetPosition(pos.x, pos.y + height - dist - height, pos.z);
-	//	else collider->GetGameObject()->SetPosition(prePos);
+	if (hit && dist < height) {
+		collider->GetGameObject()->SetPosition(pos.x, pos.y + height - dist - height, pos.z);
 	}
 
+	data.hit = FALSE;
+	data.dir = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	hit = SegmentVsTriangle(&data, dist);
+	if (hit) {
+		collider->GetGameObject()->SetPosition(prePos);
+	}
+	
 	for (int i = 0; i < (int)Triangles.size(); i++) {
 	//	Triangles.at(i)->TestSphereTriangle(collider);
 	}

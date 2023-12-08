@@ -48,8 +48,6 @@ namespace GameManager {
 
 	void GameManager::Update()
 	{
-		pDamageCtrl_->Update();
-
 		OutputDebugString("entity : ");
 		OutputDebugStringA(std::to_string(entityCount).c_str());
 		OutputDebugString("\n");

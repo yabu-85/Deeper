@@ -7,7 +7,7 @@
 #include "Stage.h"
 
 namespace {
-    const float boxSize = 10.0f;
+    const float boxSize = 15.0f;
     const int polySize = 3;
 
     Player* pPlayer;
@@ -16,8 +16,10 @@ namespace {
 
     float minX = 0;
     float maxX = 130;
+
     float minY = -10;
     float maxY = 50; 
+    
     float minZ = 0;
     float maxZ = 130;
 

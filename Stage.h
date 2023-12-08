@@ -2,22 +2,6 @@
 #include "Engine/GameObject.h"
 #include <vector>
 
-enum StageNum {
-    T1 = 0,
-    T2,
-    T3,
-    T4,
-    MAX,
-};
-
-enum RayStageNum {
-    RT1 = 0,
-    RT2,
-    RT3,
-    RT4,
-    RMAX,
-};
-
 struct IntersectData {
     int hModelNum;
     XMFLOAT3 position;
@@ -34,6 +18,24 @@ const float smallSize = 1.0f;
 
 class Stage : public GameObject
 {
+public:
+    enum StageNum {
+        T1 = 0,
+        T2,
+        T3,
+        T4,
+        MAX,
+    };
+
+    enum RayStageNum {
+        RT1 = 0,
+        RT2,
+        RT3,
+        RT4,
+        RMAX,
+    };
+
+private:
     int hModel_[MAX + RMAX];
     std::vector<IntersectData> intersectDatas_; //ローポリのデータ集
 

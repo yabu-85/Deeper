@@ -20,6 +20,8 @@ public:
     void Draw() override;
     void Release() override;
 
+    Cell* GetCell(XMFLOAT3 pos);
+
     float GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data); //当たらなかった場合FLOATの最大値が返ってくる
     
     //コリジョンマップとの接触判定：めり込んでたら追い出す

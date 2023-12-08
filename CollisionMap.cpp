@@ -76,7 +76,7 @@ void CollisionMap::Initialize()
     std::vector<Triangle*> triList;
     std::vector<IntersectData> inteDatas = pStage->GetIntersectDatas();
     for (int i = 0; i < inteDatas.size(); i++) {
-        pFbx = Model::GetFbx(inteDatas[i].hModelNum + StageNum::MAX);
+        pFbx = Model::GetFbx(inteDatas[i].hModelNum + Stage::MAX);
         std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
 
         //IntersectDataのCollision用モデルのパーツをすべて取得し、その全ポリゴンの座標を計算
@@ -125,6 +125,7 @@ void CollisionMap::Initialize()
 
 void CollisionMap::Update()
 {
+    //デバッグ用
     //プレイヤーの位置を取得して、判定距離内に入った分割ブロックを取得
     XMFLOAT3 plaPos = pPlayer->GetPosition();
     float fBox[polySize] = { plaPos.x / boxSize, plaPos.y / boxSize, plaPos.z / boxSize };
@@ -145,7 +146,7 @@ void CollisionMap::Release()
 {
 }
 
-float CollisionMap::GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data)
+Cell* CollisionMap::GetCell(XMFLOAT3 pos)
 {
     int x = int((pos.x - minX) / boxSize);
     int y = int((pos.y - minY) / boxSize);
@@ -153,9 +154,20 @@ float CollisionMap::GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data)
 
     //デバッグ用
     //ここ最大を超えないようにしてるけど、将来なくてもいいように設計したならいらない
-    if (x < 0 || y < 0 || z < 0 || x > maxX / boxSize || y > maxY / boxSize || z > maxZ / boxSize) return FBXSDK_FLOAT_MAX;
+    if (x < 0 || y < 0 || z < 0 || x > maxX / boxSize || y > maxY / boxSize || z > maxZ / boxSize) {
+        return nullptr;
+    }
 
-    return cells_[y][z][x].SegmentVsTriangle(_data);
+    return &cells_[y][z][x];
+}
+
+float CollisionMap::GetRayCastMinDist(XMFLOAT3 pos, RayCastData* _data)
+{
+    float dist = 0.0f;
+    Cell* cell = GetCell(pos);
+    cell->SegmentVsTriangle(_data, dist);
+
+    return dist;
 }
 
 void CollisionMap::MapDataVsBox(BoxCollider* collid)
@@ -166,13 +178,6 @@ void CollisionMap::MapDataVsBox(BoxCollider* collid)
 void CollisionMap::MapDataVsSphere(SphereCollider* collid)
 {
     XMFLOAT3 pos = collid->GetGameObject()->GetPosition();
-    int x = int((pos.x - minX) / boxSize);
-    int y = int((pos.y - minY) / boxSize);
-    int z = int((pos.z - minZ) / boxSize);
-    
-    if (x < 0 || y < 0 || z < 0 || x > maxX / boxSize || y > maxY / boxSize || z > maxZ / boxSize) {
-        return;
-    }
-
-    cells_[y][z][x].MapDataVsSphere(collid);
+    Cell* cell = GetCell(pos);
+    cell->MapDataVsSphere(collid);
 }

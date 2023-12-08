@@ -19,7 +19,7 @@ public:
 	XMFLOAT3* GetPosition();
 
 	void RayCast(RayCastData* data);
-	bool TestSphereTriangle(SphereCollider* collid);
+	bool TestSphereTriangle(SphereCollider* collider);
 
 };
 

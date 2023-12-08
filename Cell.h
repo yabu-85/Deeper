@@ -39,10 +39,10 @@ public:
 	std::vector<Triangle*>& GetTriangles() { return Triangles; };
 
 	//“–‚½‚Á‚½ê‡‚ÌÅ¬‹——£‚ğ•Ô‚·
-	float SegmentVsTriangle(RayCastData* _data);
+	bool SegmentVsTriangle(RayCastData* _data, float& minDist);
 
-	void MapDataVsBox(BoxCollider* collid);
-	void MapDataVsSphere(SphereCollider* collid);
+	void MapDataVsBox(BoxCollider* collider);
+	void MapDataVsSphere(SphereCollider* collider);
 
 };
 

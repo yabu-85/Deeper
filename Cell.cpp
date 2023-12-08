@@ -61,30 +61,43 @@ void Cell::ResetTriangles()
 	Triangles.clear();
 }
 
-float Cell::SegmentVsTriangle(RayCastData* _data)
+bool Cell::SegmentVsTriangle(RayCastData* _data, float& minDist)
 {
-	float minRange = FBXSDK_FLOAT_MAX;
+	bool hit = false;
+	minDist = FBXSDK_FLOAT_MAX;
 
 	for (int i = 0; i < (int)Triangles.size(); i++) {
 		Triangles.at(i)->RayCast(_data);
 
 		//ƒŒƒC“–‚½‚Á‚½E”»’è‹——£“à‚¾‚Á‚½‚ç
-		if (_data->hit && minRange > _data->dist) {
-			minRange = _data->dist;
+		if (_data->hit && minDist > _data->dist) {
+			minDist = _data->dist;
+			hit = true;
 		}
 	}
 
-	return minRange;
+	return hit;
 }
 
-void Cell::MapDataVsBox(BoxCollider* collid)
+void Cell::MapDataVsBox(BoxCollider* collider)
 {
 }
 
-void Cell::MapDataVsSphere(SphereCollider* collid)
+void Cell::MapDataVsSphere(SphereCollider* collider)
 {
+	XMFLOAT3 pos = collider->GetGameObject()->GetPosition();
+	pos.y += 1.0f;
+
+	RayCastData data;
+	data.start = pos;
+	data.dir = XMFLOAT3(0.0f, -1.0f, 0.0f);
+	float dist = 0.0f;
+
+	if(SegmentVsTriangle(&data, dist) && dist < 1.0f)
+	collider->GetGameObject()->SetPosition(pos.x, pos.y + 1.0f - dist - 1.0f, pos.z);
+
 	for (int i = 0; i < (int)Triangles.size(); i++) {
-		Triangles.at(i)->TestSphereTriangle(collid);
+	//	Triangles.at(i)->TestSphereTriangle(collider);
 	}
 
 }

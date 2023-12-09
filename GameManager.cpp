@@ -48,9 +48,11 @@ namespace GameManager {
 
 	void GameManager::Update()
 	{
-		OutputDebugString("entity : ");
-		OutputDebugStringA(std::to_string(entityCount).c_str());
-		OutputDebugString("\n");
+		if (Input::IsKey(DIK_TAB)) {
+			OutputDebugString("entity : ");
+			OutputDebugStringA(std::to_string(entityCount).c_str());
+			OutputDebugString("\n");
+		}
 
 		//デバッグ用
 		if (Input::IsKeyDown(DIK_M)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND); entityCount++; }

@@ -122,9 +122,5 @@ namespace VFX
 	//引数：handle	エフェクトの番号
 	void End(int handle);
 
-	void SetParticlePosition(int handle, XMFLOAT3 pos);
-	void SetParticleSize(int handle, XMFLOAT2 size);
-
-
 };
 

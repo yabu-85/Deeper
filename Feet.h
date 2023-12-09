@@ -10,7 +10,7 @@ class Feet : public EnemyBase
 {
     int hModel_;
     SphereCollider* pHandCollider_;
-    
+
     //Action
     AstarMoveAction* pMoveAction_;
     RotateAction* pRotateAction_;

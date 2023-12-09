@@ -26,7 +26,7 @@ void Feet::Initialize()
 	hModel_ = Model::Load("Model/StoneGolem.fbx");
 	assert(hModel_ >= 0);
 
-	maxHp_ = 10;
+	maxHp_ = 100;
 	hp_ = maxHp_;
 	aimTargetPos_ = 3.0f;
 
@@ -56,8 +56,8 @@ void Feet::Initialize()
 	pCombatStateManager_->ChangeState("Wait");
 	pCombatStateManager_->Initialize();
 	
-//	pEnemyUi_ = new EnemyUi(this);
-//	pEnemyUi_->Initialize(5.5f);
+	pEnemyUi_ = new EnemyUi(this);
+	pEnemyUi_->Initialize(5.0f);
 
 	Stage* pStage = (Stage*)FindObject("Stage");
 	XMFLOAT3 startPos = pStage->GetRandomFloarPosition();
@@ -75,12 +75,13 @@ void Feet::Initialize()
 void Feet::Update()
 {
 	if(pStateManager_) pStateManager_->Update();
-	if(pEnemyUi_) pEnemyUi_->Update();
 
 }
 
 void Feet::Draw()
 {
+	if (pEnemyUi_) pEnemyUi_->Draw();
+
 	XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, "hand.R");
 	center = XMFLOAT3(center.x - transform_.position_.x, center.y - transform_.position_.y, center.z - transform_.position_.z);
 	pHandCollider_->SetCenter(center);

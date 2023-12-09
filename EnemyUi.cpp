@@ -1,17 +1,36 @@
 #include "EnemyUi.h"
 #include "EnemyBase.h"
-#include "Aim.h"
 #include "Engine/Camera.h"
-#include "Engine/BillBoard.h"
-#include "Engine/Texture.h"
+#include "Engine/Image.h"
+#include "Player.h"
+#include "Engine/Direct3D.h"
 
 namespace {
-    const unsigned maxTime = 4294967295;
-    const float maxSizeX = 5.0f;
+	const float maxLength = 50.0f;
+	const float defSizeX = 2.0f;
+	const float defSizeY = 0.5f;
+	const float drawSize = 0.85f;
+	const int maxAlpha = 255;
+	const int alphaValue = 30;
+	float halfSize = 0.0f;
+}
+
+//これ処理減らせるのでは
+void EnemyUi::SetGageAlpha(int value)
+{
+	gageAlpha_ += value;
+	if (gageAlpha_ > maxAlpha) {
+		gageAlpha_ = maxAlpha;
+	}
+	else if (gageAlpha_ < 0) {
+		gageAlpha_ = 0;
+	}
+	Image::SetAlpha(hPict_[0], gageAlpha_);
+	Image::SetAlpha(hPict_[1], gageAlpha_);
 }
 
 EnemyUi::EnemyUi(EnemyBase* parent)
-	:vHandle_{-1, -1}, pParent_(parent), size{0.0f, 0.0f}, parcent(1.0f), height_(0.0f)
+	: pParent_(parent), pPlayer_(nullptr), hPict_{ -1, -1 }, parcent(1.0f), height_(0.0f), gageAlpha_(0)
 {
 }
 
@@ -21,34 +40,69 @@ EnemyUi::~EnemyUi()
 
 void EnemyUi::Initialize(float height)
 {
-    data_.textureFileName = "Png/Gauge2.png";
-    data_.delay = 0;
-    data_.number = 1;
-    data_.lifeTime = 1;
-    data_.direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    data_.directionRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    data_.speed = 0.0f;
-    data_.speedRnd = 0.0f;
-    data_.size = XMFLOAT2(maxSizeX, 0.3f);
-    data_.sizeRnd = XMFLOAT2(0.0f, 0.0f);
-    data_.scale = XMFLOAT2(1.0f, 1.0f);
-    data_.color = XMFLOAT4(1.0f, 1.0f, 0.1f, 1.0f);
-    data_.deltaColor = XMFLOAT4(0.0f, 0.0f , 0.0f, 0.0f);
-    data_.isBillBoard = true;
-	vHandle_[0] = VFX::Start(data_);	//エミッターを設置
-
-    size = XMFLOAT2(maxSizeX, 0.3f); 
     height_ = height;
+	pPlayer_ = (Player*)pParent_->FindObject("Player");
+
+	hPict_[0] = Image::Load("Png/Gauge.png");
+	assert(hPict_[0] >= 0);
+	hPict_[1] = Image::Load("Png/GaugeFrame.png");
+	assert(hPict_[1] >= 0);
+
+	halfSize = 256.0f / (float)Direct3D::screenWidth_;
+
+	transform_[0].scale_.x = defSizeX;
+	transform_[0].scale_.y = defSizeY;
+	transform_[1] = transform_[0];
+
+
 }
 
-void EnemyUi::Update()
+void EnemyUi::Draw()
 {
-    XMFLOAT3 pos = pParent_->GetPosition();
-    pos.y += height_;
-    size.x = maxSizeX * parcent;
+	if (parcent >= 1.0f) {
+		return;
+	}
 
-    data_.position = pos;
-    data_.size = size;
-    vHandle_[0] = VFX::Start(data_);	//エミッターを設置
-    
+	XMFLOAT3 pos = pParent_->GetPosition();
+	pos.y += height_;
+
+	XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&pos), Camera::GetViewMatrix());
+	v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
+	float x = XMVectorGetX(v2);
+	float y = XMVectorGetY(v2);
+
+	//画角制限する
+	if (x >= drawSize || y >= drawSize || x <= -drawSize || y <= -drawSize || XMVectorGetZ(v2) > 1.0f) {
+		SetGageAlpha(-alphaValue);
+	}
+	else {
+		XMFLOAT3 fCamPos = pPlayer_->GetPosition();
+		XMVECTOR vCamPos = XMLoadFloat3(&fCamPos);
+		XMVECTOR vPos = XMLoadFloat3(&pos);
+		float length = XMVectorGetX(XMVector3Length(vCamPos - vPos));
+
+		//範囲内かどうか
+		if (length < maxLength) {
+			SetGageAlpha(alphaValue);
+		}
+		else {
+			SetGageAlpha(-alphaValue);
+		}
+	}
+
+	//透明度１以上ならHPGauge表示
+	if(gageAlpha_ > 0)
+	for (int i = 0; i < 2; i++) {
+		transform_[i].position_.x = x - halfSize;
+		transform_[i].position_.y = y;
+		Image::SetTransform(hPict_[i], transform_[i]);
+		Image::Draw(hPict_[i]);
+	}
+
+}
+
+void EnemyUi::SetParcent(float f)
+{
+	parcent = f;
+	transform_[0].scale_.x = parcent * defSizeX;
 }

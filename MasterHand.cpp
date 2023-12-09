@@ -48,8 +48,6 @@ void MasterHand::Initialize()
 
 void MasterHand::Update()
 {
-	pEnemyUi_->Update();
-
 	if (lifeTime_ >= killTime) {
 		GameManager::GetDropTable()->DropItem(0, transform_.position_);
 		GameManager::GetEnemySpawnCtrl()->KillEnemy(this);
@@ -69,6 +67,8 @@ void MasterHand::Update()
 
 void MasterHand::Draw()
 {
+	if(pEnemyUi_) pEnemyUi_->Draw();
+
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 

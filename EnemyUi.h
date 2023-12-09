@@ -1,27 +1,27 @@
 #pragma once
 #include "Engine/Transform.h"
-#include "Engine/VFX.h"
 
 class EnemyBase;
-class Aim;
+class Player;
 
 class EnemyUi
 {
-	int vHandle_[2];
+	int hPict_[2];
+	int gageAlpha_;			//ゲージの透明度
 	float height_;			//uiの高さ
 	float parcent;			//hpのパーセント
-	XMFLOAT2 size;			//UiのHpに合わせたサイズ
-	Transform transform_;
+	Transform transform_[2];
 	EnemyBase* pParent_;
-	EmitterData data_;
+	Player* pPlayer_;
+
+	void SetGageAlpha(int value);
 
 public:
 	EnemyUi(EnemyBase* parent);
 	~EnemyUi();
 	void Initialize(float height); //height：Uiの高さ
-	void Update();
-
-	void SetParcent(float f) { parcent = f; };
+	void Draw();
+	void SetParcent(float f);
 
 };
 

@@ -5,10 +5,22 @@
 #include "TestWeaponSub.h"
 #include "GameManager.h"
 
+//デバッグ用
+namespace {
+	Player* pPlayer = nullptr;
+}
+
 WeaponObjectManager::WeaponObjectManager()
 	: range_(0), nearestObject_(nullptr)
 {
 	range_ = 3.0f;
+
+	AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_SUB1, XMFLOAT3(50, 0, 50));
+	nearestObject_ = objctList_.at(0);
+	WeaponBase* weapon = GetNearestWeapon();
+	if (weapon) {
+		pPlayer->SetWeapon(weapon);
+	}
 }
 
 WeaponObjectManager::~WeaponObjectManager()
@@ -85,7 +97,8 @@ WeaponBase* WeaponObjectManager::GetNearestWeapon()
 		RemoveWeaponObject(nearestObject_);
 		nearestObject_->KillMe();
 		nearestObject_ = nullptr;
-		return Instantiate<TestWeaponSub>((Player*)GameManager::GetParent()->FindObject("Player"));
+		pPlayer = (Player*)GameManager::GetParent()->FindObject("Player");
+		return Instantiate<TestWeaponSub>(pPlayer);
 	}
 
 	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_SUB2) {

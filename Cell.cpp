@@ -73,6 +73,9 @@ bool Cell::SegmentVsTriangle(RayCastData* _data, float& minDist)
 	bool hit = false;
 	minDist = FBXSDK_FLOAT_MAX;
 
+	if (Triangles.empty())
+		return false;
+
 	for (int i = 0; i < (int)Triangles.size(); i++) {
 		Triangles.at(i)->RayCast(_data);
 

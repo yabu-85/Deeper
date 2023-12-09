@@ -33,7 +33,7 @@ void Stage::Initialize()
 void Stage::Update()
 {
     //デバッグ用
-    if (Input::IsKeyDown(DIK_E)) drawCell = !drawCell;
+    if (Input::IsKeyDown(DIK_T)) drawCell = !drawCell;
 
 }
 

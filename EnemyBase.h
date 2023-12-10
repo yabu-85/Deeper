@@ -28,6 +28,8 @@ public:
     virtual void ApplyDamage(int da) override;
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
     float GetAimTargetPos() { return aimTargetPos_; }
+
+    EnemyUi* GetEnemyUi() { return pEnemyUi_; }
     StateManager* GetStateManager() { return pStateManager_; }
     StateManager* GetCombatStateManager() { return pCombatStateManager_; }
 };

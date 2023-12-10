@@ -10,7 +10,6 @@ class TestBullet : public BulletBase
     SphereCollider* collision_;
     DamageCtrl* pDamageCtrl_;
 
-    void KillMe() override;
     void CreatVfx();
 
 public:

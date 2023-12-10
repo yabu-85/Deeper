@@ -6,8 +6,10 @@
 #include "IsEnemyStateNode.h"
 #include "Player.h"
 #include "Feet.h"
+#include "Stage.h"
 #include "DamageCtrl.h"
 #include "GameManager.h"
+#include "EnemyUi.h"
 
 #include "MoveAction.h"
 #include "RotateAction.h"
@@ -41,7 +43,7 @@ FeetIdle::FeetIdle(StateManager* owner)
 
 void FeetIdle::Update()
 {
-	owner_->ChangeState("Combat");
+	owner_->ChangeState("Patrol");
 }
 
 //--------------------------------------------------------------------------------
@@ -54,6 +56,32 @@ FeetPatrol::FeetPatrol(StateManager* owner)
 
 void FeetPatrol::Update()
 {
+	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 60 == 0) {
+		Stage* pStage = (Stage*)pFeet_->FindObject("Stage");
+		pFeet_->GetMoveAction()->SetTarget(pStage->GetRandomFloarPosition());
+	}
+	pFeet_->GetMoveAction()->Update();
+
+	Player* pPlayer = (Player*)pFeet_->FindObject("Player");
+	XMFLOAT3 pos = pPlayer->GetPosition();
+	XMFLOAT3 tar = pFeet_->GetPosition();
+	XMVECTOR vPos = XMLoadFloat3(&pos);
+	XMVECTOR vTar = XMLoadFloat3(&tar);
+	float range = XMVectorGetX(XMVector3Length(vTar - vPos));
+	if(range <= 10.0f) owner_->ChangeState("Combat");
+
+}
+
+void FeetPatrol::OnEnter()
+{
+	pFeet_->GetMoveAction()->SetMoveSpeed(0.03f);
+}
+
+void FeetPatrol::OnExit()
+{
+	pFeet_->GetMoveAction()->SetMoveSpeed(0.07f);
+	pFeet_->GetMoveAction()->StopMove();
+
 }
 
 //--------------------------------------------------------------------------------
@@ -93,6 +121,12 @@ void FeetCombat::Update()
 {
 	root_->Update();
 	pFeet_->GetCombatStateManager()->Update();
+
+}
+
+void FeetCombat::OnEnter()
+{
+	pFeet_->GetEnemyUi()->InitTargetFoundUi();
 
 }
 

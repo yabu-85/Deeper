@@ -39,9 +39,18 @@ void TestBullet::Update()
 	LifeTime();
 	Move();
 
-	if (transform_.position_.y <= 0.0f) KillMe();
-	if (pDamageCtrl_->CalcBullet(collision_, damage_)) KillMe();
-	
+	//CollisionMapÇ∆ÇÃîªíËÅiç°ÇÕy<=0ÇæÇØÅj
+	if (transform_.position_.y <= 0.0f) {
+		CreatVfx();
+		KillMe();
+	}
+
+	//ìñÇΩÇ¡ÇΩÇÁ
+	if (pDamageCtrl_->CalcBullet(collision_, damage_)) {
+		CreatVfx();
+		KillMe();
+	}
+
 }
 
 void TestBullet::Draw()
@@ -53,12 +62,6 @@ void TestBullet::Draw()
 void TestBullet::Release()
 {
 	Model::Release(hModel_);
-}
-
-void TestBullet::KillMe()
-{
-	GameObject::KillMe();
-	CreatVfx();
 }
 
 void TestBullet::CreatVfx()

@@ -27,5 +27,13 @@ void BulletBase::Move()
 void BulletBase::LifeTime()
 {
 	lifeTime_--;
-	if (lifeTime_ <= 0) KillMe();
+	if (lifeTime_ <= 0) {
+		IsLifeDead();
+		KillMe();
+	}
+}
+
+void BulletBase::IsLifeDead()
+{
+	KillMe();
 }

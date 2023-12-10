@@ -33,6 +33,8 @@ public:
 	FeetPatrol(StateManager* owner);
 	const char* GetName() const override { return "Patrol"; }
 	void Update() override;
+	void OnEnter() override;
+	void OnExit() override;
 };
 
 class FeetCombat : public StateBase
@@ -44,6 +46,7 @@ public:
 	~FeetCombat() override;
 	const char* GetName() const override { return "Combat"; }
 	void Update() override;
+	void OnEnter() override;
 };
 
 class FeetDead : public StateBase

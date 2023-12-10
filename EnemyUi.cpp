@@ -12,8 +12,11 @@ namespace {
 	const float drawSize = 0.85f;
 	const int maxAlpha = 255;
 	const int alphaValue = 30;
+	const float PngSizeX = 256.0f;
 	float halfSize = 0.0f;
 }
+
+float EeaseIn(float i);
 
 //‚±‚êˆ—Œ¸‚ç‚¹‚é‚Ì‚Å‚Í
 void EnemyUi::SetGageAlpha(int value)
@@ -30,7 +33,7 @@ void EnemyUi::SetGageAlpha(int value)
 }
 
 EnemyUi::EnemyUi(EnemyBase* parent)
-	: pParent_(parent), pPlayer_(nullptr), hPict_{ -1, -1 }, parcent(1.0f), height_(0.0f), gageAlpha_(0)
+	: pParent_(parent), pPlayer_(nullptr), hPict_{ -1, -1, -1 }, parcent(1.0f), height_(0.0f), gageAlpha_(0), foundParcent_(0.0f)
 {
 }
 
@@ -43,33 +46,43 @@ void EnemyUi::Initialize(float height)
     height_ = height;
 	pPlayer_ = (Player*)pParent_->FindObject("Player");
 
-	hPict_[0] = Image::Load("Png/Gauge.png");
-	assert(hPict_[0] >= 0);
-	hPict_[1] = Image::Load("Png/GaugeFrame.png");
-	assert(hPict_[1] >= 0);
+	std::string fileName[] = { "Gauge", "GaugeFrame", "TargetFound" };
+	for (int i = 0; i < MAX; i++) {
+		hPict_[i] = Image::Load("Png/" + fileName[i] + ".png");
+		assert(hPict_[i] >= 0);
+	}
 
-	halfSize = 256.0f / (float)Direct3D::screenWidth_;
+	halfSize = PngSizeX / (float)Direct3D::screenWidth_;
 
 	transform_[0].scale_.x = defSizeX;
 	transform_[0].scale_.y = defSizeY;
 	transform_[1] = transform_[0];
 
-
 }
 
 void EnemyUi::Draw()
 {
-	if (parcent >= 1.0f) {
-		return;
-	}
-
 	XMFLOAT3 pos = pParent_->GetPosition();
-	pos.y += height_;
-
+	pos.y += height_; 
+	
 	XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&pos), Camera::GetViewMatrix());
 	v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
 	float x = XMVectorGetX(v2);
 	float y = XMVectorGetY(v2);
+
+	if (foundParcent_ > 0.0f) {
+		foundParcent_ -= 0.01f;
+		int alpha = (int)(EeaseIn(foundParcent_) * (float)maxAlpha);
+		Transform foundTrans;
+		foundTrans.position_ = XMFLOAT3(x, y + 0.05f, 0.0f);
+		Image::SetAlpha(hPict_[FOUND], alpha);
+		Image::SetTransform(hPict_[FOUND], foundTrans);
+		Image::Draw(hPict_[FOUND]);
+	}
+
+	if (parcent >= 1.0f) {
+		return;
+	}
 
 	//‰æŠp§ŒÀ‚·‚é
 	if (x >= drawSize || y >= drawSize || x <= -drawSize || y <= -drawSize || XMVectorGetZ(v2) > 1.0f) {
@@ -105,4 +118,14 @@ void EnemyUi::SetParcent(float f)
 {
 	parcent = f;
 	transform_[0].scale_.x = parcent * defSizeX;
+}
+
+void EnemyUi::InitTargetFoundUi()
+{
+	foundParcent_ = 1.0f;
+}
+
+float EeaseIn(float i)
+{
+	return i * i * i * i * i;
 }

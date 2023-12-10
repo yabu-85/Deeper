@@ -10,15 +10,16 @@ class Player : public Character
 {
     int hModel_[2];
     int money_;
-    int currentSubIndex_;       //今選択してるSubのIndex
     float moveSpeed_;           //移動スピード
     float rotateRatio_;         //回転の比率
-    XMFLOAT3 playerMovement_;   //今の移動量
+    XMFLOAT3 playerMovement_;   //今の移動量(Keyの情報だけ
+    XMFLOAT3 currentMovement_;  //今の移動量
 
     Aim* pAim_;
     StateManager* pStateManager_;
     PlayerCommand* pCommand_;
 
+    int currentSubIndex_;       //今選択してるSubのIndex
     WeaponBase* pMainWeapon_;
     WeaponBase* pSubWeapon_[2];
 
@@ -43,6 +44,7 @@ public:
     void ResetMovement() { playerMovement_ = XMFLOAT3(0.0f, 0.0f, 0.0f); }
     XMFLOAT3 GetMovement() { return playerMovement_; }
     XMVECTOR GetDirectionVec();     //向いている方向（正規化済み
+    XMFLOAT3 GetCurrentMovement() { return currentMovement_; }
 
     void ApplyDamage(int da) override;
     void InitAvo();

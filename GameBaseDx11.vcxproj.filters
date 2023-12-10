@@ -297,6 +297,7 @@
       <Filter>12Stage</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="VFXManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -498,6 +499,7 @@
       <Filter>12Stage</Filter>
     </ClInclude>
     <ClInclude Include="Character.h" />
+    <ClInclude Include="VFXManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

@@ -67,7 +67,7 @@ public:
 
 	//Šeƒtƒ‰ƒO‚Ì§Œä
 	bool IsDead();			// íœ‚·‚é‚©‚Ç‚¤‚©
-	void KillMe();			// ©•ª‚ğíœ‚·‚é
+	virtual void KillMe();	// ©•ª‚ğíœ‚·‚é
 	void Enter();			// Update‚ğ‹–‰Â
 	void Leave();			// Update‚ğ‹‘”Û
 	void Visible();			// Draw‚ğ‹–‰Â

@@ -48,13 +48,6 @@ bool Cell::SetTriangle(Triangle& t)
 		return false;
 	}
 
-	if (tp[0].y >= 9.0f && tp[1].y >= 9.0f && tp[2].y >= 9.0f) {
-		XMFLOAT3 p1 = tp[0];
-		XMFLOAT3 p2 = tp[1];
-		XMFLOAT3 p3 = tp[2];
-		int aaaaa = 0;
-	}
-
 	Triangles.push_back(&t);
 	return true;
 }
@@ -76,7 +69,7 @@ bool Cell::SegmentVsTriangle(RayCastData* _data, float& minDist)
 	for (int i = 0; i < (int)Triangles.size(); i++) {
 		Triangles.at(i)->RayCast(_data);
 
-		//レイ当たった・判定距離内だったら
+		//レイ当たった・最小距離だったら上書き
 		if (_data->hit && minDist > _data->dist) {
 			minDist = _data->dist;
 			hit = true;
@@ -90,24 +83,43 @@ void Cell::MapDataVsBox(BoxCollider* collider)
 {
 }
 
+#include "Player.h"
+//デバッグ用？テスト用？空中にいる処理と・壁の処理
 void Cell::MapDataVsSphere(SphereCollider* collider, XMFLOAT3 prePos)
 {
 	XMFLOAT3 pos = collider->GetGameObject()->GetPosition();
-	float height = 3.0f;
+	float height = 0.75f;
 	pos.y += height;
+
+	Player* pPlayer = static_cast<Player*>(collider->GetGameObject());
 
 	RayCastData data;
 	data.start = pos;
 	data.dir = XMFLOAT3(0.0f, -1.0f, 0.0f);
 	float dist = 0.0f;
 	bool hit = SegmentVsTriangle(&data, dist);
-	if (hit && dist < height) {
-		collider->GetGameObject()->SetPosition(pos.x, pos.y + height - dist - height, pos.z);
+	if (hit && dist <= height) {
+		XMFLOAT3 newPos = XMFLOAT3(pos.x, pos.y - height + (height - dist), pos.z);
+		collider->GetGameObject()->SetPosition(newPos);
+	}
+	else {
+		XMFLOAT3 newPos = pPlayer->GetPosition();
+		pPlayer->SetPosition(XMFLOAT3(newPos.x, newPos.y - 0.1f, newPos.z));
+
+		pos = collider->GetGameObject()->GetPosition();
+		pos.y += height;
+		data.start = pos;
+		hit = SegmentVsTriangle(&data, dist);
+		if (hit && dist <= height) {
+			XMFLOAT3 newPos = XMFLOAT3(pos.x, pos.y - height + (height - dist), pos.z);
+			collider->GetGameObject()->SetPosition(newPos);
+		}
 	}
 
-	data.hit = FALSE;
-	data.dir = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	hit = SegmentVsTriangle(&data, dist);
+	RayCastData data2;
+	data2.start = pos;
+	data2.dir = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	hit = SegmentVsTriangle(&data2, dist);
 	if (hit) {
 		collider->GetGameObject()->SetPosition(prePos);
 	}

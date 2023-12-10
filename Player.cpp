@@ -20,6 +20,9 @@ namespace {
     const float maxMoveSpeed = 1.0f;        //最大移動スピード
     const float avoRotateRatio = 0.92f;     //回避時のRotateRatio
 
+    int testModel = -1;
+    bool isCollider = true; //当たり判定するかどうか、浮けるようにするための
+
     Text* pText = new Text;
     XMFLOAT3 rotateMove = XMFLOAT3(0.0f, 0.0f, 0.0f);
     SphereCollider* collid = nullptr;
@@ -45,6 +48,9 @@ void Player::Initialize()
     //モデルデータのロード
     hModel_[0] = Model::Load("Model/FiterTestUp.fbx");
     assert(hModel_[0] >= 0);
+
+    testModel = Model::Load("Model/SphereCollider.fbx");
+    assert(testModel >= 0);
 
     hModel_[1] = Model::Load("Model/FiterTestDown.fbx");
     assert(hModel_[1] >= 0);
@@ -76,7 +82,7 @@ void Player::Initialize()
 //    BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), XMFLOAT3(0.5f, 2.6f, 0.5f));
 //    AddCollider(collider);
 
-    collid = new SphereCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), 0.5f);
+    collid = new SphereCollider(XMFLOAT3(0.0f, 2.3f, 0.0f), 0.5f);
     AddCollider(collid);
 
     pText->Initialize();
@@ -89,7 +95,7 @@ void Player::Update()
 
     //エイムターゲット
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
-
+    
     //デバッグ用
     if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;
     if (Input::IsKey(DIK_DOWNARROW)) transform_.position_.y -= 0.1f;
@@ -97,8 +103,21 @@ void Player::Update()
     if (Input::IsKeyDown(DIK_RIGHTARROW)) transform_.position_.y += 10.0f;
     if (Input::IsKey(DIK_H)) ApplyDamage(1);
 
-    CollisionMap* map = (CollisionMap*)FindObject("CollisionMap");
-    map->MapDataVsSphere(collid, prePos);
+    //デバッグ用とりあえずRayCastで真下・真上に壁があるかで判定してる
+    //cellに設定したheightより段差が小さいなら乗り越える
+    if (Input::IsKeyDown(DIK_Y)) isCollider = !isCollider;
+    if (isCollider) {
+        CollisionMap* map = (CollisionMap*)FindObject("CollisionMap");
+        map->MapDataVsSphere(collid, prePos);
+    }
+
+    XMVECTOR vec = XMLoadFloat3(&transform_.position_) - XMLoadFloat3(&prePos);
+    vec *= 10.0f;
+    if (1.0f <= XMVectorGetX(XMVector3Length(vec))) {
+        vec = XMVector3Normalize(vec);
+    }
+    XMStoreFloat3(&currentMovement_, vec);
+
 }
 
 void Player::Draw()
@@ -107,6 +126,14 @@ void Player::Draw()
     Model::Draw(hModel_[0]);
     Model::SetTransform(hModel_[1], transform_);
     Model::Draw(hModel_[1]);
+
+    Transform test = transform_;
+    test.position_.y += 0.75f;
+    test.scale_.x = 0.2f;
+    test.scale_.y = 0.2f;
+    test.scale_.z = 0.2f;
+    Model::SetTransform(testModel, test);
+    Model::Draw(testModel, 4);
 
     CollisionDraw();
 

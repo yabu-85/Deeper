@@ -131,7 +131,6 @@ void TestWeaponSubCombo1::Update()
         return;
     }
 
-    pTestWeaponSub_->ShotBullet();
 }
 
 void TestWeaponSubCombo1::OnEnter()
@@ -140,6 +139,9 @@ void TestWeaponSubCombo1::OnEnter()
     next_ = false;
     if (pTestWeaponSub_ == nullptr) owner_->ChangeState("Wait");
     pTestWeaponSub_->SetScale(XMFLOAT3(0.3f, 0.3f, 0.3f));
+    
+    pTestWeaponSub_->ShotBullet();
+
 }
 
 void TestWeaponSubCombo1::OnExit()

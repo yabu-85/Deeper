@@ -6,6 +6,10 @@
 #include "TitleUIManager.h"
 #include "ExitUIManager.h"
 
+namespace {
+	bool flag = true;
+}
+
 TitleScene::TitleScene(GameObject* parent)
 	: GameObject(parent, "TitleScene")
 {
@@ -17,7 +21,8 @@ void TitleScene::Initialize()
 
 	//デバッグ用
 	//これPlayerSceneから戻るやつ使うならfalse にしないとPlayに戻れない
-	if (true) {
+	if (true && flag) {
+		flag = false;
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_PLAY);
 	}

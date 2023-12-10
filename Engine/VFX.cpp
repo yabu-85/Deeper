@@ -10,6 +10,10 @@ namespace VFX
 //更新
 void VFX::Update()
 {
+    OutputDebugString("entity : ");
+    OutputDebugStringA(std::to_string(particleList_.size()).c_str());
+    OutputDebugString("\n");
+
     //各エミッターの処理
     EmitterUpdate();
 

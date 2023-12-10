@@ -112,8 +112,8 @@ void Stage::CreatStage()
             else if (data == 3)
             {
                 mapData_[z][x] = WALL;
-                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f, 1.0f / smallSize) });
-                intersectDatas_.push_back({ hModel_[T3], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.2f, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[T3], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.2f, 1.0f / smallSize) });
             }
             else if (data == 4)
             {

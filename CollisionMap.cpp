@@ -7,7 +7,7 @@
 #include "Stage.h"
 
 namespace {
-    const float boxSize = 15.0f;
+    const float boxSize = 25.0f;
     const int polySize = 3;
 
     Player* pPlayer;
@@ -130,14 +130,11 @@ void CollisionMap::Update()
     //デバッグ用
     //プレイヤーの位置を取得して、判定距離内に入った分割ブロックを取得
     XMFLOAT3 plaPos = pPlayer->GetPosition();
-    float fBox[polySize] = { plaPos.x / boxSize, plaPos.y / boxSize, plaPos.z / boxSize };
-    int iBox[polySize] = { (int)fBox[0], (int)fBox[1], (int)fBox[2] };
-    for (int i = 0; i < polySize; i++) if (fBox[i] < 0) iBox[i] -= 1;
-    for (int i = 0; i < polySize; i++) iBox[i] *= boxSize;
-    XMFLOAT3 cellPos = XMFLOAT3((float)iBox[0], (float)iBox[1], (float)iBox[2]);
-    pBox->SetPosition(cellPos);
-    pBox->SetScale(XMFLOAT3(boxSize, boxSize, boxSize));
-
+    Cell* cell = GetCell(plaPos);
+    if (cell) {
+        pBox->SetPosition(cell->GetPosision());
+        pBox->SetScale(XMFLOAT3(boxSize, boxSize, boxSize));
+    }
 }
 
 void CollisionMap::Draw()

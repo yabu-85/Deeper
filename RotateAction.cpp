@@ -1,24 +1,27 @@
 #include "RotateAction.h"
-#include "Engine/GameObject.h"
+#include "Character.h"
 
-RotateAction::RotateAction(GameObject* obj) : BaseAction(obj), pTarget_(nullptr), rotateRatio_(1.0f)
+RotateAction::RotateAction(Character* obj) : BaseAction(obj), pTarget_(nullptr), rotateRatio_(1.0f)
 {
 }
 
-RotateAction::RotateAction(GameObject* obj, float ratio) : BaseAction(obj), pTarget_(nullptr), rotateRatio_(ratio)
+RotateAction::RotateAction(Character* obj, float ratio) : BaseAction(obj), pTarget_(nullptr), rotateRatio_(ratio)
 {
 }
 
 void RotateAction::Update()
 {
     XMFLOAT3 tar = XMFLOAT3();
-    
-    if(pTarget_) pTarget_->GetPosition();
-    
+    XMFLOAT3 pos = pCharacter_->GetPosition();
 
-    XMFLOAT3 pos = pGameObject_->GetPosition();
+    if (pTarget_) {
+        tar = pTarget_->GetPosition();
+    }
+    else {
+        XMStoreFloat3(&tar, XMLoadFloat3(&pos) - pCharacter_->GetMovement());
+    }
 
-    float rotateY = pGameObject_->GetRotate().y;
+    float rotateY = pCharacter_->GetRotate().y;
     XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(rotateY)), cosf(XMConvertToRadians(rotateY)));
     XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
     XMFLOAT2 b(pos.x - tar.x, pos.z - tar.z);
@@ -28,12 +31,12 @@ void RotateAction::Update()
     float cross = a.x * b.y - a.y * b.x;
     float dot = a.x * b.x + a.y * b.y;
     rotateY += XMConvertToDegrees(-atan2f(cross, dot) * rotateRatio_);
-    pGameObject_->SetRotateY(rotateY);
+    pCharacter_->SetRotateY(rotateY);
 }
 
 void RotateAction::Initialize()
 {
-    pTarget_ = static_cast<GameObject*>(pGameObject_->FindObject("Player"));
+    pTarget_ = static_cast<Character*>(pCharacter_->FindObject("Player"));
 
 }
 

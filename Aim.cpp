@@ -248,8 +248,7 @@ void Aim::CalcCameraOffset(float _aimMove)
     cameraOffset_.z += (cameraOffset_.z * -1.0f) * abs(_aimMove);
     
     XMVECTOR vCameraOffset = XMLoadFloat3(&cameraOffset_);
-    XMFLOAT3 pMove = pPlayer_->GetCurrentMovement(); //‚à‚Æ‚ÍGetMovement
-    XMVECTOR vTargetOffset = XMLoadFloat3(&pMove);
+    XMVECTOR vTargetOffset = pPlayer_->GetMovement();
     vTargetOffset *= maxCameraOffset_ * -1;
 
     if(pPlayer_->GetCommand()->CmdWalk()) vCameraOffset += (vTargetOffset - vCameraOffset) * moveAimTime_;   //move

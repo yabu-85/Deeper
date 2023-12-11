@@ -10,7 +10,7 @@
 
 EnemyBase::EnemyBase(GameObject* parent)
 	: Character(parent), pEnemyUi_(nullptr), pStateManager_(nullptr), pCombatStateManager_(nullptr),
-	type_(ENEMY_MAX), prePos_(0.0f, 0.0f, 0.0f), aimTargetPos_(0.0f)
+	type_(ENEMY_MAX), aimTargetPos_(0.0f)
 {
 	GameManager::GetDamageCtrl()->AddCharacter(this, DamageCtrl::DamageType::DA_Enemy);
 }

@@ -1,18 +1,14 @@
 #include "MoveAction.h"
 #include "Player.h"
 
-MoveAction::MoveAction(GameObject* obj) : BaseAction(obj), isInRange_(false), moveSpeed_(0.1f), moveRange_(1.0f), targetPos_(0,0,0)
-{
-}
-
-MoveAction::MoveAction(GameObject* obj, float speed, float range)
+MoveAction::MoveAction(Character* obj, float speed, float range)
 	: BaseAction(obj), isInRange_(false), moveSpeed_(speed), moveRange_(range), targetPos_(0, 0, 0)
 {
 }
 
 void MoveAction::Update()
 {
-	XMFLOAT3 pos = pGameObject_->GetPosition();
+	XMFLOAT3 pos = pCharacter_->GetPosition();
 	XMVECTOR vPos = XMLoadFloat3(&pos);
 	XMVECTOR vTar = XMLoadFloat3(&targetPos_);
 	XMVECTOR vMove = vTar - vPos;
@@ -26,7 +22,7 @@ void MoveAction::Update()
 	}
 
 	XMStoreFloat3(&pos, vPos + vMove);
-	pGameObject_->SetPosition(pos);
+	pCharacter_->SetPosition(pos);
 	isInRange_ = false;;
 }
 
@@ -36,11 +32,7 @@ void MoveAction::Update()
 #include "NavigationAI.h"
 #include "Stage.h"
 
-AstarMoveAction::AstarMoveAction(GameObject* obj) : MoveAction(obj)
-{
-}
-
-AstarMoveAction::AstarMoveAction(GameObject* obj, float speed, float range) : MoveAction(obj, speed, range)
+AstarMoveAction::AstarMoveAction(Character* obj, float speed, float range) : MoveAction(obj, speed, range)
 {
 }
 
@@ -58,7 +50,7 @@ void AstarMoveAction::Update()
 		return;
 	}
 
-	XMFLOAT3 pos = pGameObject_->GetPosition();
+	XMFLOAT3 pos = pCharacter_->GetPosition();
 	XMVECTOR vPos = XMLoadFloat3(&pos);
 	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) * floarSize;
 	XMVECTOR vMove = vTar - vPos;
@@ -75,10 +67,10 @@ void AstarMoveAction::Update()
 	}
 
 	XMStoreFloat3(&pos, vPos + vMove);
-	pGameObject_->SetPosition(pos);
+	pCharacter_->SetPosition(pos);
 }
 
 void AstarMoveAction::SetTarget(XMFLOAT3 target)
 {
-	targetList_ = GameManager::GetNavigationAI()->NaviDiagonal(target, pGameObject_->GetPosition());
+	targetList_ = GameManager::GetNavigationAI()->NaviDiagonal(target, pCharacter_->GetPosition());
 }

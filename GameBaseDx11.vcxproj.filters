@@ -298,6 +298,9 @@
     </ClCompile>
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="VFXManager.cpp" />
+    <ClCompile Include="SearchAction.cpp">
+      <Filter>10Action\Actions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -500,6 +503,9 @@
     </ClInclude>
     <ClInclude Include="Character.h" />
     <ClInclude Include="VFXManager.h" />
+    <ClInclude Include="SearchAction.h">
+      <Filter>10Action\Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

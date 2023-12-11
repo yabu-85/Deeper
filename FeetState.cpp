@@ -61,6 +61,7 @@ void FeetPatrol::Update()
 		pFeet_->GetMoveAction()->SetTarget(pStage->GetRandomFloarPosition());
 	}
 	pFeet_->GetMoveAction()->Update();
+	pFeet_->GetRotateAction()->Update();
 
 	Player* pPlayer = (Player*)pFeet_->FindObject("Player");
 	XMFLOAT3 pos = pPlayer->GetPosition();
@@ -75,6 +76,7 @@ void FeetPatrol::Update()
 void FeetPatrol::OnEnter()
 {
 	pFeet_->GetMoveAction()->SetMoveSpeed(0.03f);
+	pFeet_->GetRotateAction()->SetTarget(nullptr);
 }
 
 void FeetPatrol::OnExit()
@@ -127,6 +129,7 @@ void FeetCombat::Update()
 void FeetCombat::OnEnter()
 {
 	pFeet_->GetEnemyUi()->InitTargetFoundUi();
+	pFeet_->GetRotateAction()->Initialize();
 
 }
 

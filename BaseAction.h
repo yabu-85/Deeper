@@ -1,13 +1,13 @@
 #pragma once
 
-class GameObject;
+class Character;
 
 class BaseAction {
 protected:
-    GameObject* pGameObject_;
+    Character* pCharacter_;
 
 public:
-    BaseAction(GameObject* obj);
+    BaseAction(Character* obj);
     virtual ~BaseAction() {};
     virtual void Update() = 0;
     virtual void Initialize() {}

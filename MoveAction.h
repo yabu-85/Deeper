@@ -16,8 +16,7 @@ protected:
     XMFLOAT3 targetPos_;//ターゲットの場所
 
 public:
-    MoveAction(GameObject* obj);
-    MoveAction(GameObject* obj, float speed, float range);
+    MoveAction(Character* obj, float speed, float range);
     virtual ~MoveAction() override {};
     virtual void Update() override;
     virtual void Initialize() override {};
@@ -34,8 +33,7 @@ class AstarMoveAction : public MoveAction {
     std::vector<XMFLOAT3> targetList_;
 
 public:
-    AstarMoveAction(GameObject* obj);
-    AstarMoveAction(GameObject* obj, float speed, float range);
+    AstarMoveAction(Character* obj, float speed, float range);
     ~AstarMoveAction();
 
     void Update() override;

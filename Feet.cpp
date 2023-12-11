@@ -74,7 +74,10 @@ void Feet::Initialize()
 
 void Feet::Update()
 {
+	XMVECTOR prePos = XMLoadFloat3(&transform_.position_);
 	if(pStateManager_) pStateManager_->Update();
+
+	movement_ = prePos - XMLoadFloat3(&transform_.position_);
 
 }
 

@@ -10,7 +10,6 @@ class EnemyBase : public Character
 {
 protected:
     float aimTargetPos_;        //Aim‚ÌTarget‚·‚é‚ÌêŠ
-    XMFLOAT3 prePos_;
     ENEMY_TYPE type_;
 
     EnemyUi* pEnemyUi_;
@@ -28,7 +27,6 @@ public:
     virtual void ApplyDamage(int da) override;
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
     float GetAimTargetPos() { return aimTargetPos_; }
-    XMFLOAT3 GetPrePos() { return prePos_; }
 
     EnemyUi* GetEnemyUi() { return pEnemyUi_; }
     StateManager* GetStateManager() { return pStateManager_; }

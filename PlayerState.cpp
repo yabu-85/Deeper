@@ -185,7 +185,7 @@ void PlayerAvo::OnEnter()
 
 void PlayerAvo::OnExit()
 {
-	pPlayer_->ResetMovement();
+	pPlayer_->ResetKeyMovement();
 }
 
 //--------------------------------------------------------------------------------

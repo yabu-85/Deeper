@@ -189,6 +189,7 @@
     <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="RotateAction.cpp" />
+    <ClCompile Include="SearchAction.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StateCountNode.cpp" />
     <ClCompile Include="StateManager.cpp" />
@@ -260,6 +261,7 @@
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="RotateAction.h" />
+    <ClInclude Include="SearchAction.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="StateBase.h" />
     <ClInclude Include="StateCountNode.h" />

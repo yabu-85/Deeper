@@ -116,7 +116,7 @@ void Player::Update()
     if (1.0f <= XMVectorGetX(XMVector3Length(vec))) {
         vec = XMVector3Normalize(vec);
     }
-    XMStoreFloat3(&currentMovement_, vec);
+    movement_ = vec;
 
 }
 

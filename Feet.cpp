@@ -95,3 +95,13 @@ void Feet::Draw()
 void Feet::Release()
 {
 }
+
+void Feet::ApplyDamage(int da)
+{
+	EnemyBase::ApplyDamage(da);
+
+	if (pStateManager_->GetName() != "Combat") {
+		pStateManager_->ChangeState("Combat");
+	}
+
+}

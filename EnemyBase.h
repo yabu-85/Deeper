@@ -28,6 +28,7 @@ public:
     virtual void ApplyDamage(int da) override;
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
     float GetAimTargetPos() { return aimTargetPos_; }
+    XMFLOAT3 GetPrePos() { return prePos_; }
 
     EnemyUi* GetEnemyUi() { return pEnemyUi_; }
     StateManager* GetStateManager() { return pStateManager_; }

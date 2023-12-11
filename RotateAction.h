@@ -1,12 +1,13 @@
 #pragma once
 #include "BaseAction.h"
 
-class Player;
+class GameObject;
 
 class RotateAction : public BaseAction
 {
     float rotateRatio_;         //‰ñ“]—¦
-    Player* pPlayer_;
+    GameObject* pParent_;
+    GameObject* pTarget_;
 
 public:
     RotateAction(GameObject* obj);
@@ -17,5 +18,6 @@ public:
     virtual void Terminate() override;
 
     void SetRatio(float ratio) { rotateRatio_ = ratio; }
+    void SetTarget(GameObject* target) { pTarget_ = target; }
 
 };

@@ -69,7 +69,7 @@ void FeetPatrol::Update()
 	if (rand() % 2 == 0) {
 		pFeet_->GetVisionSearchAction()->Update();
 		if (pFeet_->GetVisionSearchAction()->IsFoundTarget()) {
-			owner_->ChangeState("Combat");
+	//		owner_->ChangeState("Combat");
 		}
 	}
 

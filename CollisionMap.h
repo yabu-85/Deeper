@@ -30,5 +30,8 @@ public:
     //コリジョンマップとの接触判定：めり込んでたら追い出す
     void MapDataVsSphere(SphereCollider* collider, XMFLOAT3 prePos);
 
+    //線分上のCellのTriangleとRayの判定当たったら即終了
+    void RaySelectCellVsSegment(RayCastData& _data, XMFLOAT3 target);
+
 };
 

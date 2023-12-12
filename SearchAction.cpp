@@ -1,5 +1,6 @@
 #include "SearchAction.h"
 #include "Character.h"
+#include "CollisionMap.h"
 
 #include "Engine/Input.h"
 #include <math.h>
@@ -32,54 +33,40 @@ void VisionSearchAction::Update()
     float dotProduct = XMVectorGetX(XMVector3Dot(toTargetNorm, charaForwardNorm));
     float angle = acosf(dotProduct);
 
-    // 角度を比較してターゲットが範囲内にあるかどうかを確認
-    isFoundTarget_ = false;
-    if (angle <= fovRadian_) {
-        //視野内だよ
-        isFoundTarget_ = true;
-    }
+    // 角度を比較してターゲットが範囲外にあるかどうかを確認・範囲外なら終了
+    
+    pCharacter_->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
+    
+    if (angle > fovRadian_) {
+        
+        pCharacter_->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
 
+        return;
+    }
 
     //とりあえずここにCollisionMapとの判定を作ろう
     //視線ベクトルが範囲内に入ったCellと Segment/CollisionMap を使ってあたり判定をしていく
+    
+    RayCastData data;
+    data.start = charaPos;
+    XMStoreFloat3(&data.dir, toTargetNorm);
+    
+    CollisionMap* pCollisionMap = (CollisionMap*)pCharacter_->FindObject("CollisionMap");
+    pCollisionMap->RaySelectCellVsSegment(data, targetPos);
 
-
-    // line ベクトルに垂直なベクトルを計算
-    XMVECTOR upVector = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // もし他のベクトルが必要なら変更
-    XMVECTOR lineNormal = XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&charaForward), upVector));
-
-    // 四角形の四隅の点を求める
-    XMVECTOR c1 = XMVectorSet(20, 0, 20, 0);
-    XMVECTOR c2 = XMVectorSet(20, 0, 30, 0);
-    XMVECTOR c3 = XMVectorSet(30, 0, 30, 0);
-    XMVECTOR c4 = XMVectorSet(30, 0, 20, 0);
-
-    // 四隅の点から線のベースとなる点の距離を求める
-    XMVECTOR lineBase = XMLoadFloat3(&charaPos);
-    c1 = c1 - lineBase;
-    c2 = c2 - lineBase;
-    c3 = c3 - lineBase;
-    c4 = c4 - lineBase;
-
-    // 内積により線の方向を求める
-    float dp1 = XMVectorGetY(XMVector3Dot(lineNormal, c1));
-    float dp2 = XMVectorGetY(XMVector3Dot(lineNormal, c2));
-    float dp3 = XMVectorGetY(XMVector3Dot(lineNormal, c3));
-    float dp4 = XMVectorGetY(XMVector3Dot(lineNormal, c4));
-
-    // 全部同じ方向にあれば、線と四角形が当たっていることはない
-    if ((dp1 * dp2 <= 0) || (dp2 * dp3 <= 0) || (dp3 * dp4 <= 0)) {
-        OutputDebugString("Hit\n");
+    //rayDistがtoTargetより値が大きいならTargetを目視出来た
+    float leng = XMVectorGetX(XMVector3Length(XMLoadFloat3(&toTarget)));
+    isFoundTarget_ = false;
+    if (data.hit && data.dist > leng) {
+    //    isFoundTarget_ = true;
+    //    OutputDebugString("on : Hit\n");
+        pCharacter_->SetScale(XMFLOAT3(2.0f, 2.0f, 2.0f));
     }
     else {
-        OutputDebugString("\n");
+    //    OutputDebugString("on : no  ");
+    //    OutputDebugStringA(std::to_string(data.dist).c_str() );
+    //    OutputDebugString("\n");
     }
-
-
-    //CellのTrianglesに対して
-
-    
-
 
 }
 

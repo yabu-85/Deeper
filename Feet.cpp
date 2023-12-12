@@ -66,7 +66,7 @@ void Feet::Initialize()
 	transform_.rotate_.y = 0;
 
 	//ActionÇÃê›íË
-	pMoveAction_ = new AstarMoveAction(this, 0.07f, 2.0f);
+	pMoveAction_ = new AstarMoveAction(this, 0.05f, 2.0f);
 	pRotateAction_ = new RotateAction(this, 0.07f);
 	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f / floarSize, 60.0f);
 	pAuditorySearchAction_ = new AuditorySearchAction(this);

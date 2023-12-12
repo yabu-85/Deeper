@@ -69,26 +69,15 @@ void FeetPatrol::Update()
 	if (rand() % 2 == 0) {
 		pFeet_->GetVisionSearchAction()->Update();
 		if (pFeet_->GetVisionSearchAction()->IsFoundTarget()) {
-	//		owner_->ChangeState("Combat");
+			owner_->ChangeState("Combat");
 		}
 	}
-
-	return;
-
-	//“K“–”ÍˆÍ“à”»’è
-	Player* pPlayer = (Player*)pFeet_->FindObject("Player");
-	XMFLOAT3 pos = pPlayer->GetPosition();
-	XMFLOAT3 tar = pFeet_->GetPosition();
-	XMVECTOR vPos = XMLoadFloat3(&pos);
-	XMVECTOR vTar = XMLoadFloat3(&tar);
-	float range = XMVectorGetX(XMVector3Length(vTar - vPos));
-	if(range <= 10.0f) owner_->ChangeState("Combat");
 
 }
 
 void FeetPatrol::OnEnter()
 {
-	pFeet_->GetMoveAction()->SetMoveSpeed(0.03f);
+	pFeet_->GetMoveAction()->SetMoveSpeed(0.02f);
 	pFeet_->GetRotateAction()->SetTarget(nullptr);
 }
 

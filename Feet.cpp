@@ -8,6 +8,7 @@
 
 #include "MoveAction.h"
 #include "RotateAction.h"
+#include "SearchAction.h"
 
 Feet::Feet(GameObject* parent)
 	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr)
@@ -62,12 +63,13 @@ void Feet::Initialize()
 	Stage* pStage = (Stage*)FindObject("Stage");
 	XMFLOAT3 startPos = pStage->GetRandomFloarPosition();
 	transform_.position_ = startPos;
-	transform_.rotate_.y = -90.0f;
+	transform_.rotate_.y = 0;
 
 	//Action‚ÌÝ’è
 	pMoveAction_ = new AstarMoveAction(this, 0.07f, 2.0f);
 	pRotateAction_ = new RotateAction(this, 0.07f);
-	pMoveAction_->Initialize();
+	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f / floarSize, 60.0f);
+	pAuditorySearchAction_ = new AuditorySearchAction(this);
 	pRotateAction_->Initialize();
 
 }
@@ -92,7 +94,7 @@ void Feet::Draw()
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 
-	CollisionDraw();
+//	CollisionDraw();
 }
 
 void Feet::Release()

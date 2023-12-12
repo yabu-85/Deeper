@@ -3,6 +3,8 @@
 
 RotateAction::RotateAction(Character* obj) : BaseAction(obj), pTarget_(nullptr), rotateRatio_(1.0f)
 {
+    pTarget_ = static_cast<Character*>(pCharacter_->FindObject("Player"));
+
 }
 
 RotateAction::RotateAction(Character* obj, float ratio) : BaseAction(obj), pTarget_(nullptr), rotateRatio_(ratio)
@@ -32,14 +34,4 @@ void RotateAction::Update()
     float dot = a.x * b.x + a.y * b.y;
     rotateY += XMConvertToDegrees(-atan2f(cross, dot) * rotateRatio_);
     pCharacter_->SetRotateY(rotateY);
-}
-
-void RotateAction::Initialize()
-{
-    pTarget_ = static_cast<Character*>(pCharacter_->FindObject("Player"));
-
-}
-
-void RotateAction::Terminate()
-{
 }

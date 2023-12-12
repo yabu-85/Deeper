@@ -10,10 +10,11 @@
 #include "DamageCtrl.h"
 #include "GameManager.h"
 #include "EnemyUi.h"
+#include "Engine/Model.h"
 
 #include "MoveAction.h"
 #include "RotateAction.h"
-#include "Engine/Model.h"
+#include "SearchAction.h"
 
 FeetAppear::FeetAppear(StateManager* owner) : time_(0), appearTime_(0)
 {
@@ -56,6 +57,7 @@ FeetPatrol::FeetPatrol(StateManager* owner)
 
 void FeetPatrol::Update()
 {
+	//Astar移動・回転
 	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 60 == 0) {
 		Stage* pStage = (Stage*)pFeet_->FindObject("Stage");
 		pFeet_->GetMoveAction()->SetTarget(pStage->GetRandomFloarPosition());
@@ -63,6 +65,17 @@ void FeetPatrol::Update()
 	pFeet_->GetMoveAction()->Update();
 	pFeet_->GetRotateAction()->Update();
 
+	//これrandじゃなくてtimeのほうがいいよね（とりあえず）
+	if (rand() % 2 == 0) {
+		pFeet_->GetVisionSearchAction()->Update();
+		if (pFeet_->GetVisionSearchAction()->IsFoundTarget()) {
+			owner_->ChangeState("Combat");
+		}
+	}
+
+	return;
+
+	//適当範囲内判定
 	Player* pPlayer = (Player*)pFeet_->FindObject("Player");
 	XMFLOAT3 pos = pPlayer->GetPosition();
 	XMFLOAT3 tar = pFeet_->GetPosition();

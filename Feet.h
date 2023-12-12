@@ -5,6 +5,8 @@
 class SphereCollider;
 class AstarMoveAction;
 class RotateAction;
+class VisionSearchAction;
+class AuditorySearchAction;
 
 class Feet : public EnemyBase
 {
@@ -14,6 +16,8 @@ class Feet : public EnemyBase
     //Action
     AstarMoveAction* pMoveAction_;
     RotateAction* pRotateAction_;
+    VisionSearchAction* pVisionSearchAction_;
+    AuditorySearchAction* pAuditorySearchAction_;
 
 public:
     Feet(GameObject* parent);
@@ -24,8 +28,11 @@ public:
     void Release() override;
     void ApplyDamage(int da) override;
 
+    int GetModelHandle() { return hModel_; }
     SphereCollider* GetSphereCollider() { return pHandCollider_; }
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }
-    int GetModelHandle() { return hModel_; }
+    VisionSearchAction* GetVisionSearchAction() { return pVisionSearchAction_; }
+    AuditorySearchAction* GetAuditorySearchAction() { return pAuditorySearchAction_; }
+
 };

@@ -12,6 +12,12 @@ class CollisionMap : public GameObject
 {
     Cell*** cells_ = 0;
 
+    //範囲内ならtrue / 渡した引数に値が入る
+    bool GetCellIndex(XMFLOAT3& pos);
+
+    //指定したCellのポインタを取得 / 範囲外ならnullptr
+    Cell* GetCell(XMFLOAT3 pos);
+
 public:
     CollisionMap(GameObject* parent);
     ~CollisionMap();
@@ -19,8 +25,6 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
-
-    Cell* GetCell(XMFLOAT3 pos);
 
     bool GetRayCastMinDist(XMFLOAT3 camPos, XMFLOAT3 plaPos, RayCastData* _data, float& minDist);
 

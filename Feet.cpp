@@ -63,7 +63,7 @@ void Feet::Initialize()
 	Stage* pStage = (Stage*)FindObject("Stage");
 	XMFLOAT3 startPos = pStage->GetRandomFloarPosition();
 	transform_.position_ = startPos;
-	transform_.rotate_.y = 0;
+	transform_.rotate_.y = rand() % 360;
 
 	//Action‚Ìİ’è
 	pMoveAction_ = new AstarMoveAction(this, 0.05f, 2.0f);

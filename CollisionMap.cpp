@@ -3,8 +3,10 @@
 #include "Engine/FbxParts.h"
 #include "Engine/Model.h"
 #include "Cell.h"
-#include "Player.h"
 #include "Stage.h"
+
+//デバッグ用
+#include "Player.h"
 
 namespace {
     const float boxSize = 25.0f;
@@ -145,6 +147,25 @@ void CollisionMap::Release()
 {
 }
 
+bool CollisionMap::GetCellIndex(XMFLOAT3& pos)
+{
+    pos.x = int((pos.x - minX) / boxSize);
+    pos.y = int((pos.y - minY) / boxSize);
+    pos.z = int((pos.z - minZ) / boxSize);
+    bool isClamp = true;
+
+    if (pos.x < 0) { pos.x = 0; isClamp = false; }
+    else if (pos.x > maxX / boxSize) { pos.x = maxX / boxSize - 1; isClamp = false; }
+
+    if (pos.y < 0) { pos.y = 0; isClamp = false; }
+    else if (pos.y > maxY / boxSize) { pos.y = maxY / boxSize - 1; isClamp = false; }
+
+    if (pos.z < 0) { pos.z = 0; isClamp = false; }
+    else if (pos.z > maxZ / boxSize) { pos.z = maxZ / boxSize - 1; isClamp = false; }
+
+    return isClamp;
+}
+
 Cell* CollisionMap::GetCell(XMFLOAT3 pos)
 {
     int x = int((pos.x - minX) / boxSize);
@@ -215,7 +236,7 @@ void CollisionMap::RaySelectCellVsSegment(RayCastData& _data, XMFLOAT3 target)
     int stepY = (targetY >= startY) ? 1 : -1;
     int stepZ = (targetZ >= startZ) ? 1 : -1;
 
-    // 座標の処理
+    // 座標の処理 : 常にStartPositionからループ回したいから座標によって増減を決める
     for (int x = startX; x != targetX + stepX; x += stepX) {
         for (int y = startY; y != targetY + stepY; y += stepY) {
             for (int z = startZ; z != targetZ + stepZ; z += stepZ) {
@@ -224,44 +245,39 @@ void CollisionMap::RaySelectCellVsSegment(RayCastData& _data, XMFLOAT3 target)
                 XMVECTOR upVector = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // もし他のベクトルが必要なら変更
                 XMVECTOR lineNormal = XMVector3Normalize(XMVector3Cross(XMLoadFloat3(&_data.dir), upVector));
 
-                // 四角形の四隅の点を求める
-                XMVECTOR c1 = XMVectorSet(x * boxSize, 0.0f, z * boxSize, 0.0f);
-                XMVECTOR c2 = XMVectorSet(x * boxSize + boxSize, 0.0f, z * boxSize, 0.0f);
-                XMVECTOR c3 = XMVectorSet(x * boxSize + boxSize, 0.0f, z * boxSize + boxSize, 0.0f);
-                XMVECTOR c4 = XMVectorSet(x * boxSize + boxSize, 0.0f, z * boxSize, 0.0f);
-                
-                // 四隅の点から線のベースとなる点の距離を求める
+                const XMFLOAT3 floatBoxPos[4] = {
+                    { 0.0f, 0.0f, 0.0f},
+                    { boxSize, 0.0f, 0.0f },
+                    { boxSize, 0.0f, boxSize },
+                    { 0.0f, 0.0f, boxSize }
+                };
+
+                // 四角形の四隅の点を求める / その点からstartまでの距離を計算 / 内積により線の方向を計算
                 XMVECTOR lineBase = XMLoadFloat3(&_data.start);
-                c1 = c1 - lineBase;
-                c2 = c2 - lineBase;
-                c3 = c3 - lineBase;
-                c4 = c4 - lineBase;
+                XMVECTOR c[4];
+                float dp[4] = {};
+                for (int i = 0; i < 4; i++) {
+                    // 四角形の四隅の点の座標を求める
+                    XMFLOAT3 boxPos = XMFLOAT3(x * boxSize + floatBoxPos[i].x, y * boxSize + floatBoxPos[i].y, z * boxSize + floatBoxPos[i].z);
+                    c[i] = XMLoadFloat3(&boxPos);
+                    
+                    // その点からstartまでの距離を計算
+                    c[i] -= lineBase;
+                
+                    // 内積により線の方向を求める
+                    dp[i] = XMVectorGetY(XMVector3Dot(lineNormal, c[i]));
+                }
 
-                // 内積により線の方向を求める
-                float dp1 = XMVectorGetY(XMVector3Dot(lineNormal, c1));
-                float dp2 = XMVectorGetY(XMVector3Dot(lineNormal, c2));
-                float dp3 = XMVectorGetY(XMVector3Dot(lineNormal, c3));
-                float dp4 = XMVectorGetY(XMVector3Dot(lineNormal, c4));
-
+                
                 // 全部同じ方向にあれば、線と四角形が当たっていることはない
-                if ((dp1 * dp2 <= 0) || (dp2 * dp3 <= 0) || (dp3 * dp4 <= 0)) {
+                if ((dp[0] * dp[1] <= 0) || (dp[1] * dp[2] <= 0) || (dp[2] * dp[3] <= 0)) {
                     Cell* cell = &cells_[y][z][x];
                     float minDist = 0;
                     if (!cell) continue;
 
+                    // Ray内にあったからそのCellで当たり判定をする
                     _data.start.y += 0.001f;
                     if (cell->SegmentVsTriangle(&_data, minDist)) {
-                        OutputDebugString("X : ");
-                        OutputDebugStringA(std::to_string(startX).c_str());
-                        OutputDebugString(" , ");
-                        OutputDebugStringA(std::to_string(targetX).c_str());
-                        OutputDebugString(" Z : ");
-
-                        OutputDebugStringA(std::to_string(startZ).c_str());
-                        OutputDebugString(" , ");
-                        OutputDebugStringA(std::to_string(targetZ).c_str());
-                        OutputDebugString("\n");
-
                         return;
                     }
                 }

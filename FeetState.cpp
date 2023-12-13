@@ -1,9 +1,5 @@
 #include "FeetState.h"
 #include "StateManager.h"
-#include "ChangeStateNode.h"
-#include "BehaviourNode.h"
-#include "PlayerConditionNode.h"
-#include "IsEnemyStateNode.h"
 #include "Player.h"
 #include "Feet.h"
 #include "Stage.h"
@@ -12,6 +8,10 @@
 #include "EnemyUi.h"
 #include "Engine/Model.h"
 
+#include "ChangeStateNode.h"
+#include "BehaviourNode.h"
+#include "PlayerConditionNode.h"
+#include "IsEnemyStateNode.h"
 #include "MoveAction.h"
 #include "RotateAction.h"
 #include "SearchAction.h"
@@ -174,7 +174,8 @@ FeetMove::FeetMove(StateManager* owner)
 
 void FeetMove::Update()
 {
-	if (pFeet_->GetMoveAction()->IsInRange()) {
+	//rand() ‚É‚µ‚Ä‚é‚¯‚Ç‚È‚ñ‚©‚â‚Á‚Ä‚¿‚á‚ñ‚Æ‚µ‚½‚â‚Âì‚Á‚½‚Ù‚¤‚ª‚¢‚¢‚Ë
+	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
 		Player* pPlayer = (Player*)pFeet_->FindObject("Player");
 		pFeet_->GetMoveAction()->SetTarget(pPlayer->GetPosition());
 	}

@@ -9,7 +9,7 @@
 #include "Player.h"
 
 namespace {
-    const float boxSize = 25.0f;
+    const float boxSize = 10.0f;
     const int polySize = 3;
 
     Player* pPlayer;

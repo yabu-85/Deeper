@@ -24,7 +24,7 @@ Feet::~Feet()
 void Feet::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("Model/StoneGolem.fbx");
+	hModel_ = Model::Load("Model/SphereCollider.fbx");
 	assert(hModel_ >= 0);
 
 	maxHp_ = 100;

@@ -14,9 +14,8 @@ namespace {
 
 //--------------------------------------------------------------------------------
 
-PlayerWait::PlayerWait(StateManager* owner)
+PlayerWait::PlayerWait(StateManager* owner) : StateBase(owner)
 {
-	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
 
@@ -53,9 +52,8 @@ void PlayerWait::Update()
 
 //--------------------------------------------------------------------------------
 
-PlayerWalk::PlayerWalk(StateManager* owner)
+PlayerWalk::PlayerWalk(StateManager* owner) : StateBase(owner)
 {
-	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
 
@@ -93,11 +91,9 @@ void PlayerWalk::Update()
 
 //--------------------------------------------------------------------------------
 
-PlayerWeaponChange::PlayerWeaponChange(StateManager* owner)
-	:time_(0)
+PlayerWeaponChange::PlayerWeaponChange(StateManager* owner) : StateBase(owner), time_(0)
 {
 	changeTime_ = 60;
-	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
 
@@ -135,10 +131,8 @@ void PlayerWeaponChange::OnEnter()
 
 //--------------------------------------------------------------------------------
 
-PlayerAvo::PlayerAvo(StateManager* owner)
-	:avoTime_(0), nextCmd_(0)
+PlayerAvo::PlayerAvo(StateManager* owner) : StateBase(owner), avoTime_(0), nextCmd_(0)
 {
-	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
 
@@ -190,10 +184,8 @@ void PlayerAvo::OnExit()
 
 //--------------------------------------------------------------------------------
 
-PlayerAtk::PlayerAtk(StateManager* owner)
-	:nextCmd_(0)
+PlayerAtk::PlayerAtk(StateManager* owner) : StateBase(owner), nextCmd_(0)
 {
-	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
 
@@ -238,10 +230,8 @@ void PlayerAtk::OnExit()
  
 //--------------------------------------------------------------------------------
 
-PlayerSubAtk::PlayerSubAtk(StateManager* owner)
-	:nextCmd_(0)
+PlayerSubAtk::PlayerSubAtk(StateManager* owner) : StateBase(owner), nextCmd_(0)
 {
-	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
 
@@ -290,9 +280,8 @@ void PlayerSubAtk::OnExit()
 
 //--------------------------------------------------------------------------------
 
-PlayerDead::PlayerDead(StateManager* owner)
+PlayerDead::PlayerDead(StateManager* owner) : StateBase(owner)
 {
-	owner_ = owner;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
 

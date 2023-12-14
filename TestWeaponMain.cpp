@@ -122,9 +122,8 @@ void TestWeaponMain::CalcDamage(float range)
 
 //--------------------state---------------------------------------------------
 
-TestWeaponWait::TestWeaponWait(StateManager* owner)
+TestWeaponWait::TestWeaponWait(StateManager* owner) : StateBase(owner)
 {
-    owner_ = owner;
     pTestWeaponMain_ = static_cast<TestWeaponMain*>(owner_->GetGameObject());
 }
 
@@ -135,10 +134,8 @@ void TestWeaponWait::Update()
 
 //---------------------------------------------
 
-TestWeaponCombo1::TestWeaponCombo1(StateManager* owner)
-    :time_(0), next_(false)
+TestWeaponCombo1::TestWeaponCombo1(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
-    owner_ = owner;
     pTestWeaponMain_ = static_cast<TestWeaponMain*>(owner_->GetGameObject());
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     comboTime_ = 40;
@@ -187,10 +184,8 @@ void TestWeaponCombo1::OnExit()
 
 //---------------------------------------------
 
-TestWeaponCombo2::TestWeaponCombo2(StateManager* owner)
-    :time_(0), next_(false)
+TestWeaponCombo2::TestWeaponCombo2(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
-    owner_ = owner;
     pTestWeaponMain_ = static_cast<TestWeaponMain*>(owner_->GetGameObject());
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     comboTime_ = 40;
@@ -236,10 +231,8 @@ void TestWeaponCombo2::OnExit()
 
 //---------------------------------------------
 
-TestWeaponCombo3::TestWeaponCombo3(StateManager* owner)
-    :time_(0), next_(false)
+TestWeaponCombo3::TestWeaponCombo3(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
-    owner_ = owner;
     pTestWeaponMain_ = static_cast<TestWeaponMain*>(owner_->GetGameObject());
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     comboTime_ = 70;

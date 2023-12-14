@@ -16,9 +16,8 @@
 #include "RotateAction.h"
 #include "SearchAction.h"
 
-FeetAppear::FeetAppear(StateManager* owner) : time_(0), appearTime_(0)
+FeetAppear::FeetAppear(StateManager* owner) : StateBase(owner), time_(0), appearTime_(0)
 {
-	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
@@ -36,9 +35,8 @@ void FeetAppear::Initialize()
 
 //--------------------------------------------------------------------------------
 
-FeetIdle::FeetIdle(StateManager* owner)
+FeetIdle::FeetIdle(StateManager* owner) : StateBase(owner)
 {
-	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
@@ -49,30 +47,38 @@ void FeetIdle::Update()
 
 //--------------------------------------------------------------------------------
 
-FeetPatrol::FeetPatrol(StateManager* owner)
+namespace {
+	const short foundSearch = 10;
+}
+
+FeetPatrol::FeetPatrol(StateManager* owner) : StateBase(owner), foundSearchTime_(0)
 {
-	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
 void FeetPatrol::Update()
 {
-	//Astar移動・回転
+	//Astar移動が終わったなら更新・待ち時間適当にrandamで デバッグ用
 	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 60 == 0) {
 		Stage* pStage = (Stage*)pFeet_->FindObject("Stage");
 		pFeet_->GetMoveAction()->SetTarget(pStage->GetRandomFloarPosition());
 	}
+
+	//Astar移動・回転
 	pFeet_->GetMoveAction()->Update();
 	pFeet_->GetRotateAction()->Update();
 
-	//これrandじゃなくてtimeのほうがいいよね（とりあえず）
-	if (rand() % 2 == 0) {
+	//FoundSearchの実行待ち時間がfoundSearch
+	foundSearchTime_++;
+	if (foundSearchTime_ > foundSearch) {
+		foundSearchTime_ = 0;
 		pFeet_->GetVisionSearchAction()->Update();
+		
+		//見つかったらCombatStateへ推移
 		if (pFeet_->GetVisionSearchAction()->IsFoundTarget()) {
 			owner_->ChangeState("Combat");
 		}
 	}
-
 }
 
 void FeetPatrol::OnEnter()
@@ -85,14 +91,12 @@ void FeetPatrol::OnExit()
 {
 	pFeet_->GetMoveAction()->SetMoveSpeed(0.07f);
 	pFeet_->GetMoveAction()->StopMove();
-
 }
 
 //--------------------------------------------------------------------------------
 
-FeetCombat::FeetCombat(StateManager* owner)
+FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 {
-	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 	Player* pPlayer = static_cast<Player*>(pFeet_->FindObject("Player"));
 
@@ -142,9 +146,8 @@ FeetCombat::~FeetCombat()
 
 //--------------------------------------------------------------------------------
 
-FeetDead::FeetDead(StateManager* owner)
+FeetDead::FeetDead(StateManager* owner) : StateBase(owner)
 {
-	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
@@ -154,9 +157,8 @@ void FeetDead::Update()
 
 //-------------------------------------CombatState-------------------------------------------
 
-FeetWait::FeetWait(StateManager* owner)
+FeetWait::FeetWait(StateManager* owner) : StateBase(owner)
 {
-	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
@@ -166,9 +168,8 @@ void FeetWait::Update()
 
 //--------------------------------------------------------------------------------
 
-FeetMove::FeetMove(StateManager* owner)
+FeetMove::FeetMove(StateManager* owner) : StateBase(owner)
 {
-	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
@@ -193,9 +194,8 @@ void FeetMove::OnExit()
 
 class ActionAttack;
 
-FeetAttack::FeetAttack(StateManager* owner) : time_(0)
+FeetAttack::FeetAttack(StateManager* owner) : StateBase(owner), time_(0)
 {
-	owner_ = owner;
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 

@@ -29,6 +29,7 @@ public:
 class FeetPatrol : public StateBase
 {
 	Feet* pFeet_;
+	short foundSearchTime_;
 public:
 	FeetPatrol(StateManager* owner);
 	const char* GetName() const override { return "Patrol"; }

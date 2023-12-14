@@ -93,9 +93,8 @@ void TestWeaponSub::ShotBullet()
 
 //--------------------------state-----------------------------------
 
-TestWeaponSubWait::TestWeaponSubWait(StateManager* owner)
+TestWeaponSubWait::TestWeaponSubWait(StateManager* owner) : StateBase(owner)
 {
-    owner_ = owner;
     pTestWeaponSub_ = static_cast<TestWeaponSub*>(owner_->GetGameObject());
 }
 
@@ -106,10 +105,8 @@ void TestWeaponSubWait::Update()
 
 //---------------------------------------------------------------
 
-TestWeaponSubCombo1::TestWeaponSubCombo1(StateManager* owner)
-    :time_(0), next_(false)
+TestWeaponSubCombo1::TestWeaponSubCombo1(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
-    owner_ = owner;
     pTestWeaponSub_ = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
 }
@@ -155,10 +152,8 @@ void TestWeaponSubCombo1::OnExit()
 
 //---------------------------------------------------------------
 
-TestWeaponSubCombo2::TestWeaponSubCombo2(StateManager* owner)
-    :time_(0), next_(false)
+TestWeaponSubCombo2::TestWeaponSubCombo2(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
-    owner_ = owner;
     pTestWeaponSub_ = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
 }

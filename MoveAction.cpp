@@ -36,10 +36,6 @@ AstarMoveAction::AstarMoveAction(Character* obj, float speed, float range) : Mov
 {
 }
 
-AstarMoveAction::~AstarMoveAction()
-{
-}
-
 void AstarMoveAction::Update()
 {
 	isInRange_ = false;
@@ -56,7 +52,6 @@ void AstarMoveAction::Update()
 	XMVECTOR vMove = vTar - vPos;
 	float currentSpeed = XMVectorGetX(XMVector3Length(vTar - vPos));
 	if (currentSpeed > moveSpeed_ * floarSize) vMove = XMVector3Normalize(vMove) * (moveSpeed_ * floarSize);
-	XMStoreFloat3(&targetPos_, vTar);
 
 	//Target位置ついた：カクカクしないように再起処理する
 	float length = XMVectorGetX(XMVector3Length(vTar - vPos));

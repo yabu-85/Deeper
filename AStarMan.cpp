@@ -1,6 +1,7 @@
 #include "AStarMan.h"
 #include "Engine/Model.h"
 #include "Stage.h"
+#include "Engine/Global.h"
 
 #include "MoveAction.h"
 #include "RotateAction.h"
@@ -72,4 +73,6 @@ void AStarMan::Draw()
 
 void AStarMan::Release()
 {
+	SAFE_DELETE(pAstarMoveAction_);
+
 }

@@ -5,20 +5,21 @@
 #include "StateManager.h"
 #include "FeetState.h"
 #include "Stage.h"
+#include "Engine/Global.h"
 
 #include "MoveAction.h"
 #include "RotateAction.h"
 #include "SearchAction.h"
 
 Feet::Feet(GameObject* parent)
-	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr)
+	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr), pVisionSearchAction_(nullptr),
+	pAuditorySearchAction_(nullptr)
 {
 	objectName_ = "Feet";
 }
 
 Feet::~Feet()
 {
-	Release();
 }
 
 void Feet::Initialize()
@@ -56,7 +57,7 @@ void Feet::Initialize()
 	pCombatStateManager_->AddState(new FeetAttack(pCombatStateManager_));
 	pCombatStateManager_->ChangeState("Wait");
 	pCombatStateManager_->Initialize();
-	
+
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize(5.0f);
 
@@ -99,6 +100,16 @@ void Feet::Draw()
 
 void Feet::Release()
 {
+	EnemyBase::Release();
+
+	SAFE_DELETE(pAuditorySearchAction_);
+	SAFE_DELETE(pVisionSearchAction_);
+	SAFE_DELETE(pRotateAction_);
+	SAFE_DELETE(pMoveAction_);
+	SAFE_DELETE(pEnemyUi_);
+	SAFE_DELETE(pCombatStateManager_);
+	SAFE_DELETE(pStateManager_);
+
 }
 
 void Feet::ApplyDamage(int da)

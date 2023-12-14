@@ -10,12 +10,10 @@
 #include "Engine/GameObject.h"
 #include "Engine/Global.h"
 
+//デバッグ用
 #include "Engine/Input.h"
 
 namespace GameManager {
-	Player* pPlayer_ = nullptr;
-	Stage* pStage_ = nullptr;
-
 	EnemySpawnCtrl* pEnemySpawnCtrl_ = nullptr;
 	NavigationAI* pNavigationAI_ = nullptr;
 	DamageCtrl* pDamageCtrl_ = nullptr;
@@ -23,16 +21,14 @@ namespace GameManager {
 	DropTable* pDropTable_ = nullptr;
 	GameObject* pParent_ = nullptr;
 
-	int entityCount = 0;
-
 	void GameManager::Initialize(GameObject* parent)
 	{
 		pEnemySpawnCtrl_ = new EnemySpawnCtrl;
 		pEnemySpawnCtrl_->Initialize(parent);
 		pDamageCtrl_ = new DamageCtrl(pEnemySpawnCtrl_);
 
-		pStage_ = Instantiate<Stage>(parent);
-		pPlayer_ = Instantiate<Player>(parent);
+		Stage* pStage_ = Instantiate<Stage>(parent);
+		Player* pPlayer_ = Instantiate<Player>(parent);
 		pPlayer_->SetPosition(pStage_->GetPlayerStartPos());
 		pDamageCtrl_->AddCharacter(pPlayer_, DamageCtrl::DA_Player);
 
@@ -50,22 +46,23 @@ namespace GameManager {
 	{
 		if (Input::IsKey(DIK_TAB)) {
 			OutputDebugString("entity : ");
-			OutputDebugStringA(std::to_string(entityCount).c_str());
+			int count = pEnemySpawnCtrl_->GetAllEnemy().size();
+			OutputDebugStringA(std::to_string(count).c_str());
 			OutputDebugString("\n");
 		}
 
 		//デバッグ用
-		if (Input::IsKeyDown(DIK_M)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND); entityCount++; }
-		if (Input::IsKeyDown(DIK_J)) { for (int i = 0; i < 20; i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND);  entityCount += 20; }
+		if (Input::IsKeyDown(DIK_M)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND); }
+		if (Input::IsKeyDown(DIK_J)) { for (int i = 0; i < 50; i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND); }
 
-		if (Input::IsKeyDown(DIK_N)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET); entityCount++; }
-		if (Input::IsKeyDown(DIK_H)) { for (int i = 0; i < 20; i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET);  entityCount += 20; }
+		if (Input::IsKeyDown(DIK_N)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET); }
+		if (Input::IsKeyDown(DIK_H)) { for (int i = 0; i < 50; i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET); }
 		
-		if (Input::IsKeyDown(DIK_K)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_ASTAR); entityCount++; }
-		if (Input::IsKeyDown(DIK_L)) { for(int i = 0;i < 20;i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_ASTAR);  entityCount+= 20; }
+		if (Input::IsKeyDown(DIK_K)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_ASTAR); }
+		if (Input::IsKeyDown(DIK_L)) { for(int i = 0;i < 50;i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_ASTAR); }
 
 		if (Input::IsKeyDown(DIK_B)) pWeaponObjectManager_->AllKillWeaponObject();
-		if (Input::IsKeyDown(DIK_V)) { pEnemySpawnCtrl_->AllKillEnemy(); entityCount = 0; }
+		if (Input::IsKeyDown(DIK_V)) { pEnemySpawnCtrl_->AllKillEnemy(); }
 	}
 
 	void GameManager::Release() {

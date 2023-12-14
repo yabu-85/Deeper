@@ -39,6 +39,14 @@ GameObject::~GameObject()
 		SAFE_DELETE(*it);
 	}
 	colliderList_.clear();
+
+	for (auto it = attackColliderList_.begin(); it != attackColliderList_.end(); it++)
+	{
+		SAFE_DELETE(*it);
+	}
+	attackColliderList_.clear();
+
+	
 }
 
 // íœ‚·‚é‚©‚Ç‚¤‚©

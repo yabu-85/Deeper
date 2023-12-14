@@ -3,6 +3,7 @@
 #include "GameManager.h"
 #include "EnemyUi.h"
 #include "DropTable.h"
+#include "Engine/Global.h"
 
 #include "Aim.h"
 #include "Player.h"
@@ -20,7 +21,6 @@ MasterHand::MasterHand(GameObject* parent)
 
 MasterHand::~MasterHand()
 {
-	Release();
 
 }
 
@@ -76,4 +76,6 @@ void MasterHand::Draw()
 
 void MasterHand::Release()
 {
+	SAFE_DELETE(pEnemyUi_);
+
 }

@@ -7,6 +7,7 @@
 #include "GameManager.h"
 #include "EnemyUi.h"
 #include "Engine/Model.h"
+#include "Engine/Global.h"
 
 #include "ChangeStateNode.h"
 #include "BehaviourNode.h"

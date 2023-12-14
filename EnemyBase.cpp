@@ -7,6 +7,7 @@
 #include "StateManager.h"
 #include "GameManager.h"
 #include "DamageCtrl.h"
+#include "Engine/Global.h"
 
 EnemyBase::EnemyBase(GameObject* parent)
 	: Character(parent), pEnemyUi_(nullptr), pStateManager_(nullptr), pCombatStateManager_(nullptr),
@@ -17,8 +18,14 @@ EnemyBase::EnemyBase(GameObject* parent)
 
 EnemyBase::~EnemyBase()
 {
-	delete pStateManager_;
-	delete pEnemyUi_;
+}
+
+void EnemyBase::Release()
+{
+	SAFE_DELETE(pStateManager_);
+	SAFE_DELETE(pCombatStateManager_);
+	SAFE_DELETE(pEnemyUi_);
+	
 }
 
 void EnemyBase::ApplyDamage(int da)

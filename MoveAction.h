@@ -9,11 +9,12 @@ class Player;
 
 class MoveAction : public BaseAction
 {
+    XMFLOAT3 targetPos_;//ターゲットの場所
+
 protected:
     bool isInRange_;    //Targetについていたらtrue
     float moveSpeed_;   //移動スピード
     float moveRange_;   //移動終了判定の範囲
-    XMFLOAT3 targetPos_;//ターゲットの場所
 
 public:
     MoveAction(Character* obj, float speed, float range);
@@ -34,7 +35,7 @@ class AstarMoveAction : public MoveAction {
 
 public:
     AstarMoveAction(Character* obj, float speed, float range);
-    ~AstarMoveAction();
+    ~AstarMoveAction() {};
 
     void Update() override;
     void SetTarget(XMFLOAT3 target) override;

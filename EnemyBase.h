@@ -19,10 +19,10 @@ protected:
 public:
     EnemyBase(GameObject* parent);
     virtual ~EnemyBase();
-    virtual void Initialize() override = 0 {};
-    virtual void Update() override = 0 {};
-    virtual void Draw() override = 0 {};
-    virtual void Release() override = 0 {};
+    virtual void Initialize() override = 0;
+    virtual void Update() override = 0;
+    virtual void Draw() override = 0;
+    virtual void Release();
 
     virtual void ApplyDamage(int da) override;
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }

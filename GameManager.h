@@ -1,8 +1,8 @@
 #pragma once
 
-class EnemySpawnCtrl;
+class EnemyManager;
 class NavigationAI;
-class DamageCtrl;
+class DamageManager;
 class WeaponObjectManager;
 class DropTable;
 class GameObject;
@@ -13,9 +13,9 @@ namespace GameManager
 	void Update();
 	void Release();
 
-	EnemySpawnCtrl* GetEnemySpawnCtrl();
+	EnemyManager* GetEnemyManager();
 	NavigationAI* GetNavigationAI();
-	DamageCtrl* GetDamageCtrl();
+	DamageManager* GetDamageManager();
 	WeaponObjectManager* GetWeaponObjectManager();
 	DropTable* GetDropTable();
 	GameObject* GetParent();

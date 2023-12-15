@@ -1,7 +1,7 @@
 #include "TestWeaponSub.h"
 #include "StateManager.h"
 #include "Engine/Model.h"
-#include "DamageCtrl.h"
+#include "DamageManager.h"
 #include "GameManager.h"
 #include "Player.h"
 #include "PlayerCommand.h"

@@ -289,7 +289,7 @@
     <ClCompile Include="Triangle.cpp">
       <Filter>12Stage</Filter>
     </ClCompile>
-    <ClCompile Include="DamageCtrl.cpp" />
+    <ClCompile Include="DamageManager.cpp" />
     <ClCompile Include="AStarMan.cpp">
       <Filter>08Enemy\Enemies</Filter>
     </ClCompile>
@@ -382,7 +382,7 @@
     <ClInclude Include="Player.h">
       <Filter>07Player</Filter>
     </ClInclude>
-    <ClInclude Include="EnemySpawnCtrl.h">
+    <ClInclude Include="EnemyManager.h">
       <Filter>08Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Feet.h">
@@ -494,7 +494,7 @@
     <ClInclude Include="Triangle.h">
       <Filter>12Stage</Filter>
     </ClInclude>
-    <ClInclude Include="DamageCtrl.h" />
+    <ClInclude Include="DamageManager.h" />
     <ClInclude Include="AStarMan.h">
       <Filter>08Enemy\Enemies</Filter>
     </ClInclude>

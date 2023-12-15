@@ -50,7 +50,7 @@ void MasterHand::Update()
 {
 	if (lifeTime_ >= killTime) {
 		GameManager::GetDropTable()->DropItem(0, transform_.position_);
-		GameManager::GetEnemySpawnCtrl()->KillEnemy(this);
+		GameManager::GetEnemyManager()->KillEnemy(this);
 		return;
 	}
 	lifeTime_++;

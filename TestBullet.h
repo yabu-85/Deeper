@@ -2,13 +2,13 @@
 #include "BulletBase.h"
 
 class SphereCollider;
-class DamageCtrl;
+class DamageManager;
 
 class TestBullet : public BulletBase
 {
     int damage_;
     SphereCollider* collision_;
-    DamageCtrl* pDamageCtrl_;
+    DamageManager* pDamageManager_;
 
     void CreatVfx();
 

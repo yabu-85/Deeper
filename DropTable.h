@@ -1,6 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
-#include "EnemySpawnCtrl.h"
+#include "EnemyManager.h"
 
 using namespace DirectX;
 

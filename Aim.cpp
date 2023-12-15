@@ -4,7 +4,7 @@
 #include "CollisionMap.h"
 #include <vector>
 #include "EnemyBase.h"
-#include "EnemySpawnCtrl.h"
+#include "Enemymanager.h"
 #include "GameManager.h"
 #include "PlayerCommand.h"
 
@@ -133,8 +133,8 @@ void Aim::SetTargetEnemy()
         return;
     }
 
-    EnemySpawnCtrl* pEnemySpawnCtrl = GameManager::GetEnemySpawnCtrl();
-    std::vector<EnemyBase*> eList = pEnemySpawnCtrl->GetAllEnemy();
+    EnemyManager* pEnemyManager = GameManager::GetEnemyManager();
+    std::vector<EnemyBase*> eList = pEnemyManager->GetAllEnemy();
 
     // プレイヤーの視線方向を計算
     XMFLOAT3 playerForward;

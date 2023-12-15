@@ -1,6 +1,6 @@
 #pragma once
 #include "Character.h"
-#include "EnemySpawnCtrl.h"
+#include "EnemyManager.h"
 
 class EnemyUi;
 class DropTable;

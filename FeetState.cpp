@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "Feet.h"
 #include "Stage.h"
-#include "DamageCtrl.h"
+#include "DamageManager.h"
 #include "GameManager.h"
 #include "EnemyUi.h"
 #include "Engine/Model.h"
@@ -193,8 +193,6 @@ void FeetMove::OnExit()
 
 //--------------------------------------------------------------------------------
 
-class ActionAttack;
-
 FeetAttack::FeetAttack(StateManager* owner) : StateBase(owner), time_(0)
 {
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
@@ -206,7 +204,7 @@ void FeetAttack::Update()
 
 	//AttackFrame=65 ` 90
 	if (time_ > 65 && time_ < 90) {
-		GameManager::GetDamageCtrl()->CalcPlyaer(pFeet_->GetSphereCollider(), 1);
+		GameManager::GetDamageManager()->CalcPlyaer(pFeet_->GetSphereCollider(), 1);
 	}
 	
 	if (time_ >= 200) {

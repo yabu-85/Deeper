@@ -33,7 +33,7 @@ void TitleScene::Initialize()
 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
 		pSceneManager->ChangeScene(SCENE_ID_PLAY); }
 	);
-	title->AddUi("Option", XMFLOAT2(0.0f, -0.35f), [this]() { AudioManager::PlaySoundA(); });
+	title->AddUi("Option", XMFLOAT2(0.0f, -0.35f), [this]() { AudioManager::Play(); });
 	title->AddUi("Exit", XMFLOAT2(0.0f, -0.7f), [this]() {
 		ExitUIManager* exit = new ExitUIManager();
 		pUIManagerList_.push_back(exit); }
@@ -82,5 +82,6 @@ void TitleScene::Release()
 		delete u;
 	}
 	pUIManagerList_.clear();
+	AudioManager::Release();
 
 }

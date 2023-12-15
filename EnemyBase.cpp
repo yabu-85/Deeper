@@ -5,7 +5,7 @@
 #include "Player.h"
 #include "StateManager.h"
 #include "GameManager.h"
-#include "DamageCtrl.h"
+#include "DamageManager.h"
 #include "Engine/Global.h"
 
 EnemyBase::EnemyBase(GameObject* parent)

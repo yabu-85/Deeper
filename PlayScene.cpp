@@ -2,6 +2,7 @@
 #include "GameManager.h"
 #include "Engine/SceneManager.h"
 
+#include "AudioManager.h"
 #include "Engine/Input.h"
 
 PlayScene::PlayScene(GameObject* parent)
@@ -12,6 +13,7 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 	GameManager::Initialize(this);
+	AudioManager::Initialize();
 
 }
 
@@ -32,5 +34,6 @@ void PlayScene::Draw()
 void PlayScene::Release()
 {
 	GameManager::Release();
+	AudioManager::Release();
 
 }

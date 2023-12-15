@@ -14,7 +14,7 @@
 #include "Engine/Input.h"
 
 namespace GameManager {
-	EnemySpawnCtrl* pEnemySpawnCtrl_ = nullptr;
+	EnemyManager* pEnemyManager_ = nullptr;
 	NavigationAI* pNavigationAI_ = nullptr;
 	DamageManager* pDamageManager_ = nullptr;
 	WeaponObjectManager* pWeaponObjectManager_ = nullptr;
@@ -39,30 +39,29 @@ namespace GameManager {
 	
 		pDropTable_ = new DropTable();
 		pNavigationAI_ = new NavigationAI(pStage_);
-
 	}
 
 	void GameManager::Update()
 	{
 		if (Input::IsKey(DIK_TAB)) {
 			OutputDebugString("entity : ");
-			int count = pEnemySpawnCtrl_->GetAllEnemy().size();
+			int count = pEnemyManager_->GetAllEnemy().size();
 			OutputDebugStringA(std::to_string(count).c_str());
 			OutputDebugString("\n");
 		}
 
 		//デバッグ用
-		if (Input::IsKeyDown(DIK_M)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND); }
-		if (Input::IsKeyDown(DIK_J)) { for (int i = 0; i < 50; i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_MASTERHAND); }
+		if (Input::IsKeyDown(DIK_M)) { pEnemyManager_->SpawnEnemy(ENEMY_MASTERHAND); }
+		if (Input::IsKeyDown(DIK_J)) { for (int i = 0; i < 50; i++) pEnemyManager_->SpawnEnemy(ENEMY_MASTERHAND); }
 
-		if (Input::IsKeyDown(DIK_N)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET); }
-		if (Input::IsKeyDown(DIK_H)) { for (int i = 0; i < 50; i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_FEET); }
+		if (Input::IsKeyDown(DIK_N)) { pEnemyManager_->SpawnEnemy(ENEMY_FEET); }
+		if (Input::IsKeyDown(DIK_H)) { for (int i = 0; i < 50; i++) pEnemyManager_->SpawnEnemy(ENEMY_FEET); }
 		
-		if (Input::IsKeyDown(DIK_K)) { pEnemySpawnCtrl_->SpawnEnemy(ENEMY_ASTAR); }
-		if (Input::IsKeyDown(DIK_L)) { for(int i = 0;i < 50;i++) pEnemySpawnCtrl_->SpawnEnemy(ENEMY_ASTAR); }
+		if (Input::IsKeyDown(DIK_K)) { pEnemyManager_->SpawnEnemy(ENEMY_ASTAR); }
+		if (Input::IsKeyDown(DIK_L)) { for(int i = 0;i < 50;i++) pEnemyManager_->SpawnEnemy(ENEMY_ASTAR); }
 
 		if (Input::IsKeyDown(DIK_B)) pWeaponObjectManager_->AllKillWeaponObject();
-		if (Input::IsKeyDown(DIK_V)) { pEnemySpawnCtrl_->AllKillEnemy(); }
+		if (Input::IsKeyDown(DIK_V)) { pEnemyManager_->AllKillEnemy(); }
 	}
 
 	void GameManager::Release() {

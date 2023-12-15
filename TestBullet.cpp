@@ -4,6 +4,7 @@
 #include "GameManager.h"
 #include "DamageManager.h"
 #include "Engine/VFX.h"
+#include "AudioManager.h"
 
 TestBullet::TestBullet(GameObject* parent)
 	: BulletBase(parent), collision_(nullptr), damage_(0), pDamageManager_(nullptr)
@@ -42,12 +43,14 @@ void TestBullet::Update()
 	//CollisionMapÇ∆ÇÃîªíËÅiç°ÇÕy<=0ÇæÇØÅj
 	if (transform_.position_.y <= 0.0f) {
 		CreatVfx();
+		AudioManager::Play(transform_.position_, 10.0f);
 		KillMe();
 	}
 
 	//ìñÇΩÇ¡ÇΩÇÁ
 	if (pDamageManager_->CalcEnemy(collision_, damage_)) {
 		CreatVfx();
+		AudioManager::Play(transform_.position_, 10.0f);
 		KillMe();
 	}
 

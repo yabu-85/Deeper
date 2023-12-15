@@ -150,7 +150,7 @@
     <ClCompile Include="DamageManager.cpp" />
     <ClCompile Include="DropTable.cpp" />
     <ClCompile Include="EnemyBase.cpp" />
-    <ClCompile Include="EnemySpawnCtrl.cpp" />
+    <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="EnemyUi.cpp" />
     <ClCompile Include="Engine\Audio.cpp" />
     <ClCompile Include="Engine\BillBoard.cpp" />

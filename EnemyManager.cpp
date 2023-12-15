@@ -4,6 +4,7 @@
 #include "DamageManager.h"
 #include "Feet.h"
 #include "AStarMan.h"
+#include "StateManager.h"
 
 EnemyManager::EnemyManager() : pParent_(nullptr)
 {
@@ -67,8 +68,18 @@ std::vector<EnemyBase*>& EnemyManager::GetAllEnemy()
 	return enemyList_;
 }
 
-void EnemyManager::CleanUpEnemyList()
+void EnemyManager::PlayAtPosition(XMFLOAT3 position, float range)
 {
+	for (auto it : enemyList_) {
+		if (it->GetStateManager()->GetName() == "Patrol") {
+			XMFLOAT3 fEnemy = it->GetPosition();
+			XMVECTOR ePos = XMLoadFloat3(&fEnemy);
+			XMVECTOR sPos = XMLoadFloat3(&position);
+			if (XMVectorGetX(XMVector3Length(sPos - ePos)) <= range) {
+				it->GetStateManager()->ChangeState("Combat");
+			}
+		}
+	}
 }
 
 void EnemyManager::AddEnemyList(EnemyBase* e, int type)

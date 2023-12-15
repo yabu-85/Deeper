@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <DirectXMath.h>
+using namespace DirectX;
 
 class EnemyBase;
 class GameObject;
@@ -26,7 +28,9 @@ public:
 	void KillEnemy(EnemyBase* enemy);
 	void SpawnEnemy(int type);
 	std::vector<EnemyBase*>& GetAllEnemy();
-	void CleanUpEnemyList();
+	
+	//‰¹‚Ì”ÍˆÍ“à‚ÌPatrolState‚ÌEnemy‚Ìó‘Ô‚ğ•ÏX
+	void PlayAtPosition(XMFLOAT3 position, float range);
 
 };
 

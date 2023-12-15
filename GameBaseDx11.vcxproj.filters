@@ -177,9 +177,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>07Player</Filter>
     </ClCompile>
-    <ClCompile Include="EnemySpawnCtrl.cpp">
-      <Filter>08Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Feet.cpp">
       <Filter>08Enemy\Enemies</Filter>
     </ClCompile>
@@ -300,6 +297,9 @@
     <ClCompile Include="VFXManager.cpp" />
     <ClCompile Include="SearchAction.cpp">
       <Filter>10Action\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyManager.cpp">
+      <Filter>08Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

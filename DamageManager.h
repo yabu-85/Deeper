@@ -3,15 +3,11 @@
 #include <vector>
 using namespace DirectX;
 
-class EnemySpawnCtrl;
+class EnemyManager;
 class Character;
+class Collider;
 
-//•s—v
-//‚µ‚å‚¤‚ç‚¢namespace‚É‚µ‚æ‚¤‚Ë
-class LineCollider;
-class SphereCollider;
-
-class DamageCtrl
+class DamageManager
 {
 public:
 	enum DamageType {
@@ -20,7 +16,7 @@ public:
 	};
 
 private:
-	EnemySpawnCtrl* pEnemySpawnCtrl_;
+	EnemyManager* pEnemyManager_;
 
 	struct CollisionData {
 		DamageType type;
@@ -29,16 +25,14 @@ private:
 	std::vector<CollisionData> collisionList_;
 
 public:
-	DamageCtrl(EnemySpawnCtrl* p);
-	~DamageCtrl();
+	DamageManager(EnemyManager* p);
+	~DamageManager();
 	void Update();
 	void AddCharacter(Character* obj, DamageType _type);
 	void RemoveCharacter(Character* obj);
 	void AllRemoveCharacter();
 
-	//‚à‚¤Žg‚í‚È‚¢—\’è‚Ì‚â‚Â‚ç
-	bool CalcSword(LineCollider* line, int damage);
-	bool CalcBullet(SphereCollider* sphere, int damage);
-	bool CalcPlyaer(SphereCollider* sphere, int damage);
+	bool CalcEnemy(Collider* collider, int damage);
+	bool CalcPlyaer(Collider* collider, int damage);
 
 };

@@ -1,7 +1,7 @@
 #include "TestWeaponMain.h"
 #include "StateManager.h"
 #include "Engine/Model.h"
-#include "DamageCtrl.h"
+#include "DamageManager.h"
 #include "GameManager.h"
 #include "Player.h"
 #include "PlayerCommand.h"
@@ -34,7 +34,7 @@ void TestWeaponMain::Initialize()
     assert(hModel_ >= 0);
 
     pPlayer_ = (Player*)GetParent();
-    pDamageCtrl_ = GameManager::GetDamageCtrl();
+    pDamageManager_ = GameManager::GetDamageManager();
     
     line_ = new LineCollider(XMFLOAT3(), XMFLOAT3(), 10.0f);
     AddAttackCollider(line_);
@@ -94,7 +94,7 @@ void TestWeaponMain::CalcDamage(float range)
     
     line_->SetVec(vec);
     line_->SetSize(100.0f);
-    pDamageCtrl_->CalcSword(line_, damage_);
+    pDamageManager_->CalcEnemy(line_, damage_);
 
     EmitterData  data;
     data.position = transform_.position_;

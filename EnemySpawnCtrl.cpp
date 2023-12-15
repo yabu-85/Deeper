@@ -1,32 +1,36 @@
-#include "EnemySpawnCtrl.h"
+#include "EnemyManager.h"
 #include "GameManager.h"
 #include "MasterHand.h"
-#include "DamageCtrl.h"
+#include "DamageManager.h"
 #include "Feet.h"
 #include "AStarMan.h"
 
-void EnemySpawnCtrl::Initialize(GameObject* parent)
+EnemyManager::EnemyManager() : pParent_(nullptr)
+{
+}
+
+void EnemyManager::Initialize(GameObject* parent)
 {
 	pParent_ = parent;
 }
 
-void EnemySpawnCtrl::Release()
+void EnemyManager::Release()
 {
 	enemyList_.clear();
 }
 
-void EnemySpawnCtrl::AllKillEnemy()
+void EnemyManager::AllKillEnemy()
 {
 	for (auto it = enemyList_.begin(); it != enemyList_.end();) {
 		(*it)->KillMe();
 		Character* obj = static_cast<Character*>(*it);
-		GameManager::GetDamageCtrl()->RemoveCharacter(obj);
+		GameManager::GetDamageManager()->RemoveCharacter(obj);
 		it = enemyList_.erase(it);
 	}
 	enemyList_.clear();
 }
 
-void EnemySpawnCtrl::KillEnemy(EnemyBase* enemy)
+void EnemyManager::KillEnemy(EnemyBase* enemy)
 {
 	for (auto it = enemyList_.begin(); it != enemyList_.end();) {
 		if (*it == enemy) {
@@ -38,11 +42,11 @@ void EnemySpawnCtrl::KillEnemy(EnemyBase* enemy)
 		}
 	}
 	Character* obj = static_cast<Character*>(enemy);
-	GameManager::GetDamageCtrl()->RemoveCharacter(obj);
+	GameManager::GetDamageManager()->RemoveCharacter(obj);
 	enemy->KillMe();
 }
 
-void EnemySpawnCtrl::SpawnEnemy(int type)
+void EnemyManager::SpawnEnemy(int type)
 {
 	if (type == ENEMY_MASTERHAND) {
 		MasterHand* e = Instantiate<MasterHand>(pParent_);
@@ -58,12 +62,16 @@ void EnemySpawnCtrl::SpawnEnemy(int type)
 	}
 }
 
-std::vector<EnemyBase*>& EnemySpawnCtrl::GetAllEnemy()
+std::vector<EnemyBase*>& EnemyManager::GetAllEnemy()
 {
 	return enemyList_;
 }
 
-void EnemySpawnCtrl::AddEnemyList(EnemyBase* e, int type)
+void EnemyManager::CleanUpEnemyList()
+{
+}
+
+void EnemyManager::AddEnemyList(EnemyBase* e, int type)
 {
 	e->SetEnemyType(ENEMY_TYPE(type));
 	enemyList_.push_back(e);

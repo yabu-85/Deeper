@@ -63,7 +63,7 @@ void Feet::Initialize()
 	Stage* pStage = (Stage*)FindObject("Stage");
 	XMFLOAT3 startPos = pStage->GetRandomFloarPosition();
 	transform_.position_ = startPos;
-	transform_.rotate_.y = rand() % 360;
+	transform_.rotate_.y = (float)(rand() % 360);
 
 	//ActionÇÃê›íË
 	pMoveAction_ = new AstarMoveAction(this, 0.05f, 2.0f);
@@ -94,7 +94,7 @@ void Feet::Draw()
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 
-//	CollisionDraw();
+	CollisionDraw();
 }
 
 void Feet::Release()

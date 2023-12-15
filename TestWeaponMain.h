@@ -2,7 +2,7 @@
 #include "WeaponBase.h"
 #include "StateBase.h"
 
-class DamageCtrl;
+class DamageManager;
 class Player;
 class LineCollider;
 
@@ -11,7 +11,7 @@ class TestWeaponMain : public WeaponBase
     int damage_;
     XMFLOAT3 wandPos_;
     Player* pPlayer_;
-    DamageCtrl* pDamageCtrl_;
+    DamageManager* pDamageManager_;
     LineCollider* line_;
 
 public:

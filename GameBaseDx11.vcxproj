@@ -147,7 +147,7 @@
     <ClCompile Include="BulletBase.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CollisionMap.cpp" />
-    <ClCompile Include="DamageCtrl.cpp" />
+    <ClCompile Include="DamageManager.cpp" />
     <ClCompile Include="DropTable.cpp" />
     <ClCompile Include="EnemyBase.cpp" />
     <ClCompile Include="EnemySpawnCtrl.cpp" />
@@ -219,10 +219,10 @@
     <ClInclude Include="BulletBase.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CollisionMap.h" />
-    <ClInclude Include="DamageCtrl.h" />
+    <ClInclude Include="DamageManager.h" />
     <ClInclude Include="DropTable.h" />
     <ClInclude Include="EnemyBase.h" />
-    <ClInclude Include="EnemySpawnCtrl.h" />
+    <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="EnemyUi.h" />
     <ClInclude Include="Engine\Audio.h" />
     <ClInclude Include="Engine\BillBoard.h" />

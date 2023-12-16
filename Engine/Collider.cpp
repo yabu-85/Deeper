@@ -106,24 +106,30 @@ bool Collider::IsHitCircleVsSegment(SphereCollider* circle, SegmentCollider* seg
 	f = seg->pGameObject_->GetWorldPosition();
 	XMVECTOR sStart = XMLoadFloat3(&f) + XMLoadFloat3(&seg->center_);
 	XMVECTOR sEnd = sStart + seg->vec_ * seg->size_.x;
+	
+	//線分の終点と球の距離が円の範囲内なら当たってる
+	XMVECTOR vP = cCenter - sEnd;
+	if (circle->size_.x > XMVectorGetX(XMVector3Length(vP))) return true;
 
-	//線分の始点から球体までのベクトル
-	XMVECTOR segmentToCircle = cCenter - sStart;
+	//線分の始点と球の距離が円の範囲内なら当たってる
+	vP = cCenter - sStart;
+	if (circle->size_.x > XMVectorGetX(XMVector3Length(vP))) return true;
 
-	//線分の方向ベクトルと球体中心までのベクトルの内積
-	float dot = XMVectorGetX(XMVector3Dot(seg->vec_, segmentToCircle));
+	//内積が0より大きく、線分ベクトルの大きさより小さいなら
+	float dot = XMVectorGetX(XMVector3Dot(seg->vec_, vP));
+	if (dot > 0 && dot < seg->size_.x) {
+		//dotの長さのベクトル
+		XMVECTOR vec = seg->vec_ * dot;
 
-	//内積が0より大きく、線分より小さい場合
-	if (dot >= 0 && dot <= seg->size_.x)
-	{
-		//線分の点と球体までの最短距離を求める
-		float closestdistance = XMVectorGetX(XMVector3Length(segmentToCircle - seg->vec_ * dot));
+		//球体から一番近いsegmentの点と球体までの距離が球体の半径の２乗より小さければ当たってる
+		float range = XMVectorGetX(XMVector3Length(vP - vec));
+		OutputDebugStringA(std::to_string(range).c_str());
+		OutputDebugString("\n");
 
-		//半径より最短距離が短ければ当たってる
-		if (closestdistance < circle->size_.x) return true;
+		if (circle->size_.x > range) return true;
 	}
-
 	return false;
+	
 }
 
 

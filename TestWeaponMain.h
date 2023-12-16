@@ -22,7 +22,7 @@ public:
     void Draw() override;
     void Release() override;
     void ResetState() override;
-    void CalcDamage(float range = 10.0);
+    void CalcDamage();
 };
 
 //-------------------State----------------------

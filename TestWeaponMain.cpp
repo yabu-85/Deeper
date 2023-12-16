@@ -5,14 +5,15 @@
 #include "GameManager.h"
 #include "Player.h"
 #include "PlayerCommand.h"
-#include "Engine/VFX.h"
 #include "Engine/SegmentCollider.h"
+#include "VFXManager.h"
 
-//デバッグ用
-#include "EnemyBase.h"
+namespace {
+    float weaponSize = 5.0f;
+}
 
 TestWeaponMain::TestWeaponMain(GameObject* parent)
-	:WeaponBase(parent), damage_(0)
+	:WeaponBase(parent), pDamageManager_(nullptr), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0)
 {
 	objectName_ = "TestWeaponMain";
 }
@@ -42,7 +43,8 @@ void TestWeaponMain::Initialize()
     seg_ = new SegmentCollider(XMFLOAT3(), XMVECTOR());
     AddAttackCollider(seg_);
 
-    damage_ = 1;
+    damage_ = 1; 
+    transform_.scale_.z = 2.0f;
 }
 
 void TestWeaponMain::Update()
@@ -76,7 +78,7 @@ void TestWeaponMain::ResetState()
     pStateManager_->ChangeState("Wait");
 }
 
-void TestWeaponMain::CalcDamage(float range)
+void TestWeaponMain::CalcDamage()
 {
     XMFLOAT3 tar = XMFLOAT3(transform_.rotate_.x + offsetTrans_.rotate_.x, transform_.rotate_.y + offsetTrans_.rotate_.y, 0.0f);
     XMFLOAT3 target;
@@ -90,39 +92,13 @@ void TestWeaponMain::CalcDamage(float range)
         target.z *= -1.0f;
     }
 
-    EnemyBase* pEnemyBase = (EnemyBase*)FindObject("Feet");
-    if (pEnemyBase) {
-        XMFLOAT3 ePos = pEnemyBase->GetPosition();
-        target = XMFLOAT3(ePos.x - transform_.position_.x, ePos.y - transform_.position_.y, ePos.z - transform_.position_.z);
-    }
-
     XMFLOAT3 vec = target;
     XMVECTOR vVec = XMLoadFloat3(&vec);
-    seg_->SetVector(vVec);
-    seg_->SetSize(10.0f);
-    pDamageManager_->CalcEnemy(seg_, damage_);
-
-    EmitterData  data;
-    data.position = transform_.position_;
-    data.position.x += wandPos_.x;
-    data.position.y += wandPos_.y;
-    data.position.z += wandPos_.z;
-    data.delay = 0;
-    data.number = 1;
-    data.lifeTime = 5;
-    data.positionRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    data.direction = vec;
-    data.directionRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
-    data.speed = data.lifeTime * range / 40;
-    data.speedRnd = 0.0f;
-    data.accel = 1.0f;
-    data.size = XMFLOAT2(0.1f, 0.1f);
-    data.sizeRnd = XMFLOAT2(0.4f, 0.4f);
-    data.scale = XMFLOAT2(1.0f, 1.0f);
-    data.color = XMFLOAT4(1.0f, 1.0f, 0.1f, 1.0f);
-    data.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-    data.gravity = 0.0f;
-    VFX::Start(data);
+    seg_->SetVector(vVec * weaponSize);
+    bool hit = pDamageManager_->CalcEnemy(seg_, damage_);
+    if (hit) {
+        VFXManager::CreatVfxExplode1(wandPos_);
+    }
 
 }
 
@@ -153,7 +129,7 @@ void TestWeaponCombo1::Update()
 
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
-    pTestWeaponMain_->CalcDamage(7.0f);
+    pTestWeaponMain_->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
         pPlayer_->CalcRotate();
@@ -201,7 +177,7 @@ void TestWeaponCombo2::Update()
 {
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
-    pTestWeaponMain_->CalcDamage(7.0f);
+    pTestWeaponMain_->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
         pPlayer_->CalcRotate();
@@ -248,7 +224,7 @@ void TestWeaponCombo3::Update()
 {
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
-    pTestWeaponMain_->CalcDamage(7.0f);
+    pTestWeaponMain_->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
         pPlayer_->CalcRotate();

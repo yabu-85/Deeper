@@ -10,8 +10,6 @@ class TestBullet : public BulletBase
     SphereCollider* collision_;
     DamageManager* pDamageManager_;
 
-    void CreatVfx();
-
 public:
     TestBullet(GameObject* parent);
     ~TestBullet() override;

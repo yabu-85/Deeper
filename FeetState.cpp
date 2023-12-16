@@ -203,7 +203,7 @@ void FeetAttack::Update()
 	time_++;
 
 	//AttackFrame=65 ` 90
-	if (time_ > 65 && time_ < 90) {
+	if (time_ > 65 && time_ < 90 && !pFeet_->GetAttackColliderList().empty()) {
 		GameManager::GetDamageManager()->CalcPlyaer(pFeet_->GetSphereCollider(), 1);
 	}
 	

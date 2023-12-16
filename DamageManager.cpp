@@ -65,6 +65,7 @@ bool DamageManager::CalcEnemy(Collider* collider, int damage)
 			col.pop_front();
 		}
     }
+
 	return hit;
 }
 

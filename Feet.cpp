@@ -33,12 +33,12 @@ void Feet::Initialize()
 	aimTargetPos_ = 3.0f;
 
 	//Colliderの設定
-	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 3, 0), 1.5f);
-	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 1, 0), 1.5f);
+	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 1, 0), 1.5f);
+	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 3, 0), 1.5f);
 	pHandCollider_ = new SphereCollider(XMFLOAT3(0, 0, 0), 1.0f);
 	AddCollider(collision1);
 	AddCollider(collision2);
-	AddAttackCollider(pHandCollider_);
+//	AddAttackCollider(pHandCollider_);
 	
 	//ステートの設定
 	pStateManager_ = new StateManager(this);
@@ -88,10 +88,12 @@ void Feet::Draw()
 {
 	if (pEnemyUi_) pEnemyUi_->Draw();
 
-	XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, "hand.R");
-	center = XMFLOAT3(center.x - transform_.position_.x, center.y - transform_.position_.y, center.z - transform_.position_.z);
-	pHandCollider_->SetCenter(center);
-
+	if (pHandCollider_) {
+		XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, "hand.R");
+		center = XMFLOAT3(center.x - transform_.position_.x, center.y - transform_.position_.y, center.z - transform_.position_.z);
+		pHandCollider_->SetCenter(center);
+	}
+	
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 

@@ -3,8 +3,8 @@
 #include "Engine/SphereCollider.h"
 #include "GameManager.h"
 #include "DamageManager.h"
-#include "Engine/VFX.h"
 #include "AudioManager.h"
+#include "VFXManager.h"
 
 TestBullet::TestBullet(GameObject* parent)
 	: BulletBase(parent), collision_(nullptr), damage_(0), pDamageManager_(nullptr)
@@ -42,14 +42,14 @@ void TestBullet::Update()
 
 	//CollisionMapÇ∆ÇÃîªíËÅiç°ÇÕy<=0ÇæÇØÅj
 	if (transform_.position_.y <= 0.0f) {
-		CreatVfx();
+		VFXManager::CreatVfxExplode1(transform_.position_);
 		AudioManager::Play(transform_.position_, 10.0f);
 		KillMe();
 	}
 
 	//ìñÇΩÇ¡ÇΩÇÁ
 	if (pDamageManager_->CalcEnemy(collision_, damage_)) {
-		CreatVfx();
+		VFXManager::CreatVfxExplode1(transform_.position_);
 		AudioManager::Play(transform_.position_, 10.0f);
 		KillMe();
 	}
@@ -65,47 +65,4 @@ void TestBullet::Draw()
 void TestBullet::Release()
 {
 	Model::Release(hModel_);
-}
-
-void TestBullet::CreatVfx()
-{
-	//âŒÇÃï≤
-	EmitterData data;
-	data.textureFileName = "Particle/cloudA.png";
-	data.delay = 0;
-	data.number = 30;
-	data.lifeTime = 50;
-	data.position = transform_.position_;
-	data.positionRnd = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	data.direction = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	data.directionRnd = XMFLOAT3(90.0f, 90.0f, 90.0f);
-	data.speed = 0.2f;
-	data.speedRnd = 1.0f;
-	data.accel = 0.9f;
-	data.size = XMFLOAT2(0.3f, 0.3f);
-	data.sizeRnd = XMFLOAT2(0.1f, 0.1f);
-	data.scale = XMFLOAT2(0.97f, 0.97f);
-	data.color = XMFLOAT4(1.0f, 1.0f, 0.1f, 1.0f);
-	data.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / data.lifeTime);
-	data.gravity = 0.001f;
-	VFX::Start(data);
-
-	//îöî≠
-	data.textureFileName = "Particle/cloudA.png";
-	data.delay = 0;
-	data.number = 6;
-	data.lifeTime = 20;
-	data.position = transform_.position_;
-	data.positionRnd = XMFLOAT3(0.5f, 0.0f, 0.5f);
-	data.direction = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	data.directionRnd = XMFLOAT3(90.0f, 90.0f, 90.0f);
-	data.speed = 0.1f;
-	data.speedRnd = 0.8f;
-	data.size = XMFLOAT2(1.2f, 1.2f);
-	data.sizeRnd = XMFLOAT2(0.4f, 0.4f);
-	data.scale = XMFLOAT2(1.05f, 1.05f);
-	data.color = XMFLOAT4(1.0f, 1.0f, 0.1f, 1.0f);
-	data.deltaColor = XMFLOAT4(0.0f, -1.0f / 20.0f, 0.0f, -1.0f / 20.0f);
-	VFX::Start(data);
-
 }

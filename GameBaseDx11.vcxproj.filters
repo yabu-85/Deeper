@@ -223,7 +223,7 @@
     <ClCompile Include="WeaponBase.cpp">
       <Filter>09Weapon\Base</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\LineCollider.cpp">
+    <ClCompile Include="Engine\SegmentCollider.cpp">
       <Filter>01Engine\Collider</Filter>
     </ClCompile>
     <ClCompile Include="WeaponObjectManager.cpp">
@@ -434,7 +434,7 @@
     <ClInclude Include="WeaponBase.h">
       <Filter>09Weapon\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\LineCollider.h">
+    <ClInclude Include="Engine\SegmentCollider.h">
       <Filter>01Engine\Collider</Filter>
     </ClInclude>
     <ClInclude Include="WeaponObject.h">

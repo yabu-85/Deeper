@@ -27,7 +27,7 @@ private:
 public:
 	DamageManager(EnemyManager* p);
 	~DamageManager();
-	void Update();
+
 	void AddCharacter(Character* obj, DamageType _type);
 	void RemoveCharacter(Character* obj);
 	void AllRemoveCharacter();

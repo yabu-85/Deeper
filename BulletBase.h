@@ -20,7 +20,7 @@ public:
 	virtual void Shot(XMFLOAT3 pos, XMFLOAT3 target);	//”­Ë
 	virtual void Move();								//ˆÚ“®‚³‚¹‚é
 	virtual void LifeTime();							//¶‘¶ŠÔ‚ÌŒvZ
-	virtual void IsLifeDead();							//¶‘¶ŠÔ‚ªI‚í‚Á‚½‚çŒÄ‚ÔŠÖ”
+	virtual void LifeDead();							//¶‘¶ŠÔ‚ªI‚í‚Á‚½‚çŒÄ‚ÔŠÖ”
 
 };
 

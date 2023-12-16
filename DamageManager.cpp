@@ -1,12 +1,12 @@
 #include "DamageManager.h"
 #include "EnemyManager.h"
 #include "EnemyBase.h"
-#include <vector>
-#include <list>
-#include "Engine/LineCollider.h"
 #include "Player.h"
 #include "GameManager.h"
 #include "Engine/Input.h"
+#include "StateManager.h"
+#include <vector>
+#include <list>
 
 DamageManager::DamageManager(EnemyManager* p)
 	: pEnemyManager_(p)
@@ -15,58 +15,6 @@ DamageManager::DamageManager(EnemyManager* p)
 
 DamageManager::~DamageManager()
 {
-}
-
-void DamageManager::Update()
-{
-	//いったんなし
-	return;
-
-	for (CollisionData chara : collisionList_) {
-		//自分のAttackColliderがあればlistに入れて次へ
-		std::list<Collider*> sCollider = chara.objct->GetAttackColliderList();
-		if (sCollider.empty()) continue;
-
-		std::vector<CollisionData> calcList = collisionList_;
-		std::list<Collider*> tCollider;
-		Character* target = calcList.front().objct;
-		if (target == chara.objct) {
-			continue;
-		}
-
-		for (auto it = calcList.begin(); it != calcList.end();) {
-			if (it->objct == target) {
-
-				// targetが charaとtypeが違うならtColliderに追加
-				if (it != calcList.end() && it->type != chara.type) {
-					std::list<Collider*> col = it->objct->GetColliderList();
-
-					// 連結する関数
-					tCollider.splice(tCollider.end(), col);
-				}
-
-				//リストから削除:ここ連結する処理の前にやるとitが次のイテレータになるから注意
-				it = calcList.erase(it);
-
-			}
-			else {
-				++it;
-			}
-		}
-		
-		for (Collider* sc : sCollider) {
-			if (tCollider.empty()) continue;
-
-			for (Collider* tc : tCollider) {
-				if (sc->IsHit(tc)) {
-					target->ApplyDamage(1);
-					sCollider.clear();
-					break;
-				}
-			}
-			if (sCollider.empty()) break;
-		}
-	}
 }
 
 void DamageManager::AddCharacter(Character* obj, DamageType _type)
@@ -103,8 +51,9 @@ bool DamageManager::CalcEnemy(Collider* collider, int damage)
     for (int i = 0; i < enemyList.size(); i++) {
         std::list<Collider*> col = enemyList.at(i)->GetColliderList();
 
-        // Colliderなかったら次
-        if (col.empty()) continue;
+        // 登場中 || Colliderなかったら次
+		if (!enemyList.at(i)->GetStateManager()) continue;
+		if (enemyList.at(i)->GetStateManager()->GetName() == "Appear" || col.empty()) continue;
 
 		int size = (int)col.size();
 		for (int j = 0; j < size; j++) {

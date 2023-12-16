@@ -24,7 +24,7 @@ namespace AudioManager
 
 		hSound_.resize(sceneTable.size()); //hSound_ベクターのサイズを設定
 		for (int i = 0; i < sceneTable.size(); i++) {
-			hSound_[i] = Audio::Load(sceneTable[i].name, sceneTable[i].isLoop, sceneTable[i].max);
+			hSound_[i] = Audio::Load("Sound/" + sceneTable[i].name + ".wav", sceneTable[i].isLoop, sceneTable[i].max);
 			assert(hSound_[i] >= 0);
 		}
 	}

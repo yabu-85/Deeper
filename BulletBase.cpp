@@ -28,12 +28,11 @@ void BulletBase::LifeTime()
 {
 	lifeTime_--;
 	if (lifeTime_ <= 0) {
-		IsLifeDead();
-		KillMe();
+		LifeDead();
 	}
 }
 
-void BulletBase::IsLifeDead()
+void BulletBase::LifeDead()
 {
 	KillMe();
 }

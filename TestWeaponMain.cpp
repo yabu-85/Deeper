@@ -6,7 +6,10 @@
 #include "Player.h"
 #include "PlayerCommand.h"
 #include "Engine/VFX.h"
-#include "Engine/LineCollider.h"
+#include "Engine/SegmentCollider.h"
+
+//デバッグ用
+#include "EnemyBase.h"
 
 TestWeaponMain::TestWeaponMain(GameObject* parent)
 	:WeaponBase(parent), damage_(0)
@@ -36,8 +39,8 @@ void TestWeaponMain::Initialize()
     pPlayer_ = (Player*)GetParent();
     pDamageManager_ = GameManager::GetDamageManager();
     
-    line_ = new LineCollider(XMFLOAT3(), XMFLOAT3(), 10.0f);
-    AddAttackCollider(line_);
+    seg_ = new SegmentCollider(XMFLOAT3(), XMVECTOR());
+    AddAttackCollider(seg_);
 
     damage_ = 1;
 }
@@ -87,14 +90,17 @@ void TestWeaponMain::CalcDamage(float range)
         target.z *= -1.0f;
     }
 
+    EnemyBase* pEnemyBase = (EnemyBase*)FindObject("Feet");
+    if (pEnemyBase) {
+        XMFLOAT3 ePos = pEnemyBase->GetPosition();
+        target = XMFLOAT3(ePos.x - transform_.position_.x, ePos.y - transform_.position_.y, ePos.z - transform_.position_.z);
+    }
+
     XMFLOAT3 vec = target;
     XMVECTOR vVec = XMLoadFloat3(&vec);
-    vVec = XMVector3Normalize(vVec);
-    XMStoreFloat3(&vec, vVec);
-    
-    line_->SetVec(vec);
-    line_->SetSize(100.0f);
-    pDamageManager_->CalcEnemy(line_, damage_);
+    seg_->SetVector(vVec);
+    seg_->SetSize(10.0f);
+    pDamageManager_->CalcEnemy(seg_, damage_);
 
     EmitterData  data;
     data.position = transform_.position_;

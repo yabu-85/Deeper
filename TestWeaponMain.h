@@ -4,7 +4,7 @@
 
 class DamageManager;
 class Player;
-class LineCollider;
+class SegmentCollider;
 
 class TestWeaponMain : public WeaponBase
 {
@@ -12,7 +12,7 @@ class TestWeaponMain : public WeaponBase
     XMFLOAT3 wandPos_;
     Player* pPlayer_;
     DamageManager* pDamageManager_;
-    LineCollider* line_;
+    SegmentCollider* seg_;
 
 public:
     TestWeaponMain(GameObject* parent);

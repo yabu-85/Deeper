@@ -7,14 +7,14 @@ using namespace DirectX;
 class GameObject;
 class BoxCollider;
 class SphereCollider;
-class LineCollider;
+class SegmentCollider;
 
 //あたり判定のタイプ
 enum ColliderType
 {
 	COLLIDER_BOX,		//箱型
 	COLLIDER_CIRCLE,	//球体
-	COLLIDER_LINE,		//直線型
+	COLLIDER_SEGMENT,	//線分
 	COLLIDER_MAX,		
 };
 
@@ -26,7 +26,7 @@ class Collider
 	//それぞれのクラスのprivateメンバにアクセスできるようにする
 	friend class BoxCollider;
 	friend class SphereCollider;
-	friend class LineCollider;
+	friend class SegmentCollider;
 
 protected:
 	GameObject*		pGameObject_;	//この判定をつけたゲームオブジェクト
@@ -56,16 +56,16 @@ public:
 	bool IsHitBoxVsBox(BoxCollider* boxA, BoxCollider* boxB);
 
 	//箱型と球体の衝突判定
-	//引数：box	箱型判定
-	//引数：sphere	２つ目の箱型判定
+	//引数：box	    1つ目の箱型判定
+	//引数：sphere  ２つ目の線分判定
 	//戻値：接触していればtrue
 	bool IsHitBoxVsCircle(BoxCollider* box, SphereCollider* sphere);
 
 	//箱型と直線の衝突判定
 	//引数：box	箱型判定
-	//引数：line ２つ目の直線判定
+	//引数：seg 線分判定
 	//戻値：接触していればtrue
-	bool IsHitBoxVsLine(BoxCollider* box, LineCollider* line);
+	bool IsHitBoxVsSegment(BoxCollider* box, SegmentCollider* seg);
 
 	//-------------------------------------------------------
 
@@ -75,19 +75,19 @@ public:
 	//戻値：接触していればtrue
 	bool IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circleB);
 
-	//球体同士の衝突判定
+	//球体と線分衝突判定
 	//引数：circle	１つ目の球体判定
-	//引数：line	２つ目の直線判定
+	//引数：seg	    ２つ目の直線判定
 	//戻値：接触していればtrue
-	bool IsHitCircleVsLine(SphereCollider* circle, LineCollider* line);
+	bool IsHitCircleVsSegment(SphereCollider* circle, SegmentCollider* seg);
 
 	//-------------------------------------------------------
 
 	//直線同士の衝突判定
-	//引数：lineA	１つ目の直線判定
-	//引数：lineB	２つ目の直線判定
+	//引数：segA	１つ目の直線判定
+	//引数：segB	２つ目の直線判定
 	//戻値：接触していればtrue
-	bool IsHitLineVsLine(LineCollider* lineA, LineCollider* lineB);
+	bool IsHitSegmentVsSegment(SegmentCollider* segA, SegmentCollider* segB);
 
 	//-------------------------------------------------------
 

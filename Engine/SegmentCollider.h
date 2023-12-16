@@ -2,11 +2,11 @@
 #include "Collider.h"
 
 //-----------------------------------------------------------
-//直線の当たり判定
+//線分の当たり判定
 //-----------------------------------------------------------
-class LineCollider : public Collider
+class SegmentCollider : public Collider
 {
-	XMFLOAT3 vec_; //直線の向き
+	XMVECTOR vec_; //線の向き（正規化
 	
 	//Colliderクラスのprivateメンバにアクセスできるようにする
 	friend class Collider;
@@ -19,10 +19,9 @@ class LineCollider : public Collider
 public:
 	//コンストラクタ（当たり判定の作成）
 	//引数：basePos	当たり判定の中心位置（ゲームオブジェクトの原点から見た位置）
-	//引数：vec 	当たり判定の向き
-	//引数：range	当たり判定のサイズ
-	LineCollider(XMFLOAT3 center, XMFLOAT3 vec, float range);
-
-	void SetVec(XMFLOAT3 _vec) { vec_ = _vec; }
+	//引数：vec 	線の向き
+	//引数：range	線の長さ
+	SegmentCollider(XMFLOAT3 center, XMVECTOR vec);
+	void SetVector(XMVECTOR _vec);
 
 };

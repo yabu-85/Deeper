@@ -1,6 +1,6 @@
 #include "BoxCollider.h"
 #include "SphereCollider.h"
-#include "LineCollider.h"
+#include "SegmentCollider.h"
 #include "GameObject.h"
 #include "Model.h"
 #include "Transform.h"
@@ -60,11 +60,11 @@ bool Collider::IsHitBoxVsCircle(BoxCollider* box, SphereCollider* sphere)
 	return false;
 }
 
-//箱型と直線の衝突判定
-//引数：box	箱型判定
-//引数：line	２つ目の直線判定
+//箱型と線分の衝突判定
+//引数：box	 箱型判定
+//引数：seg  線分
 //戻値：接触していればtrue
-bool Collider::IsHitBoxVsLine(BoxCollider* box, LineCollider* line)
+bool Collider::IsHitBoxVsSegment(BoxCollider* box, SegmentCollider* seg)
 {
 
 	return false;
@@ -92,80 +92,46 @@ bool Collider::IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circ
 	return false;
 }
 
-//球体と直線の衝突判定
-//引数：circle	１つ目の球体判定
-//引数：line	２つ目の直線判定
+//球体と線分の衝突判定
+//引数：circle 球体判定
+//引数：seg    線分
 //戻値：接触していればtrue
-bool Collider::IsHitCircleVsLine(SphereCollider* circle, LineCollider* line)
+bool Collider::IsHitCircleVsSegment(SphereCollider* circle, SegmentCollider* seg)
 {
-	//球の中心座標
-	XMFLOAT3 cCenter = circle->center_;
-	XMFLOAT3 cWorldPos = circle->pGameObject_->GetWorldPosition();
-	cCenter.x += cWorldPos.x;
-	cCenter.y += cWorldPos.y;
-	cCenter.z += cWorldPos.z;
+	//球体の中心座標
+	XMFLOAT3 f = circle->pGameObject_->GetWorldPosition();
+	XMVECTOR cCenter = XMLoadFloat3(&f) + XMLoadFloat3(&circle->center_);
 
-	//直線の始点
-	XMFLOAT3 lStart = line->center_;
-	XMFLOAT3 lWorldPos = line->pGameObject_->GetWorldPosition();
-	lStart.x += lWorldPos.x;
-	lStart.y += lWorldPos.y;
-	lStart.z += lWorldPos.z;
+	//線分の始点と終点座標
+	f = seg->pGameObject_->GetWorldPosition();
+	XMVECTOR sStart = XMLoadFloat3(&f) + XMLoadFloat3(&seg->center_);
+	XMVECTOR sEnd = sStart + seg->vec_ * seg->size_.x;
 
-	float r = circle->size_.x; //円の半径
+	//線分の始点から球体までのベクトル
+	XMVECTOR segmentToCircle = cCenter - sStart;
 
-	//これStartがPの半径内に入っていたら無条件で当たってるとみなす
-	double distSquared = pow(cCenter.x - lStart.x, 2) + pow(cCenter.y - lStart.y, 2) + pow(cCenter.z - lStart.z, 2);
-	double radSquared = pow(r, 2);
-	if (distSquared < radSquared) {
-		return true;
+	//線分の方向ベクトルと球体中心までのベクトルの内積
+	float dot = XMVectorGetX(XMVector3Dot(seg->vec_, segmentToCircle));
+
+	//内積が0より大きく、線分より小さい場合
+	if (dot >= 0 && dot <= seg->size_.x)
+	{
+		//線分の点と球体までの最短距離を求める
+		float closestdistance = XMVectorGetX(XMVector3Length(segmentToCircle - seg->vec_ * dot));
+
+		//半径より最短距離が短ければ当たってる
+		if (closestdistance < circle->size_.x) return true;
 	}
 
-	// 球の中心から直線上の最短距離を計算
-	cCenter.x = cCenter.x - lStart.x;
-	cCenter.y = cCenter.y - lStart.y;
-	cCenter.z = cCenter.z - lStart.z;
-
-	float A = line->vec_.x * line->vec_.x + line->vec_.y * line->vec_.y + line->vec_.z * line->vec_.z;
-	float B = line->vec_.x * cCenter.x + line->vec_.y * cCenter.y + line->vec_.z * cCenter.z;
-	float C = cCenter.x * cCenter.x + cCenter.y * cCenter.y + cCenter.z * cCenter.z - r * r;
-
-	if (A == 0.0f)
-		return false;  //レイの長さが0
-
-	float s = B * B - A * C;
-	if (s < 0.0f) return false; // 衝突していない
-
-	s = sqrtf(s);
-	float a1 = (B - s) / A;
-	float a2 = (B + s) / A;
-
-	if (a1 < 0.0f || a2 < 0.0f) return false; // レイの反対で衝突
-
-	XMFLOAT3 q1; //衝突開始地点
-	q1.x = lStart.x + a1 * line->vec_.x;
-	q1.y = lStart.y + a1 * line->vec_.y;
-	q1.z = lStart.z + a1 * line->vec_.z;
-
-	// ベクトルの差分を計算
-	XMVECTOR difference = XMVectorSubtract(XMLoadFloat3(&lStart), XMLoadFloat3(&q1));
-
-	// ベクトルの長さ（距離）を計算
-	XMVECTOR distance = XMVector3Length(difference);
-	float distanceFloat;
-	XMStoreFloat(&distanceFloat, distance);
-
-	//rangeの範囲外だった場合 false
-	if (line->size_.x < distanceFloat) return false;
-
-	return true;
+	return false;
 }
 
-//直線同士の衝突判定
-//引数：lineA	１つ目の直線判定
-//引数：lineB	２つ目の直線判定
+
+//線分同士の衝突判定
+//引数：SegA	１つ目の線分
+//引数：SegmB	２つ目の線分
 //戻値：接触していればtrue
-bool Collider::IsHitLineVsLine(LineCollider* lineA, LineCollider* lineB)
+bool Collider::IsHitSegmentVsSegment(SegmentCollider* segA, SegmentCollider* segB)
 {
 	return false;
 }

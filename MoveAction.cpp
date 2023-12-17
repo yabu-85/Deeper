@@ -69,9 +69,11 @@ void AstarMoveAction::Update()
 			float range = XMVectorGetX(XMVector3Length(vec));
 			if (range < safeSize) {
 				if (range > safeSize) range = safeSize;
-				vSafeMove += XMVector3Normalize(vSafeMove + vec) * range;
+				vSafeMove += XMVector3Normalize(vec) * range;
 			}
 		}
+		float range = XMVectorGetX(XMVector3Length(vSafeMove));
+		if (range > safeSize) vSafeMove = XMVector3Normalize(vSafeMove) * safeSize;
 
 		vMove += vSafeMove;
 		OutputDebugString("Is Astar Man\n");

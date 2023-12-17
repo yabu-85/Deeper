@@ -152,6 +152,15 @@ std::vector<XMFLOAT3> NavigationAI::NaviDiagonal(XMFLOAT3 target, XMFLOAT3 pos)
 	int targetX = static_cast<int>(target.x / floarSize);
 	int targetZ = static_cast<int>(target.z / floarSize);
 
+	//壁に埋まってしまったねぇ
+	//startが範囲外・壁の場合
+	if (startX < 0 || startX >= stageWidth || startZ < 0 || startZ >= stageHeight ||
+		mapData_[startZ][startX] == Stage::MAP::WALL)
+	{
+		std::vector<XMFLOAT3> none;
+		return none;
+	}
+
 	//targetが範囲外・壁の場合
 	if (targetX < 0 || targetX >= stageWidth || targetZ < 0 || targetZ >= stageHeight ||
 		mapData_[targetZ][targetX] == Stage::MAP::WALL)

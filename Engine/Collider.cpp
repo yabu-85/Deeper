@@ -123,9 +123,6 @@ bool Collider::IsHitCircleVsSegment(SphereCollider* circle, SegmentCollider* seg
 
 		//‹…‘Ì‚©‚çˆê”Ô‹ß‚¢segment‚Ì“_‚Æ‹…‘Ì‚Ü‚Å‚Ì‹——£‚ª‹…‘Ì‚Ì”¼Œa‚Ì‚Qæ‚æ‚è¬‚³‚¯‚ê‚Î“–‚½‚Á‚Ä‚é
 		float range = XMVectorGetX(XMVector3Length(vP - vec));
-		OutputDebugStringA(std::to_string(range).c_str());
-		OutputDebugString("\n");
-
 		if (circle->size_.x > range) return true;
 	}
 	return false;

@@ -2,8 +2,8 @@
 #include "Stage.h"
 
 namespace {
-	const int stageWidth = 25;
-	const int stageHeight = 25;
+	int stageWidth = 0;
+	int stageHeight = 0;
 	const int DIRX[] = { 0, +1,  0, -1 };
 	const int DIRY[] = { -1,  0, +1,  0 };
 }
@@ -14,6 +14,9 @@ NavigationAI::NavigationAI(Stage* s)
 {
 	pStage_ = s;
 	mapData_ = pStage_->GetMapData();
+
+	stageWidth = mapData_[0].size();
+	stageHeight = mapData_.size();
 
 }
 
@@ -42,7 +45,7 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 	int targetZ = static_cast<int>(target.z / floarSize);
 
 	//targetが範囲外・壁の場合
-	if (targetX < 0.0f || targetX >= stageWidth || targetZ < 0.0f || targetZ >= stageHeight ||
+	if (targetX < 0 || targetX >= stageWidth || targetZ < 0 || targetZ >= stageHeight ||
 		mapData_[targetZ][targetX] == Stage::MAP::WALL)
 	{
 		std::vector<XMFLOAT3> none;
@@ -272,7 +275,7 @@ std::vector<XMFLOAT3> NavigationAI::NaviDiagonal(XMFLOAT3 target, XMFLOAT3 pos)
 
 void PathSmoothing(std::vector<XMFLOAT3>& path) {
 	const std::vector<XMFLOAT3> prePath = path;
-	const float alpha = 0.2f;			// 大きいほど、元のPathに似ているPathができる。　　　　 大きいほど処理が速い
+	const float alpha = 0.5f;			// 大きいほど、元のPathに似ているPathができる。　　　　 大きいほど処理が速い
 	const float beta = 0.2f;			// 大きいほど、隣接する点間での滑らかさが向上する。　   大きいほど処理が遅い
 	const float tolerance = 0.2f;		// 変化量がこの値以下の時平滑化を終了。　　　　　　　　 大きいほど処理が速い
 	float change = tolerance;			// パスの位置の変化量

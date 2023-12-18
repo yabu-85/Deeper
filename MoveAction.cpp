@@ -7,7 +7,8 @@
 #include "Stage.h"
 #include "EnemyBase.h"
 
-void MoveAction::CalcMapWall(XMFLOAT3 _pos)
+//デバッグ用・マジックナンバーやめろや
+void MoveAction::CalcMapWall(XMFLOAT3 &_pos)
 {
 	CollisionMap* pMap = (CollisionMap*)pCharacter_->FindObject("CollisionMap");
 
@@ -18,7 +19,7 @@ void MoveAction::CalcMapWall(XMFLOAT3 _pos)
 	checkZ1 = (int)(_pos.z + 0.3f);
 	checkX2 = (int)(_pos.x - 0.15f);
 	checkZ2 = (int)(_pos.z + 0.3f);
-	if (pMap->IsWall(checkX1, checkZ1) == 1 || pMap->IsWall(checkX2, checkZ2) == 1) { //床やけやったら
+	if (pMap->IsWall(checkX1, checkZ1) == 1 || pMap->IsWall(checkX2, checkZ2) == 1) {
 		_pos.z = (float)((int)_pos.z) + (1.0f - 0.3f);
 	}
 
@@ -35,7 +36,7 @@ void MoveAction::CalcMapWall(XMFLOAT3 _pos)
 	checkX2 = (int)(_pos.x + 0.3f);
 	checkZ2 = (int)(_pos.z - 0.15f);
 	if (pMap->IsWall(checkX1, checkZ1) == 1 || pMap->IsWall(checkX2, checkZ2) == 1) {
-		_pos.x = (float)((int)_pos.x + 1) - 0.3f;  // x　だけ戻すことで斜め移動ができるようになる     
+		_pos.x = (float)((int)_pos.x + 1) - 0.3f;
 	}
 
 	checkX1 = (int)(_pos.x - 0.3f); //左
@@ -95,6 +96,7 @@ void AstarMoveAction::Update()
 	XMVECTOR vMove = vTar - vPos;
 	XMVECTOR vMoveN = XMVector3Normalize(vMove);
 	const float safeSize = 6.0f;
+	bool isSafe = false;
 
 	EnemyBase* enemy = dynamic_cast<EnemyBase*>(pCharacter_);
 	if (enemy) {
@@ -113,6 +115,7 @@ void AstarMoveAction::Update()
 				if (range > safeSize) range = safeSize;
 				range -= safeSize;
 				vSafeMove += XMVector3Normalize(vec) * range;
+				isSafe = true;
 			}
 		}
 		float range = XMVectorGetX(XMVector3Length(vSafeMove));
@@ -126,11 +129,26 @@ void AstarMoveAction::Update()
 
 	//Target位置ついた：カクカクしないように再起処理する
 	float length = XMVectorGetX(XMVector3Length(vTar - vPos));
-	if (length <= moveRange_ + safeSize) {
+
+#if 0
+	if(isSafe)
+	if (length <= moveRange_ + (safeSize / 2)) {
 		targetList_.pop_back();
 		Update();
 		return;
 	}
+	else if (length <= moveRange_) {
+		targetList_.pop_back();
+		Update();
+		return;
+	}
+#else
+	if (length <= moveRange_ + (safeSize / 2)) {
+		targetList_.pop_back();
+		Update();
+		return;
+	}
+#endif
 
 	XMStoreFloat3(&pos, vPos + vMove);
 
@@ -142,5 +160,5 @@ void AstarMoveAction::Update()
 
 void AstarMoveAction::SetTarget(XMFLOAT3 target)
 {
-	targetList_ = GameManager::GetNavigationAI()->NaviDiagonal(target, pCharacter_->GetPosition());
+	targetList_ = GameManager::GetNavigationAI()->Navi(target, pCharacter_->GetPosition());
 }

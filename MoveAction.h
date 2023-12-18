@@ -32,6 +32,7 @@ public:
 
 class AstarMoveAction : public MoveAction {
     std::vector<XMFLOAT3> targetList_;
+    bool isOutEndTarget_;
 
 public:
     AstarMoveAction(Character* obj, float speed, float range);
@@ -41,5 +42,6 @@ public:
     void SetTarget(XMFLOAT3 target) override;
     std::vector<XMFLOAT3> GetTarget() { return targetList_; }
     void StopMove() { targetList_.clear(); }
+    bool IsOutEndTarget() { return isOutEndTarget_; }
 
 };

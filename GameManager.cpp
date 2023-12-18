@@ -45,7 +45,7 @@ namespace GameManager {
 	{
 		if (Input::IsKey(DIK_TAB)) {
 			OutputDebugString("entity : ");
-			int count = pEnemyManager_->GetAllEnemy().size();
+			int count = (int)pEnemyManager_->GetAllEnemy().size();
 			OutputDebugStringA(std::to_string(count).c_str());
 			OutputDebugString("\n");
 		}

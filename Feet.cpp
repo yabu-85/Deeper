@@ -10,6 +10,7 @@
 #include "MoveAction.h"
 #include "RotateAction.h"
 #include "SearchAction.h"
+#include "Engine/Input.h"
 
 Feet::Feet(GameObject* parent)
 	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr), pVisionSearchAction_(nullptr),
@@ -93,11 +94,24 @@ void Feet::Draw()
 		center = XMFLOAT3(center.x - transform_.position_.x, center.y - transform_.position_.y, center.z - transform_.position_.z);
 		pHandCollider_->SetCenter(center);
 	}
-	
+
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 
 	CollisionDraw();
+
+	if (!Input::IsKey(DIK_F)) {
+		Transform target;
+		target.scale_ = XMFLOAT3(0.2f, 0.2f, 0.2f);
+		std::vector<XMFLOAT3> targetList = pMoveAction_->GetTarget();
+		if (targetList.empty()) return;
+		for (auto pos : targetList) {
+			target.position_ = XMFLOAT3(pos.x * floarSize + floarSize / 2.0f, pos.y, pos.z * floarSize + floarSize / 2.0f);
+			target.position_.y += 1.0f;
+			Model::SetTransform(hModel_, target);
+			Model::Draw(hModel_);
+		}
+	}
 }
 
 void Feet::Release()

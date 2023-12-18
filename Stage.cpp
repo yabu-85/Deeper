@@ -22,7 +22,7 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-    std::string fileName[] = { "StageT1", "StageT2", "StageT3", "StageT4", "RayStageT1", "RayStageT2", "RayStageT3", "StageT4" };
+    std::string fileName[] = { "StageT1", "StageT2", "RayStageT1", "RayStageT2" };
     for (int i = 0; i < MAX + RMAX; i++) {
         hModel_[i] = Model::Load("Model/Stage/" + fileName[i] + ".fbx");
         assert(hModel_[i] >= 0);
@@ -68,7 +68,7 @@ void Stage::Release()
 
 XMFLOAT3 Stage::GetPlayerStartPos()
 {
-    return XMFLOAT3(startPos_.x * floarSize, 0.0f, startPos_.z * floarSize);
+    return XMFLOAT3(startPos_.x * floarSize + (floarSize / 2), 0.0f, startPos_.z * floarSize + (floarSize / 2));
 }
 
 void Stage::ResetStage()
@@ -106,20 +106,8 @@ void Stage::CreatStage()
             else if (data == 2)
             {
                 mapData_[z][x] = WALL;
-                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
-                intersectDatas_.push_back({ hModel_[T2], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
-            }
-            else if (data == 3)
-            {
-                mapData_[z][x] = WALL;
                 intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f / smallSize, 1.0f / smallSize) });
-                intersectDatas_.push_back({ hModel_[T3], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f / smallSize, 1.0f / smallSize) });
-            }
-            else if (data == 4)
-            {
-                mapData_[z][x] = WALL;
-                intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
-                intersectDatas_.push_back({ hModel_[T4], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[T2], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f / smallSize, 1.0f / smallSize) });
             }
         }
     }
@@ -144,5 +132,5 @@ XMFLOAT3 Stage::GetRandomFloarPosition()
     }
 
     int index = rand() % posList.size();
-    return XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize);
+    return XMFLOAT3(posList.at(index).x * floarSize + (floarSize / 2), 0.0f, posList.at(index).z * floarSize + (floarSize / 2));
 }

@@ -40,7 +40,7 @@ public:
     void CalcMapWall(XMFLOAT3& _pos, float speed);
 
     //CollisionMap‚Æ‚Ì”»’èŽžŠÔ“à‚©‚ç‚Ì‚â‚Â
-    bool IsWall(float x, float z);
+    bool IsWall(int x, int z);
 
 };
 

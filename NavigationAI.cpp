@@ -15,9 +15,8 @@ NavigationAI::NavigationAI(Stage* s)
 	pStage_ = s;
 	mapData_ = pStage_->GetMapData();
 
-	stageWidth = mapData_[0].size();
-	stageHeight = mapData_.size();
-
+	stageWidth = (int)mapData_[0].size();
+	stageHeight = (int)mapData_.size();
 }
 
 int NavigationAI::GetMinCostNodeIndex(std::vector<Node>& openList)
@@ -34,11 +33,6 @@ int NavigationAI::GetMinCostNodeIndex(std::vector<Node>& openList)
 
 std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 {
-	target.x += (float)floarSize / 2.0f;
-	target.z += (float)floarSize / 2.0f;
-	pos.x += (float)floarSize / 2.0f;
-	pos.z += (float)floarSize / 2.0f;
-
 	int startX = static_cast<int>(pos.x / floarSize);
 	int startZ = static_cast<int>(pos.z / floarSize);
 	int targetX = static_cast<int>(target.x / floarSize);
@@ -85,14 +79,9 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 				z = tempY;
 			}
 
-			// 一番後列のデータはstartPosだから削除、マスのサイズを合わせる
+			// 一番後列のデータはstartPosだから削除
 			if (path.size() >= 2) {
 				path.pop_back();
-				for (auto p : path) {
-					p.x -= (floarSize) / 2.0f;
-					p.z -= (floarSize) / 2.0f;
-				}
-
 				PathSmoothing(path);
 				return path;
 			}
@@ -145,11 +134,6 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 
 std::vector<XMFLOAT3> NavigationAI::NaviDiagonal(XMFLOAT3 target, XMFLOAT3 pos)
 {
-	target.x += (float)floarSize / 2.0f;
-	target.z += (float)floarSize / 2.0f;
-	pos.x += (float)floarSize / 2.0f;
-	pos.z += (float)floarSize / 2.0f;
-
 	int startX = static_cast<int>(pos.x / floarSize);
 	int startZ = static_cast<int>(pos.z / floarSize);
 	int targetX = static_cast<int>(target.x / floarSize);
@@ -205,13 +189,9 @@ std::vector<XMFLOAT3> NavigationAI::NaviDiagonal(XMFLOAT3 target, XMFLOAT3 pos)
 				z = tempY;
 			}
 
-			// 一番後列のデータはstartPosだから削除、マスのサイズを合わせる
+			// 一番後列のデータはstartPosだから削除
 			if (path.size() >= 2) {
 				path.pop_back();
-				for (auto p : path) {
-					p.x -= (floarSize) / 2.0f;
-					p.z -= (floarSize) / 2.0f;
-				}
 
 				PathSmoothing(path);
 				return path;
@@ -275,7 +255,7 @@ std::vector<XMFLOAT3> NavigationAI::NaviDiagonal(XMFLOAT3 target, XMFLOAT3 pos)
 
 void PathSmoothing(std::vector<XMFLOAT3>& path) {
 	const std::vector<XMFLOAT3> prePath = path;
-	const float alpha = 0.2f;			// 大きいほど、元のPathに似ているPathができる。　　　　 大きいほど処理が速い
+	const float alpha = 0.4f;			// 大きいほど、元のPathに似ているPathができる。　　　　 大きいほど処理が速い
 	const float beta = 0.2f;			// 大きいほど、隣接する点間での滑らかさが向上する。　   大きいほど処理が遅い
 	const float tolerance = 0.2f;		// 変化量がこの値以下の時平滑化を終了。　　　　　　　　 大きいほど処理が速い
 	float change = tolerance;			// パスの位置の変化量

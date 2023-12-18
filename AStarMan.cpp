@@ -33,7 +33,7 @@ void AStarMan::Initialize()
 	transform_.position_ = startPos;
 	transform_.scale_ = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-	pAstarMoveAction_ = new AstarMoveAction(this, 0.05f, 0.1f);
+	pAstarMoveAction_ = new AstarMoveAction(this, 0.03f, 0.1f);
 	pAstarMoveAction_->Initialize();
 	pAstarMoveAction_->SetTarget(startPos);
 
@@ -47,6 +47,11 @@ void AStarMan::Update()
 
 //		Stage* pStage = (Stage*)FindObject("Stage");
 //		pAstarMoveAction_->SetTarget(pStage->GetRandomFloarPosition());
+	}
+
+	if (pAstarMoveAction_->IsOutEndTarget() && rand() % 60 == 0) {
+		Player* pPlayer = (Player*)FindObject("Player");
+		pAstarMoveAction_->SetTarget(pPlayer->GetPosition());
 	}
 	
 	pAstarMoveAction_->Update();
@@ -66,7 +71,7 @@ void AStarMan::Draw()
 		std::vector<XMFLOAT3> targetList = pAstarMoveAction_->GetTarget();
 		if (targetList.empty()) return;
 		for (auto pos : targetList) {
-			target.position_ = XMFLOAT3(pos.x * floarSize, pos.y, pos.z * floarSize);
+			target.position_ = XMFLOAT3(pos.x * floarSize + floarSize / 2.0f, pos.y, pos.z * floarSize + floarSize / 2.0f);
 			target.position_.y += 1.0f;
 			Model::SetTransform(hModel_, target);
 			Model::Draw(hModel_);

@@ -90,7 +90,7 @@ void FeetPatrol::OnEnter()
 
 void FeetPatrol::OnExit()
 {
-	pFeet_->GetMoveAction()->SetMoveSpeed(0.07f);
+	pFeet_->GetMoveAction()->SetMoveSpeed(0.03f);
 	pFeet_->GetMoveAction()->StopMove();
 }
 
@@ -178,6 +178,11 @@ void FeetMove::Update()
 {
 	//rand() ‚É‚µ‚Ä‚é‚¯‚Ç‚È‚ñ‚©‚â‚Á‚Ä‚¿‚á‚ñ‚Æ‚µ‚½‚â‚Âì‚Á‚½‚Ù‚¤‚ª‚¢‚¢‚Ë
 	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
+		Player* pPlayer = (Player*)pFeet_->FindObject("Player");
+		pFeet_->GetMoveAction()->SetTarget(pPlayer->GetPosition());
+	}
+
+	if (pFeet_->GetMoveAction()->IsOutEndTarget() && rand() % 60 == 0) {
 		Player* pPlayer = (Player*)pFeet_->FindObject("Player");
 		pFeet_->GetMoveAction()->SetTarget(pPlayer->GetPosition());
 	}

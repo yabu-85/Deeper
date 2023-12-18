@@ -34,7 +34,7 @@ void MoveAction::Update()
 
 //------------------------------Astar----------------------
 
-AstarMoveAction::AstarMoveAction(Character* obj, float speed, float range) : MoveAction(obj, speed, range)
+AstarMoveAction::AstarMoveAction(Character* obj, float speed, float range) : MoveAction(obj, speed, range), isOutEndTarget_(false)
 {
 }
 
@@ -45,17 +45,28 @@ void AstarMoveAction::Update()
 	//移動終了した
 	if (targetList_.empty()) {
 		isInRange_ = true;
+		isOutEndTarget_ = false;
 		return;
 	}
-
+	
+	XMVECTOR half = XMVectorSet(floarSize / 2.0f, 0.0f, floarSize / 2.0f, 0.0f);
 	XMFLOAT3 pos = pCharacter_->GetPosition();
 	XMVECTOR vPos = XMLoadFloat3(&pos);
-	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) * floarSize;
+	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) * floarSize + half;
+
+	//Target離れすぎたから更新
+	XMVECTOR endTarget = XMLoadFloat3(&targetList_.front()) * floarSize + half;
+	const float endTargetRange = 10.0f;
+	if (endTargetRange < XMVectorGetX(XMVector3Length(endTarget - vTar))) {
+		isOutEndTarget_ = true;
+	}
+
 	XMVECTOR vMove = vTar - vPos;
 	XMVECTOR vMoveN = XMVector3Normalize(vMove);
 	const float safeSize = 6.0f;
 	bool isSafe = false;
 
+	//他のEnemyとの当たり判定
 	EnemyBase* enemy = dynamic_cast<EnemyBase*>(pCharacter_);
 	XMVECTOR vSafeMove = XMVectorZero();
 	if (enemy) {
@@ -88,7 +99,7 @@ void AstarMoveAction::Update()
 	//Target位置ついた：カクカクしないように再起処理する
 	float length = XMVectorGetX(XMVector3Length(vTar - vPos));
 
-	if (length <= moveRange_ + (XMVectorGetX(XMVector3Length(vSafeMove)))) {
+	if (length <= moveRange_ + (XMVectorGetX(XMVector3Length(vSafeMove * 0.9f)))) {
 		targetList_.pop_back();
 		Update();
 		return;
@@ -104,5 +115,6 @@ void AstarMoveAction::Update()
 
 void AstarMoveAction::SetTarget(XMFLOAT3 target)
 {
-	targetList_ = GameManager::GetNavigationAI()->Navi(target, pCharacter_->GetPosition());
+	targetList_ = GameManager::GetNavigationAI()->NaviDiagonal(target, pCharacter_->GetPosition());
+	isOutEndTarget_ = false;
 }

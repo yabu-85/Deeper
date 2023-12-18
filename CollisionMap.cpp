@@ -284,7 +284,49 @@ void CollisionMap::RaySelectCellVsSegment(RayCastData& _data, XMFLOAT3 target)
     }
 }
 
-bool CollisionMap::IsWall(int x, int z)
+void CollisionMap::CalcMapWall(XMFLOAT3& _pos, float speed)
+{
+    const float rad = 0.15f; // +(0.15 * (1 + speed));
+    const float dia = 0.3f;  // +(0.13 * (1 + speed));
+
+    float checkX1, checkX2;
+    float checkZ1, checkZ2;
+
+    checkX1 = _pos.x + rad; //ëO
+    checkZ1 = _pos.z + dia;
+    checkX2 = _pos.x - rad;
+    checkZ2 = _pos.z + dia;
+    if (IsWall(checkX1, checkZ1) == 1 || IsWall(checkX2, checkZ2) == 1) {
+        _pos.z = _pos.z - dia;
+    }
+
+    checkX1 = _pos.x + rad; //å„ÇÎ
+    checkZ1 = _pos.z - dia;
+    checkX2 = _pos.x - rad;
+    checkZ2 = _pos.z - dia;
+    if (IsWall(checkX1, checkZ1) == 1 || IsWall(checkX2, checkZ2) == 1) {
+        _pos.z = _pos.z + dia;
+    }
+
+    checkX1 = _pos.x + dia; //âE
+    checkZ1 = _pos.z + rad;
+    checkX2 = _pos.x + dia;
+    checkZ2 = _pos.z - rad;
+    if (IsWall(checkX1, checkZ1) == 1 || IsWall(checkX2, checkZ2) == 1) {
+        _pos.x = _pos.x - dia;
+    }
+
+    checkX1 = _pos.x - dia; //ç∂
+    checkZ1 = _pos.z + rad;
+    checkX2 = _pos.x - dia;
+    checkZ2 = _pos.z - rad;
+    if (IsWall(checkX1, checkZ1) == 1 || IsWall(checkX2, checkZ2) == 1) {
+        _pos.x = _pos.x + dia;
+    }
+
+}
+
+bool CollisionMap::IsWall(float x, float z)
 {
     int pos[2];
     float newX = (float)x + (float)floarSize / 2.0f;

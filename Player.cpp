@@ -106,9 +106,12 @@ void Player::Update()
     //デバッグ用とりあえずRayCastで真下・真上に壁があるかで判定してる
     //cellに設定したheightより段差が小さいなら乗り越える
     if (Input::IsKeyDown(DIK_Y)) isCollider = !isCollider;
+
     if (isCollider) {
         CollisionMap* map = (CollisionMap*)FindObject("CollisionMap");
-        map->MapDataVsSphere(collid, prePos);
+    //    map->MapDataVsSphere(collid, prePos);
+        map->CalcMapWall(transform_.position_, moveSpeed_);
+    
     }
 
     XMVECTOR vec = XMLoadFloat3(&transform_.position_) - XMLoadFloat3(&prePos);

@@ -7,48 +7,6 @@
 #include "Stage.h"
 #include "EnemyBase.h"
 
-//デバッグ用・マジックナンバーやめろや
-void MoveAction::CalcMapWall(XMFLOAT3 &_pos)
-{
-	CollisionMap* pMap = (CollisionMap*)pCharacter_->FindObject("CollisionMap");
-
-	int checkX1, checkX2;
-	int checkZ1, checkZ2;
-
-	checkX1 = (int)(_pos.x + 0.15f); //前
-	checkZ1 = (int)(_pos.z + 0.3f);
-	checkX2 = (int)(_pos.x - 0.15f);
-	checkZ2 = (int)(_pos.z + 0.3f);
-	if (pMap->IsWall(checkX1, checkZ1) == 1 || pMap->IsWall(checkX2, checkZ2) == 1) {
-		_pos.z = (float)((int)_pos.z) + (1.0f - 0.3f);
-	}
-
-	checkX1 = (int)(_pos.x + 0.15f); //後ろ
-	checkZ1 = (int)(_pos.z - 0.3f);
-	checkX2 = (int)(_pos.x - 0.15f);
-	checkZ2 = (int)(_pos.z - 0.3f);
-	if (pMap->IsWall(checkX1, checkZ1) == 1 || pMap->IsWall(checkX2, checkZ2) == 1) {
-		_pos.z = (float)((int)_pos.z) + 0.3f;
-	}
-
-	checkX1 = (int)(_pos.x + 0.3f); //右
-	checkZ1 = (int)(_pos.z + 0.15f);
-	checkX2 = (int)(_pos.x + 0.3f);
-	checkZ2 = (int)(_pos.z - 0.15f);
-	if (pMap->IsWall(checkX1, checkZ1) == 1 || pMap->IsWall(checkX2, checkZ2) == 1) {
-		_pos.x = (float)((int)_pos.x + 1) - 0.3f;
-	}
-
-	checkX1 = (int)(_pos.x - 0.3f); //左
-	checkZ1 = (int)(_pos.z + 0.15f);
-	checkX2 = (int)(_pos.x - 0.3f);
-	checkZ2 = (int)(_pos.z - 0.15f);
-	if (pMap->IsWall(checkX1, checkZ1) == 1 || pMap->IsWall(checkX2, checkZ2) == 1) {
-		_pos.x = (float)((int)_pos.x) + 0.3f;
-	}
-
-}
-
 MoveAction::MoveAction(Character* obj, float speed, float range)
 	: BaseAction(obj), isInRange_(false), moveSpeed_(speed), moveRange_(range), targetPos_(0, 0, 0)
 {
@@ -99,10 +57,10 @@ void AstarMoveAction::Update()
 	bool isSafe = false;
 
 	EnemyBase* enemy = dynamic_cast<EnemyBase*>(pCharacter_);
+	XMVECTOR vSafeMove = XMVectorZero();
 	if (enemy) {
 		EnemyManager* enemyMa = GameManager::GetEnemyManager();
 		std::vector<EnemyBase*> eList = enemyMa->GetAllEnemy();
-		XMVECTOR vSafeMove = XMVectorZero();
 
 		for (auto& e : eList) {
 			if (e == enemy) continue;
@@ -130,31 +88,17 @@ void AstarMoveAction::Update()
 	//Target位置ついた：カクカクしないように再起処理する
 	float length = XMVectorGetX(XMVector3Length(vTar - vPos));
 
-#if 0
-	if(isSafe)
-	if (length <= moveRange_ + (safeSize / 2)) {
+	if (length <= moveRange_ + (XMVectorGetX(XMVector3Length(vSafeMove)))) {
 		targetList_.pop_back();
 		Update();
 		return;
 	}
-	else if (length <= moveRange_) {
-		targetList_.pop_back();
-		Update();
-		return;
-	}
-#else
-	if (length <= moveRange_ + (safeSize / 2)) {
-		targetList_.pop_back();
-		Update();
-		return;
-	}
-#endif
 
 	XMStoreFloat3(&pos, vPos + vMove);
 
 	//壁とのあたり判定してからポジションセット
-	CalcMapWall(pos);
-
+	CollisionMap* pMap = (CollisionMap*)pCharacter_->FindObject("CollisionMap");
+	pMap->CalcMapWall(pos, moveSpeed_);
 	pCharacter_->SetPosition(pos);
 }
 

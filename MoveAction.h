@@ -16,8 +16,6 @@ protected:
     float moveSpeed_;   //移動スピード
     float moveRange_;   //移動終了判定の範囲
 
-    void CalcMapWall(XMFLOAT3 &_pos);
-
 public:
     MoveAction(Character* obj, float speed, float range);
     virtual ~MoveAction() override {};

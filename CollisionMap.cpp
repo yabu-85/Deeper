@@ -283,3 +283,18 @@ void CollisionMap::RaySelectCellVsSegment(RayCastData& _data, XMFLOAT3 target)
         }
     }
 }
+
+bool CollisionMap::IsWall(int x, int z)
+{
+    int pos[2];
+    pos[0] = int((x - minX) / boxSize);
+    pos[1] = int((z - minZ) / boxSize);
+
+    // ç¿ïWÇÃîÕàÕÇêßå¿
+    pos[0] = (int)max(0, min(pos[0], maxX / boxSize - 1));
+    pos[1] = (int)max(0, min(pos[1], maxZ / boxSize - 1));
+    
+    std::vector<std::vector<int>> data = pStage->GetMapData();
+
+    return data[pos[1]][pos[0]];
+}

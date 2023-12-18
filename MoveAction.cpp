@@ -1,5 +1,52 @@
 #include "MoveAction.h"
 #include "Player.h"
+#include "CollisionMap.h"
+#include "GameManager.h"
+#include "EnemyManager.h"
+#include "NavigationAI.h"
+#include "Stage.h"
+#include "EnemyBase.h"
+
+void MoveAction::CalcMapWall(XMFLOAT3 _pos)
+{
+	CollisionMap* pMap = (CollisionMap*)pCharacter_->FindObject("CollisionMap");
+
+	int checkX1, checkX2;
+	int checkZ1, checkZ2;
+
+	checkX1 = (int)(_pos.x + 0.15f); //前
+	checkZ1 = (int)(_pos.z + 0.3f);
+	checkX2 = (int)(_pos.x - 0.15f);
+	checkZ2 = (int)(_pos.z + 0.3f);
+	if (pMap->IsWall(checkX1, checkZ1) == 1 || pMap->IsWall(checkX2, checkZ2) == 1) { //床やけやったら
+		_pos.z = (float)((int)_pos.z) + (1.0f - 0.3f);
+	}
+
+	checkX1 = (int)(_pos.x + 0.15f); //後ろ
+	checkZ1 = (int)(_pos.z - 0.3f);
+	checkX2 = (int)(_pos.x - 0.15f);
+	checkZ2 = (int)(_pos.z - 0.3f);
+	if (pMap->IsWall(checkX1, checkZ1) == 1 || pMap->IsWall(checkX2, checkZ2) == 1) {
+		_pos.z = (float)((int)_pos.z) + 0.3f;
+	}
+
+	checkX1 = (int)(_pos.x + 0.3f); //右
+	checkZ1 = (int)(_pos.z + 0.15f);
+	checkX2 = (int)(_pos.x + 0.3f);
+	checkZ2 = (int)(_pos.z - 0.15f);
+	if (pMap->IsWall(checkX1, checkZ1) == 1 || pMap->IsWall(checkX2, checkZ2) == 1) {
+		_pos.x = (float)((int)_pos.x + 1) - 0.3f;  // x　だけ戻すことで斜め移動ができるようになる     
+	}
+
+	checkX1 = (int)(_pos.x - 0.3f); //左
+	checkZ1 = (int)(_pos.z + 0.15f);
+	checkX2 = (int)(_pos.x - 0.3f);
+	checkZ2 = (int)(_pos.z - 0.15f);
+	if (pMap->IsWall(checkX1, checkZ1) == 1 || pMap->IsWall(checkX2, checkZ2) == 1) {
+		_pos.x = (float)((int)_pos.x) + 0.3f;
+	}
+
+}
 
 MoveAction::MoveAction(Character* obj, float speed, float range)
 	: BaseAction(obj), isInRange_(false), moveSpeed_(speed), moveRange_(range), targetPos_(0, 0, 0)
@@ -27,12 +74,6 @@ void MoveAction::Update()
 }
 
 //------------------------------Astar----------------------
-
-#include "GameManager.h"
-#include "EnemyManager.h"
-#include "NavigationAI.h"
-#include "Stage.h"
-#include "EnemyBase.h"
 
 AstarMoveAction::AstarMoveAction(Character* obj, float speed, float range) : MoveAction(obj, speed, range)
 {
@@ -92,6 +133,10 @@ void AstarMoveAction::Update()
 	}
 
 	XMStoreFloat3(&pos, vPos + vMove);
+
+	//壁とのあたり判定してからポジションセット
+	CalcMapWall(pos);
+
 	pCharacter_->SetPosition(pos);
 }
 

@@ -53,7 +53,7 @@ void AstarMoveAction::Update()
 	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) * floarSize;
 	XMVECTOR vMove = vTar - vPos;
 	XMVECTOR vMoveN = XMVector3Normalize(vMove);
-	const float safeSize = 3.0f;
+	const float safeSize = 6.0f;
 
 	EnemyBase* enemy = dynamic_cast<EnemyBase*>(pCharacter_);
 	if (enemy) {
@@ -65,10 +65,12 @@ void AstarMoveAction::Update()
 			if (e == enemy) continue;
 			XMFLOAT3 f = e->GetPosition();
 			XMVECTOR vTarget = XMLoadFloat3(&f);
-			XMVECTOR vec = vPos - vTarget;
+			XMVECTOR vec = vTarget - vPos;
 			float range = XMVectorGetX(XMVector3Length(vec));
+			
 			if (range < safeSize) {
 				if (range > safeSize) range = safeSize;
+				range -= safeSize;
 				vSafeMove += XMVector3Normalize(vec) * range;
 			}
 		}
@@ -76,7 +78,6 @@ void AstarMoveAction::Update()
 		if (range > safeSize) vSafeMove = XMVector3Normalize(vSafeMove) * safeSize;
 
 		vMove += vSafeMove;
-		OutputDebugString("Is Astar Man\n");
 	}
 	
 	float currentSpeed = XMVectorGetX(XMVector3Length(vMove));

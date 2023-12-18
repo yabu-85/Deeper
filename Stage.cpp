@@ -3,6 +3,7 @@
 #include "Engine/Input.h"
 #include <vector>
 #include "Engine/CsvReader.h"
+#include "CollisionMap.h"
 
 namespace {
     //デバッグ用
@@ -144,4 +145,17 @@ XMFLOAT3 Stage::GetRandomFloarPosition()
 
     int index = rand() % posList.size();
     return XMFLOAT3(posList.at(index).x * floarSize, 0.0f, posList.at(index).z * floarSize);
+}
+
+bool Stage::IsWall(int x, int z)
+{
+    int pos[2];
+    pos[0] = int((x - minX) / boxSize);
+    pos[1] = int((z - minZ) / boxSize);
+
+    // 座標の範囲を制限
+    pos[0] = (int)max(0, min(pos[0], maxX / boxSize - 1));
+    pos[1] = (int)max(0, min(pos[1], maxZ / boxSize - 1));
+
+    return mapData_[z][x];
 }

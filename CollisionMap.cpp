@@ -18,10 +18,8 @@ namespace {
 
     float minX = 0;
     float maxX = 130;
-
     float minY = -10;
     float maxY = 50; 
-    
     float minZ = 0;
     float maxZ = 130;
 
@@ -149,9 +147,9 @@ void CollisionMap::Release()
 
 bool CollisionMap::GetCellIndex(XMFLOAT3& pos)
 {
-    pos.x = int((pos.x - minX) / boxSize);
-    pos.y = int((pos.y - minY) / boxSize);
-    pos.z = int((pos.z - minZ) / boxSize);
+    pos.x = (pos.x - minX) / boxSize;
+    pos.y = (pos.y - minY) / boxSize;
+    pos.z = (pos.z - minZ) / boxSize;
     bool isClamp = true;
 
     if (pos.x < 0) { pos.x = 0; isClamp = false; }
@@ -225,12 +223,12 @@ void CollisionMap::RaySelectCellVsSegment(RayCastData& _data, XMFLOAT3 target)
     int targetZ = int((target.z - minZ) / boxSize);
 
     // À•W‚Ì”ÍˆÍ‚ð§ŒÀ
-    startX = max(0, min(startX, maxX / boxSize - 1));
-    startY = max(0, min(startY, maxY / boxSize - 1));
-    startZ = max(0, min(startZ, maxZ / boxSize - 1));
-    targetX = max(0, min(targetX, maxX / boxSize - 1));
-    targetY = max(0, min(targetY, maxY / boxSize - 1));
-    targetZ = max(0, min(targetZ, maxZ / boxSize - 1));
+    startX = (int)max(0, min(startX, maxX / boxSize - 1));
+    startY = (int)max(0, min(startY, maxY / boxSize - 1));
+    startZ = (int)max(0, min(startZ, maxZ / boxSize - 1));
+    targetX = (int)max(0, min(targetX, maxX / boxSize - 1));
+    targetY = (int)max(0, min(targetY, maxY / boxSize - 1));
+    targetZ = (int)max(0, min(targetZ, maxZ / boxSize - 1));
 
     int stepX = (targetX >= startX) ? 1 : -1;
     int stepY = (targetY >= startY) ? 1 : -1;

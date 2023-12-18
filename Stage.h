@@ -65,4 +65,6 @@ public:
     void ResetStage();
     void CreatStage();
 
+    bool IsWall(int x, int z);
+
 };

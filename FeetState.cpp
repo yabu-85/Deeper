@@ -62,7 +62,7 @@ void FeetPatrol::Update()
 	//Astar移動が終わったなら更新・待ち時間適当にrandamで デバッグ用
 	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 60 == 0) {
 		Stage* pStage = (Stage*)pFeet_->FindObject("Stage");
-		pFeet_->GetMoveAction()->SetTarget(pStage->GetRandomFloarPosition());
+		pFeet_->GetMoveAction()->UpdatePath(pStage->GetRandomFloarPosition());
 	}
 
 	//Astar移動・回転
@@ -179,12 +179,12 @@ void FeetMove::Update()
 	//rand() にしてるけどなんかやってちゃんとしたやつ作ったほうがいいね
 	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
 		Player* pPlayer = (Player*)pFeet_->FindObject("Player");
-		pFeet_->GetMoveAction()->SetTarget(pPlayer->GetPosition());
+		pFeet_->GetMoveAction()->UpdatePath(pPlayer->GetPosition());
 	}
 
 	if (pFeet_->GetMoveAction()->IsOutEndTarget() && rand() % 60 == 0) {
 		Player* pPlayer = (Player*)pFeet_->FindObject("Player");
-		pFeet_->GetMoveAction()->SetTarget(pPlayer->GetPosition());
+		pFeet_->GetMoveAction()->UpdatePath(pPlayer->GetPosition());
 	}
 
 	pFeet_->GetMoveAction()->Update();

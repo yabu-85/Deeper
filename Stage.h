@@ -56,7 +56,12 @@ public:
     std::vector<IntersectData> GetIntersectDatas() { return intersectDatas_; };
     std::vector<std::vector<int>> GetMapData() { return mapData_; };
     XMFLOAT3 GetPlayerStartPos();
+    
+    //完全にランダムな床のポジションを取得する
     XMFLOAT3 GetRandomFloarPosition();
+    
+    //プレイヤーから見た引数:Position方向にrangeの距離で最適な場所を取得する
+    XMFLOAT3 GetFloarPosition(XMFLOAT3 position, float range);
 
     void ResetStage();
     void CreatStage();

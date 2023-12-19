@@ -43,7 +43,7 @@ void AStarMan::Update()
 {
 	if (pAstarMoveAction_->IsInRange() && rand() % 60 == 0) {
 		Player* pPlayer = (Player*)FindObject("Player");
-		pAstarMoveAction_->SetTarget(pPlayer->GetPosition());
+		pAstarMoveAction_->UpdatePath(pPlayer->GetPosition());
 
 //		Stage* pStage = (Stage*)FindObject("Stage");
 //		pAstarMoveAction_->SetTarget(pStage->GetRandomFloarPosition());
@@ -51,7 +51,12 @@ void AStarMan::Update()
 
 	if (pAstarMoveAction_->IsOutEndTarget() && rand() % 60 == 0) {
 		Player* pPlayer = (Player*)FindObject("Player");
-		pAstarMoveAction_->SetTarget(pPlayer->GetPosition());
+		pAstarMoveAction_->UpdatePath(pPlayer->GetPosition());
+	}
+
+	if (Input::IsKey(DIK_3)) {
+		Stage* pStage = (Stage*)FindObject("Stage");
+		pAstarMoveAction_->UpdatePath(pStage->GetFloarPosition(transform_.position_, 20.0f));
 	}
 	
 	pAstarMoveAction_->Update();

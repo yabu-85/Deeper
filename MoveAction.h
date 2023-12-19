@@ -27,11 +27,12 @@ public:
     void SetMoveRange(float range) { moveRange_ = range; }
     bool IsInRange() { return isInRange_; }
 
-    virtual void SetTarget(XMFLOAT3 target) { targetPos_ = target; }    //Astarの場合処理が違うためvirtual
+    virtual void SetTarget(XMFLOAT3 target) { targetPos_ = target; }
 };
 
 class AstarMoveAction : public MoveAction {
-    std::vector<XMFLOAT3> targetList_;
+    std::vector<XMFLOAT3> targetList_;  //今の経路
+    XMFLOAT3 latestTarget_;             //今のTargetCharaのポジション
     bool isOutEndTarget_;
 
 public:
@@ -39,9 +40,9 @@ public:
     ~AstarMoveAction() {};
 
     void Update() override;
-    void SetTarget(XMFLOAT3 target) override;
     std::vector<XMFLOAT3> GetTarget() { return targetList_; }
     void StopMove() { targetList_.clear(); }
     bool IsOutEndTarget() { return isOutEndTarget_; }
+    void UpdatePath(XMFLOAT3 target);
 
 };

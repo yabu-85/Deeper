@@ -55,9 +55,10 @@ void AstarMoveAction::Update()
 	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) * floarSize + half;
 
 	//Target離れすぎたから更新
-	XMVECTOR endTarget = XMLoadFloat3(&targetList_.front()) * floarSize + half;
+	XMVECTOR vLatestTarget = XMLoadFloat3(&latestTarget_);
+	XMVECTOR vLastTarget = XMLoadFloat3(&targetList_.front());
 	const float endTargetRange = 10.0f;
-	if (endTargetRange < XMVectorGetX(XMVector3Length(endTarget - vTar))) {
+	if (endTargetRange < XMVectorGetX(XMVector3Length(vLatestTarget - vLastTarget))) {
 		isOutEndTarget_ = true;
 	}
 
@@ -98,7 +99,6 @@ void AstarMoveAction::Update()
 
 	//Target位置ついた：カクカクしないように再起処理する
 	float length = XMVectorGetX(XMVector3Length(vTar - vPos));
-
 	if (length <= moveRange_ + (XMVectorGetX(XMVector3Length(vSafeMove * 0.9f)))) {
 		targetList_.pop_back();
 		Update();
@@ -113,8 +113,9 @@ void AstarMoveAction::Update()
 	pCharacter_->SetPosition(pos);
 }
 
-void AstarMoveAction::SetTarget(XMFLOAT3 target)
+void AstarMoveAction::UpdatePath(XMFLOAT3 target)
 {
 	targetList_ = GameManager::GetNavigationAI()->NaviDiagonal(target, pCharacter_->GetPosition());
+	latestTarget_ = targetList_.front();
 	isOutEndTarget_ = false;
 }

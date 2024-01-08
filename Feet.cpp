@@ -31,7 +31,7 @@ void Feet::Initialize()
 
 	maxHp_ = 100;
 	hp_ = maxHp_;
-	aimTargetPos_ = 3.0f;
+	aimTargetPos_ = 1.0f;
 
 	//Collider‚ÌÝ’è
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 1, 0), 1.5f);
@@ -70,7 +70,7 @@ void Feet::Initialize()
 	//Action‚ÌÝ’è
 	pMoveAction_ = new AstarMoveAction(this, 0.05f, 2.0f);
 	pRotateAction_ = new RotateAction(this, 0.07f);
-	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f / floarSize, 60.0f);
+	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f / floarSize, 90.0f);
 	pAuditorySearchAction_ = new AuditorySearchAction(this);
 	pRotateAction_->Initialize();
 

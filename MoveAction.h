@@ -9,12 +9,11 @@ class Player;
 
 class MoveAction : public BaseAction
 {
-    XMFLOAT3 targetPos_;//ターゲットの場所
-
 protected:
     bool isInRange_;    //Targetについていたらtrue
     float moveSpeed_;   //移動スピード
     float moveRange_;   //移動終了判定の範囲
+    XMFLOAT3 targetPos_;//ターゲットの場所
 
 public:
     MoveAction(Character* obj, float speed, float range);
@@ -32,8 +31,7 @@ public:
 
 class AstarMoveAction : public MoveAction {
     std::vector<XMFLOAT3> targetList_;  //今の経路
-    XMFLOAT3 latestTarget_;             //今のTargetCharaのポジション
-    bool isOutEndTarget_;
+    XMFLOAT3 lastTarget_;               //今のTargetCharaのポジション
 
 public:
     AstarMoveAction(Character* obj, float speed, float range);
@@ -42,7 +40,7 @@ public:
     void Update() override;
     std::vector<XMFLOAT3> GetTarget() { return targetList_; }
     void StopMove() { targetList_.clear(); }
-    bool IsOutEndTarget() { return isOutEndTarget_; }
+    bool IsOutEndTarget();
     void UpdatePath(XMFLOAT3 target);
 
 };

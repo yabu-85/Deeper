@@ -35,21 +35,20 @@ void AStarMan::Initialize()
 
 	pAstarMoveAction_ = new AstarMoveAction(this, 0.03f, 0.1f);
 	pAstarMoveAction_->Initialize();
-	pAstarMoveAction_->SetTarget(startPos);
 
 }
 
 void AStarMan::Update()
 {
 	if (pAstarMoveAction_->IsInRange() && rand() % 60 == 0) {
-		Player* pPlayer = (Player*)FindObject("Player");
-		pAstarMoveAction_->UpdatePath(pPlayer->GetPosition());
+	//	Player* pPlayer = (Player*)FindObject("Player");
+	//	pAstarMoveAction_->UpdatePath(pPlayer->GetPosition());
 
-//		Stage* pStage = (Stage*)FindObject("Stage");
-//		pAstarMoveAction_->SetTarget(pStage->GetRandomFloarPosition());
+		Stage* pStage = (Stage*)FindObject("Stage");
+		pAstarMoveAction_->SetTarget(pStage->GetRandomFloarPosition());
 	}
 
-	if (pAstarMoveAction_->IsOutEndTarget() && rand() % 60 == 0) {
+	if (rand() % 10 == 0 && pAstarMoveAction_->IsOutEndTarget()) {
 		Player* pPlayer = (Player*)FindObject("Player");
 		pAstarMoveAction_->UpdatePath(pPlayer->GetPosition());
 	}
@@ -57,6 +56,11 @@ void AStarMan::Update()
 	if (Input::IsKey(DIK_3)) {
 		Stage* pStage = (Stage*)FindObject("Stage");
 		pAstarMoveAction_->UpdatePath(pStage->GetFloarPosition(transform_.position_, 20.0f));
+	}
+	
+	if (Input::IsKey(DIK_4)) {
+		Stage* pStage = (Stage*)FindObject("Stage");
+		pAstarMoveAction_->UpdatePath(pStage->GetFloarPosition(transform_.position_, 0.0f));
 	}
 	
 	pAstarMoveAction_->Update();

@@ -34,7 +34,7 @@ void MoveAction::Update()
 
 //------------------------------Astar----------------------
 
-AstarMoveAction::AstarMoveAction(Character* obj, float speed, float range) : MoveAction(obj, speed, range), isOutEndTarget_(false)
+AstarMoveAction::AstarMoveAction(Character* obj, float speed, float range) : MoveAction(obj, speed, range)
 {
 }
 
@@ -45,7 +45,6 @@ void AstarMoveAction::Update()
 	//à⁄ìÆèIóπÇµÇΩ
 	if (targetList_.empty()) {
 		isInRange_ = true;
-		isOutEndTarget_ = false;
 		return;
 	}
 	
@@ -53,15 +52,6 @@ void AstarMoveAction::Update()
 	XMFLOAT3 pos = pCharacter_->GetPosition();
 	XMVECTOR vPos = XMLoadFloat3(&pos);
 	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) * floarSize + half;
-
-	//Targetó£ÇÍÇ∑Ç¨ÇΩÇ©ÇÁçXêV
-	XMVECTOR vLatestTarget = XMLoadFloat3(&latestTarget_);
-	XMVECTOR vLastTarget = XMLoadFloat3(&targetList_.front());
-	const float endTargetRange = 10.0f;
-	if (endTargetRange < XMVectorGetX(XMVector3Length(vLatestTarget - vLastTarget))) {
-		isOutEndTarget_ = true;
-	}
-
 	XMVECTOR vMove = vTar - vPos;
 	XMVECTOR vMoveN = XMVector3Normalize(vMove);
 	const float safeSize = 6.0f;
@@ -113,9 +103,26 @@ void AstarMoveAction::Update()
 	pCharacter_->SetPosition(pos);
 }
 
+bool AstarMoveAction::IsOutEndTarget()
+{
+	if (!targetList_.empty()) {
+		lastTarget_ = targetList_.front();
+	}
+
+	const float endTargetRange = 10.0f;
+	XMVECTOR vLatestTarget = XMLoadFloat3(&targetPos_);
+	XMVECTOR vLastTarget = XMLoadFloat3(&lastTarget_);
+	float range = XMVectorGetX(XMVector3Length(vLatestTarget - vLastTarget));
+	if (endTargetRange < range) {
+		return true;
+	}
+
+	return false;
+}
+
 void AstarMoveAction::UpdatePath(XMFLOAT3 target)
 {
 	targetList_ = GameManager::GetNavigationAI()->NaviDiagonal(target, pCharacter_->GetPosition());
-	latestTarget_ = targetList_.front();
-	isOutEndTarget_ = false;
+	if(!targetList_.empty()) targetPos_ = targetList_.front();
+
 }

@@ -137,7 +137,7 @@ XMFLOAT3 Stage::GetFloarPosition(XMFLOAT3 position, float range)
 
         if (!cellList.empty()) {
             int randamIndex = rand() % cellList.size();
-            XMFLOAT3 out = XMFLOAT3(cellList.at(randamIndex).x, 0.0f, cellList.at(randamIndex).z);
+            XMFLOAT3 out = XMFLOAT3((float)cellList.at(randamIndex).x, 0.0f, (float)cellList.at(randamIndex).z);
             out = XMFLOAT3(out.x * floarSize + floarSize / 2.0f, out.y, out.z * floarSize + floarSize / 2.0f);
             return out;
         }
@@ -158,7 +158,7 @@ void Stage::CreatStage()
 {
     //CSVファイル読み込み
     CsvReader csv;
-    csv.Load("Csv/Map2.csv");
+    csv.Load("Csv/Map3.csv");
 
     //ステージの幅と高さを設定
     mapSizeX_ = (int)csv.GetWidth();

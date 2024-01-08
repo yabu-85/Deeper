@@ -7,6 +7,7 @@
 #include "Enemymanager.h"
 #include "GameManager.h"
 #include "PlayerCommand.h"
+#include "Engine/Input.h"
 
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 },
@@ -22,8 +23,8 @@ Aim::Aim(GameObject* parent)
     heightRay_ = 0.1f;
     numSupress_ = 0.002f;
     maxCameraOffset_ = 2.0f;
-    moveAimTime_ = 0.04f;
-    stopAimTime_ = 0.08f;
+    moveAimTime_ = 0.03f;
+    stopAimTime_ = 0.06f;
     targetRange_ = 50.0f;
     fovRadian_ = XMConvertToRadians(60) / 2;
     rotateRatio_ = 0.2f;
@@ -39,8 +40,6 @@ void Aim::Initialize()
     aimMove_ = true;
 	
 }
-
-#include "Engine/Input.h"
 
 void Aim::Update()
 {

@@ -119,7 +119,7 @@ FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 
 	Selector* selector3 = new Selector();
 	selector2->AddChildren(selector3);
-
+	
 	//--------------------------------UŒ‚‚Ì‚Ç‚ê‚©‚ð‘I‚Ô-------------------------------------------
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(pFeet_, "Attack");
 	selector3->AddChildren(action2);
@@ -179,7 +179,11 @@ void FeetMove::Update()
 	//rand() ‚É‚µ‚Ä‚é‚¯‚Ç‚È‚ñ‚©‚â‚Á‚Ä‚¿‚á‚ñ‚Æ‚µ‚½‚â‚Âì‚Á‚½‚Ù‚¤‚ª‚¢‚¢‚Ë
 	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
 		Player* pPlayer = (Player*)pFeet_->FindObject("Player");
-		pFeet_->GetMoveAction()->UpdatePath(pPlayer->GetPosition());
+		if (rand() % 2 == 0) pFeet_->GetMoveAction()->UpdatePath(pPlayer->GetPosition());
+		else {
+			Stage* pStage = (Stage*)pFeet_->FindObject("Stage");
+			pFeet_->GetMoveAction()->UpdatePath(pStage->GetFloarPosition(pFeet_->GetPosition(), 30.0f));
+		}
 	}
 
 	if (pFeet_->GetMoveAction()->IsOutEndTarget() && rand() % 60 == 0) {

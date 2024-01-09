@@ -301,6 +301,9 @@
     <ClCompile Include="EnemyManager.cpp">
       <Filter>08Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="IsEnemyActionReady.cpp">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -505,6 +508,9 @@
     <ClInclude Include="VFXManager.h" />
     <ClInclude Include="SearchAction.h">
       <Filter>10Action\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="IsEnemyActionReady.h">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

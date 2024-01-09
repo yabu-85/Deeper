@@ -13,12 +13,10 @@ public:
     };
 
     enum class Status {
-        INVALID,    //無効
-        SUCCESS,    //成功
-        FAILURE,    //失敗
-        RUNNING,    //動作中
-        //IDLE,       //アイドル
-        //TERMINATE     //終了
+        INVALID,
+        SUCCESS,
+        FAILURE,
+        RUNNING,
     };
 
 protected:

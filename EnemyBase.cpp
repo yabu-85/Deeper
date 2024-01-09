@@ -10,13 +10,18 @@
 
 EnemyBase::EnemyBase(GameObject* parent)
 	: Character(parent), pEnemyUi_(nullptr), pStateManager_(nullptr), pCombatStateManager_(nullptr),
-	type_(ENEMY_MAX), aimTargetPos_(0.0f)
+	type_(ENEMY_MAX), aimTargetPos_(0.0f), attackCoolDown_(0)
 {
 	GameManager::GetDamageManager()->AddCharacter(this, DamageManager::DamageType::DA_Enemy);
 }
 
 EnemyBase::~EnemyBase()
 {
+}
+
+void EnemyBase::Update()
+{
+	attackCoolDown_--;
 }
 
 void EnemyBase::Release()
@@ -37,4 +42,10 @@ void EnemyBase::ApplyDamage(int da)
 		GameManager::GetDropTable()->DropItem(0, transform_.position_);
 		GameManager::GetEnemyManager()->KillEnemy(this);
 	}
+}
+
+bool EnemyBase::IsAttackReady()
+{
+	if (attackCoolDown_ <= 0) return true;
+	return false;
 }

@@ -9,6 +9,7 @@
 #include "Engine/Model.h"
 #include "Engine/Global.h"
 
+#include "IsEnemyActionReady.h"
 #include "ChangeStateNode.h"
 #include "BehaviourNode.h"
 #include "PlayerConditionNode.h"
@@ -106,15 +107,16 @@ FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 	Selector* selector1 = new Selector();
 	root_->SetRootNode(selector1);
 
-	//---------------------------------------UŒ‚‰Â”\------------------------------------------------
+	//---------------------------------------UŒ‚State‚ÌSelector‚Ì“o˜^------------------------------------------------ ‚±‚±‰ü—Ç‚Å‚«‚é
 	Selector* selector2 = new Selector();
 	IsNotEnemyCombatState* condition1 = new IsNotEnemyCombatState(selector2, "Attack", pFeet_);
 	Inverter* inverter1 = new Inverter(condition1);
 	selector1->AddChildren(inverter1);
 	
-	//--------------------ƒvƒŒƒCƒ„[‚Ì‹ß‚­‚Å‚Í‚È‚¢iˆÚ“®j/@‹ß‚­‚È‚çUŒ‚‚ð‘I‚Ô-----------------------
+	//--------------------UŒ‚State‚¶‚á‚È‚¢‚©‚çMoveState‚Ö-----------------------
 	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(pFeet_, "Move");
-	IsPlayerNotInRangeNode* condition2 = new IsPlayerNotInRangeNode(action1, 5.0f, pFeet_, pPlayer);
+	IsEnemyAttackReady* condition2 = new IsEnemyAttackReady(action1, pFeet_);
+	//§ŒäAI‚ÌConditionNodeiUŒ‚‰Â”\Å‘å””ÍˆÍ“à‚©
 	selector2->AddChildren(condition2);
 
 	Selector* selector3 = new Selector();

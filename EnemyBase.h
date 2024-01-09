@@ -9,7 +9,8 @@ class StateManager;
 class EnemyBase : public Character
 {
 protected:
-    float aimTargetPos_;        //Aim‚ÌTarget‚·‚é‚ÌêŠ
+    int attackCoolDown_;
+    float aimTargetPos_;
     ENEMY_TYPE type_;
 
     EnemyUi* pEnemyUi_;
@@ -20,13 +21,16 @@ public:
     EnemyBase(GameObject* parent);
     virtual ~EnemyBase();
     virtual void Initialize() override = 0;
-    virtual void Update() override = 0;
+    virtual void Update() override;
     virtual void Draw() override = 0;
     virtual void Release();
 
     virtual void ApplyDamage(int da) override;
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
     float GetAimTargetPos() { return aimTargetPos_; }
+    
+    void SetAttackCoolDown(int i) { attackCoolDown_ = i; }
+    bool IsAttackReady();
 
     EnemyUi* GetEnemyUi() { return pEnemyUi_; }
     StateManager* GetStateManager() { return pStateManager_; }

@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\include;D:\220177\2020.2\include</IncludePath>
-    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\lib\vs2019\x64\debug;D:\220177\2020.2\lib\vs2019\x64\debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\include</IncludePath>
+    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\lib\vs2019\x64\debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2020.0.1\include;C:\Program Files\Autodesk\FBX\FBX SDK\2019.5\include;C:\Program Files\Autodesk\FBX\FBX SDK\2020.2\include;$(IncludePath)</IncludePath>
@@ -138,6 +138,7 @@
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AStarMan.cpp" />
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="IsEnemyActionReady.cpp" />
     <ClCompile Include="IsEnemyStateNode.cpp" />
     <ClCompile Include="MoveAction.cpp" />
     <ClCompile Include="Aim.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AStarMan.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="IsEnemyActionReady.h" />
     <ClInclude Include="IsEnemyStateNode.h" />
     <ClInclude Include="MoveAction.h" />
     <ClInclude Include="Aim.h" />

@@ -8,12 +8,15 @@
 #include "Engine/SegmentCollider.h"
 #include "VFXManager.h"
 
+#include "Engine/PolyLine.h"
+#include "Engine/Global.h"
+
 namespace {
     float weaponSize = 5.0f;
 }
 
 TestWeaponMain::TestWeaponMain(GameObject* parent)
-	:WeaponBase(parent), pDamageManager_(nullptr), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0)
+	:WeaponBase(parent), pDamageManager_(nullptr), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0), pPolyLine_(nullptr)
 {
 	objectName_ = "TestWeaponMain";
 }
@@ -43,8 +46,13 @@ void TestWeaponMain::Initialize()
     seg_ = new SegmentCollider(XMFLOAT3(), XMVECTOR());
     AddAttackCollider(seg_);
 
-    damage_ = 1; 
+    damage_ = 20; 
     transform_.scale_.z = 2.0f;
+    
+    pPolyLine_ = new PolyLine;
+    pPolyLine_->Load("tex.png");
+    pPolyLine_->AddPosition(transform_.position_);
+
 }
 
 void TestWeaponMain::Update()
@@ -66,10 +74,15 @@ void TestWeaponMain::Draw()
     t.position_ = wandPos_;
     Model::SetTransform(hModel_, t);
     Model::Draw(hModel_);
+
+    pPolyLine_->Draw();
 }
 
 void TestWeaponMain::Release()
 {
+    SAFE_RELEASE(pPolyLine_);
+    SAFE_DELETE_ARRAY(pPolyLine_);
+
 }
 
 void TestWeaponMain::ResetState()
@@ -94,11 +107,16 @@ void TestWeaponMain::CalcDamage()
 
     XMFLOAT3 vec = target;
     XMVECTOR vVec = XMLoadFloat3(&vec);
-    seg_->SetVector(vVec * weaponSize);
+    vVec = XMVector3Normalize(vVec) * weaponSize;
+    seg_->SetVector(vVec);
     bool hit = pDamageManager_->CalcEnemy(seg_, damage_);
     if (hit) {
         VFXManager::CreatVfxExplode1(wandPos_);
     }
+
+    XMStoreFloat3(&vec, vVec * 0.5f);
+    vec = XMFLOAT3(wandPos_.x + vec.x, wandPos_.y + vec.y, wandPos_.z + vec.z);
+    pPolyLine_->AddPosition(vec);
 
 }
 
@@ -129,6 +147,8 @@ void TestWeaponCombo1::Update()
 
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
+
+    if(time_ > 20 && time_ < 40 - 15)
     pTestWeaponMain_->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
@@ -162,6 +182,8 @@ void TestWeaponCombo1::OnEnter()
 void TestWeaponCombo1::OnExit()
 {
     Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 0, 1.0f);
+    pTestWeaponMain_->GetPolyLine()->ResetPosition();
+
 }
 
 //---------------------------------------------
@@ -177,6 +199,8 @@ void TestWeaponCombo2::Update()
 {
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
+    
+    if (time_ > 10 && time_ < 40 - 15)
     pTestWeaponMain_->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
@@ -209,6 +233,8 @@ void TestWeaponCombo2::OnEnter()
 void TestWeaponCombo2::OnExit()
 {
     Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 0, 1.0f);
+    pTestWeaponMain_->GetPolyLine()->ResetPosition();
+
 }
 
 //---------------------------------------------
@@ -224,6 +250,8 @@ void TestWeaponCombo3::Update()
 {
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
+    
+    if (time_ > 35 && time_ < 70 - 25)
     pTestWeaponMain_->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
@@ -256,4 +284,6 @@ void TestWeaponCombo3::OnEnter()
 void TestWeaponCombo3::OnExit()
 {
     Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 0, 1.0f);
+    pTestWeaponMain_->GetPolyLine()->ResetPosition();
+
 }

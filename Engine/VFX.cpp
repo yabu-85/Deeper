@@ -191,9 +191,8 @@ void VFX::CreateParticle(std::list<VFX::Emitter*>::iterator& emitter)
 void VFX::Draw()
 {
     Direct3D::SetShader(Direct3D::SHADER_BILLBOARD);
-    Direct3D::SetBlendMode(Direct3D::BLEND_DEFAULT);
+    Direct3D::SetBlendMode(Direct3D::BLEND_ADD);
 
- 
     for (auto particle = particleList_.begin(); particle != particleList_.end(); particle++)
     {
         XMMATRIX matWorld;

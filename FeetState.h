@@ -68,6 +68,7 @@ public:
 	FeetWait(StateManager* owner);
 	const char* GetName() const override { return "Wait"; }
 	void Update() override;
+	void OnEnter() override;
 };
 
 class FeetMove : public StateBase
@@ -77,6 +78,7 @@ public:
 	FeetMove(StateManager* owner);
 	const char* GetName() const override { return "Move"; }
 	void Update() override;
+	void OnEnter() override;
 	void OnExit() override;
 };
 

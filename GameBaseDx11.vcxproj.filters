@@ -304,6 +304,9 @@
     <ClCompile Include="IsEnemyActionReady.cpp">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\PolyLine.cpp">
+      <Filter>01Engine\GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -511,6 +514,9 @@
     </ClInclude>
     <ClInclude Include="IsEnemyActionReady.h">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PolyLine.h">
+      <Filter>01Engine\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

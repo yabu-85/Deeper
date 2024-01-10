@@ -5,6 +5,7 @@
 class DamageManager;
 class Player;
 class SegmentCollider;
+class PolyLine;
 
 class TestWeaponMain : public WeaponBase
 {
@@ -13,6 +14,7 @@ class TestWeaponMain : public WeaponBase
     Player* pPlayer_;
     DamageManager* pDamageManager_;
     SegmentCollider* seg_;
+    PolyLine* pPolyLine_;
 
 public:
     TestWeaponMain(GameObject* parent);
@@ -23,6 +25,8 @@ public:
     void Release() override;
     void ResetState() override;
     void CalcDamage();
+
+    PolyLine* GetPolyLine() { return pPolyLine_; }
 };
 
 //-------------------State----------------------

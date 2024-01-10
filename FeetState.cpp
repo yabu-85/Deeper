@@ -8,6 +8,7 @@
 #include "EnemyUi.h"
 #include "Engine/Model.h"
 #include "Engine/Global.h"
+#include <vector>
 
 #include "IsEnemyActionReady.h"
 #include "ChangeStateNode.h"
@@ -17,6 +18,11 @@
 #include "MoveAction.h"
 #include "RotateAction.h"
 #include "SearchAction.h"
+#include "StateCountNode.h"
+
+namespace {
+	const short foundSearch = 10;
+}
 
 FeetAppear::FeetAppear(StateManager* owner) : StateBase(owner), time_(0), appearTime_(0)
 {
@@ -48,10 +54,6 @@ void FeetIdle::Update()
 }
 
 //--------------------------------------------------------------------------------
-
-namespace {
-	const short foundSearch = 10;
-}
 
 FeetPatrol::FeetPatrol(StateManager* owner) : StateBase(owner), foundSearchTime_(0)
 {
@@ -107,24 +109,25 @@ FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 	Selector* selector1 = new Selector();
 	root_->SetRootNode(selector1);
 
-	//---------------------------------------UŒ‚State‚ÌSelector‚Ì“o˜^------------------------------------------------ ‚±‚±‰ü—Ç‚Å‚«‚é
+	//---------------------------------------UŒ‚State‚ÌSelector‚Ì“o˜^----------------------------
 	Selector* selector2 = new Selector();
 	IsNotEnemyCombatState* condition1 = new IsNotEnemyCombatState(selector2, "Attack", pFeet_);
-	Inverter* inverter1 = new Inverter(condition1);
-	selector1->AddChildren(inverter1);
+	selector1->AddChildren(condition1);
 	
-	//--------------------UŒ‚State‚¶‚á‚È‚¢‚©‚çMoveState‚Ö-----------------------
+	//--------------------Move‚ÖˆÚs‚·‚é------------------------------------
 	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(pFeet_, "Move");
 	IsEnemyAttackReady* condition2 = new IsEnemyAttackReady(action1, pFeet_);
-	//§ŒäAI‚ÌConditionNodeiUŒ‚‰Â”\Å‘å””ÍˆÍ“à‚©
-	selector2->AddChildren(condition2);
 
-	Selector* selector3 = new Selector();
-	selector2->AddChildren(selector3);
-	
-	//--------------------------------UŒ‚‚Ì‚Ç‚ê‚©‚ð‘I‚Ô-------------------------------------------
+	//§ŒäAI‚ÌConditionNodeiUŒ‚‰Â”\Å‘å””ÍˆÍ“à‚©Test
+	CombatStateCountNode* conditionA = new CombatStateCountNode(condition2, 1, { "Move", "Attack" });
+	IsEnemyCombatState* condition3 = new IsEnemyCombatState(conditionA, "Wait", pFeet_);
+	selector2->AddChildren(condition3);
+
+	//--------------------Attack‚ÖˆÚs‚·‚é-----------------------
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(pFeet_, "Attack");
-	selector3->AddChildren(action2);
+	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 5.0f, pFeet_, pPlayer);
+	IsEnemyCombatState* condition5 = new IsEnemyCombatState(condition4, "Move", pFeet_);
+	selector2->AddChildren(condition5);
 
 }
 
@@ -167,6 +170,23 @@ FeetWait::FeetWait(StateManager* owner) : StateBase(owner)
 
 void FeetWait::Update()
 {
+	if (rand() % 100 == 0) {
+		if (pFeet_->GetMoveAction()->IsInRange() || pFeet_->GetMoveAction()->IsOutEndTarget()) {
+			Stage* pStage = (Stage*)pFeet_->FindObject("Stage");
+			pFeet_->GetMoveAction()->UpdatePath(pStage->GetFloarPosition(pFeet_->GetPosition(), 10.0f));
+		}
+	}
+
+	pFeet_->GetMoveAction()->Update();
+	pFeet_->GetRotateAction()->Update();
+
+}
+
+void FeetWait::OnEnter()
+{
+	OutputDebugString("WaitState\n");
+
+	pFeet_->GetMoveAction()->SetMoveSpeed(0.02f);
 }
 
 //--------------------------------------------------------------------------------
@@ -181,11 +201,7 @@ void FeetMove::Update()
 	//rand() ‚É‚µ‚Ä‚é‚¯‚Ç‚È‚ñ‚©‚â‚Á‚Ä‚¿‚á‚ñ‚Æ‚µ‚½‚â‚Âì‚Á‚½‚Ù‚¤‚ª‚¢‚¢‚Ë
 	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
 		Player* pPlayer = (Player*)pFeet_->FindObject("Player");
-		if (rand() % 2 == 0) pFeet_->GetMoveAction()->UpdatePath(pPlayer->GetPosition());
-		else {
-			Stage* pStage = (Stage*)pFeet_->FindObject("Stage");
-			pFeet_->GetMoveAction()->UpdatePath(pStage->GetFloarPosition(pFeet_->GetPosition(), 30.0f));
-		}
+		pFeet_->GetMoveAction()->UpdatePath(pPlayer->GetPosition());
 	}
 
 	if (pFeet_->GetMoveAction()->IsOutEndTarget() && rand() % 60 == 0) {
@@ -195,6 +211,14 @@ void FeetMove::Update()
 
 	pFeet_->GetMoveAction()->Update();
 	pFeet_->GetRotateAction()->Update();
+}
+
+void FeetMove::OnEnter()
+{
+	OutputDebugString("MoveState\n");
+
+	pFeet_->GetMoveAction()->SetMoveSpeed(0.03f);
+
 }
 
 void FeetMove::OnExit()
@@ -227,6 +251,8 @@ void FeetAttack::Update()
 
 void FeetAttack::OnEnter()
 {
+	OutputDebugString("AttackState\n");
+
 	time_ = 0;
 	Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 200, 1.0f);
 }

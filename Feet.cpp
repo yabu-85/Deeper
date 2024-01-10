@@ -26,7 +26,8 @@ Feet::~Feet()
 void Feet::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("Model/SphereCollider.fbx");
+	//hModel_ = Model::Load("Model/SphereCollider.fbx");
+	hModel_ = Model::Load("Model/stoneGolem.fbx");
 	assert(hModel_ >= 0);
 
 	maxHp_ = 100;
@@ -39,8 +40,18 @@ void Feet::Initialize()
 	pHandCollider_ = new SphereCollider(XMFLOAT3(0, 0, 0), 1.0f);
 	AddCollider(collision1);
 	AddCollider(collision2);
-//	AddAttackCollider(pHandCollider_);
-	
+	AddAttackCollider(pHandCollider_);
+
+	pEnemyUi_ = new EnemyUi(this);
+	pEnemyUi_->Initialize(5.0f);
+
+	//Actionの設定
+	pMoveAction_ = new AstarMoveAction(this, 0.05f, 2.0f);
+	pRotateAction_ = new RotateAction(this, 0.07f);
+	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f / floarSize, 90.0f);
+	pAuditorySearchAction_ = new AuditorySearchAction(this);
+	pRotateAction_->Initialize();
+
 	//ステートの設定
 	pStateManager_ = new StateManager(this);
 	pStateManager_->AddState(new FeetAppear(pStateManager_));
@@ -59,20 +70,10 @@ void Feet::Initialize()
 	pCombatStateManager_->ChangeState("Wait");
 	pCombatStateManager_->Initialize();
 
-	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize(5.0f);
-
 	Stage* pStage = (Stage*)FindObject("Stage");
 	XMFLOAT3 startPos = pStage->GetRandomFloarPosition();
 	transform_.position_ = startPos;
 	transform_.rotate_.y = (float)(rand() % 360);
-
-	//Actionの設定
-	pMoveAction_ = new AstarMoveAction(this, 0.05f, 2.0f);
-	pRotateAction_ = new RotateAction(this, 0.07f);
-	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f / floarSize, 90.0f);
-	pAuditorySearchAction_ = new AuditorySearchAction(this);
-	pRotateAction_->Initialize();
 
 }
 
@@ -100,7 +101,7 @@ void Feet::Draw()
 
 	CollisionDraw();
 
-	if (!Input::IsKey(DIK_F)) {
+	if (Input::IsKey(DIK_F)) {
 		Transform target;
 		target.scale_ = XMFLOAT3(0.2f, 0.2f, 0.2f);
 		std::vector<XMFLOAT3> targetList = pMoveAction_->GetTarget();

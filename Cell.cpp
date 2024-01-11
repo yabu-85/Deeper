@@ -1,6 +1,7 @@
 #include "Cell.h"
 #include "Engine/Model.h"
 #include "Engine/Input.h"
+#include "Engine/Global.h"
 
 namespace {
 	bool boxDraw = false;
@@ -48,17 +49,17 @@ bool Cell::SetTriangle(Triangle& t)
 		return false;
 	}
 
-	Triangles.push_back(&t);
+	triangles_.push_back(&t);
 	return true;
 }
 
 void Cell::ResetTriangles()
 {
-	for (Triangle* t : Triangles) {
-		delete t;
+	for (auto t : triangles_) {
+		//SAFE_DELETE(t);
 	}
 
-	Triangles.clear();
+	triangles_.clear();
 }
 
 bool Cell::SegmentVsTriangle(RayCastData* _data, float& minDist)
@@ -66,8 +67,8 @@ bool Cell::SegmentVsTriangle(RayCastData* _data, float& minDist)
 	bool hit = false;
 	minDist = FBXSDK_FLOAT_MAX;
 
-	for (int i = 0; i < (int)Triangles.size(); i++) {
-		Triangles.at(i)->RayCast(_data);
+	for (int i = 0; i < (int)triangles_.size(); i++) {
+		triangles_.at(i)->RayCast(_data);
 
 		//ƒŒƒC“–‚½‚Á‚½EÅ¬‹——£‚¾‚Á‚½‚çã‘‚«
 		if (_data->hit && minDist > _data->dist) {
@@ -124,7 +125,7 @@ void Cell::MapDataVsSphere(SphereCollider* collider, XMFLOAT3 prePos)
 		collider->GetGameObject()->SetPosition(prePos);
 	}
 	
-	for (int i = 0; i < (int)Triangles.size(); i++) {
+	for (int i = 0; i < (int)triangles_.size(); i++) {
 	//	Triangles.at(i)->TestSphereTriangle(collider);
 	}
 

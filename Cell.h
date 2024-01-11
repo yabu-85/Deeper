@@ -20,7 +20,7 @@ class Cell
 	XMFLOAT3 verPos_[8];
 
 	//‚±‚ÌCELL‚É‘®‚·‚éOŠpƒ|ƒŠƒSƒ“
-	std::vector<Triangle*>Triangles;
+	std::vector<Triangle*> triangles_;
 	int NumTriangles = 0;
 
 public:
@@ -36,7 +36,7 @@ public:
 
 	//Getter
 	XMFLOAT3 GetPosision() { return position_; };
-	std::vector<Triangle*>& GetTriangles() { return Triangles; };
+	std::vector<Triangle*>& GetTriangles() { return triangles_; };
 
 	//“–‚½‚Á‚½ê‡‚ÌÅ¬‹——£‚ğ•Ô‚·
 	bool SegmentVsTriangle(RayCastData* _data, float& minDist);

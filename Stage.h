@@ -64,6 +64,6 @@ public:
     XMFLOAT3 GetFloarPosition(XMFLOAT3 position, float range);
 
     void ResetStage();
-    void CreatStage();
+    void CreatStage(std::string name);
 
 };

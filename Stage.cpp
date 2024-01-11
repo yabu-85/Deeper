@@ -3,12 +3,17 @@
 #include "Engine/Input.h"
 #include <vector>
 #include "Engine/CsvReader.h"
+#include "GameManager.h"
 #include "CollisionMap.h"
 #include "Player.h"
 
 namespace {
     //デバッグ用
     bool drawCell = true;
+
+    int stageIndex = 0;
+    std::string stageFileName[] = { "Map1", "Map2", "Map3" };
+
 }
 
 Stage::Stage(GameObject* parent)
@@ -29,13 +34,29 @@ void Stage::Initialize()
         assert(hModel_[i] >= 0);
     }
     
-    CreatStage();
+    CreatStage("Csv/" + stageFileName[stageIndex] + ".csv");
 }
 
 void Stage::Update()
 {
     //デバッグ用
     if (Input::IsKeyDown(DIK_E)) drawCell = !drawCell;
+    
+    if (Input::IsKeyDown(DIK_1)) {
+        stageIndex++;
+        if (stageIndex > 2) stageIndex = 2;
+        CreatStage("Csv/" + stageFileName[stageIndex] + ".csv");
+        GameManager::GetCollisionMap()->ResetCellTriangle();
+    //    GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
+    }
+    if (Input::IsKeyDown(DIK_2)) {
+        stageIndex--;
+        if (stageIndex < 0) stageIndex = 0;
+        CreatStage("Csv/" + stageFileName[stageIndex] + ".csv");
+        GameManager::GetCollisionMap()->ResetCellTriangle();
+    //    GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
+    }
+
 
 }
 
@@ -154,15 +175,16 @@ void Stage::ResetStage()
 }
 
 //HADESみたいに作ろう：CSVを読み込みで作成
-void Stage::CreatStage()
+void Stage::CreatStage(std::string name)
 {
     //CSVファイル読み込み
     CsvReader csv;
-    csv.Load("Csv/Map3.csv");
+    csv.Load(name);
 
     //ステージの幅と高さを設定
     mapSizeX_ = (int)csv.GetWidth();
     mapSizeZ_ = (int)csv.GetHeight();
+    intersectDatas_.clear();
 
     //サイズをマップの大きさにする
     mapData_.resize(mapSizeZ_);
@@ -172,6 +194,8 @@ void Stage::CreatStage()
     for (int x = 0; x < mapSizeX_; x++) {
         for (int z = 0; z < mapSizeZ_; z++) {
             int data = csv.GetValue(x, z);
+            mapData_[z][x] = FLOAR;
+
             if (data == 10)
             {
                 intersectDatas_.push_back({ hModel_[T1], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });

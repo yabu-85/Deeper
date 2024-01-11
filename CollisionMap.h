@@ -26,6 +26,9 @@ public:
     void Draw() override;
     void Release() override;
 
+    void CreatIntersectDataTriangle();
+    void ResetCellTriangle();
+
     bool GetRayCastMinDist(XMFLOAT3 camPos, XMFLOAT3 plaPos, RayCastData* _data, float& minDist);
 
     //コリジョンマップとの接触判定：めり込んでたら追い出す

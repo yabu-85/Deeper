@@ -5,6 +5,7 @@ class NavigationAI;
 class DamageManager;
 class WeaponObjectManager;
 class DropTable;
+class CollisionMap;
 class GameObject;
 
 namespace GameManager
@@ -18,5 +19,6 @@ namespace GameManager
 	DamageManager* GetDamageManager();
 	WeaponObjectManager* GetWeaponObjectManager();
 	DropTable* GetDropTable();
+	CollisionMap* GetCollisionMap();
 	GameObject* GetParent();
 };

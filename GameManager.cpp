@@ -19,6 +19,7 @@ namespace GameManager {
 	DamageManager* pDamageManager_ = nullptr;
 	WeaponObjectManager* pWeaponObjectManager_ = nullptr;
 	DropTable* pDropTable_ = nullptr;
+	CollisionMap* pCollisionMap_ = nullptr;
 	GameObject* pParent_ = nullptr;
 
 	void GameManager::Initialize(GameObject* parent)
@@ -33,7 +34,7 @@ namespace GameManager {
 		pDamageManager_->AddCharacter(pPlayer_, DamageManager::DA_Player);
 
 		pParent_ = parent;
-		Instantiate<CollisionMap>(parent);
+		pCollisionMap_ = Instantiate<CollisionMap>(parent);
 
 		pWeaponObjectManager_ = new WeaponObjectManager();
 	
@@ -78,6 +79,7 @@ namespace GameManager {
 	DamageManager* GetDamageManager() { return pDamageManager_; }
 	WeaponObjectManager* GetWeaponObjectManager() { return pWeaponObjectManager_; }
 	DropTable* GetDropTable() { return pDropTable_; }
+	CollisionMap* GetCollisionMap() { return pCollisionMap_; }
 	GameObject* GetParent() { return pParent_; }
 }
 

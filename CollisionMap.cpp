@@ -73,54 +73,8 @@ void CollisionMap::Initialize()
             }
         }
     }
-
-    //Cellに追加する予定のTriangleをすべて計算してCreatする
-    std::vector<Triangle*> triList;
-    std::vector<IntersectData> inteDatas = pStage->GetIntersectDatas();
-    for (int i = 0; i < inteDatas.size(); i++) {
-        pFbx = Model::GetFbx(inteDatas[i].hModelNum + Stage::MAX);
-        std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
-
-        //IntersectDataのCollision用モデルのパーツをすべて取得し、その全ポリゴンの座標を計算
-        for (int n = 0; n < pFbxParts.size(); n++) {
-            std::vector<XMFLOAT3> polygons = pFbxParts[n]->GetAllPositions();
-
-            //モデルデータの座標を計算
-            XMFLOAT3 interPos = inteDatas[i].position;
-            XMFLOAT3 interScale = inteDatas[i].scale;
-            for (int j = 0; j < polygons.size(); j++)
-                polygons[j] = XMFLOAT3(polygons[j].x * interScale.x + interPos.x,
-                                       polygons[j].y * interScale.y + interPos.y,
-                                       polygons[j].z * interScale.z + interPos.z);
-
-            //Triangleに割当たるポリゴンを取得しCreatしてリストに追加
-            int polygonsSize = (int)polygons.size() / polySize;
-            for (int h = 0; h < polygonsSize; h++) {
-                XMVECTOR vpoly[polySize];
-                for (int t = 0; t < polySize; t++)
-                    vpoly[t] = XMLoadFloat3(&polygons[h * polySize + t]);
-
-                Triangle *tri = new Triangle();
-                tri->CreatTriangle(vpoly[0], vpoly[1], vpoly[2]);
-                triList.push_back(tri);
-            }
-        }
-    }
-
-    OutputDebugString("polygon : ");
-    OutputDebugStringA(std::to_string(triList.size()).c_str());
-    OutputDebugString("\n");
-
-    //「各CELL」に含まれる三角ポリゴンを登録
-    for (int y = 0; y < numY; y++) {
-        for (int z = 0; z < numZ; z++) {
-            for (int x = 0; x < numX; x++) {
-                for (int i = 0; i < (int)triList.size(); i++) {
-                    cells_[y][z][x].SetTriangle(*triList[i]);
-                }
-            }
-        }
-    }
+    
+    CreatIntersectDataTriangle();
 
     pBox = Instantiate<CellBox>(this);
 }
@@ -143,6 +97,69 @@ void CollisionMap::Draw()
 
 void CollisionMap::Release()
 {
+}
+
+void CollisionMap::CreatIntersectDataTriangle()
+{
+    //Cellに追加する予定のTriangleをすべて計算してCreatする
+    std::vector<Triangle*> triList;
+    std::vector<IntersectData> inteDatas = pStage->GetIntersectDatas();
+    for (int i = 0; i < inteDatas.size(); i++) {
+        pFbx = Model::GetFbx(inteDatas[i].hModelNum + Stage::MAX);
+        std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
+
+        //IntersectDataのCollision用モデルのパーツをすべて取得し、その全ポリゴンの座標を計算
+        for (int n = 0; n < pFbxParts.size(); n++) {
+            std::vector<XMFLOAT3> polygons = pFbxParts[n]->GetAllPositions();
+
+            //モデルデータの座標を計算
+            XMFLOAT3 interPos = inteDatas[i].position;
+            XMFLOAT3 interScale = inteDatas[i].scale;
+            for (int j = 0; j < polygons.size(); j++)
+                polygons[j] = XMFLOAT3(polygons[j].x * interScale.x + interPos.x,
+                    polygons[j].y * interScale.y + interPos.y,
+                    polygons[j].z * interScale.z + interPos.z);
+
+            //Triangleに割当たるポリゴンを取得しCreatしてリストに追加
+            int polygonsSize = (int)polygons.size() / polySize;
+            for (int h = 0; h < polygonsSize; h++) {
+                XMVECTOR vpoly[polySize];
+                for (int t = 0; t < polySize; t++)
+                    vpoly[t] = XMLoadFloat3(&polygons[h * polySize + t]);
+
+                Triangle* tri = new Triangle();
+                tri->CreatTriangle(vpoly[0], vpoly[1], vpoly[2]);
+                triList.push_back(tri);
+            }
+        }
+    }
+
+    OutputDebugString("polygon : ");
+    OutputDebugStringA(std::to_string(triList.size()).c_str());
+    OutputDebugString("\n");
+
+    //「各CELL」に含まれる三角ポリゴンを登録
+    for (int y = 0; y < numY; y++) {
+        for (int z = 0; z < numZ; z++) {
+            for (int x = 0; x < numX; x++) {
+                for (int i = 0; i < (int)triList.size(); i++) {
+                    cells_[y][z][x].SetTriangle(*triList[i]);
+                }
+            }
+        }
+    }
+}
+
+void CollisionMap::ResetCellTriangle()
+{
+    //「各CELL」に含まれる三角ポリゴンを登録
+    for (int y = 0; y < numY; y++) {
+        for (int z = 0; z < numZ; z++) {
+            for (int x = 0; x < numX; x++) {
+                cells_[y][z][x].ResetTriangles();
+            }
+        }
+    }
 }
 
 bool CollisionMap::GetCellIndex(XMFLOAT3& pos)

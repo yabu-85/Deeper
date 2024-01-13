@@ -15,7 +15,7 @@ UIBase::UIBase()
 
 void UIBase::Initialize(std::string name, XMFLOAT2 pos, std::function<void()> onClick)
 {
-	const std::string fileName[] = { "Png/ButtonFrame1.png", "Png/ButtonFrame2.png", "Png/" + name + ".png" };
+	const std::string fileName[] = { "Image/ButtonFrame1.png", "Image/ButtonFrame2.png", "Image/" + name + ".png" };
 	for (int i = 0; i < PNG_COUNT; i++) {
 		hPict_[i] = Image::Load(fileName[i]);
 		assert(hPict_[i] >= 0);

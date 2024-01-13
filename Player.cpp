@@ -5,8 +5,9 @@
 #include "StateManager.h"
 #include "PlayerState.h"
 #include "PlayerCommand.h"
-#include "TestWeaponMain.h"
-#include "TestWeaponSub.h"
+#include "PlayerWeapon.h"
+#include "GameManager.h"
+#include "CreateStage.h"
 
 #include "Engine/BoxCollider.h"
 #include "Engine/SphereCollider.h"
@@ -30,9 +31,8 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-    : Character(parent), hModel_{-1, -1}, pAim_(nullptr), playerMovement_{0,0,0}, pStateManager_(nullptr),
-    pCommand_(nullptr), pMainWeapon_(nullptr), pSubWeapon_{ nullptr, nullptr }, money_(0), currentSubIndex_(0)
-    , moveSpeed_(0.0f), rotateRatio_(0.0f)
+    : Character(parent), hModel_{-1, -1}, pAim_(nullptr),  pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr), 
+    money_(0), moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_{ 0,0,0 }
 {
     objectName_ = "Player";
 }
@@ -56,12 +56,10 @@ void Player::Initialize()
     assert(hModel_[1] >= 0);
     transform_.rotate_.y += 180.0f;
     
-    pMainWeapon_ = Instantiate<TestWeaponMain>(this);
-    pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
-    pMainWeapon_->SetOffsetRotate(XMFLOAT3(0.0f, 0.0f, 0.0f));
-
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
+    pPlayerWeapon_ = new PlayerWeapon(this);
+    pPlayerWeapon_->SetMainWeapon();
 
     pStateManager_ = new StateManager(this);
     pStateManager_->AddState(new PlayerWait(pStateManager_));
@@ -74,16 +72,15 @@ void Player::Initialize()
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 
-    maxHp_ = 100;
-    hp_ = maxHp_;
     moveSpeed_ = 0.15f;
     rotateRatio_ = 0.2f;
 
-//    BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), XMFLOAT3(0.5f, 2.6f, 0.5f));
-//    AddCollider(collider);
-
+    //BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), XMFLOAT3(0.5f, 2.6f, 0.5f));
+    //AddCollider(collider);
     collid = new SphereCollider(XMFLOAT3(0.0f, 2.3f, 0.0f), 0.5f);
     AddCollider(collid);
+
+    SetPosition(GameManager::GetCreateStage()->GetPlayerStartPos());
 
     pText->Initialize();
 }
@@ -101,15 +98,13 @@ void Player::Update()
     if (Input::IsKey(DIK_DOWNARROW)) transform_.position_.y -= 0.1f;
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
     if (Input::IsKeyDown(DIK_RIGHTARROW)) transform_.position_.y += 10.0f;
-    if (Input::IsKey(DIK_H)) ApplyDamage(1);
 
     //デバッグ用とりあえずRayCastで真下・真上に壁があるかで判定してる
     //cellに設定したheightより段差が小さいなら乗り越える
     if (Input::IsKeyDown(DIK_Y)) isCollider = !isCollider;
 
     if (isCollider) {
-        CollisionMap* map = (CollisionMap*)FindObject("CollisionMap");
-    //    map->MapDataVsSphere(collid, prePos);
+        CollisionMap* map = static_cast<CollisionMap*>(FindObject("CollisionMap"));
         map->CalcMapWall(transform_.position_, moveSpeed_);
     
     }
@@ -139,17 +134,7 @@ void Player::Draw()
     Model::Draw(testModel, 4);
 
     CollisionDraw();
-
-    //武器の表示非表示
-    if (currentSubIndex_ == 0) {
-        if (pSubWeapon_[0]) pSubWeapon_[0]->Visible();
-        if (pSubWeapon_[1]) pSubWeapon_[1]->Invisible();
-    }
-    else {
-        if (pSubWeapon_[1]) pSubWeapon_[1]->Visible();
-        if (pSubWeapon_[0]) pSubWeapon_[0]->Invisible();
-    }
-
+    pPlayerWeapon_->DrawWeapon();
 
     //デバッグ用
     pText->Draw(30, 30, (int)transform_.position_.x);
@@ -157,19 +142,6 @@ void Player::Draw()
     pText->Draw(30, 110, (int)transform_.position_.z);
     
     pText->Draw(1100, 30, money_);
-    pText->Draw(1100, 70, hp_);
-    pText->Draw(1150, 70, " / ");
-    pText->Draw(1200, 70, maxHp_);
-    
-    pText->Draw(1000, 600, currentSubIndex_);
-    if (pSubWeapon_[0]) {
-        const char* cstr = pSubWeapon_[0]->GetObjectName().c_str();
-        pText->Draw(1000, 650, cstr);
-    }
-    if (pSubWeapon_[1]) {
-        const char* cstr = pSubWeapon_[1]->GetObjectName().c_str();
-        pText->Draw(1000, 700, cstr);
-    }
 }
 
 void Player::Release()
@@ -258,16 +230,6 @@ void Player::Move(float f)
     transform_.position_.z += ((playerMovement_.z * moveSpeed_) * f);
 }
 
-void Player::ApplyDamage(int da)
-{
-    hp_ -= da;
-    return;
-
-    if (hp_ <= 0) {
-        pStateManager_->ChangeState("Dead");
-    }
-}
-
 XMVECTOR Player::GetDirectionVec()
 {
     XMVECTOR vMove = { 0.0, 0.0, 1.0, 0.0 };
@@ -329,40 +291,4 @@ void Player::InitAvo()
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
     }
 
-}
-
-void Player::SetWeapon(WeaponBase* weapon)
-{
-    //空いていたら追加する
-    if (pSubWeapon_[0] == nullptr) {
-        pSubWeapon_[0] = weapon;
-        return;
-    }
-    else if (pSubWeapon_[1] == nullptr) {
-        pSubWeapon_[1] = weapon;
-        return;
-    }
-    
-    //上書きする
-    pSubWeapon_[currentSubIndex_]->KillMe();
-    pSubWeapon_[currentSubIndex_] = weapon;
-}
-
-void Player::WeaponChangeIndex()
-{
-    if (pCommand_->CmdCenterUp()) {
-        currentSubIndex_ = 0;
-        return;
-    }
-    if (pCommand_->CmdCenterDown()) {
-        currentSubIndex_ = 1;
-        return;
-    }
-
-}
-
-void Player::SubWeaponRemove()
-{
-    pSubWeapon_[currentSubIndex_]->KillMe();
-    pSubWeapon_[currentSubIndex_] = nullptr;
 }

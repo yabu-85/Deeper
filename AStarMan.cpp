@@ -1,7 +1,9 @@
 #include "AStarMan.h"
 #include "Engine/Model.h"
-#include "Stage.h"
+#include "CreateStage.h"
 #include "Engine/Global.h"
+#include "GameManager.h"
+#include "CreateStage.h"
 
 #include "MoveAction.h"
 #include "RotateAction.h"
@@ -28,8 +30,8 @@ void AStarMan::Initialize()
 	
 	aimTargetPos_ = 1.0f;
 
-	Stage* pStage = (Stage*)FindObject("Stage");
-	XMFLOAT3 startPos = pStage->GetRandomFloarPosition();
+	CreateStage* pCreateStage = GameManager::GetCreateStage();
+	XMFLOAT3 startPos = pCreateStage->GetRandomFloarPosition();
 	transform_.position_ = startPos;
 	transform_.scale_ = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
@@ -41,26 +43,23 @@ void AStarMan::Initialize()
 void AStarMan::Update()
 {
 	if (pAstarMoveAction_->IsInRange() && rand() % 60 == 0) {
-	//	Player* pPlayer = (Player*)FindObject("Player");
-	//	pAstarMoveAction_->UpdatePath(pPlayer->GetPosition());
-
-		Stage* pStage = (Stage*)FindObject("Stage");
-		pAstarMoveAction_->SetTarget(pStage->GetRandomFloarPosition());
+		CreateStage* pCreateStage = GameManager::GetCreateStage();
+		pAstarMoveAction_->SetTarget(pCreateStage->GetRandomFloarPosition());
 	}
 
 	if (rand() % 10 == 0 && pAstarMoveAction_->IsOutEndTarget()) {
-		Player* pPlayer = (Player*)FindObject("Player");
+		Player* pPlayer = static_cast<Player*>(FindObject("Player"));
 		pAstarMoveAction_->UpdatePath(pPlayer->GetPosition());
 	}
 
 	if (Input::IsKey(DIK_3)) {
-		Stage* pStage = (Stage*)FindObject("Stage");
-		pAstarMoveAction_->UpdatePath(pStage->GetFloarPosition(transform_.position_, 20.0f));
+		CreateStage* pCreateStage = GameManager::GetCreateStage();
+		pAstarMoveAction_->UpdatePath(pCreateStage->GetFloarPosition(transform_.position_, 20.0f));
 	}
 	
 	if (Input::IsKey(DIK_4)) {
-		Stage* pStage = (Stage*)FindObject("Stage");
-		pAstarMoveAction_->UpdatePath(pStage->GetFloarPosition(transform_.position_, 0.0f));
+		CreateStage* pCreateStage = GameManager::GetCreateStage();
+		pAstarMoveAction_->UpdatePath(pCreateStage->GetFloarPosition(transform_.position_, 0.0f));
 	}
 	
 	pAstarMoveAction_->Update();

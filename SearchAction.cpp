@@ -4,7 +4,7 @@
 
 VisionSearchAction::VisionSearchAction(Character* obj, float range, float fov) : BaseAction(obj), range_(range), isFoundTarget_(false)
 {
-    pTarget_ = (Character*)pCharacter_->FindObject("Player");
+    pTarget_ = static_cast<Character*>(pCharacter_->FindObject("Player"));
     fovRadian_ = XMConvertToRadians(fov) / 2;
 }
 
@@ -42,7 +42,7 @@ void VisionSearchAction::Update()
     data.start = charaPos;
     XMStoreFloat3(&data.dir, (toTargetNorm * -1.0f));
 
-    CollisionMap* pCollisionMap = (CollisionMap*)pCharacter_->FindObject("CollisionMap");
+    CollisionMap* pCollisionMap = static_cast<CollisionMap*>(pCharacter_->FindObject("CollisionMap"));
     pCollisionMap->RaySelectCellVsSegment(data, targetPos);
 
     //rayDist‚ªtoTarget‚æ‚è’l‚ª‘å‚«‚¢‚È‚çTarget‚ğ–Ú‹o—ˆ‚½

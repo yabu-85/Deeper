@@ -5,14 +5,12 @@
 #include "Player.h"
 #include "StateManager.h"
 #include "GameManager.h"
-#include "DamageManager.h"
 #include "Engine/Global.h"
 
 EnemyBase::EnemyBase(GameObject* parent)
 	: Character(parent), pEnemyUi_(nullptr), pStateManager_(nullptr), pCombatStateManager_(nullptr),
 	type_(ENEMY_MAX), aimTargetPos_(0.0f), attackCoolDown_(0)
 {
-	GameManager::GetDamageManager()->AddCharacter(this, DamageManager::DamageType::DA_Enemy);
 }
 
 EnemyBase::~EnemyBase()

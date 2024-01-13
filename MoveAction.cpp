@@ -4,7 +4,7 @@
 #include "GameManager.h"
 #include "EnemyManager.h"
 #include "NavigationAI.h"
-#include "Stage.h"
+#include "CreateStage.h"
 #include "EnemyBase.h"
 
 MoveAction::MoveAction(Character* obj, float speed, float range)
@@ -98,7 +98,7 @@ void AstarMoveAction::Update()
 	XMStoreFloat3(&pos, vPos + vMove);
 
 	//壁とのあたり判定してからポジションセット
-	CollisionMap* pMap = (CollisionMap*)pCharacter_->FindObject("CollisionMap");
+	CollisionMap* pMap = static_cast<CollisionMap*>(pCharacter_->FindObject("CollisionMap"));
 	pMap->CalcMapWall(pos, moveSpeed_);
 	pCharacter_->SetPosition(pos);
 }

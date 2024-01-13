@@ -80,60 +80,7 @@ bool Cell::SegmentVsTriangle(RayCastData* _data, float& minDist)
 	return hit;
 }
 
-void Cell::MapDataVsBox(BoxCollider* collider)
-{
-}
-
-#include "Player.h"
-//デバッグ用？テスト用？空中にいる処理と・壁の処理
-void Cell::MapDataVsSphere(SphereCollider* collider, XMFLOAT3 prePos)
-{
-	XMFLOAT3 pos = collider->GetGameObject()->GetPosition();
-	float height = 0.75f;
-	pos.y += height;
-
-	Player* pPlayer = static_cast<Player*>(collider->GetGameObject());
-
-	RayCastData data;
-	data.start = pos;
-	data.dir = XMFLOAT3(0.0f, -1.0f, 0.0f);
-	float dist = 0.0f;
-	bool hit = SegmentVsTriangle(&data, dist);
-	if (hit && dist <= height) {
-		XMFLOAT3 newPos = XMFLOAT3(pos.x, pos.y - height + (height - dist), pos.z);
-		collider->GetGameObject()->SetPosition(newPos);
-	}
-	else {
-		XMFLOAT3 newPos = pPlayer->GetPosition();
-		pPlayer->SetPosition(XMFLOAT3(newPos.x, newPos.y - 0.1f, newPos.z));
-
-		pos = collider->GetGameObject()->GetPosition();
-		pos.y += height;
-		data.start = pos;
-		hit = SegmentVsTriangle(&data, dist);
-		if (hit && dist <= height) {
-			XMFLOAT3 newPos = XMFLOAT3(pos.x, pos.y - height + (height - dist), pos.z);
-			collider->GetGameObject()->SetPosition(newPos);
-		}
-	}
-
-	RayCastData data2;
-	data2.start = pos;
-	data2.dir = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	hit = SegmentVsTriangle(&data2, dist);
-	if (hit) {
-		collider->GetGameObject()->SetPosition(prePos);
-	}
-	
-	for (int i = 0; i < (int)triangles_.size(); i++) {
-	//	Triangles.at(i)->TestSphereTriangle(collider);
-	}
-
-}
-
-
 //----------------------------------------------------------------------
-
 
 void CellBox::Initialize()
 {

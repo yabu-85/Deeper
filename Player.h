@@ -4,7 +4,7 @@
 class Aim;
 class StateManager;
 class PlayerCommand;
-class WeaponBase;
+class PlayerWeapon;
 
 class Player : public Character
 {
@@ -17,10 +17,7 @@ class Player : public Character
     Aim* pAim_;
     StateManager* pStateManager_;
     PlayerCommand* pCommand_;
-
-    int currentSubIndex_;       //¡‘I‘ğ‚µ‚Ä‚éSub‚ÌIndex
-    WeaponBase* pMainWeapon_;
-    WeaponBase* pSubWeapon_[2];
+    PlayerWeapon* pPlayerWeapon_;
 
 public:
     Player(GameObject* parent);
@@ -44,19 +41,13 @@ public:
     XMFLOAT3 GetKeyMovement() { return playerMovement_; }
     XMVECTOR GetDirectionVec();     //Œü‚¢‚Ä‚¢‚é•ûŒüi³‹K‰»Ï‚İ
 
-    void ApplyDamage(int da) override;
     void InitAvo();
     void AddMoney(int num) { money_ += num; }
     int GetModelHandle() { return hModel_[0]; }
 
-    void SetWeapon(WeaponBase* weapon);
-    void WeaponChangeIndex();       //Input‚ª‚ ‚Á‚½ê‡currentSubIndex‚ğ•Ï‚¦‚é
-    void SubWeaponRemove();
-    WeaponBase* GetMainWeapon() { return pMainWeapon_; }
-    WeaponBase* GetSubWeapon() { return pSubWeapon_[currentSubIndex_]; }
-
-    PlayerCommand* GetCommand() { return pCommand_; }
     Aim* GetAim() { return pAim_; }
+    PlayerCommand* GetCommand() { return pCommand_; }
+    PlayerWeapon* GetPlayerWeapon() { return pPlayerWeapon_; }
 
 };
 

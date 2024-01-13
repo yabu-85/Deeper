@@ -243,6 +243,35 @@ void GameObject::ClearCollider()
 	colliderList_.clear();
 }
 
+void GameObject::Collision(GameObject* pTarget)
+{
+	//自分同士の当たり判定はしない
+	if (pTarget == nullptr || this == pTarget)
+	{
+		return;
+	}
+
+	//自分とpTargetのコリジョン情報を使って当たり判定
+	//1つのオブジェクトが複数のコリジョン情報を持ってる場合もあるので二重ループ
+	for (auto i : colliderList_)
+	{
+		for (auto j : pTarget->colliderList_)
+		{
+			if (i->IsHit(j))
+			{
+				//当たった
+				this->OnCollision(pTarget);
+			}
+		}
+	}
+
+	//子供も当たり判定
+	for (auto i : pTarget->childList_)
+	{
+		Collision(i);
+	}
+}
+
 //テスト用の衝突判定枠を表示
 void GameObject::CollisionDraw()
 {
@@ -291,6 +320,8 @@ void GameObject::UpdateSub()
 		}
 		else
 		{
+			//当たり判定
+			(*it)->Collision(GetParent());
 			it++;
 		}
 	}

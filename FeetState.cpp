@@ -2,8 +2,7 @@
 #include "StateManager.h"
 #include "Player.h"
 #include "Feet.h"
-#include "Stage.h"
-#include "DamageManager.h"
+#include "CreateStage.h"
 #include "GameManager.h"
 #include "EnemyUi.h"
 #include "Engine/Model.h"
@@ -64,8 +63,8 @@ void FeetPatrol::Update()
 {
 	//Astar移動が終わったなら更新・待ち時間適当にrandamで デバッグ用
 	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 60 == 0) {
-		Stage* pStage = (Stage*)pFeet_->FindObject("Stage");
-		pFeet_->GetMoveAction()->UpdatePath(pStage->GetRandomFloarPosition());
+		CreateStage* pCreateStage = GameManager::GetCreateStage();
+		pFeet_->GetMoveAction()->UpdatePath(pCreateStage->GetRandomFloarPosition());
 	}
 
 	//Astar移動・回転
@@ -172,8 +171,8 @@ void FeetWait::Update()
 {
 	if (rand() % 100 == 0) {
 		if (pFeet_->GetMoveAction()->IsInRange() || pFeet_->GetMoveAction()->IsOutEndTarget()) {
-			Stage* pStage = (Stage*)pFeet_->FindObject("Stage");
-			pFeet_->GetMoveAction()->UpdatePath(pStage->GetFloarPosition(pFeet_->GetPosition(), 10.0f));
+			CreateStage* pCreateStage = GameManager::GetCreateStage();
+			pFeet_->GetMoveAction()->UpdatePath(pCreateStage->GetFloarPosition(pFeet_->GetPosition(), 10.0f));
 		}
 	}
 
@@ -200,12 +199,12 @@ void FeetMove::Update()
 {
 	//rand() にしてるけどなんかやってちゃんとしたやつ作ったほうがいいね
 	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
-		Player* pPlayer = (Player*)pFeet_->FindObject("Player");
+		Player* pPlayer = static_cast<Player*>(pFeet_->FindObject("Player"));
 		pFeet_->GetMoveAction()->UpdatePath(pPlayer->GetPosition());
 	}
 
 	if (pFeet_->GetMoveAction()->IsOutEndTarget() && rand() % 60 == 0) {
-		Player* pPlayer = (Player*)pFeet_->FindObject("Player");
+		Player* pPlayer = static_cast<Player*>(pFeet_->FindObject("Player"));
 		pFeet_->GetMoveAction()->UpdatePath(pPlayer->GetPosition());
 	}
 
@@ -239,7 +238,7 @@ void FeetAttack::Update()
 
 	//AttackFrame=65 ～ 90
 	if (time_ > 65 && time_ < 90 && !pFeet_->GetAttackColliderList().empty()) {
-		GameManager::GetDamageManager()->CalcPlyaer(pFeet_->GetSphereCollider(), 1);
+		//GameManager::GetDamageManager()->CalcPlyaer(pFeet_->GetSphereCollider(), 1);
 	}
 	
 	if (time_ >= 200) {

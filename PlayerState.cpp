@@ -6,6 +6,7 @@
 #include "WeaponBase.h"
 #include "WeaponObjectManager.h"
 #include "Aim.h"
+#include "PlayerWeapon.h"
 
 namespace {
 	const int defAvoTime = 30;
@@ -21,7 +22,7 @@ PlayerWait::PlayerWait(StateManager* owner) : StateBase(owner)
 
 void PlayerWait::Update()
 {
-	pPlayer_->WeaponChangeIndex();
+	pPlayer_->GetPlayerWeapon()->WeaponChangeIndex();
 	pPlayer_->CalcNoMove();
 	pPlayer_->Move();
 
@@ -34,11 +35,11 @@ void PlayerWait::Update()
 		owner_->ChangeState("Avo");
 		return;
 	}
-	if (pPlayer_->GetMainWeapon() && pPlayer_->GetCommand()->CmdAtk()) {
+	if (pPlayer_->GetPlayerWeapon()->GetMainWeapon() && pPlayer_->GetCommand()->CmdAtk()) {
 		owner_->ChangeState("Atk");
 		return;
 	}
-	if (pPlayer_->GetSubWeapon() && pPlayer_->GetCommand()->CmdSubAtk()) {
+	if (pPlayer_->GetPlayerWeapon()->GetSubWeapon() && pPlayer_->GetCommand()->CmdSubAtk()) {
 		owner_->ChangeState("SubAtk");
 		return;
 	}
@@ -67,11 +68,11 @@ void PlayerWalk::Update()
 		owner_->ChangeState("Avo");
 		return;
 	}
-	if (pPlayer_->GetMainWeapon() && pPlayer_->GetCommand()->CmdAtk()) {
+	if (pPlayer_->GetPlayerWeapon()->GetMainWeapon() && pPlayer_->GetCommand()->CmdAtk()) {
 		owner_->ChangeState("Atk");
 		return;
 	}
-	if (pPlayer_->GetSubWeapon() && pPlayer_->GetCommand()->CmdSubAtk()) {
+	if (pPlayer_->GetPlayerWeapon()->GetSubWeapon() && pPlayer_->GetCommand()->CmdSubAtk()) {
 		owner_->ChangeState("SubAtk");
 		return;
 	}
@@ -82,7 +83,7 @@ void PlayerWalk::Update()
 		}
 	}
 	
-	pPlayer_->WeaponChangeIndex();
+	pPlayer_->GetPlayerWeapon()->WeaponChangeIndex();
 	pPlayer_->CalcMove();
 	pPlayer_->Move(); 
 	pPlayer_->Rotate();
@@ -109,7 +110,7 @@ void PlayerWeaponChange::Update()
 		if (time_ > changeTime_) {
 			WeaponBase* weapon = GameManager::GetWeaponObjectManager()->GetNearestWeapon();
 			if (weapon) {
-				pPlayer_->SetWeapon(weapon);
+				pPlayer_->GetPlayerWeapon()->SetWeapon(weapon);
 			}
 
 			owner_->ChangeState("Wait");
@@ -153,11 +154,11 @@ void PlayerAvo::Update()
 			owner_->ChangeState("Avo");
 			return;
 		}
-		if (pPlayer_->GetMainWeapon() && nextCmd_ == 2) {
+		if (pPlayer_->GetPlayerWeapon()->GetMainWeapon() && nextCmd_ == 2) {
 			owner_->ChangeState("Atk");
 			return;
 		}
-		if (pPlayer_->GetSubWeapon() && nextCmd_ == 3) {
+		if (pPlayer_->GetPlayerWeapon()->GetSubWeapon() && nextCmd_ == 3) {
 			owner_->ChangeState("SubAtk");
 			return;
 		}
@@ -191,19 +192,19 @@ PlayerAtk::PlayerAtk(StateManager* owner) : StateBase(owner), nextCmd_(0)
 
 void PlayerAtk::Update()
 {
-	pPlayer_->GetMainWeapon()->UpdateState();
+	pPlayer_->GetPlayerWeapon()->GetMainWeapon()->UpdateState();
 
 	if (pPlayer_->GetCommand()->CmdAtk()) nextCmd_ = 0;
 	if (pPlayer_->GetCommand()->CmdAvo()) nextCmd_ = 1;
 	if (pPlayer_->GetCommand()->CmdSubAtk()) nextCmd_ = 2;
 	
 	//コンボ終了NextCmdのステートへ
-	if (pPlayer_->GetMainWeapon()->IsAtkEnd()) {
+	if (pPlayer_->GetPlayerWeapon()->GetMainWeapon()->IsAtkEnd()) {
 		if (nextCmd_ == 1) {
 			owner_->ChangeState("Avo");
 			return;
 		}
-		if (pPlayer_->GetSubWeapon() && nextCmd_ == 2) {
+		if (pPlayer_->GetPlayerWeapon()->GetSubWeapon() && nextCmd_ == 2) {
 			owner_->ChangeState("SubAtk");
 			return;
 		}
@@ -219,13 +220,13 @@ void PlayerAtk::Update()
 void PlayerAtk::OnEnter()
 {
 	nextCmd_ = 0;
-	pPlayer_->GetMainWeapon()->SetAtkEnd(false);
+	pPlayer_->GetPlayerWeapon()->GetMainWeapon()->SetAtkEnd(false);
 
 }
 
 void PlayerAtk::OnExit()
 {
-	pPlayer_->GetMainWeapon()->ResetState();
+	pPlayer_->GetPlayerWeapon()->GetMainWeapon()->ResetState();
 }
  
 //--------------------------------------------------------------------------------
@@ -237,19 +238,19 @@ PlayerSubAtk::PlayerSubAtk(StateManager* owner) : StateBase(owner), nextCmd_(0)
 
 void PlayerSubAtk::Update()
 {
-	pPlayer_->GetSubWeapon()->UpdateState();
+	pPlayer_->GetPlayerWeapon()->GetSubWeapon()->UpdateState();
 
 	if (pPlayer_->GetCommand()->CmdSubAtk()) nextCmd_ = 0;
 	if (pPlayer_->GetCommand()->CmdAvo()) nextCmd_ = 1;
 	if (pPlayer_->GetCommand()->CmdAtk()) nextCmd_ = 2;
 
 	//コンボ終了NextCmdのステートへ
-	if (pPlayer_->GetSubWeapon()->IsAtkEnd()) {
+	if (pPlayer_->GetPlayerWeapon()->GetSubWeapon()->IsAtkEnd()) {
 		if (nextCmd_ == 1) {
 			owner_->ChangeState("Avo");
 			return;
 		}
-		if (pPlayer_->GetMainWeapon() && nextCmd_ == 2) {
+		if (pPlayer_->GetPlayerWeapon()->GetMainWeapon() && nextCmd_ == 2) {
 			owner_->ChangeState("Atk");
 			return;
 		}
@@ -265,16 +266,16 @@ void PlayerSubAtk::Update()
 void PlayerSubAtk::OnEnter()
 {
 	nextCmd_ = 0;
-	pPlayer_->GetSubWeapon()->SetAtkEnd(false);
+	pPlayer_->GetPlayerWeapon()->GetSubWeapon()->SetAtkEnd(false);
 }
 
 void PlayerSubAtk::OnExit()
 {
-	if (pPlayer_->GetSubWeapon()->IsBlockend()) {
-		pPlayer_->SubWeaponRemove();
+	if (pPlayer_->GetPlayerWeapon()->GetSubWeapon()->IsBlockend()) {
+		pPlayer_->GetPlayerWeapon()->SubWeaponRemove();
 		return;
 	}
-	pPlayer_->GetSubWeapon()->ResetState();
+	pPlayer_->GetPlayerWeapon()->GetSubWeapon()->ResetState();
 
 }
 

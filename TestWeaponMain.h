@@ -2,7 +2,6 @@
 #include "WeaponBase.h"
 #include "StateBase.h"
 
-class DamageManager;
 class Player;
 class SegmentCollider;
 class PolyLine;
@@ -12,7 +11,6 @@ class TestWeaponMain : public WeaponBase
     int damage_;
     XMFLOAT3 wandPos_;
     Player* pPlayer_;
-    DamageManager* pDamageManager_;
     SegmentCollider* seg_;
     PolyLine* pPolyLine_;
 

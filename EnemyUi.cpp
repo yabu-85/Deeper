@@ -44,11 +44,11 @@ EnemyUi::~EnemyUi()
 void EnemyUi::Initialize(float height)
 {
     height_ = height;
-	pPlayer_ = (Player*)pParent_->FindObject("Player");
+	pPlayer_ = static_cast<Player*>(pParent_->FindObject("Player"));
 
 	std::string fileName[] = { "Gauge", "GaugeFrame", "TargetFound" };
 	for (int i = 0; i < MAX; i++) {
-		hPict_[i] = Image::Load("Png/" + fileName[i] + ".png");
+		hPict_[i] = Image::Load("Image/" + fileName[i] + ".png");
 		assert(hPict_[i] >= 0);
 	}
 

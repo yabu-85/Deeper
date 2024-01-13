@@ -23,14 +23,14 @@ void TitleScene::Initialize()
 	//‚±‚êPlayerScene‚©‚ç–ß‚é‚â‚ÂŽg‚¤‚È‚çfalse ‚É‚µ‚È‚¢‚ÆPlay‚É–ß‚ê‚È‚¢
 	if (true && flag) {
 		flag = false;
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
 		pSceneManager->ChangeScene(SCENE_ID_PLAY);
 	}
 
 	TitleUIManager* title = new TitleUIManager();
 	//ƒV[ƒ“„ˆÚ‚ðŠŠ‚ç‚©‚É‚µ‚½‚¢‚æ‚Ë
 	title->AddUi("Play", XMFLOAT2(0.0f, 0.0f), [this]() {
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
 		pSceneManager->ChangeScene(SCENE_ID_PLAY); }
 	);
 	title->AddUi("Option", XMFLOAT2(0.0f, -0.35f), [this]() { AudioManager::Play(); });
@@ -45,7 +45,7 @@ void TitleScene::Initialize()
 void TitleScene::Update()
 {
 	if (Input::IsKeyDown(DIK_X)) {
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
 		pSceneManager->ChangeScene(SCENE_ID_PLAY);
 		return;
 	}

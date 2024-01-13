@@ -280,13 +280,12 @@
     <ClCompile Include="CollisionMap.cpp">
       <Filter>12Stage</Filter>
     </ClCompile>
-    <ClCompile Include="Stage.cpp">
+    <ClCompile Include="CreatStage.cpp">
       <Filter>12Stage</Filter>
     </ClCompile>
     <ClCompile Include="Triangle.cpp">
       <Filter>12Stage</Filter>
     </ClCompile>
-    <ClCompile Include="DamageManager.cpp" />
     <ClCompile Include="AStarMan.cpp">
       <Filter>08Enemy\Enemies</Filter>
     </ClCompile>
@@ -306,6 +305,12 @@
     </ClCompile>
     <ClCompile Include="Engine\PolyLine.cpp">
       <Filter>01Engine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerWeapon.cpp">
+      <Filter>07Player</Filter>
+    </ClCompile>
+    <ClCompile Include="LifeManager.cpp">
+      <Filter>07Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -494,13 +499,12 @@
     <ClInclude Include="CollisionMap.h">
       <Filter>12Stage</Filter>
     </ClInclude>
-    <ClInclude Include="Stage.h">
+    <ClInclude Include="CreateStage.h">
       <Filter>12Stage</Filter>
     </ClInclude>
     <ClInclude Include="Triangle.h">
       <Filter>12Stage</Filter>
     </ClInclude>
-    <ClInclude Include="DamageManager.h" />
     <ClInclude Include="AStarMan.h">
       <Filter>08Enemy\Enemies</Filter>
     </ClInclude>
@@ -517,6 +521,12 @@
     </ClInclude>
     <ClInclude Include="Engine\PolyLine.h">
       <Filter>01Engine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerWeapon.h">
+      <Filter>07Player</Filter>
+    </ClInclude>
+    <ClInclude Include="LifeManager.h">
+      <Filter>07Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

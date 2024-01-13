@@ -3,11 +3,11 @@
 #include <vector>
 using namespace DirectX;
 
-class Stage;
+class CreateStage;
 
 class NavigationAI
 {
-	Stage* pStage_;
+	CreateStage* pCreateStage_;
 	std::vector<std::vector<int>> mapData_;
 
 	struct Node {
@@ -19,7 +19,9 @@ class NavigationAI
     int GetMinCostNodeIndex(std::vector<Node>& openList);
 
 public:
-	NavigationAI(Stage* s);
+	NavigationAI();
+
+	void SetMapData();
 
 	//AStar‚Ìc‰¡ˆÚ“®‚Ì‚İ
 	std::vector<XMFLOAT3> Navi(XMFLOAT3 target, XMFLOAT3 pos);

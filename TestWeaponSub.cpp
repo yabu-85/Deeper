@@ -1,7 +1,6 @@
 #include "TestWeaponSub.h"
 #include "StateManager.h"
 #include "Engine/Model.h"
-#include "DamageManager.h"
 #include "GameManager.h"
 #include "Player.h"
 #include "PlayerCommand.h"
@@ -37,7 +36,7 @@ void TestWeaponSub::Initialize()
     transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
     endurance_ = 50;
 
-    pPlayer_ = (Player*)GetParent();
+    pPlayer_ = static_cast<Player*>(GetParent());
 }
 
 void TestWeaponSub::Update()

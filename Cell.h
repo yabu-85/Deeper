@@ -41,9 +41,6 @@ public:
 	//“–‚½‚Á‚½ê‡‚ÌÅ¬‹——£‚ğ•Ô‚·
 	bool SegmentVsTriangle(RayCastData* _data, float& minDist);
 
-	void MapDataVsBox(BoxCollider* collider);
-	void MapDataVsSphere(SphereCollider* collider, XMFLOAT3 prePos);
-
 };
 
 

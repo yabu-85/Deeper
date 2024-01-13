@@ -2,13 +2,13 @@
 #include "EnemyManager.h"
 #include "NavigationAI.h"
 #include "Player.h"
-#include "Stage.h"
+#include "CreateStage.h"
 #include "CollisionMap.h"
-#include "DamageManager.h"
 #include "WeaponObjectManager.h"
 #include "DropTable.h"
 #include "Engine/GameObject.h"
 #include "Engine/Global.h"
+#include "LifeManager.h"
 
 //デバッグ用
 #include "Engine/Input.h"
@@ -16,34 +16,30 @@
 namespace GameManager {
 	EnemyManager* pEnemyManager_ = nullptr;
 	NavigationAI* pNavigationAI_ = nullptr;
-	DamageManager* pDamageManager_ = nullptr;
 	WeaponObjectManager* pWeaponObjectManager_ = nullptr;
 	DropTable* pDropTable_ = nullptr;
 	CollisionMap* pCollisionMap_ = nullptr;
 	GameObject* pParent_ = nullptr;
+	Player* pPlayer_ = nullptr;
+	GameObject* pNowStage_ = nullptr;		//現在の使用されているステージのポインタ格納用
+	CreateStage* pCreateStage_ = nullptr;
 
-	void GameManager::Initialize(GameObject* parent)
+	void GameManager::Initialize()
 	{
 		pEnemyManager_ = new EnemyManager();
-		pEnemyManager_->Initialize(parent);
-		pDamageManager_ = new DamageManager(pEnemyManager_);
-
-		Stage* pStage_ = Instantiate<Stage>(parent);
-		Player* pPlayer_ = Instantiate<Player>(parent);
-		pPlayer_->SetPosition(pStage_->GetPlayerStartPos());
-		pDamageManager_->AddCharacter(pPlayer_, DamageManager::DA_Player);
-
-		pParent_ = parent;
-		pCollisionMap_ = Instantiate<CollisionMap>(parent);
-
+		pEnemyManager_->Initialize();
 		pWeaponObjectManager_ = new WeaponObjectManager();
-	
 		pDropTable_ = new DropTable();
-		pNavigationAI_ = new NavigationAI(pStage_);
+		pNavigationAI_ = new NavigationAI();
+		pCreateStage_ = new CreateStage();
+		pCreateStage_->Initialize();
+		LifeManager::Initialize();
 	}
 
 	void GameManager::Update()
 	{
+		pCreateStage_->Update();
+
 		if (Input::IsKey(DIK_TAB)) {
 			OutputDebugString("entity : ");
 			int count = (int)pEnemyManager_->GetAllEnemy().size();
@@ -68,18 +64,32 @@ namespace GameManager {
 	void GameManager::Release() {
 		pEnemyManager_->Release(); 
 		SAFE_DELETE(pEnemyManager_);
-		SAFE_DELETE(pDamageManager_);
 		SAFE_DELETE(pDropTable_);
 		SAFE_DELETE(pNavigationAI_);
 		SAFE_DELETE(pWeaponObjectManager_);
 	}
 
+	void Draw()
+	{
+		LifeManager::Draw();
+
+	}
+
 	EnemyManager* GetEnemyManager() { return pEnemyManager_; }
 	NavigationAI* GetNavigationAI() { return pNavigationAI_; }
-	DamageManager* GetDamageManager() { return pDamageManager_; }
 	WeaponObjectManager* GetWeaponObjectManager() { return pWeaponObjectManager_; }
 	DropTable* GetDropTable() { return pDropTable_; }
-	CollisionMap* GetCollisionMap() { return pCollisionMap_; }
 	GameObject* GetParent() { return pParent_; }
+	CreateStage* GetCreateStage() { return pCreateStage_; }
+
+	void SetCollisionMap(CollisionMap* map) { pCollisionMap_ = map; }
+	CollisionMap* GetCollisionMap() { return pCollisionMap_; }
+
+	void SetPlayer(Player* player) { pPlayer_ = player; }
+	Player* GetPlayer() { return pPlayer_; }
+
+	void GameManager::SetStage(GameObject* stage) { pNowStage_ = stage; }
+	GameObject* GameManager::GetStage() { return pNowStage_; }
+
 }
 

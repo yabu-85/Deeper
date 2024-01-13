@@ -33,8 +33,9 @@ void MasterHand::Initialize()
 	transform_.rotate_.y = -90;
 
 	//Ç‹Ç∑ÇΩÅ[ÇÕÇÒÇ«î≠éÀÇÊÇ§ÇÃ
-	Aim* pAim = (Aim*)FindObject("Aim");
-	Player* pPlayer = (Player*)FindObject("Player");
+	Aim* pAim = static_cast<Aim*>(FindObject("Aim"));
+	Player* pPlayer = static_cast<Player*>(FindObject("Player"));
+
 	transform_.rotate_.y = pAim->GetRotate().y;
 	transform_.rotate_.y -= 180.0f;
 	transform_.position_ = pPlayer->GetPosition();

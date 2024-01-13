@@ -2,12 +2,11 @@
 #include "Engine/Model.h"
 #include "Engine/SphereCollider.h"
 #include "GameManager.h"
-#include "DamageManager.h"
 #include "AudioManager.h"
 #include "VFXManager.h"
 
 TestBullet::TestBullet(GameObject* parent)
-	: BulletBase(parent), collision_(nullptr), damage_(0), pDamageManager_(nullptr)
+	: BulletBase(parent), collision_(nullptr), damage_(0)
 {
 	objectName_ = "TestBullet";
 }
@@ -31,8 +30,6 @@ void TestBullet::Initialize()
 	collision_ = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
 	AddAttackCollider(collision_);
 
-	pDamageManager_ = GameManager::GetDamageManager();
-
 }
 
 void TestBullet::Update()
@@ -48,11 +45,11 @@ void TestBullet::Update()
 	}
 
 	//“–‚½‚Á‚½‚ç
-	if (pDamageManager_->CalcEnemy(collision_, damage_)) {
-		VFXManager::CreatVfxExplode1(transform_.position_);
-		AudioManager::Play(transform_.position_, 10.0f);
-		KillMe();
-	}
+	//if (pDamageManager_->CalcEnemy(collision_, damage_)) {
+	//	VFXManager::CreatVfxExplode1(transform_.position_);
+	//	AudioManager::Play(transform_.position_, 10.0f);
+	//	KillMe();
+	//}
 
 }
 

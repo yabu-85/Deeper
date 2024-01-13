@@ -124,9 +124,12 @@ public:
 	//コライダー（衝突判定）を削除
 	void ClearCollider();
 
+	//衝突判定
+	//引数：pTarget	衝突してるか調べる相手
+	void Collision(GameObject* pTarget);
+
 	//テスト用の衝突判定枠を表示
 	void CollisionDraw();
-
 
 	//RootJobを取得
 	GameObject* GetRootJob();

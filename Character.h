@@ -4,8 +4,6 @@
 class Character : public GameObject
 {
 protected:
-    int hp_;            //Œ»İ‚ÌHP
-    int maxHp_;         //Å‘åHP
     XMVECTOR movement_; //¡‚ÌˆÚ“®—Ê
 
 public:
@@ -16,7 +14,6 @@ public:
     virtual void Draw() override = 0 {};
     virtual void Release() override = 0 {};
 
-    virtual void ApplyDamage(int da);
     XMVECTOR GetMovement() { return movement_; }
 };
 

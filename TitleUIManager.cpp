@@ -5,7 +5,7 @@
 TitleUIManager::TitleUIManager()
 	:UIManager(), hPict_{ -1, -1 }
 {
-	const char* fileName[] = { "Png/Title.png", "Png/TitleBG.png" };
+	const char* fileName[] = { "Image/Title.png", "Image/TitleBG.png" };
 	const int png = sizeof(fileName) / sizeof(fileName[0]);
 	for (int i = 0; i < png; i++) {
 		hPict_[i] = Image::Load(fileName[i]);

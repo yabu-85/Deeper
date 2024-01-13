@@ -1,7 +1,6 @@
 #include "TestWeaponMain.h"
 #include "StateManager.h"
 #include "Engine/Model.h"
-#include "DamageManager.h"
 #include "GameManager.h"
 #include "Player.h"
 #include "PlayerCommand.h"
@@ -16,7 +15,7 @@ namespace {
 }
 
 TestWeaponMain::TestWeaponMain(GameObject* parent)
-	:WeaponBase(parent), pDamageManager_(nullptr), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0), pPolyLine_(nullptr)
+	:WeaponBase(parent), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0), pPolyLine_(nullptr)
 {
 	objectName_ = "TestWeaponMain";
 }
@@ -41,7 +40,6 @@ void TestWeaponMain::Initialize()
     assert(hModel_ >= 0);
 
     pPlayer_ = (Player*)GetParent();
-    pDamageManager_ = GameManager::GetDamageManager();
     
     seg_ = new SegmentCollider(XMFLOAT3(), XMVECTOR());
     AddAttackCollider(seg_);
@@ -109,10 +107,11 @@ void TestWeaponMain::CalcDamage()
     XMVECTOR vVec = XMLoadFloat3(&vec);
     vVec = XMVector3Normalize(vVec) * weaponSize;
     seg_->SetVector(vVec);
-    bool hit = pDamageManager_->CalcEnemy(seg_, damage_);
-    if (hit) {
-        VFXManager::CreatVfxExplode1(wandPos_);
-    }
+    
+    //bool hit = pDamageManager_->CalcEnemy(seg_, damage_);
+    //if (hit) {
+    //    VFXManager::CreatVfxExplode1(wandPos_);
+    //}
 
     XMStoreFloat3(&vec, vVec * 0.5f);
     vec = XMFLOAT3(wandPos_.x + vec.x, wandPos_.y + vec.y, wandPos_.z + vec.z);

@@ -36,7 +36,7 @@ Aim::~Aim()
 
 void Aim::Initialize()
 {
-    pPlayer_ = (Player*)FindObject("Player");
+    pPlayer_ = static_cast<Player*>(FindObject("Player"));
     aimMove_ = true;
 	
 }
@@ -258,7 +258,7 @@ void Aim::CalcCameraOffset(float _aimMove)
 
 void Aim::RayCastStage(XMFLOAT3 _start)
 {
-    pCollisionMap_ = (CollisionMap*)FindObject("CollisionMap");
+    pCollisionMap_ = static_cast<CollisionMap*>(FindObject("CollisionMap"));
     if (pCollisionMap_ == nullptr) return;
 
     RayCastData data;

@@ -1,6 +1,9 @@
 #include "PlayScene.h"
 #include "GameManager.h"
 #include "Engine/SceneManager.h"
+#include "Player.h"
+#include "CollisionMap.h"
+#include "CreateStage.h"
 
 #include "AudioManager.h"
 #include "Engine/Input.h"
@@ -12,28 +15,33 @@ PlayScene::PlayScene(GameObject* parent)
 
 void PlayScene::Initialize()
 {
-	GameManager::Initialize(this);
 	AudioManager::Initialize();
+
+	GameManager::SetStage(this);
+	GameManager::GetCreateStage()->CreateStageData("Csv/Map1.csv");
+	GameManager::SetPlayer(Instantiate<Player>(this));
+	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
+	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
 
 }
 
 void PlayScene::Update()
 {
-	GameManager::Update();
-
 	if (Input::IsKeyDown(DIK_C)) {
-		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
 		pSceneManager->ChangeScene(SCENE_ID_TITLE);
 	}
 }
 
 void PlayScene::Draw()
 {
+	GameManager::Draw();
+	GameManager::GetCreateStage()->Draw();
+
 }
 
 void PlayScene::Release()
 {
-	GameManager::Release();
 	AudioManager::Release();
 
 }

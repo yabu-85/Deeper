@@ -3,7 +3,8 @@
 #include "Engine/FbxParts.h"
 #include "Engine/Model.h"
 #include "Cell.h"
-#include "Stage.h"
+#include "CreateStage.h"
+#include "GameManager.h"
 
 //デバッグ用
 #include "Player.h"
@@ -13,7 +14,7 @@ namespace {
     const int polySize = 3;
 
     Player* pPlayer;
-    Stage* pStage;
+    CreateStage* pCreateStage;
     Fbx* pFbx;
 
     float minX = 0;
@@ -49,8 +50,8 @@ CollisionMap::~CollisionMap()
 
 void CollisionMap::Initialize()
 {
-    pPlayer = (Player*)FindObject("Player");
-    pStage = (Stage*)FindObject("Stage");
+    pPlayer = GameManager::GetPlayer();
+    pCreateStage = GameManager::GetCreateStage();
 
     numX = int((abs(maxX) + abs(minX)) / boxSize) + 1;
     numY = int((abs(maxY) + abs(minY)) / boxSize) + 1;
@@ -74,8 +75,6 @@ void CollisionMap::Initialize()
         }
     }
     
-    CreatIntersectDataTriangle();
-
     pBox = Instantiate<CellBox>(this);
 }
 
@@ -103,9 +102,9 @@ void CollisionMap::CreatIntersectDataTriangle()
 {
     //Cellに追加する予定のTriangleをすべて計算してCreatする
     std::vector<Triangle*> triList;
-    std::vector<IntersectData> inteDatas = pStage->GetIntersectDatas();
+    std::vector<IntersectData> inteDatas = pCreateStage->GetIntersectDatas();
     for (int i = 0; i < inteDatas.size(); i++) {
-        pFbx = Model::GetFbx(inteDatas[i].hModelNum + Stage::MAX);
+        pFbx = Model::GetFbx(inteDatas[i].hModelNum + CreateStage::MAX);
         std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
 
         //IntersectDataのCollision用モデルのパーツをすべて取得し、その全ポリゴンの座標を計算
@@ -162,25 +161,6 @@ void CollisionMap::ResetCellTriangle()
     }
 }
 
-bool CollisionMap::GetCellIndex(XMFLOAT3& pos)
-{
-    pos.x = (pos.x - minX) / boxSize;
-    pos.y = (pos.y - minY) / boxSize;
-    pos.z = (pos.z - minZ) / boxSize;
-    bool isClamp = true;
-
-    if (pos.x < 0) { pos.x = 0; isClamp = false; }
-    else if (pos.x > maxX / boxSize) { pos.x = maxX / boxSize - 1; isClamp = false; }
-
-    if (pos.y < 0) { pos.y = 0; isClamp = false; }
-    else if (pos.y > maxY / boxSize) { pos.y = maxY / boxSize - 1; isClamp = false; }
-
-    if (pos.z < 0) { pos.z = 0; isClamp = false; }
-    else if (pos.z > maxZ / boxSize) { pos.z = maxZ / boxSize - 1; isClamp = false; }
-
-    return isClamp;
-}
-
 Cell* CollisionMap::GetCell(XMFLOAT3 pos)
 {
     int x = int((pos.x - minX) / boxSize);
@@ -214,20 +194,6 @@ bool CollisionMap::GetRayCastMinDist(XMFLOAT3 camPos, XMFLOAT3 plaPos, RayCastDa
     else minDist = distP;
 
     return hitC || hitP;
-}
-
-void CollisionMap::MapDataVsBox(BoxCollider* collider)
-{
-
-}
-
-void CollisionMap::MapDataVsSphere(SphereCollider* collider, XMFLOAT3 prePos)
-{
-    XMFLOAT3 pos = collider->GetGameObject()->GetPosition();
-    Cell* cell = GetCell(pos);
-    if (!cell) return;
-
-    cell->MapDataVsSphere(collider, prePos);
 }
 
 void CollisionMap::RaySelectCellVsSegment(RayCastData& _data, XMFLOAT3 target)
@@ -344,14 +310,16 @@ void CollisionMap::CalcMapWall(XMFLOAT3& _pos, float speed)
 
 }
 
-bool CollisionMap::IsWall(int x, int z)
+bool CollisionMap::IsWall(int _x, int _z)
 {
     int pos[2];
-    pos[0] = static_cast<int>((float)x / floarSize);
-    pos[1] = static_cast<int>((float)z / floarSize);
-    std::vector<std::vector<int>> data = pStage->GetMapData();
+    pos[0] = static_cast<int>((float)_x / floarSize);
+    pos[1] = static_cast<int>((float)_z / floarSize);
+    std::vector<std::vector<int>> data = pCreateStage->GetMapData();
     
-    if (pos[0] < 0 || pos[1] < 0 || pos[0] > data[0].size() || pos[1] > data.size())
+    int z = (int)(data.size());
+    int x = (int)(data[1].size());
+    if (pos[0] < 0 || pos[1] < 0 || pos[0] >= x || pos[1] >= z)
         return false;
     
     int wall = data[pos[1]][pos[0]];

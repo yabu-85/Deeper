@@ -1,5 +1,6 @@
 #include "NavigationAI.h"
-#include "Stage.h"
+#include "CreateStage.h"
+#include "GameManager.h"
 
 namespace {
 	int stageWidth = 0;
@@ -10,10 +11,15 @@ namespace {
 
 void PathSmoothing(std::vector<XMFLOAT3>& path);
 
-NavigationAI::NavigationAI(Stage* s)
+NavigationAI::NavigationAI()
+	: pCreateStage_(nullptr)
 {
-	pStage_ = s;
-	mapData_ = pStage_->GetMapData();
+}
+
+void NavigationAI::SetMapData()
+{
+	pCreateStage_ = GameManager::GetCreateStage();
+	mapData_ = pCreateStage_->GetMapData();
 
 	stageWidth = (int)mapData_[0].size();
 	stageHeight = (int)mapData_.size();
@@ -40,7 +46,7 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 
 	//targetが範囲外・壁の場合
 	if (targetX < 0 || targetX >= stageWidth || targetZ < 0 || targetZ >= stageHeight ||
-		mapData_[targetZ][targetX] == Stage::MAP::WALL)
+		mapData_[targetZ][targetX] == CreateStage::MAP::WALL)
 	{
 		std::vector<XMFLOAT3> none;
 		return none;
@@ -101,7 +107,7 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 
 			// 隣接ノードが範囲内かつ通行可能か確認
 			if (newX >= 0 && newX < stageWidth && newZ >= 0 && newZ < stageHeight) {
-				if (!closedList[newX][newZ] && mapData_[newZ][newX] == Stage::MAP::FLOAR) {
+				if (!closedList[newX][newZ] && mapData_[newZ][newX] == CreateStage::MAP::FLOAR) {
 					int nodeCost = value[x][z] + mapCost[newX][newZ];
 
 					//計算結果がallCostより小さければpushBackする
@@ -142,7 +148,7 @@ std::vector<XMFLOAT3> NavigationAI::NaviDiagonal(XMFLOAT3 target, XMFLOAT3 pos)
 	//壁に埋まってしまったねぇ
 	//startが範囲外・壁の場合
 	if (startX < 0 || startX >= stageWidth || startZ < 0 || startZ >= stageHeight ||
-		mapData_[startZ][startX] == Stage::MAP::WALL)
+		mapData_[startZ][startX] == CreateStage::MAP::WALL)
 	{
 		std::vector<XMFLOAT3> none;
 		return none;
@@ -150,7 +156,7 @@ std::vector<XMFLOAT3> NavigationAI::NaviDiagonal(XMFLOAT3 target, XMFLOAT3 pos)
 
 	//targetが範囲外・壁の場合
 	if (targetX < 0 || targetX >= stageWidth || targetZ < 0 || targetZ >= stageHeight ||
-		mapData_[targetZ][targetX] == Stage::MAP::WALL)
+		mapData_[targetZ][targetX] == CreateStage::MAP::WALL)
 	{
 		std::vector<XMFLOAT3> none;
 		return none;
@@ -213,11 +219,11 @@ std::vector<XMFLOAT3> NavigationAI::NaviDiagonal(XMFLOAT3 target, XMFLOAT3 pos)
 
 				// 隣接ノードが範囲内かつ通行可能か確認
 				if (newX >= 0 && newX < stageWidth && newZ >= 0 && newZ < stageHeight) {
-					if (!closedList[newX][newZ] && mapData_[newZ][newX] == Stage::MAP::FLOAR) {
+					if (!closedList[newX][newZ] && mapData_[newZ][newX] == CreateStage::MAP::FLOAR) {
 
 						//斜め移動の場合は条件をプラス
 						if (abs(i) + abs(j) >= 2) {
-							if (mapData_[z + j][x] == Stage::MAP::WALL || mapData_[z][x + i] == Stage::MAP::WALL) {
+							if (mapData_[z + j][x] == CreateStage::MAP::WALL || mapData_[z][x + i] == CreateStage::MAP::WALL) {
 								continue;
 							}
 						}

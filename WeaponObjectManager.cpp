@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "TestWeaponSub.h"
 #include "GameManager.h"
+#include "PlayerWeapon.h"
 
 //デバッグ用
 namespace {
@@ -17,9 +18,11 @@ WeaponObjectManager::WeaponObjectManager()
 
 	AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_SUB1, XMFLOAT3(50, 0, 50));
 	nearestObject_ = objctList_.at(0);
+	
+	return;
 	WeaponBase* weapon = GetNearestWeapon();
 	if (weapon) {
-		pPlayer->SetWeapon(weapon);
+		pPlayer->GetPlayerWeapon()->SetWeapon(weapon);
 	}
 }
 
@@ -66,7 +69,7 @@ void WeaponObjectManager::AllKillWeaponObject()
 
 bool WeaponObjectManager::IsInPlayerRange()
 {
-	Player* pPlayer = (Player*)GameManager::GetParent()->FindObject("Player");
+	Player* pPlayer = static_cast<Player*>(GameManager::GetParent()->FindObject("Player"));
     XMFLOAT3 plaPos = pPlayer->GetPosition();
 	
 	int minRangeIndex = -1;
@@ -97,7 +100,7 @@ WeaponBase* WeaponObjectManager::GetNearestWeapon()
 		RemoveWeaponObject(nearestObject_);
 		nearestObject_->KillMe();
 		nearestObject_ = nullptr;
-		pPlayer = (Player*)GameManager::GetParent()->FindObject("Player");
+		pPlayer = static_cast<Player*>(GameManager::GetParent()->FindObject("Player"));
 		return Instantiate<TestWeaponSub>(pPlayer);
 	}
 

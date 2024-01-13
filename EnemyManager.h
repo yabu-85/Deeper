@@ -22,7 +22,7 @@ class EnemyManager
 
 public:
 	EnemyManager();
-	void Initialize(GameObject* parent);
+	void Initialize();
 	void Release();
 	void AllKillEnemy();
 	void KillEnemy(EnemyBase* enemy);

@@ -1,7 +1,6 @@
 #include "EnemyManager.h"
 #include "GameManager.h"
 #include "MasterHand.h"
-#include "DamageManager.h"
 #include "Feet.h"
 #include "AStarMan.h"
 #include "StateManager.h"
@@ -10,9 +9,9 @@ EnemyManager::EnemyManager() : pParent_(nullptr)
 {
 }
 
-void EnemyManager::Initialize(GameObject* parent)
+void EnemyManager::Initialize()
 {
-	pParent_ = parent;
+	pParent_ = GameManager::GetStage();
 }
 
 void EnemyManager::Release()
@@ -24,8 +23,6 @@ void EnemyManager::AllKillEnemy()
 {
 	for (auto it = enemyList_.begin(); it != enemyList_.end();) {
 		(*it)->KillMe();
-		Character* obj = static_cast<Character*>(*it);
-		GameManager::GetDamageManager()->RemoveCharacter(obj);
 		it = enemyList_.erase(it);
 	}
 	enemyList_.clear();
@@ -42,8 +39,6 @@ void EnemyManager::KillEnemy(EnemyBase* enemy)
 			++it;
 		}
 	}
-	Character* obj = static_cast<Character*>(enemy);
-	GameManager::GetDamageManager()->RemoveCharacter(obj);
 	enemy->KillMe();
 }
 

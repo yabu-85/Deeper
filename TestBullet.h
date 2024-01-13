@@ -2,13 +2,11 @@
 #include "BulletBase.h"
 
 class SphereCollider;
-class DamageManager;
 
 class TestBullet : public BulletBase
 {
     int damage_;
     SphereCollider* collision_;
-    DamageManager* pDamageManager_;
 
 public:
     TestBullet(GameObject* parent);

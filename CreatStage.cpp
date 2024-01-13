@@ -1,4 +1,4 @@
-#include "Stage.h"
+#include "CreateStage.h"
 #include "Engine/Model.h"
 #include "Engine/Input.h"
 #include <vector>
@@ -6,61 +6,60 @@
 #include "GameManager.h"
 #include "CollisionMap.h"
 #include "Player.h"
+#include "NavigationAI.h"
 
 namespace {
     //デバッグ用
-    bool drawCell = true;
+    bool drawCell = false;
 
     int stageIndex = 0;
     std::string stageFileName[] = { "Map1", "Map2", "Map3" };
 
 }
 
-Stage::Stage(GameObject* parent)
-    :GameObject(parent, "Stage"), startPos_(0,0,0), mapSizeX_(0), mapSizeZ_(0)
+CreateStage::CreateStage()
+    : startPos_(0,0,0), mapSizeX_(0), mapSizeZ_(0)
 {
     for (int i = 0; i < MAX + RMAX; i++) hModel_[i] = -1;
 }
 
-Stage::~Stage()
+CreateStage::~CreateStage()
 {
 }
 
-void Stage::Initialize()
+void CreateStage::Initialize()
 {
     std::string fileName[] = { "StageT1", "StageT2", "RayStageT1", "RayStageT2" };
     for (int i = 0; i < MAX + RMAX; i++) {
         hModel_[i] = Model::Load("Model/Stage/" + fileName[i] + ".fbx");
         assert(hModel_[i] >= 0);
     }
-    
-    CreatStage("Csv/" + stageFileName[stageIndex] + ".csv");
 }
 
-void Stage::Update()
+void CreateStage::Update()
 {
     //デバッグ用
-    if (Input::IsKeyDown(DIK_E)) drawCell = !drawCell;
+    if (Input::IsKeyDown(DIK_E)) 
+        drawCell = !drawCell;
     
     if (Input::IsKeyDown(DIK_1)) {
         stageIndex++;
         if (stageIndex > 2) stageIndex = 2;
-        CreatStage("Csv/" + stageFileName[stageIndex] + ".csv");
+        CreateStageData("Csv/" + stageFileName[stageIndex] + ".csv");
         GameManager::GetCollisionMap()->ResetCellTriangle();
     //    GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
     }
     if (Input::IsKeyDown(DIK_2)) {
         stageIndex--;
         if (stageIndex < 0) stageIndex = 0;
-        CreatStage("Csv/" + stageFileName[stageIndex] + ".csv");
+        CreateStageData("Csv/" + stageFileName[stageIndex] + ".csv");
         GameManager::GetCollisionMap()->ResetCellTriangle();
     //    GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
     }
 
-
 }
 
-void Stage::Draw()
+void CreateStage::Draw()
 {
     for (int i = 0; i < intersectDatas_.size(); i++) {
         int handle = intersectDatas_.at(i).hModelNum;
@@ -84,16 +83,16 @@ void Stage::Draw()
     }
 }
 
-void Stage::Release()
+void CreateStage::Release()
 {
 }
 
-XMFLOAT3 Stage::GetPlayerStartPos()
+XMFLOAT3 CreateStage::GetPlayerStartPos()
 {
     return XMFLOAT3(startPos_.x * floarSize + (floarSize / 2), 0.0f, startPos_.z * floarSize + (floarSize / 2));
 }
 
-XMFLOAT3 Stage::GetRandomFloarPosition()
+XMFLOAT3 CreateStage::GetRandomFloarPosition()
 {
     struct Cell
     {
@@ -102,7 +101,7 @@ XMFLOAT3 Stage::GetRandomFloarPosition()
     std::vector<Cell> posList;
     for (int x = 0; x < mapSizeX_; x++) {
         for (int z = 0; z < mapSizeZ_; z++) {
-            if (mapData_[z][x] == Stage::MAP::FLOAR) {
+            if (mapData_[z][x] == CreateStage::MAP::FLOAR) {
                 Cell cell;
                 cell.x = (float)x;
                 cell.z = (float)z;
@@ -115,9 +114,9 @@ XMFLOAT3 Stage::GetRandomFloarPosition()
     return XMFLOAT3(posList.at(index).x * floarSize + (floarSize / 2), 0.0f, posList.at(index).z * floarSize + (floarSize / 2));
 }
 
-XMFLOAT3 Stage::GetFloarPosition(XMFLOAT3 position, float range)
+XMFLOAT3 CreateStage::GetFloarPosition(XMFLOAT3 position, float range)
 {
-    Player* pPlayer = (Player*)FindObject("Player");
+    Player* pPlayer = GameManager::GetPlayer();
     XMFLOAT3 f = pPlayer->GetPosition();
  
     XMVECTOR pPos = XMLoadFloat3(&f);
@@ -149,7 +148,7 @@ XMFLOAT3 Stage::GetFloarPosition(XMFLOAT3 position, float range)
                 if (i < 0 || i >= (int)mapData_[0].size() || j < 0 || j >= (int)mapData_.size())
                     continue;
 
-                if (mapData_[j][i] == Stage::MAP::FLOAR) {
+                if (mapData_[j][i] == CreateStage::MAP::FLOAR) {
                     Cell c(i, j);
                     cellList.push_back(c);
                 }
@@ -170,13 +169,11 @@ XMFLOAT3 Stage::GetFloarPosition(XMFLOAT3 position, float range)
     return position;
 }
 
-void Stage::ResetStage()
-{
-}
-
 //HADESみたいに作ろう：CSVを読み込みで作成
-void Stage::CreatStage(std::string name)
+void CreateStage::CreateStageData(std::string name)
 {
+    Initialize();
+
     //CSVファイル読み込み
     CsvReader csv;
     csv.Load(name);
@@ -213,4 +210,7 @@ void Stage::CreatStage(std::string name)
             }
         }
     }
+    
+    GameManager::GetNavigationAI()->SetMapData();
+
 }

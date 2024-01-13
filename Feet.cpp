@@ -4,8 +4,9 @@
 #include "Engine/SphereCollider.h"
 #include "StateManager.h"
 #include "FeetState.h"
-#include "Stage.h"
+#include "CreateStage.h"
 #include "Engine/Global.h"
+#include "GameManager.h"
 
 #include "MoveAction.h"
 #include "RotateAction.h"
@@ -70,8 +71,8 @@ void Feet::Initialize()
 	pCombatStateManager_->ChangeState("Wait");
 	pCombatStateManager_->Initialize();
 
-	Stage* pStage = (Stage*)FindObject("Stage");
-	XMFLOAT3 startPos = pStage->GetRandomFloarPosition();
+	CreateStage* pCreateStage = GameManager::GetCreateStage();
+	XMFLOAT3 startPos = pCreateStage->GetRandomFloarPosition();
 	transform_.position_ = startPos;
 	transform_.rotate_.y = (float)(rand() % 360);
 

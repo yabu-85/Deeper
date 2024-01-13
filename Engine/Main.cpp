@@ -11,6 +11,7 @@
 #include "Input.h"
 #include "Audio.h"
 #include "VFX.h"
+#include "../GameManager.h"
 
 #pragma comment(lib,"Winmm.lib")
 
@@ -47,6 +48,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	//オーディオ（効果音）の準備
 	Audio::Initialize();
+
+	GameManager::Initialize();
 
 	//ルートオブジェクト準備
 	//すべてのゲームオブジェクトの親となるオブジェクト
@@ -104,6 +107,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				//ルートオブジェクトのUpdateを呼んだあと、自動的に子、孫のUpdateが呼ばれる
 				pRootObject->UpdateSub();
 
+				GameManager::Update();
+
 				//カメラを更新
 				Camera::Update();
 
@@ -120,6 +125,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				//エフェクトの描画
 				VFX::Draw();
 
+				GameManager::Draw();
+
 				//描画終了
 				Direct3D::EndDraw();
 				
@@ -135,6 +142,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Audio::Release();
 	Model::AllRelease();
 	Image::AllRelease();
+	GameManager::Release();
 	pRootObject->ReleaseSub();
 	SAFE_DELETE(pRootObject);
 	Direct3D::Release();

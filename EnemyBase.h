@@ -9,6 +9,8 @@ class StateManager;
 class EnemyBase : public Character
 {
 protected:
+    int hp_;
+    int maxHp_;
     int attackCoolDown_;
     float aimTargetPos_;
     ENEMY_TYPE type_;
@@ -25,7 +27,7 @@ public:
     virtual void Draw() override = 0;
     virtual void Release();
 
-    virtual void ApplyDamage(int da) override;
+    virtual void ApplyDamage(int da);
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
     float GetAimTargetPos() { return aimTargetPos_; }
     

@@ -37,6 +37,7 @@ namespace GameManager {
 	void GameManager::Update()
 	{
 		pCreateStage_->Update();
+		LifeManager::Update();
 
 		if (Input::IsKeyDown(DIK_TAB)) {
 			OutputDebugString("entity : ");

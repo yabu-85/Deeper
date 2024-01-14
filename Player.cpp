@@ -9,6 +9,7 @@
 #include "PlayerWeapon.h"
 #include "GameManager.h"
 #include "CreateStage.h"
+#include "LifeManager.h"
 
 #include "Engine/BoxCollider.h"
 #include "Engine/SphereCollider.h"
@@ -134,6 +135,15 @@ void Player::Draw()
 
 void Player::Release()
 {
+}
+
+void Player::OnCollision(GameObject* pTarget)
+{
+    std::string name = pTarget->GetObjectName();
+    if (name == "Feet") {
+        LifeManager::Damage(10);
+    }
+
 }
 
 void Player::Rotate()

@@ -9,16 +9,6 @@ EnemyManager::EnemyManager() : pParent_(nullptr)
 {
 }
 
-void EnemyManager::Initialize()
-{
-	pParent_ = GameManager::GetStage();
-}
-
-void EnemyManager::Release()
-{
-	enemyList_.clear();
-}
-
 void EnemyManager::AllKillEnemy()
 {
 	for (auto it = enemyList_.begin(); it != enemyList_.end();) {

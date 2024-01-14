@@ -280,7 +280,7 @@
     <ClCompile Include="CollisionMap.cpp">
       <Filter>12Stage</Filter>
     </ClCompile>
-    <ClCompile Include="CreatStage.cpp">
+    <ClCompile Include="CreateStage.cpp">
       <Filter>12Stage</Filter>
     </ClCompile>
     <ClCompile Include="Triangle.cpp">
@@ -311,6 +311,15 @@
     </ClCompile>
     <ClCompile Include="LifeManager.cpp">
       <Filter>07Player</Filter>
+    </ClCompile>
+    <ClCompile Include="MoneyManager.cpp">
+      <Filter>07Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerData.cpp">
+      <Filter>07Player</Filter>
+    </ClCompile>
+    <ClCompile Include="SubPlayScene.cpp">
+      <Filter>03Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -499,9 +508,6 @@
     <ClInclude Include="CollisionMap.h">
       <Filter>12Stage</Filter>
     </ClInclude>
-    <ClInclude Include="CreateStage.h">
-      <Filter>12Stage</Filter>
-    </ClInclude>
     <ClInclude Include="Triangle.h">
       <Filter>12Stage</Filter>
     </ClInclude>
@@ -527,6 +533,18 @@
     </ClInclude>
     <ClInclude Include="LifeManager.h">
       <Filter>07Player</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateStage.h">
+      <Filter>12Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="MoneyManager.h">
+      <Filter>07Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerData.h">
+      <Filter>07Player</Filter>
+    </ClInclude>
+    <ClInclude Include="SubPlayScene.h">
+      <Filter>03Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

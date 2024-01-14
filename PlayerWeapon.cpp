@@ -1,9 +1,11 @@
 #include "PlayerWeapon.h"
 #include "WeaponBase.h"
-#include "TestWeaponMain.h"
-#include "TestWeaponSub.h"
 #include "Player.h"
 #include "PlayerCommand.h"
+#include "PlayerData.h"
+
+#include "TestWeaponMain.h"
+#include "TestWeaponSub.h"
 
 #include "Engine/Text.h"
 
@@ -43,10 +45,23 @@ void PlayerWeapon::DrawWeapon()
 
 }
 
-void PlayerWeapon::SetMainWeapon()
+void PlayerWeapon::SetPlayerDataWeapon()
 {
     pMainWeapon_ = Instantiate<TestWeaponMain>(pPlayer_);
     pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
+
+    int type[2] = { 0,0 };
+    type[0] = PlayerData::GetWeaponData(0).type_;
+    type[1] = PlayerData::GetWeaponData(1).type_;
+    
+    if (type[0] >= 1) {
+        if(type[0] == 1) SetWeapon(Instantiate<TestWeaponSub>(pPlayer_));
+        
+    }
+    if (type[1] >= 1) {
+        if (type[1] == 1) SetWeapon(Instantiate<TestWeaponSub>(pPlayer_));
+
+    }
 
 }
 

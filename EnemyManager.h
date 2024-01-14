@@ -22,8 +22,7 @@ class EnemyManager
 
 public:
 	EnemyManager();
-	void Initialize();
-	void Release();
+	void SetParent(GameObject* parent) { pParent_ = parent; }
 	void AllKillEnemy();
 	void KillEnemy(EnemyBase* enemy);
 	void SpawnEnemy(int type);

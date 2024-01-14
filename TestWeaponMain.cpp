@@ -42,7 +42,7 @@ void TestWeaponMain::Initialize()
     pPlayer_ = (Player*)GetParent();
     
     seg_ = new SegmentCollider(XMFLOAT3(), XMVECTOR());
-    AddAttackCollider(seg_);
+    AddCollider(seg_);
 
     damage_ = 20; 
     transform_.scale_.z = 2.0f;

@@ -15,26 +15,23 @@ WeaponObjectManager::WeaponObjectManager()
 	: range_(0), nearestObject_(nullptr)
 {
 	range_ = 3.0f;
-
-	AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_SUB1, XMFLOAT3(50, 0, 50));
-	nearestObject_ = objctList_.at(0);
-	
-	return;
-	WeaponBase* weapon = GetNearestWeapon();
-	if (weapon) {
-		pPlayer->GetPlayerWeapon()->SetWeapon(weapon);
-	}
 }
 
 WeaponObjectManager::~WeaponObjectManager()
 {
 }
 
+void WeaponObjectManager::SceneTransitionInitialize()
+{
+	AllKillWeaponObject();
+
+}
+
 void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos)
 {
 	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "Feet", "RedBox" };
 
-	WeaponObject* weapon = Instantiate<WeaponObject>(GameManager::GetParent());
+	WeaponObject* weapon = Instantiate<WeaponObject>(GameManager::GetStage());
 
 	//デバッグ用
 	if ((int)type == 0) weapon->SetScale(0.2f, 0.2f, 0.2f);
@@ -69,7 +66,7 @@ void WeaponObjectManager::AllKillWeaponObject()
 
 bool WeaponObjectManager::IsInPlayerRange()
 {
-	Player* pPlayer = static_cast<Player*>(GameManager::GetParent()->FindObject("Player"));
+	Player* pPlayer = GameManager::GetPlayer();
     XMFLOAT3 plaPos = pPlayer->GetPosition();
 	
 	int minRangeIndex = -1;
@@ -100,7 +97,7 @@ WeaponBase* WeaponObjectManager::GetNearestWeapon()
 		RemoveWeaponObject(nearestObject_);
 		nearestObject_->KillMe();
 		nearestObject_ = nullptr;
-		pPlayer = static_cast<Player*>(GameManager::GetParent()->FindObject("Player"));
+		pPlayer = GameManager::GetPlayer();
 		return Instantiate<TestWeaponSub>(pPlayer);
 	}
 

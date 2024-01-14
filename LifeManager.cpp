@@ -104,13 +104,13 @@ namespace LifeManager
 		Transform t;
 
 		//•`‰æ
-		//damageImage_->Draw(t, rect, 150, 1);
+		damageImage_->Draw(t, rect, 0.1f, 1);
 
 		//ƒeƒLƒXƒg
-		//pLifeText_->Draw((int)textPositiom_.x, (int)textPositiom_.y, "asdfghj");
+		pLifeText_->Draw((int)textPositiom_.x, (int)textPositiom_.y, std::to_string(playerLife_).c_str());
 
 		//‚à‚µƒ_ƒ[ƒW‰æ‘œ‚ð•`‰æ‚·‚é‚Ì‚È‚ç
-		if (true || isDrawDamageImage_)
+		if (isDrawDamageImage_)
 			DamageEffectDraw();
 
 	}
@@ -136,7 +136,7 @@ namespace LifeManager
 		Transform t;
 
 		//•`‰æ
-		damageImage_->Draw(t, rect, damageImageAlpha_, 1);
+		//damageImage_->Draw(t, rect, damageImageAlpha_, 1);
 
 		//‚à‚µŠ®‘S‚É“§–¾‚É‚È‚Á‚Ä‚¢‚é‚Ì‚È‚ç•`‰æ‚µ‚È‚­‚·‚é
 		if (damageImageAlpha_ < 0) (isDrawDamageImage_, false);

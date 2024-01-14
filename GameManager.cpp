@@ -19,15 +19,13 @@ namespace GameManager {
 	WeaponObjectManager* pWeaponObjectManager_ = nullptr;
 	DropTable* pDropTable_ = nullptr;
 	CollisionMap* pCollisionMap_ = nullptr;
-	GameObject* pParent_ = nullptr;
 	Player* pPlayer_ = nullptr;
-	GameObject* pNowStage_ = nullptr;		//現在の使用されているステージのポインタ格納用
+	GameObject* pNowStage_ = nullptr;
 	CreateStage* pCreateStage_ = nullptr;
 
 	void GameManager::Initialize()
 	{
 		pEnemyManager_ = new EnemyManager();
-		pEnemyManager_->Initialize();
 		pWeaponObjectManager_ = new WeaponObjectManager();
 		pDropTable_ = new DropTable();
 		pNavigationAI_ = new NavigationAI();
@@ -40,7 +38,7 @@ namespace GameManager {
 	{
 		pCreateStage_->Update();
 
-		if (Input::IsKey(DIK_TAB)) {
+		if (Input::IsKeyDown(DIK_TAB)) {
 			OutputDebugString("entity : ");
 			int count = (int)pEnemyManager_->GetAllEnemy().size();
 			OutputDebugStringA(std::to_string(count).c_str());
@@ -49,20 +47,19 @@ namespace GameManager {
 
 		//デバッグ用
 		if (Input::IsKeyDown(DIK_M)) { pEnemyManager_->SpawnEnemy(ENEMY_MASTERHAND); }
-		if (Input::IsKeyDown(DIK_J)) { for (int i = 0; i < 50; i++) pEnemyManager_->SpawnEnemy(ENEMY_MASTERHAND); }
+		if (Input::IsKeyDown(DIK_J)) { for (int i = 0; i < 25; i++) pEnemyManager_->SpawnEnemy(ENEMY_MASTERHAND); }
 
 		if (Input::IsKeyDown(DIK_N)) { pEnemyManager_->SpawnEnemy(ENEMY_FEET); }
-		if (Input::IsKeyDown(DIK_H)) { for (int i = 0; i < 50; i++) pEnemyManager_->SpawnEnemy(ENEMY_FEET); }
+		if (Input::IsKeyDown(DIK_H)) { for (int i = 0; i < 25; i++) pEnemyManager_->SpawnEnemy(ENEMY_FEET); }
 		
 		if (Input::IsKeyDown(DIK_K)) { pEnemyManager_->SpawnEnemy(ENEMY_ASTAR); }
-		if (Input::IsKeyDown(DIK_L)) { for(int i = 0;i < 50;i++) pEnemyManager_->SpawnEnemy(ENEMY_ASTAR); }
+		if (Input::IsKeyDown(DIK_L)) { for(int i = 0;i < 25;i++) pEnemyManager_->SpawnEnemy(ENEMY_ASTAR); }
 
 		if (Input::IsKeyDown(DIK_B)) pWeaponObjectManager_->AllKillWeaponObject();
 		if (Input::IsKeyDown(DIK_V)) { pEnemyManager_->AllKillEnemy(); }
 	}
 
 	void GameManager::Release() {
-		pEnemyManager_->Release(); 
 		SAFE_DELETE(pEnemyManager_);
 		SAFE_DELETE(pDropTable_);
 		SAFE_DELETE(pNavigationAI_);
@@ -71,25 +68,34 @@ namespace GameManager {
 
 	void Draw()
 	{
+		pWeaponObjectManager_;
 		LifeManager::Draw();
 
+	}
+
+	void SceneTransitionInitialize()
+	{
+		pCollisionMap_ = nullptr;
+		pPlayer_ = nullptr;
+		pNowStage_ = nullptr;
 	}
 
 	EnemyManager* GetEnemyManager() { return pEnemyManager_; }
 	NavigationAI* GetNavigationAI() { return pNavigationAI_; }
 	WeaponObjectManager* GetWeaponObjectManager() { return pWeaponObjectManager_; }
 	DropTable* GetDropTable() { return pDropTable_; }
-	GameObject* GetParent() { return pParent_; }
 	CreateStage* GetCreateStage() { return pCreateStage_; }
 
-	void SetCollisionMap(CollisionMap* map) { pCollisionMap_ = map; }
 	CollisionMap* GetCollisionMap() { return pCollisionMap_; }
-
-	void SetPlayer(Player* player) { pPlayer_ = player; }
+	void SetCollisionMap(CollisionMap* map) { pCollisionMap_ = map; }
 	Player* GetPlayer() { return pPlayer_; }
+	void SetPlayer(Player* player) { pPlayer_ = player; }
 
-	void GameManager::SetStage(GameObject* stage) { pNowStage_ = stage; }
-	GameObject* GameManager::GetStage() { return pNowStage_; }
+	GameObject* GetStage() { return pNowStage_; }
+	void SetStage(GameObject* stage) {
+		pNowStage_ = stage;
+		pEnemyManager_->SetParent(stage); 
+	}
 
 }
 

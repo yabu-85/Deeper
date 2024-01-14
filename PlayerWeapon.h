@@ -14,12 +14,13 @@ public:
     PlayerWeapon(Player* pPlayer);
     void DrawWeapon();
 
-    void SetMainWeapon();
+    void SetPlayerDataWeapon();
     void SetWeapon(WeaponBase* weapon);
     void WeaponChangeIndex();       //Input‚ª‚ ‚Á‚½ê‡currentSubIndex‚ğ•Ï‚¦‚é
     void SubWeaponRemove();
     WeaponBase* GetMainWeapon() { return pMainWeapon_; }
     WeaponBase* GetSubWeapon() { return pSubWeapon_[currentSubIndex_]; }
+    WeaponBase* GetSubWeapon(int index) { return pSubWeapon_[index]; }
 
 };
 

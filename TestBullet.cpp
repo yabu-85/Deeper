@@ -28,7 +28,7 @@ void TestBullet::Initialize()
 	damage_ = rand() % 11;
 
 	collision_ = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
-	AddAttackCollider(collision_);
+	AddCollider(collision_);
 
 }
 

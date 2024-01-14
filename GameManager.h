@@ -15,12 +15,12 @@ namespace GameManager
 	void Update();
 	void Release();
 	void Draw();
+	void SceneTransitionInitialize();
 
 	EnemyManager* GetEnemyManager();
 	NavigationAI* GetNavigationAI();
 	WeaponObjectManager* GetWeaponObjectManager();
 	DropTable* GetDropTable();
-	GameObject* GetParent();
 	CreateStage* GetCreateStage();
 
 	void SetCollisionMap(CollisionMap* map);

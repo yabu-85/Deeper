@@ -1,10 +1,12 @@
 #include "sceneManager.h"
-#include "../TitleScene.h"
-#include "../PlayScene.h"
 #include "Model.h"
 #include "Image.h"
 #include "Audio.h"
-
+#include "../TitleScene.h"
+#include "../PlayScene.h"
+#include "../SubPlayScene.h"
+#include "../GameManager.h"
+#include "../PlayerData.h"
 
 //コンストラクタ
 SceneManager::SceneManager(GameObject * parent)
@@ -27,6 +29,9 @@ void SceneManager::Update()
 	//次のシーンが現在のシーンと違う　＝　シーンを切り替えなければならない
 	if (currentSceneID_ != nextSceneID_)
 	{
+		//今のプレイヤーのデータを保存する
+		PlayerData::SavePlayerData();
+
 		//そのシーンのオブジェクトを全削除
 		KillAllChildren();
 
@@ -35,13 +40,17 @@ void SceneManager::Update()
 		Model::AllRelease();
 		Image::AllRelease();
 
+		//シーン遷移時の初期化
+		GameManager::SceneTransitionInitialize();
+
 		//次のシーンを作成
 		switch (nextSceneID_)
 		{
-		case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
-		case SCENE_ID_PLAY: Instantiate<PlayScene>(this); break;
-
+			case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
+			case SCENE_ID_PLAY: Instantiate<PlayScene>(this); break;
+			case SCENE_ID_SUBPLAY: Instantiate<SubPlayScene>(this); break;
 		}
+
 		Audio::Initialize();
 		currentSceneID_ = nextSceneID_;
 	}

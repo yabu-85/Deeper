@@ -9,7 +9,6 @@ class PlayerWeapon;
 class Player : public Character
 {
     int hModel_[2];
-    int money_;
     float moveSpeed_;           //移動スピード
     float rotateRatio_;         //回転の比率
     XMFLOAT3 playerMovement_;   //今の移動量(Keyの情報だけ
@@ -42,9 +41,8 @@ public:
     XMVECTOR GetDirectionVec();     //向いている方向（正規化済み
 
     void InitAvo();
-    void AddMoney(int num) { money_ += num; }
-    int GetModelHandle() { return hModel_[0]; }
 
+    int GetModelHandle() { return hModel_[0]; }
     Aim* GetAim() { return pAim_; }
     PlayerCommand* GetCommand() { return pCommand_; }
     PlayerWeapon* GetPlayerWeapon() { return pPlayerWeapon_; }

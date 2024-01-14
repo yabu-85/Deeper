@@ -1,4 +1,4 @@
-#include "PlayScene.h"
+#include "SubPlayScene.h"
 #include "GameManager.h"
 #include "Engine/SceneManager.h"
 #include "Player.h"
@@ -11,17 +11,17 @@
 #include "WeaponObjectManager.h"
 #include "PlayerWeapon.h"
 
-PlayScene::PlayScene(GameObject* parent)
-	: GameObject(parent, "PlayScene")
+SubPlayScene::SubPlayScene(GameObject* parent)
+	: GameObject(parent, "SubPlayScene")
 {
 }
 
-void PlayScene::Initialize()
+void SubPlayScene::Initialize()
 {
 	AudioManager::Initialize();
 
 	GameManager::SetStage(this);
-	GameManager::GetCreateStage()->CreateStageData("Csv/Map1.csv");
+	GameManager::GetCreateStage()->CreateStageData("Csv/Map2.csv");
 	GameManager::SetPlayer(Instantiate<Player>(this));
 	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
@@ -31,7 +31,7 @@ void PlayScene::Initialize()
 
 }
 
-void PlayScene::Update()
+void SubPlayScene::Update()
 {
 	//デバッグ用
 	if (Input::IsKeyDown(DIK_C)) {
@@ -40,19 +40,19 @@ void PlayScene::Update()
 	}
 	if (Input::IsKeyDown(DIK_F)) {
 		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
-		pSceneManager->ChangeScene(SCENE_ID_SUBPLAY);
+		pSceneManager->ChangeScene(SCENE_ID_PLAY);
 	}
 
 }
 
-void PlayScene::Draw()
+void SubPlayScene::Draw()
 {
 	GameManager::Draw();
 	GameManager::GetCreateStage()->Draw();
 
 }
 
-void PlayScene::Release()
+void SubPlayScene::Release()
 {
 	AudioManager::Release();
 

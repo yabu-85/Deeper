@@ -11,9 +11,10 @@
 TestWeaponSub::TestWeaponSub(GameObject* parent)
     :WeaponBase(parent)
 {
-    std::string str;
-    str = std::to_string(rand() % 1000);
-    objectName_ = "TestWeaponSub" + str;
+    //std::string str;
+    //str = std::to_string(rand() % 1000);
+    //objectName_ = "TestWeaponSub" + str;
+    objectName_ = "TestWeaponSub";
 }
 
 TestWeaponSub::~TestWeaponSub()
@@ -34,7 +35,7 @@ void TestWeaponSub::Initialize()
 
     offsetTrans_.position_.y += (float)(rand() % 10) * 0.1f;
     transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
-    endurance_ = 50;
+    durance_ = 50;
 
     pPlayer_ = static_cast<Player*>(GetParent());
 }

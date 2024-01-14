@@ -47,14 +47,14 @@ void CreateStage::Update()
         if (stageIndex > 2) stageIndex = 2;
         CreateStageData("Csv/" + stageFileName[stageIndex] + ".csv");
         GameManager::GetCollisionMap()->ResetCellTriangle();
-    //    GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
+        GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
     }
     if (Input::IsKeyDown(DIK_2)) {
         stageIndex--;
         if (stageIndex < 0) stageIndex = 0;
         CreateStageData("Csv/" + stageFileName[stageIndex] + ".csv");
         GameManager::GetCollisionMap()->ResetCellTriangle();
-    //    GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
+        GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
     }
 
 }

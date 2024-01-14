@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Engine/Model.h"
 #include "Engine/Input.h"
+#include "Engine/Global.h"
 #include "Aim.h"
 #include "StateManager.h"
 #include "PlayerState.h"
@@ -21,7 +22,6 @@ namespace {
     const float maxMoveSpeed = 1.0f;        //最大移動スピード
     const float avoRotateRatio = 0.92f;     //回避時のRotateRatio
 
-    int testModel = -1;
     bool isCollider = true; //当たり判定するかどうか、浮けるようにするための
 
     Text* pText = new Text;
@@ -32,15 +32,16 @@ namespace {
 
 Player::Player(GameObject* parent)
     : Character(parent), hModel_{-1, -1}, pAim_(nullptr),  pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr), 
-    money_(0), moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_{ 0,0,0 }
+    moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_{ 0,0,0 }
 {
     objectName_ = "Player";
 }
 
 Player::~Player()
 {
-    delete pStateManager_;
-    delete pCommand_;
+    SAFE_DELETE(pStateManager_);
+    SAFE_DELETE(pCommand_);
+
 }
 
 void Player::Initialize()
@@ -49,17 +50,18 @@ void Player::Initialize()
     hModel_[0] = Model::Load("Model/FiterTestUp.fbx");
     assert(hModel_[0] >= 0);
 
-    testModel = Model::Load("Model/SphereCollider.fbx");
-    assert(testModel >= 0);
-
     hModel_[1] = Model::Load("Model/FiterTestDown.fbx");
     assert(hModel_[1] >= 0);
     transform_.rotate_.y += 180.0f;
-    
+
+    SetPosition(GameManager::GetCreateStage()->GetPlayerStartPos());
+    moveSpeed_ = 0.15f;
+    rotateRatio_ = 0.2f;
+
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
     pPlayerWeapon_ = new PlayerWeapon(this);
-    pPlayerWeapon_->SetMainWeapon();
+    pPlayerWeapon_->SetPlayerDataWeapon();
 
     pStateManager_ = new StateManager(this);
     pStateManager_->AddState(new PlayerWait(pStateManager_));
@@ -72,15 +74,10 @@ void Player::Initialize()
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 
-    moveSpeed_ = 0.15f;
-    rotateRatio_ = 0.2f;
-
     //BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), XMFLOAT3(0.5f, 2.6f, 0.5f));
     //AddCollider(collider);
     collid = new SphereCollider(XMFLOAT3(0.0f, 2.3f, 0.0f), 0.5f);
     AddCollider(collid);
-
-    SetPosition(GameManager::GetCreateStage()->GetPlayerStartPos());
 
     pText->Initialize();
 }
@@ -124,24 +121,13 @@ void Player::Draw()
     Model::Draw(hModel_[0]);
     Model::SetTransform(hModel_[1], transform_);
     Model::Draw(hModel_[1]);
-
-    Transform test = transform_;
-    test.position_.y += 0.75f;
-    test.scale_.x = 0.2f;
-    test.scale_.y = 0.2f;
-    test.scale_.z = 0.2f;
-    Model::SetTransform(testModel, test);
-    Model::Draw(testModel, 4);
-
-    CollisionDraw();
     pPlayerWeapon_->DrawWeapon();
 
     //デバッグ用
     pText->Draw(30, 30, (int)transform_.position_.x);
     pText->Draw(30, 70, (int)transform_.position_.y);
     pText->Draw(30, 110, (int)transform_.position_.z);
-    
-    pText->Draw(1100, 30, money_);
+
 }
 
 void Player::Release()

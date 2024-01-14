@@ -11,7 +11,7 @@ class WeaponObjectManager
 	float range_;							//Žæ“¾‚Å‚«‚é”ÍˆÍ
 	WeaponObject* nearestObject_;			//ˆê”Ô‹ß‚¢WeaponObject
 	std::vector<WeaponObject* > objctList_;	//WeaponObject‚ÌƒŠƒXƒg
-
+	
 public:
 	enum class WEAPON_TYPE {
 		WT_SUB1 = 0,
@@ -21,7 +21,7 @@ public:
 
 	WeaponObjectManager();
 	~WeaponObjectManager();
-
+	void SceneTransitionInitialize();
 	void AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos);
 	void RemoveWeaponObject(WeaponObject* obj);
 	void AllKillWeaponObject();

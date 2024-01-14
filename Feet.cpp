@@ -41,7 +41,7 @@ void Feet::Initialize()
 	pHandCollider_ = new SphereCollider(XMFLOAT3(0, 0, 0), 1.0f);
 	AddCollider(collision1);
 	AddCollider(collision2);
-	AddAttackCollider(pHandCollider_);
+	AddCollider(pHandCollider_);
 
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize(5.0f);

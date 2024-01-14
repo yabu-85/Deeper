@@ -321,6 +321,9 @@
     <ClCompile Include="SubPlayScene.cpp">
       <Filter>03Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Warp.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -545,6 +548,9 @@
     </ClInclude>
     <ClInclude Include="SubPlayScene.h">
       <Filter>03Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Warp.h">
+      <Filter>12Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

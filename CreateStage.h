@@ -20,19 +20,21 @@ class CreateStage
 {
 public:
     enum StageNum {
-        T1 = 0,
-        T2,
+        FLOAR = 0,
+        WALL,
+		WARP,
         MAX,
     };
 
     enum RayStageNum {
-        RT1 = 0,
-        RT2,
-        RMAX,
+        R_FLOAR = 0,
+        R_WALL,
+		R_WARP,
+		R_MAX,
     };
 
 private:
-    int hModel_[MAX + RMAX];
+    int hModel_[MAX + R_MAX];
     std::vector<IntersectData> intersectDatas_; //ローポリのデータ集
 
     int mapSizeX_;
@@ -42,8 +44,8 @@ private:
 
 public:
     enum MAP {
-        FLOAR,
-        WALL,
+        M_FLOAR,
+        M_WALL,
     };
 
     CreateStage();

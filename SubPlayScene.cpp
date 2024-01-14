@@ -6,6 +6,7 @@
 #include "CreateStage.h"
 #include "AudioManager.h"
 #include "Engine/Input.h"
+#include "Warp.h"
 
 //デバッグ用
 #include "WeaponObjectManager.h"
@@ -25,6 +26,9 @@ void SubPlayScene::Initialize()
 	GameManager::SetPlayer(Instantiate<Player>(this));
 	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
+
+	Warp* warp = static_cast<Warp*>(FindObject("Warp"));
+	warp->SetWarpScene(SCENE_ID_PLAY);
 
 	//デバッグ用
 	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_SUB1, GameManager::GetCreateStage()->GetPlayerStartPos());

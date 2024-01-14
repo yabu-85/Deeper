@@ -74,10 +74,10 @@ void Player::Initialize()
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 
-    //BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), XMFLOAT3(0.5f, 2.6f, 0.5f));
-    //AddCollider(collider);
-    collid = new SphereCollider(XMFLOAT3(0.0f, 2.3f, 0.0f), 0.5f);
-    AddCollider(collid);
+    BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), XMFLOAT3(0.5f, 2.6f, 0.5f));
+    AddCollider(collider);
+    //collid = new SphereCollider(XMFLOAT3(0.0f, 2.3f, 0.0f), 0.5f);
+    //AddCollider(collid);
 
     pText->Initialize();
 }
@@ -127,6 +127,8 @@ void Player::Draw()
     pText->Draw(30, 30, (int)transform_.position_.x);
     pText->Draw(30, 70, (int)transform_.position_.y);
     pText->Draw(30, 110, (int)transform_.position_.z);
+
+    CollisionDraw();
 
 }
 

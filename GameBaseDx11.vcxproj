@@ -208,6 +208,7 @@
     <ClCompile Include="UIBase.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="VFXManager.cpp" />
+    <ClCompile Include="Warp.cpp" />
     <ClCompile Include="WeaponBase.cpp" />
     <ClCompile Include="WeaponObject.cpp" />
     <ClCompile Include="WeaponObjectManager.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="UIBase.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="VFXManager.h" />
+    <ClInclude Include="Warp.h" />
     <ClInclude Include="WeaponBase.h" />
     <ClInclude Include="WeaponObject.h" />
     <ClInclude Include="WeaponObjectManager.h" />

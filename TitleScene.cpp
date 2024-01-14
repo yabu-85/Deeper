@@ -6,10 +6,6 @@
 #include "TitleUIManager.h"
 #include "ExitUIManager.h"
 
-namespace {
-	bool flag = true;
-}
-
 TitleScene::TitleScene(GameObject* parent)
 	: GameObject(parent, "TitleScene")
 {
@@ -18,14 +14,6 @@ TitleScene::TitleScene(GameObject* parent)
 void TitleScene::Initialize()
 {
 	AudioManager::Initialize();
-
-	//デバッグ用
-	//これPlayerSceneから戻るやつ使うならfalse にしないとPlayに戻れない
-	if (true && flag) {
-		flag = false;
-		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
-		pSceneManager->ChangeScene(SCENE_ID_PLAY);
-	}
 
 	TitleUIManager* title = new TitleUIManager();
 	//シーン推移を滑らかにしたいよね

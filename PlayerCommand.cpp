@@ -1,12 +1,22 @@
 #include "PlayerCommand.h"
 #include "Engine/Input.h"
 
+//デバッグ用？
+#include "Engine/Text.h"
+#include "Engine/Direct3D.h"
+
+namespace {
+	Text* text = new Text();
+	bool keyDraw = false;
+}
+
 PlayerCommand::PlayerCommand()
 	: walk_(false)
 {
 	SetDefaultKeyConfig();
 	
-	//ChangeCmd(ATK, DIK_G, 1);
+	text->Initialize();
+
 }
 
 void PlayerCommand::Update()
@@ -28,7 +38,8 @@ void PlayerCommand::Update()
 	commandFlags[CENTER_DOWN] = Input::IsDownScroll();
 	walk_ = commandFlags[LEFT] || commandFlags[RIGHT] || commandFlags[UP] || commandFlags[DOWN];
 
-	return;
+	keyDraw = false;
+
 }
 
 void PlayerCommand::SetDefaultKeyConfig()
@@ -38,18 +49,22 @@ void PlayerCommand::SetDefaultKeyConfig()
 	pushKeyCommand_.push_back(std::make_pair(DIK_D, RIGHT));
 	pushKeyCommand_.push_back(std::make_pair(DIK_W, UP));
 	pushKeyCommand_.push_back(std::make_pair(DIK_S, DOWN));
+	pushKeyCommand_.push_back(std::make_pair(DIK_E, PUSH_ACTION));
 
 	downKeyCommand_.clear();
 	downKeyCommand_.push_back(std::make_pair(DIK_SPACE, AVO));
 	downKeyCommand_.push_back(std::make_pair(DIK_Q, TARGET));
+	downKeyCommand_.push_back(std::make_pair(DIK_E, DOWN_ACTION));
 
 	pushMouseCommand_.clear();
-	pushMouseCommand_.push_back(std::make_pair(0, WEAPON_SELECT));
 
 	downMouseCommand_.clear();
 	downMouseCommand_.push_back(std::make_pair(0, ATK));
 	downMouseCommand_.push_back(std::make_pair(1, SUB_ATK));
 	downMouseCommand_.push_back(std::make_pair(2, CENTER));
+
+	SetKeyName();
+
 }
 
 void PlayerCommand::ChangeCmd(COMMAND number, int conf, int type)
@@ -107,4 +122,22 @@ void PlayerCommand::DeleteCmd(COMMAND number)
 			return;
 		}
 	}
+}
+
+void PlayerCommand::SetKeyName()
+{
+	keyName_[PUSH_ACTION] = "E";
+	keyName_[DOWN_ACTION] = "E";
+
+}
+
+void PlayerCommand::DrawActionUI()
+{
+	if(keyDraw)
+	text->Draw(Direct3D::screenWidth_ / 2, Direct3D::screenHeight_ / 2 * 1.8, keyName_[PUSH_ACTION].c_str());
+}
+
+void PlayerCommand::SetDrawActionUI()
+{
+	keyDraw = true;
 }

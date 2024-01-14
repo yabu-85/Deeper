@@ -2,6 +2,7 @@
 #include <array>
 #include <vector>
 #include <utility> //std::pair
+#include <string>
 
 class PlayerCommand
 {
@@ -12,13 +13,14 @@ public:
 		CENTER,
 		CENTER_UP,
 		CENTER_DOWN,
-		WEAPON_SELECT,
 		AVO,
 		TARGET,
 		LEFT,
 		RIGHT,
 		UP,
 		DOWN,
+		PUSH_ACTION,
+		DOWN_ACTION,
 		CMD_MAX
 	};
 
@@ -28,8 +30,11 @@ private:
 	std::vector<std::pair<int, COMMAND>> pushMouseCommand_;
 	std::vector<std::pair<int, COMMAND>> downMouseCommand_;
 	std::array<bool, CMD_MAX> commandFlags = { false };
-
+	
 	bool walk_;
+
+	//テストでここに置いてるけどよく考える
+	std::string keyName_[CMD_MAX];
 
 public:
 	PlayerCommand();
@@ -54,12 +59,17 @@ public:
 	bool CmdCenter() { return commandFlags[CENTER]; }
 	bool CmdCenterUp() { return commandFlags[CENTER_UP]; }
 	bool CmdCenterDown() { return commandFlags[CENTER_DOWN]; }
-	bool CmdWeaponSelect() { return commandFlags[WEAPON_SELECT]; }
 	bool CmdLeft() { return commandFlags[LEFT]; }
 	bool CmdRight() { return commandFlags[RIGHT]; }
 	bool CmdUp() { return commandFlags[UP]; }
 	bool CmdDown() { return commandFlags[DOWN]; }
 	bool CmdWalk() { return walk_; }
+	bool CmdPushAction() { return commandFlags[PUSH_ACTION]; }
+	bool CmdDownAction() { return commandFlags[DOWN_ACTION]; }
+
+	void SetKeyName();
+	void DrawActionUI();
+	void SetDrawActionUI();
 
 };
 

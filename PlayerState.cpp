@@ -43,7 +43,7 @@ void PlayerWait::Update()
 		owner_->ChangeState("SubAtk");
 		return;
 	}
-	if (pPlayer_->GetCommand()->CmdWeaponSelect()) {
+	if (pPlayer_->GetCommand()->CmdPushAction()) {
 		if (GameManager::GetWeaponObjectManager()->IsInPlayerRange()) {
 			owner_->ChangeState("Change");
 			return;
@@ -76,7 +76,7 @@ void PlayerWalk::Update()
 		owner_->ChangeState("SubAtk");
 		return;
 	}
-	if (pPlayer_->GetCommand()->CmdWeaponSelect()) {
+	if (pPlayer_->GetCommand()->CmdPushAction()) {
 		if (GameManager::GetWeaponObjectManager()->IsInPlayerRange()) {
 			owner_->ChangeState("Change");
 			return;
@@ -103,7 +103,7 @@ void PlayerWeaponChange::Update()
 	pPlayer_->CalcNoMove();
 	pPlayer_->Move();
 
-	if (pPlayer_->GetCommand()->CmdWeaponSelect()) {
+	if (pPlayer_->GetCommand()->CmdPushAction()) {
 		time_++;
 
 		//Ø‚è‘Ö‚¦ŽžŠÔ‚Ü‚Åƒ{ƒ^ƒ“‰Ÿ‚µ‘±‚¯‚½

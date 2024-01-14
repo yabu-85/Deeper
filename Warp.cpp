@@ -3,6 +3,10 @@
 #include "Engine/SceneManager.h"
 #include "Engine/BoxCollider.h"
 #include "CreateStage.h"
+#include "GameManager.h"
+#include "Player.h"
+#include "PlayerCommand.h"
+#include "Engine/Direct3D.h"
 
 Warp::Warp(GameObject* parent)
 	: GameObject(parent, "Warp"), warpScene_(SCENE_ID::SCENE_ID_TITLE)
@@ -30,6 +34,8 @@ void Warp::Draw()
 {
 	CollisionDraw();
 
+	GameManager::GetPlayer()->GetCommand()->DrawActionUI();
+
 }
 
 void Warp::Release()
@@ -38,11 +44,14 @@ void Warp::Release()
 
 void Warp::OnCollision(GameObject* pTarget)
 {
-	//Player‚¾‚¯Õ“Ë”»’è
-	if (pTarget->GetObjectName() != "Player")
-		return;
+	if (pTarget->GetObjectName() != "Player") return;
+	
+	//‚±‚±‚ÅKey‚ÌUI‚ð•\Ž¦‚³‚¹‚é
+	GameManager::GetPlayer()->GetCommand()->SetDrawActionUI();
 
-	SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
-	pSceneManager->ChangeScene(warpScene_);
-
+	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction()) {
+		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
+		pSceneManager->ChangeScene(warpScene_);
+	}
+	
 }

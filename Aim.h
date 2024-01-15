@@ -1,28 +1,18 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include "EnemyBase.h"
 
 class Player;
-class EnemyBase;
 class CollisionMap;
 
 class Aim : public GameObject
 {
-    float mouseSensitivity;         //マウス感度
     float perspectiveDistance_;     //どのくらい後ろから映すか
-    float heightDistance_;          //焦点の高さ
-    float upMouselimit_;            //マウス移動の制限値（上下
-    float donwMouselimit_;          //マウス移動の制限値（左右
-    float mouseSpeed_;              //マウス移動スピード
     float defPerspectDistance_;     //デフォルトの視点の距離
-    float heightRay_;               //Rayの値にプラスする量
-    float numSupress_;              //マウス移動でOffsetの値を戻す量
-    float maxCameraOffset_;         //cameraOffsetの最大距離
-    float moveAimTime_;             //動く時の抑制の値
-    float stopAimTime_;             //止まる時の抑制の値
-    float targetRange_;             //ターゲットの有効範囲
-    float fovRadian_;               //Targetの範囲
-    float rotateRatio_;             //Target時の回転率
-    bool aimMove_;                  //エイムを動かすかどうか
+    float mouseSensitivity;         //マウス感度
+
+    bool isMove_;                   //エイムを動かすかどうか
+    bool isCompulsion_;             //強制的に移動させる状態か
     bool isTarget_;                 //ターゲット状態か
 
     XMFLOAT3 cameraTarget_;         //カメラの焦点目標
@@ -47,23 +37,25 @@ public:
     void Draw() override;
     void Release() override;
 
-    //進行方向ベクトルのAim情報を取得
-    XMFLOAT3 GetAimDirection() { return aimDirection_; }
-    void SetAimMove(bool b) { aimMove_ = b; };
-    XMFLOAT3 GetTargetPos();
-
+    void SetCompulsion(bool b) { isCompulsion_ = b; }
+    bool IsCompulsion() { return isCompulsion_; }
+    void SetAimMove(bool b) { isMove_ = b; };
+    bool IsAimMove() { return isMove_; }
     float GetMouseSensitivity() { return mouseSensitivity; };
     void SetMouseSensitivity(float f) { mouseSensitivity = f; };
+
+    //進行方向ベクトルのAim情報を取得
+    XMFLOAT3 GetAimDirection() { return aimDirection_; }
+    XMFLOAT3 GetTargetPos() { return isTarget_ ? pEnemyBase_->GetPosition() : XMFLOAT3(); }
 
     //Targetの更新
     void SetTargetEnemy();
     bool IsTarget() { return isTarget_; };
-
     EnemyBase* GetTargetEnemy() { return pEnemyBase_; }
 
     //座標を指定してポジションと焦点を設定する
-    void SetAimPosition(XMFLOAT3 pos);
-    void SetAimTarget(XMFLOAT3 pos);
-    void SetAimPositionAndTarget(XMFLOAT3 pos, XMFLOAT3 target);
+    void SetCompulsionPosition(XMFLOAT3 pos);
+    void SetCompulsionAimTarget(XMFLOAT3 pos);
+    void SetCompulsionAimPositionAndTarget(XMFLOAT3 pos, XMFLOAT3 target);
 
 };

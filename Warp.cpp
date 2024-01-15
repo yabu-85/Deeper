@@ -5,6 +5,7 @@
 #include "CreateStage.h"
 #include "GameManager.h"
 #include "Player.h"
+#include "Aim.h"
 #include "PlayerCommand.h"
 #include "Engine/Direct3D.h"
 
@@ -44,10 +45,18 @@ void Warp::Release()
 
 void Warp::OnCollision(GameObject* pTarget)
 {
+	//ここでフラグ制御はおかしいけどとりま
+	GameManager::GetPlayer()->GetAim()->SetCompulsion(false);
+
 	if (pTarget->GetObjectName() != "Player") return;
 	
 	//ここでKeyのUIを表示させる
 	GameManager::GetPlayer()->GetCommand()->SetDrawActionUI();
+
+	//PlayerのAim強制移動使ってみる
+	GameManager::GetPlayer()->GetAim()->SetCompulsion(true);
+	//GameManager::GetPlayer()->GetAim()->
+
 
 	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction()) {
 		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));

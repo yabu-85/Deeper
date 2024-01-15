@@ -9,25 +9,29 @@
 #include "PlayerCommand.h"
 #include "Engine/Input.h"
 
+namespace {
+    static const float HEIGHT_DISTANCE = 3.0f;
+    static const float UP_MOUSE_LIMIT = -60.0f;
+    static const float DOWN_MOUSE_LIMIT = 60.0f;
+    static const float MOUSE_SPEED = 0.05f;
+    static const float HEIGHT_RAY = 0.05f;                          //RayCastの値にプラスする高さ
+    static const float MAX_CAMERA_OFFSET = 2.0f;                    //cameraOffsetの最大距離
+    static const float MOVE_SUPRESS = 0.03f;                        //動く時の抑制の値
+    static const float STOP_SUPRESS = 0.06f;                        //止まる時の抑制の値
+    static const float TARGET_RANGE = 50.0f;                        //ターゲットの有効範囲
+    static const float FOV_RADIAN = XMConvertToRadians(60) / 2.0f;  //ターゲットの有効範囲
+    static const float TARGET_RATIO = 0.2f;                         //ターゲット時の回転率
+    
+}
+
 Aim::Aim(GameObject* parent)
-    : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 },
-    plaPos_{ 0,0,0 }, pPlayer_(nullptr), aimMove_(false), cameraOffset_{0,0,0}, isTarget_(false), pEnemyBase_(nullptr), pCollisionMap_(nullptr)
+    : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 }, plaPos_{ 0,0,0 }, cameraOffset_{ 0,0,0 },
+    pPlayer_(nullptr), pEnemyBase_(nullptr), pCollisionMap_(nullptr), isMove_(false), isCompulsion_(false), isTarget_(false)
 {
     mouseSensitivity = 2.0f;
-    heightDistance_ = 3.0f;
-    upMouselimit_ = -60.0f;
-    donwMouselimit_ = 60.0f;
-    mouseSpeed_ = 0.05f;
     defPerspectDistance_ = 10.0f;
     perspectiveDistance_ = defPerspectDistance_;
-    heightRay_ = 0.1f;
-    numSupress_ = 0.002f;
-    maxCameraOffset_ = 2.0f;
-    moveAimTime_ = 0.03f;
-    stopAimTime_ = 0.06f;
-    targetRange_ = 50.0f;
-    fovRadian_ = XMConvertToRadians(60) / 2;
-    rotateRatio_ = 0.2f;
+
 }
 
 Aim::~Aim()
@@ -37,19 +41,25 @@ Aim::~Aim()
 void Aim::Initialize()
 {
     pPlayer_ = static_cast<Player*>(FindObject("Player"));
-    aimMove_ = true;
+    isMove_ = true;
 	
 }
 
 void Aim::Update()
 {
     //デバッグ用
-    if (Input::IsKeyDown(DIK_T)) aimMove_ = !aimMove_;
+    if (Input::IsKeyDown(DIK_T)) isMove_ = !isMove_;
     if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
     if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
+
+    //強制移動
+    if (isCompulsion_) {
+
+        return;
+    }
     
     //airMove_がオフの状態はAimはついてくるが、動かせることはなくなる状態
-    if (aimMove_) {
+    if (isMove_) {
         if (isTarget_) {
             CalcCameraOffset(0.0f);
 
@@ -63,12 +73,12 @@ void Aim::Update()
         }
         else {
             XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
-            transform_.rotate_.y += (mouseMove.x * mouseSpeed_) * mouseSensitivity; //横方向の回転
-            transform_.rotate_.x -= (mouseMove.y * mouseSpeed_) * mouseSensitivity; //縦方向の回転
-            if (transform_.rotate_.x <= upMouselimit_) transform_.rotate_.x = upMouselimit_;
-            if (transform_.rotate_.x >= donwMouselimit_) transform_.rotate_.x = donwMouselimit_;
+            transform_.rotate_.y += (mouseMove.x * MOUSE_SPEED) * mouseSensitivity; //横方向の回転
+            transform_.rotate_.x -= (mouseMove.y * MOUSE_SPEED) * mouseSensitivity; //縦方向の回転
+            if (transform_.rotate_.x <= UP_MOUSE_LIMIT) transform_.rotate_.x = UP_MOUSE_LIMIT;
+            if (transform_.rotate_.x >= DOWN_MOUSE_LIMIT) transform_.rotate_.x = DOWN_MOUSE_LIMIT;
 
-            CalcCameraOffset(mouseMove.x * numSupress_);
+            CalcCameraOffset(mouseMove.x * 0.002f);
         }
     }
     else {
@@ -90,7 +100,7 @@ void Aim::Update()
     //プレイヤーの位置をカメラの焦点とする
     plaPos_ = pPlayer_->GetPosition();
     cameraTarget_.x = plaPos_.x + cameraOffset_.x;
-    cameraTarget_.y = plaPos_.y + heightDistance_;
+    cameraTarget_.y = plaPos_.y + HEIGHT_DISTANCE;
     cameraTarget_.z = plaPos_.z + cameraOffset_.z;
 
     //RayCast前の情報を入れる
@@ -114,14 +124,6 @@ void Aim::Draw()
 
 void Aim::Release()
 {
-}
-
-XMFLOAT3 Aim::GetTargetPos()
-{
-    if(!isTarget_)
-        return XMFLOAT3();
-
-    return pEnemyBase_->GetPosition();
 }
 
 void Aim::SetTargetEnemy()
@@ -154,7 +156,7 @@ void Aim::SetTargetEnemy()
         float distance = (float)sqrt(toTarget.x * toTarget.x + toTarget.z * toTarget.z);
 
         //範囲外だったら次
-        if (distance >= targetRange_) continue;
+        if (distance >= TARGET_RANGE) continue;
 
         // 方向ベクトルを正規化
         XMVECTOR toTargetNorm = XMVector3Normalize(XMLoadFloat3(&toTarget));
@@ -165,7 +167,7 @@ void Aim::SetTargetEnemy()
         float angle = acosf(dotProduct);
 
         // 角度を比較してターゲットが範囲内にあるかどうかを確認
-        if (angle <= fovRadian_) {
+        if (angle <= FOV_RADIAN) {
             if (minLeng > distance) {
                 minLeng = distance;
                 minLengIndex = i;
@@ -180,15 +182,13 @@ void Aim::SetTargetEnemy()
 
 }
 
-void Aim::SetAimPosition(XMFLOAT3 pos)
+void Aim::SetCompulsionPosition(XMFLOAT3 pos) {  }
+
+void Aim::SetCompulsionAimTarget(XMFLOAT3 pos)
 {
 }
 
-void Aim::SetAimTarget(XMFLOAT3 pos)
-{
-}
-
-void Aim::SetAimPositionAndTarget(XMFLOAT3 pos, XMFLOAT3 target)
+void Aim::SetCompulsionAimPositionAndTarget(XMFLOAT3 pos, XMFLOAT3 target)
 {
 }
 
@@ -223,7 +223,7 @@ void Aim::FacingTarget()
     XMStoreFloat2(&b, vB);
     float cross = a.x * b.y - a.y * b.x;
     dot = a.x * b.x + a.y * b.y;
-    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * rotateRatio_);
+    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * TARGET_RATIO);
 
     //-----------------------------X軸計算-----------------------------
     // カメラからターゲットへの方向ベクトルを計算
@@ -245,10 +245,10 @@ void Aim::FacingTarget()
     XMStoreFloat2(&b, vB);
     cross = a.x * b.y - a.y * b.x;
     dot = a.x * b.x + a.y * b.y;
-    transform_.rotate_.x += XMConvertToDegrees(-atan2f(cross, dot) * rotateRatio_);
+    transform_.rotate_.x += XMConvertToDegrees(-atan2f(cross, dot) * TARGET_RATIO);
 
-    if (transform_.rotate_.x <= upMouselimit_) transform_.rotate_.x = upMouselimit_;
-    if (transform_.rotate_.x >= donwMouselimit_) transform_.rotate_.x = donwMouselimit_;
+    if (transform_.rotate_.x <= UP_MOUSE_LIMIT) transform_.rotate_.x = UP_MOUSE_LIMIT;
+    if (transform_.rotate_.x >= DOWN_MOUSE_LIMIT) transform_.rotate_.x = DOWN_MOUSE_LIMIT;
 
 }
 
@@ -260,10 +260,10 @@ void Aim::CalcCameraOffset(float _aimMove)
     
     XMVECTOR vCameraOffset = XMLoadFloat3(&cameraOffset_);
     XMVECTOR vTargetOffset = pPlayer_->GetMovement();
-    vTargetOffset *= maxCameraOffset_ * -1;
+    vTargetOffset *= MAX_CAMERA_OFFSET * -1;
 
-    if(pPlayer_->GetCommand()->CmdWalk()) vCameraOffset += (vTargetOffset - vCameraOffset) * moveAimTime_;   //move
-    else vCameraOffset += (vTargetOffset - vCameraOffset) * stopAimTime_;                     //stop
+    if(pPlayer_->GetCommand()->CmdWalk()) vCameraOffset += (vTargetOffset - vCameraOffset) * MOVE_SUPRESS;   //move
+    else vCameraOffset += (vTargetOffset - vCameraOffset) * STOP_SUPRESS;                     //stop
 
     XMStoreFloat3(&cameraOffset_, vCameraOffset);
 }
@@ -286,10 +286,10 @@ void Aim::RayCastStage(XMFLOAT3 _start)
 
     //レイ当たった・判定距離内だったら
     if (min <= (defPerspectDistance_)) {
-        perspectiveDistance_ = min - heightRay_;
+        perspectiveDistance_ = min - HEIGHT_RAY;
     }
     else {
-        perspectiveDistance_ = defPerspectDistance_ - heightRay_;
+        perspectiveDistance_ = defPerspectDistance_ - HEIGHT_RAY;
     }
 
 }

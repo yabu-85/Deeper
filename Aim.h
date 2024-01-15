@@ -17,6 +17,9 @@ class Aim : public GameObject
 
     XMFLOAT3 cameraTarget_;         //カメラの焦点目標
     XMFLOAT3 cameraPos_;            //カメラの場所目標
+    XMFLOAT3 compulsionTarget_;     //強制時のカメラの焦点目標
+    XMFLOAT3 compulsionPos_;        //強制時のカメラの場所目標
+    
     XMFLOAT3 aimDirection_;         //現在の視点に基づいた進行方向ベクトル
     XMFLOAT3 plaPos_;               //プレイヤー位置
     XMFLOAT3 cameraOffset_;         //カメラの移動量
@@ -46,16 +49,15 @@ public:
 
     //進行方向ベクトルのAim情報を取得
     XMFLOAT3 GetAimDirection() { return aimDirection_; }
-    XMFLOAT3 GetTargetPos() { return isTarget_ ? pEnemyBase_->GetPosition() : XMFLOAT3(); }
 
-    //Targetの更新
+    //Targetを見つける
     void SetTargetEnemy();
     bool IsTarget() { return isTarget_; };
     EnemyBase* GetTargetEnemy() { return pEnemyBase_; }
+    XMFLOAT3 GetTargetPos() { return isTarget_ ? pEnemyBase_->GetPosition() : XMFLOAT3(); }
 
     //座標を指定してポジションと焦点を設定する
-    void SetCompulsionPosition(XMFLOAT3 pos);
-    void SetCompulsionAimTarget(XMFLOAT3 pos);
-    void SetCompulsionAimPositionAndTarget(XMFLOAT3 pos, XMFLOAT3 target);
+    void SetCompulsionPosition(XMFLOAT3 pos) { compulsionPos_ = pos; }
+    void SetCompulsionTarget(XMFLOAT3 tar) { compulsionTarget_ = tar; }
 
 };

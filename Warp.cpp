@@ -45,9 +45,6 @@ void Warp::Release()
 
 void Warp::OnCollision(GameObject* pTarget)
 {
-	//ここでフラグ制御はおかしいけどとりま
-	GameManager::GetPlayer()->GetAim()->SetCompulsion(false);
-
 	if (pTarget->GetObjectName() != "Player") return;
 	
 	//ここでKeyのUIを表示させる
@@ -55,8 +52,8 @@ void Warp::OnCollision(GameObject* pTarget)
 
 	//PlayerのAim強制移動使ってみる
 	GameManager::GetPlayer()->GetAim()->SetCompulsion(true);
-	//GameManager::GetPlayer()->GetAim()->
-
+	GameManager::GetPlayer()->GetAim()->SetCompulsionPosition(XMFLOAT3(transform_.position_.x, transform_.position_.y + 3.0f, transform_.position_.z + 13.0f));
+	GameManager::GetPlayer()->GetAim()->SetCompulsionTarget(transform_.position_);
 
 	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction()) {
 		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));

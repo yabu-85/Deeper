@@ -16,17 +16,24 @@ namespace {
     static const float MOUSE_SPEED = 0.05f;
     static const float HEIGHT_RAY = 0.05f;                          //RayCastの値にプラスする高さ
     static const float MAX_CAMERA_OFFSET = 2.0f;                    //cameraOffsetの最大距離
+    static const float SUPRESS = 0.002f;                            //Offsetの値を抑えるやつ
     static const float MOVE_SUPRESS = 0.03f;                        //動く時の抑制の値
     static const float STOP_SUPRESS = 0.06f;                        //止まる時の抑制の値
     static const float TARGET_RANGE = 50.0f;                        //ターゲットの有効範囲
     static const float FOV_RADIAN = XMConvertToRadians(60) / 2.0f;  //ターゲットの有効範囲
     static const float TARGET_RATIO = 0.2f;                         //ターゲット時の回転率
     
+    static const float M_PI = 3.141592653589793f;
+    
+    float pRength = 0.1f;
+    float tRength = 0.1f;
+    
 }
 
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 }, plaPos_{ 0,0,0 }, cameraOffset_{ 0,0,0 },
-    pPlayer_(nullptr), pEnemyBase_(nullptr), pCollisionMap_(nullptr), isMove_(false), isCompulsion_(false), isTarget_(false)
+    compulsionTarget_{0,0,0}, compulsionPos_{0,0,0}, pPlayer_(nullptr), pEnemyBase_(nullptr), pCollisionMap_(nullptr), 
+    isMove_(false), isCompulsion_(false), isTarget_(false)
 {
     mouseSensitivity = 2.0f;
     defPerspectDistance_ = 10.0f;
@@ -43,6 +50,9 @@ void Aim::Initialize()
     pPlayer_ = static_cast<Player*>(FindObject("Player"));
     isMove_ = true;
 	
+    compulsionPos_ = pPlayer_->GetPosition();
+    compulsionTarget_ = pPlayer_->GetPosition();
+
 }
 
 void Aim::Update()
@@ -54,7 +64,28 @@ void Aim::Update()
 
     //強制移動
     if (isCompulsion_) {
+        XMStoreFloat3(&cameraPos_, (XMVectorLerp(XMLoadFloat3(&cameraPos_), XMLoadFloat3(&compulsionPos_), 0.1f)));
+        XMStoreFloat3(&cameraTarget_, (XMVectorLerp(XMLoadFloat3(&cameraTarget_), XMLoadFloat3(&compulsionTarget_), 0.1f)));
+        Camera::SetPosition(cameraPos_);
+        Camera::SetTarget(cameraTarget_);
+        isCompulsion_ = false;
 
+        //強制移動時のRotateを求める
+        XMVECTOR dir = XMLoadFloat3(&cameraPos_) - XMLoadFloat3(&cameraTarget_);
+        dir = XMVector3Normalize(dir);
+        float rotationY = atan2f(XMVectorGetX(dir), XMVectorGetZ(dir));
+        float rotationX = -asinf(XMVectorGetY(dir));
+        transform_.rotate_.x = XMConvertToDegrees(rotationX);
+        transform_.rotate_.y = XMConvertToDegrees(rotationY);
+
+        //Rotateの結果を使ってAimDirectionを計算してセット
+        XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
+        XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+        XMMATRIX mView = mRotX * mRotY;
+        const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+        XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView); //XMVector3TransformNormalを使用することで回転のみを適用します
+        XMVector3Normalize(direction);
+        XMStoreFloat3(&aimDirection_, -direction);
         return;
     }
     
@@ -77,8 +108,7 @@ void Aim::Update()
             transform_.rotate_.x -= (mouseMove.y * MOUSE_SPEED) * mouseSensitivity; //縦方向の回転
             if (transform_.rotate_.x <= UP_MOUSE_LIMIT) transform_.rotate_.x = UP_MOUSE_LIMIT;
             if (transform_.rotate_.x >= DOWN_MOUSE_LIMIT) transform_.rotate_.x = DOWN_MOUSE_LIMIT;
-
-            CalcCameraOffset(mouseMove.x * 0.002f);
+            CalcCameraOffset(mouseMove.x * SUPRESS);
         }
     }
     else {
@@ -114,6 +144,23 @@ void Aim::Update()
     camPos = caTarget + (direction * perspectiveDistance_);
     XMStoreFloat3(&cameraPos_, camPos);
 
+    //強制移動のやつから移動させる
+    float leng = 0.0f;
+    XMVECTOR vec = XMLoadFloat3(&compulsionPos_) - XMLoadFloat3(&cameraPos_);
+    leng = XMVectorGetX(XMVector3Length(vec));
+    if (leng > pRength) vec = XMVector3Normalize(vec) * pRength;
+    XMStoreFloat3(&cameraPos_, XMLoadFloat3(&compulsionPos_) - vec);
+
+    vec = XMLoadFloat3(&compulsionTarget_) - XMLoadFloat3(&cameraTarget_);
+    leng = XMVectorGetX(XMVector3Length(vec));
+    if (leng > tRength) vec = XMVector3Normalize(vec) * tRength;
+    XMStoreFloat3(&cameraTarget_, XMLoadFloat3(&compulsionTarget_) - vec);
+
+    //RayCastの結果を強制移動情報にも代入
+    compulsionPos_ = cameraPos_;
+    compulsionTarget_ = cameraTarget_;
+
+    //カメラ情報をセット
     Camera::SetPosition(cameraPos_);
     Camera::SetTarget(cameraTarget_);
 }
@@ -180,16 +227,6 @@ void Aim::SetTargetEnemy()
         isTarget_ = true;
     }
 
-}
-
-void Aim::SetCompulsionPosition(XMFLOAT3 pos) {  }
-
-void Aim::SetCompulsionAimTarget(XMFLOAT3 pos)
-{
-}
-
-void Aim::SetCompulsionAimPositionAndTarget(XMFLOAT3 pos, XMFLOAT3 target)
-{
 }
 
 //-----------private--------------------------------------------

@@ -67,6 +67,13 @@ void EnemyManager::PlayAtPosition(XMFLOAT3 position, float range)
 	}
 }
 
+void EnemyManager::SceneTransitionInitialize()
+{
+	enemyList_.clear();
+	pParent_ = nullptr;
+
+}
+
 void EnemyManager::AddEnemyList(EnemyBase* e, int type)
 {
 	e->SetEnemyType(ENEMY_TYPE(type));

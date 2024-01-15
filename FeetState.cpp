@@ -76,7 +76,7 @@ void FeetPatrol::Update()
 	if (foundSearchTime_ > foundSearch) {
 		foundSearchTime_ = 0;
 		pFeet_->GetVisionSearchAction()->Update();
-		
+
 		//見つかったらCombatStateへ推移
 		if (pFeet_->GetVisionSearchAction()->IsFoundTarget()) {
 			owner_->ChangeState("Combat");
@@ -101,7 +101,6 @@ void FeetPatrol::OnExit()
 FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 {
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
-	Player* pPlayer = static_cast<Player*>(pFeet_->FindObject("Player"));
 
 	//-----------------------------ビヘイビアツリーの設定--------------------------------------
 	root_ = new Root();
@@ -112,7 +111,7 @@ FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 	Selector* selector2 = new Selector();
 	IsNotEnemyCombatState* condition1 = new IsNotEnemyCombatState(selector2, "Attack", pFeet_);
 	selector1->AddChildren(condition1);
-	
+
 	//--------------------Moveへ移行する------------------------------------
 	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(pFeet_, "Move");
 	IsEnemyAttackReady* condition2 = new IsEnemyAttackReady(action1, pFeet_);
@@ -124,7 +123,7 @@ FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 
 	//--------------------Attackへ移行する-----------------------
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(pFeet_, "Attack");
-	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 5.0f, pFeet_, pPlayer);
+	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 5.0f, pFeet_, GameManager::GetPlayer());
 	IsEnemyCombatState* condition5 = new IsEnemyCombatState(condition4, "Move", pFeet_);
 	selector2->AddChildren(condition5);
 
@@ -199,13 +198,11 @@ void FeetMove::Update()
 {
 	//rand() にしてるけどなんかやってちゃんとしたやつ作ったほうがいいね
 	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
-		Player* pPlayer = static_cast<Player*>(pFeet_->FindObject("Player"));
-		pFeet_->GetMoveAction()->UpdatePath(pPlayer->GetPosition());
+		pFeet_->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
 	}
 
 	if (pFeet_->GetMoveAction()->IsOutEndTarget() && rand() % 60 == 0) {
-		Player* pPlayer = static_cast<Player*>(pFeet_->FindObject("Player"));
-		pFeet_->GetMoveAction()->UpdatePath(pPlayer->GetPosition());
+		pFeet_->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
 	}
 
 	pFeet_->GetMoveAction()->Update();
@@ -237,10 +234,12 @@ void FeetAttack::Update()
 	time_++;
 
 	//AttackFrame=65 ～ 90
-	if (time_ > 65 && time_ < 90 && !pFeet_->GetAttackColliderList().empty()) {
-		//GameManager::GetDamageManager()->CalcPlyaer(pFeet_->GetSphereCollider(), 1);
+	if (time_ > 65 && time_ < 90 && !pFeet_->GetAttackColliderList().empty()) {\
+		//修正箇所
+		//ここでColliderの当たり判定の処理をするかどうかの関数を呼ぶ
+
 	}
-	
+
 	if (time_ >= 200) {
 		Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 0, 1.0f);
 		owner_->ChangeState("Wait");

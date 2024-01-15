@@ -30,6 +30,8 @@ public:
 	
 	//‰¹‚Ì”ÍˆÍ“à‚ÌPatrolState‚ÌEnemy‚Ìó‘Ô‚ğ•ÏX
 	void PlayAtPosition(XMFLOAT3 position, float range);
+	
+	void SceneTransitionInitialize();
 
 };
 

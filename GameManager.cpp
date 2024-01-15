@@ -60,7 +60,6 @@ namespace GameManager {
 			if (Input::IsKeyDown(DIK_B)) pWeaponObjectManager_->AllKillWeaponObject();
 			if (Input::IsKeyDown(DIK_V)) { pEnemyManager_->AllKillEnemy(); }
 		}
-		
 	}
 
 	void GameManager::Release() {
@@ -82,6 +81,9 @@ namespace GameManager {
 		pCollisionMap_ = nullptr;
 		pPlayer_ = nullptr;
 		pNowStage_ = nullptr;
+
+		pEnemyManager_->SceneTransitionInitialize();
+
 	}
 
 	EnemyManager* GetEnemyManager() { return pEnemyManager_; }

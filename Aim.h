@@ -61,4 +61,9 @@ public:
 
     EnemyBase* GetTargetEnemy() { return pEnemyBase_; }
 
+    //座標を指定してポジションと焦点を設定する
+    void SetAimPosition(XMFLOAT3 pos);
+    void SetAimTarget(XMFLOAT3 pos);
+    void SetAimPositionAndTarget(XMFLOAT3 pos, XMFLOAT3 target);
+
 };

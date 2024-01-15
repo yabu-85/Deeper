@@ -180,6 +180,18 @@ void Aim::SetTargetEnemy()
 
 }
 
+void Aim::SetAimPosition(XMFLOAT3 pos)
+{
+}
+
+void Aim::SetAimTarget(XMFLOAT3 pos)
+{
+}
+
+void Aim::SetAimPositionAndTarget(XMFLOAT3 pos, XMFLOAT3 target)
+{
+}
+
 //-----------private--------------------------------------------
 
 void Aim::FacingTarget()

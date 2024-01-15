@@ -190,8 +190,8 @@ bool CollisionMap::GetRayCastMinDist(XMFLOAT3 camPos, XMFLOAT3 plaPos, RayCastDa
     float distP = FBXSDK_FLOAT_MAX;
     bool hitP = cell->SegmentVsTriangle(_data, distP);
     
-    if (distC > distP) minDist = distC;
-    else minDist = distP;
+    if (distC > distP) minDist = distP;
+    else minDist = distC;
 
     return hitC || hitP;
 }

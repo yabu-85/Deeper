@@ -30,7 +30,7 @@ class Aim : public GameObject
 
     void FacingTarget();
     void CalcCameraOffset(float _aimMove);
-    void RayCastStage(XMFLOAT3 _start);
+    void RayCastStage();
 
 public:
     Aim(GameObject* parent);
@@ -40,8 +40,6 @@ public:
     void Draw() override;
     void Release() override;
 
-    void SetCompulsion(bool b) { isCompulsion_ = b; }
-    bool IsCompulsion() { return isCompulsion_; }
     void SetAimMove(bool b) { isMove_ = b; };
     bool IsAimMove() { return isMove_; }
     float GetMouseSensitivity() { return mouseSensitivity; };
@@ -57,7 +55,7 @@ public:
     XMFLOAT3 GetTargetPos() { return isTarget_ ? pEnemyBase_->GetPosition() : XMFLOAT3(); }
 
     //座標を指定してポジションと焦点を設定する
-    void SetCompulsionPosition(XMFLOAT3 pos) { compulsionPos_ = pos; }
-    void SetCompulsionTarget(XMFLOAT3 tar) { compulsionTarget_ = tar; }
+    void SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar);
+    bool IsCompulsion() { return isCompulsion_; }
 
 };

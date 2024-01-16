@@ -28,9 +28,12 @@ class Aim : public GameObject
     CollisionMap* pCollisionMap_;
 
     void Compulsion();
+    void BackCompulsion();
     void FacingTarget();
     void CalcCameraOffset(float _aimMove);
     void RayCastStage();
+    void CalcMouseMove();
+    XMVECTOR CalcDirection(float x, float y);
 
 public:
     Aim(GameObject* parent);

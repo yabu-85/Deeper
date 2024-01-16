@@ -10,11 +10,10 @@
 
 //デバッグ用
 #include "Engine/Input.h"
-#include "Engine/Text.h"
 
 namespace {
     static const int COMPULSION_TIME_DEFAULT = 60;
-    
+
     static const float HEIGHT_DISTANCE = 3.0f;
     static const float UP_MOUSE_LIMIT = -60.0f;
     static const float DOWN_MOUSE_LIMIT = 60.0f;
@@ -27,14 +26,13 @@ namespace {
     static const float TARGET_RANGE = 50.0f;                        //ターゲットの有効範囲
     static const float FOV_RADIAN = XMConvertToRadians(60) / 2.0f;  //ターゲットの有効範囲
     static const float TARGET_RATIO = 0.2f;                         //ターゲット時の回転率
-    
-    Text* text = nullptr;
+
 }
 
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPosition_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 }, cameraOffset_{ 0,0,0 },
-    compulsionTarget_{0,0,0}, compulsionPosisiton_{0,0,0}, pPlayer_(nullptr), pEnemyBase_(nullptr), pCollisionMap_(nullptr), 
-    isMove_(false), isCompulsion_(false), isTarget_(false), compulsionTime_(0)
+    compulsionTarget_{ 0,0,0 }, compulsionPosisiton_{ 0,0,0 }, pPlayer_(nullptr), pEnemyBase_(nullptr), pCollisionMap_(nullptr),
+    isMove_(true), isCompulsion_(false), isTarget_(false), compulsionTime_(0)
 {
     mouseSensitivity = 2.0f;
     defPerspectDistance_ = 10.0f;
@@ -47,11 +45,7 @@ Aim::~Aim()
 
 void Aim::Initialize()
 {
-    pPlayer_ = static_cast<Player*>(FindObject("Player"));
-    isMove_ = true;
-
-    text = new Text();
-    text->Initialize();
+    pPlayer_ = GameManager::GetPlayer();
 
 }
 
@@ -62,79 +56,23 @@ void Aim::Update()
     if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
     if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
 
-    //強制移動
-    if (isCompulsion_) {
-        if (compulsionTime_ < COMPULSION_TIME_DEFAULT) isCompulsion_ = false;
-        Compulsion();
-        compulsionTime_--;
-        return;
-    }
-
-    //戻ってる時の移動
     if (compulsionTime_ > 0) {
-        
-        //ここでもドル処理を書き直そう
-        {
-            XMFLOAT3 plaPos = pPlayer_->GetPosition();
-            XMFLOAT3 target = { plaPos.x, plaPos.y + HEIGHT_DISTANCE, plaPos.z };
-
-            XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
-            XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-            XMMATRIX mView = mRotX * mRotY;
-            const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-            XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView); //XMVector3TransformNormalを使用することで回転のみを適用します
-            direction = XMVector3Normalize(direction);
-
-            //ここで距離の計算するように今は代入だけ
-            perspectiveDistance_ = perspectiveDistance_;
-
-            //ポジションの計算
-            XMFLOAT3 position = XMFLOAT3();
-            XMVECTOR camPos = XMLoadFloat3(&target) + (direction * perspectiveDistance_);
-            XMStoreFloat3(&position, camPos);
-
-            cameraPosition_ = { cameraPosition_.x - ((cameraPosition_.x - position.x) / compulsionTime_),
-                                cameraPosition_.y - ((cameraPosition_.y - position.y) / compulsionTime_),
-                                cameraPosition_.z - ((cameraPosition_.z - position.z) / compulsionTime_) };
-
-            cameraTarget_ = { cameraTarget_.x - ((cameraTarget_.x - target.x) / compulsionTime_),
-                              cameraTarget_.y - ((cameraTarget_.y - target.y) / compulsionTime_),
-                              cameraTarget_.z - ((cameraTarget_.z - target.z) / compulsionTime_) };
+        //強制移動
+        if (isCompulsion_) {
+            Compulsion();
+            isCompulsion_ = false;
+            return;
         }
 
-        RayCastStage();
-        Camera::SetPosition(cameraPosition_);
-        Camera::SetTarget(cameraTarget_);
-        CalcCameraOffset(0.0f);
-        
-        //強制時の視点の距離を求める
-        XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
-        perspectiveDistance_ = XMVectorGetX(XMVector3Length(dir));
-
-        //強制移動時のRotateを求める
-        dir = XMVector3Normalize(dir);
-        float rotationY = atan2f(XMVectorGetX(dir), XMVectorGetZ(dir));
-        float rotationX = -asinf(XMVectorGetY(dir));
-        transform_.rotate_.x = XMConvertToDegrees(rotationX);
-        transform_.rotate_.y = XMConvertToDegrees(rotationY);
-
-        //Rotateの結果を使ってAimDirectionを計算してセット
-        XMMATRIX mRotX = XMMatrixRotationX(rotationX);
-        XMMATRIX mRotY = XMMatrixRotationY(rotationY);
-        XMMATRIX mView = mRotX * mRotY;
-        const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-        XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView);
-        XMVector3Normalize(direction);
-        XMStoreFloat3(&aimDirection_, -direction);
-        
-        compulsionTime_--;
-        return;
+        //戻ってる時の移動
+        if (!isTarget_) {
+            BackCompulsion();
+            compulsionTime_--;
+            return;
+        }
     }
-    
-    //airMove_がオフの状態はAimはついてくるが、動かせることはなくなる状態
-    if (isMove_) {
 
-        //Targetがいる場合の処理
+    if (isMove_) {
         if (isTarget_) {
             CalcCameraOffset(0.0f);
 
@@ -147,35 +85,22 @@ void Aim::Update()
             }
         }
 
-        //Targetがいない場合の処理：マウスで視点移動
+        //マウスで視点移動
         else {
-            XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
-            transform_.rotate_.y += (mouseMove.x * MOUSE_SPEED) * mouseSensitivity; //横方向の回転
-            transform_.rotate_.x -= (mouseMove.y * MOUSE_SPEED) * mouseSensitivity; //縦方向の回転
-            if (transform_.rotate_.x <= UP_MOUSE_LIMIT) transform_.rotate_.x = UP_MOUSE_LIMIT;
-            if (transform_.rotate_.x >= DOWN_MOUSE_LIMIT) transform_.rotate_.x = DOWN_MOUSE_LIMIT;
-            CalcCameraOffset(mouseMove.x * SUPRESS);
+            CalcMouseMove();
+            CalcCameraOffset(Input::GetMouseMove().x * SUPRESS);
         }
     }
     else {
         CalcCameraOffset(0.0f);
     }
 
-    //カメラの回転
-    XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
-    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-    XMMATRIX mView = mRotX * mRotY;
-
-    const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-    XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView); //XMVector3TransformNormalを使用することで回転のみを適用します
-    XMVector3Normalize(direction);
+    XMVECTOR direction = CalcDirection(transform_.rotate_.x, transform_.rotate_.y);
     XMStoreFloat3(&aimDirection_, -direction);
 
     //プレイヤーの位置をカメラの焦点とする        
     XMFLOAT3 plaPos = pPlayer_->GetPosition();
-    cameraTarget_.x = plaPos.x + cameraOffset_.x;
-    cameraTarget_.y = plaPos.y + HEIGHT_DISTANCE;
-    cameraTarget_.z = plaPos.z + cameraOffset_.z;
+    cameraTarget_ = { plaPos.x + cameraOffset_.x, plaPos.y + HEIGHT_DISTANCE, plaPos.z + cameraOffset_.z };
 
     //RayCastの前に情報を入れる
     XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (direction * perspectiveDistance_);
@@ -191,14 +116,6 @@ void Aim::Update()
 
 void Aim::Draw()
 {
-    text->Draw(30, 300, cameraPosition_.x);
-    text->Draw(30, 340, cameraPosition_.y);
-    text->Draw(30, 380, cameraPosition_.z);
-
-    text->Draw(30, 450, cameraTarget_.x);
-    text->Draw(30, 490, cameraTarget_.y);
-    text->Draw(30, 530, cameraTarget_.z);
-
 }
 
 void Aim::Release()
@@ -221,13 +138,13 @@ void Aim::SetTargetEnemy()
     playerForward.x = (float)sin(XMConvertToRadians(transform_.rotate_.y));
     playerForward.y = 0.0f;
     playerForward.z = (float)cos(XMConvertToRadians(transform_.rotate_.y));
-    
+
     float minLeng = 999999;
     int minLengIndex = -1;
 
     for (int i = 0; i < eList.size(); i++) {
         XMFLOAT3 ePos = eList.at(i)->GetPosition();
-        
+
         //ターゲットへのベクトルを計算（逆ベクトル）
         XMFLOAT3 toTarget = XMFLOAT3(cameraTarget_.x - ePos.x, 0.0f, cameraTarget_.z - ePos.z);
 
@@ -270,7 +187,7 @@ void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar)
 
 }
 
-//-----------private--------------------------------------------
+//------------------------------------private--------------------------------------------
 
 void Aim::Compulsion()
 {
@@ -290,12 +207,45 @@ void Aim::Compulsion()
     transform_.rotate_.y = compulsionPosisiton_.y = XMConvertToDegrees(rotationY);
 
     //Rotateの結果を使ってAimDirectionを計算してセット
-    XMMATRIX mRotX = XMMatrixRotationX(rotationX);
-    XMMATRIX mRotY = XMMatrixRotationY(rotationY);
-    XMMATRIX mView = mRotX * mRotY;
-    const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-    XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView);
-    XMVector3Normalize(direction);
+    XMVECTOR direction = CalcDirection(transform_.rotate_.x, transform_.rotate_.y);
+    XMStoreFloat3(&aimDirection_, -direction);
+}
+
+void Aim::BackCompulsion()
+{
+    CalcCameraOffset(0.0f);
+    CalcMouseMove();
+
+    //戻り中のPositionとTargetを計算する
+    XMFLOAT3 position = pPlayer_->GetPosition();
+    XMFLOAT3 target = { position.x + cameraOffset_.x, position.y + HEIGHT_DISTANCE, position.z + cameraOffset_.z };
+    XMVECTOR camPos = XMLoadFloat3(&target) + (CalcDirection(transform_.rotate_.x, transform_.rotate_.y) * perspectiveDistance_);
+    XMStoreFloat3(&position, camPos);
+
+    XMVECTOR vPos = XMLoadFloat3(&cameraPosition_);
+    vPos = vPos - ((vPos - XMLoadFloat3(&position)) / compulsionTime_);
+    XMStoreFloat3(&cameraPosition_, vPos);
+
+    XMVECTOR vTar = XMLoadFloat3(&cameraTarget_);
+    vTar = vTar - ((vTar - XMLoadFloat3(&target)) / compulsionTime_);
+    XMStoreFloat3(&cameraTarget_, vTar);
+
+    //計算結果を使ってRayCastするそれをセット
+    RayCastStage();
+    Camera::SetPosition(cameraPosition_);
+    Camera::SetTarget(cameraTarget_);
+
+    //強制時の視点の距離を求める
+    XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
+    perspectiveDistance_ = XMVectorGetX(XMVector3Length(dir));
+
+    //強制移動時のRotate・Directionを求める
+    dir = XMVector3Normalize(dir);
+    float rotationY = atan2f(XMVectorGetX(dir), XMVectorGetZ(dir));
+    float rotationX = -asinf(XMVectorGetY(dir));
+    transform_.rotate_.x = XMConvertToDegrees(rotationX);
+    transform_.rotate_.y = XMConvertToDegrees(rotationY);
+    XMVECTOR direction = CalcDirection(transform_.rotate_.x, transform_.rotate_.y);
     XMStoreFloat3(&aimDirection_, -direction);
 }
 
@@ -319,7 +269,7 @@ void Aim::FacingTarget()
     if (XMVectorGetY(vCross) < 0) {
         angle *= -1;
     }
-    
+
     XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(transform_.rotate_.y)), cosf(XMConvertToRadians(transform_.rotate_.y)));
     XMFLOAT2 b = XMFLOAT2(sinf(angle), cosf(angle));
     XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
@@ -362,12 +312,12 @@ void Aim::CalcCameraOffset(float _aimMove)
     //マウスの移動量で offsetの値を抑制
     cameraOffset_.x += (cameraOffset_.x * -1.0f) * abs(_aimMove);
     cameraOffset_.z += (cameraOffset_.z * -1.0f) * abs(_aimMove);
-    
+
     XMVECTOR vCameraOffset = XMLoadFloat3(&cameraOffset_);
     XMVECTOR vTargetOffset = pPlayer_->GetMovement();
     vTargetOffset *= MAX_CAMERA_OFFSET * -1;
 
-    if(pPlayer_->GetCommand()->CmdWalk()) vCameraOffset += (vTargetOffset - vCameraOffset) * MOVE_SUPRESS;   //move
+    if (pPlayer_->GetCommand()->CmdWalk()) vCameraOffset += (vTargetOffset - vCameraOffset) * MOVE_SUPRESS;   //move
     else vCameraOffset += (vTargetOffset - vCameraOffset) * STOP_SUPRESS;                     //stop
 
     XMStoreFloat3(&cameraOffset_, vCameraOffset);
@@ -400,4 +350,24 @@ void Aim::RayCastStage()
     XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (vDir * perspectiveDistance_);
     XMStoreFloat3(&cameraPosition_, camPos);
 
+}
+
+void Aim::CalcMouseMove()
+{
+    XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
+    transform_.rotate_.y += (mouseMove.x * MOUSE_SPEED) * mouseSensitivity; //横方向の回転
+    transform_.rotate_.x -= (mouseMove.y * MOUSE_SPEED) * mouseSensitivity; //縦方向の回転
+    if (transform_.rotate_.x <= UP_MOUSE_LIMIT) transform_.rotate_.x = UP_MOUSE_LIMIT;
+    if (transform_.rotate_.x >= DOWN_MOUSE_LIMIT) transform_.rotate_.x = DOWN_MOUSE_LIMIT;
+
+}
+
+XMVECTOR Aim::CalcDirection(float x, float y)
+{
+    XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(x));
+    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(y));
+    XMMATRIX mView = mRotX * mRotY;
+    const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+    XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView); //XMVector3TransformNormalを使用することで回転のみを適用します
+    return XMVector3Normalize(direction);
 }

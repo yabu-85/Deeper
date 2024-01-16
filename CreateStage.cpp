@@ -220,6 +220,9 @@ void CreateStage::CreateStageData(std::string name)
             //WarpPoint
             if (data == 11)
             {
+                //C³‰ÓŠ : ƒ‚ƒfƒ‹‚ğ•ÏX‚µ‚ÄWarpƒ‚ƒfƒ‹–‘Ô‚ÉRay‚à‚Å‚é‚ğŠ„‚è“–‚Ä‚½‚¢
+                intersectDatas_.push_back({ hModel_[FLOAR], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
+                
                 intersectDatas_.push_back({ hModel_[WARP], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
                 GameObject* p = GameManager::GetStage();
                 Warp* warp = Instantiate<Warp>(p);

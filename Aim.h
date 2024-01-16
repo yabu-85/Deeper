@@ -7,21 +7,19 @@ class CollisionMap;
 
 class Aim : public GameObject
 {
+    bool isMove_;                   //エイムを動かすかどうか
+    bool isCompulsion_;             //強制的に移動させる状態か
+    bool isTarget_;                 //ターゲット状態か
+    int compulsionTime_;            //強制から戻るのに掛かる時間
+
     float perspectiveDistance_;     //どのくらい後ろから映すか
     float defPerspectDistance_;     //デフォルトの視点の距離
     float mouseSensitivity;         //マウス感度
 
-    bool isMove_;                   //エイムを動かすかどうか
-    bool isCompulsion_;             //強制的に移動させる状態か
-    bool isTarget_;                 //ターゲット状態か
-
     XMFLOAT3 cameraTarget_;         //カメラの焦点目標
     XMFLOAT3 cameraPosition_;       //カメラの場所目標
-
     XMFLOAT3 compulsionTarget_;     //強制時のカメラの焦点目標
     XMFLOAT3 compulsionPosisiton_;  //強制時のカメラの場所目標
-    XMFLOAT3 compulsionRotate_;     //強制時のカメラの回転軸
-    
     XMFLOAT3 aimDirection_;         //現在の視点に基づいた進行方向ベクトル
     XMFLOAT3 cameraOffset_;         //カメラの移動量
 

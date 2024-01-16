@@ -16,18 +16,20 @@ class Aim : public GameObject
     bool isTarget_;                 //ターゲット状態か
 
     XMFLOAT3 cameraTarget_;         //カメラの焦点目標
-    XMFLOAT3 cameraPos_;            //カメラの場所目標
+    XMFLOAT3 cameraPosition_;       //カメラの場所目標
+
     XMFLOAT3 compulsionTarget_;     //強制時のカメラの焦点目標
-    XMFLOAT3 compulsionPos_;        //強制時のカメラの場所目標
+    XMFLOAT3 compulsionPosisiton_;  //強制時のカメラの場所目標
+    XMFLOAT3 compulsionRotate_;     //強制時のカメラの回転軸
     
     XMFLOAT3 aimDirection_;         //現在の視点に基づいた進行方向ベクトル
-    XMFLOAT3 plaPos_;               //プレイヤー位置
     XMFLOAT3 cameraOffset_;         //カメラの移動量
 
     Player* pPlayer_;
     EnemyBase* pEnemyBase_;
     CollisionMap* pCollisionMap_;
 
+    void Compulsion();
     void FacingTarget();
     void CalcCameraOffset(float _aimMove);
     void RayCastStage();

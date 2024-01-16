@@ -10,7 +10,7 @@
 #include "Engine/Direct3D.h"
 
 Warp::Warp(GameObject* parent)
-	: GameObject(parent, "Warp"), warpScene_(SCENE_ID::SCENE_ID_TITLE)
+	: GameObject(parent, "Warp"), warpScene_(SCENE_ID::SCENE_ID_TITLE), isPlayerHit_(false)
 {
 }
 
@@ -29,6 +29,7 @@ void Warp::Update()
 {
 	if (rand() % 60 == 0) VFXManager::CreatVfxExplode1(transform_.position_);
 
+
 }
 
 void Warp::Draw()
@@ -45,8 +46,14 @@ void Warp::Release()
 
 void Warp::OnCollision(GameObject* pTarget)
 {
-	if (pTarget->GetObjectName() != "Player") return;
-	
+	if (pTarget->GetObjectName() != "Player") {
+		isPlayerHit_ = false;
+		return;
+	}
+
+	//Player‚ÉÕ“Ë‚µŽn‚ß‚½
+	isPlayerHit_ = true;
+
 	//‚±‚±‚ÅKey‚ÌUI‚ð•\Ž¦‚³‚¹‚é
 	GameManager::GetPlayer()->GetCommand()->SetDrawActionUI();
 
@@ -59,4 +66,10 @@ void Warp::OnCollision(GameObject* pTarget)
 		pSceneManager->ChangeScene(warpScene_);
 	}
 	
+}
+
+void Warp::OutCollision()
+{
+	isPlayerHit_ = false;
+
 }

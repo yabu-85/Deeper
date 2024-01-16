@@ -5,6 +5,7 @@
 class Warp : public GameObject
 {
     SCENE_ID warpScene_;
+    bool isPlayerHit_;
 
 public:
     Warp(GameObject* parent);
@@ -14,6 +15,7 @@ public:
     void Draw() override;
     void Release() override;
     void OnCollision(GameObject* pTarget) override;
+    void OutCollision() override;
     void SetWarpScene(SCENE_ID s) { warpScene_ = s; }
 
 };

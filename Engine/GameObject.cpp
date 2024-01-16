@@ -109,6 +109,16 @@ bool GameObject::IsVisibled()
 	return (state_.visible != 0);
 }
 
+void GameObject::SetIsHit(bool flag)
+{
+	state_.isHit = flag;
+}
+
+bool GameObject::GetIsHit()
+{
+	return state_.isHit;
+}
+
 //子オブジェクトリストを取得
 std::list<GameObject*>* GameObject::GetChildList()
 {
@@ -251,6 +261,8 @@ void GameObject::Collision(GameObject* pTarget)
 		return;
 	}
 
+	this->SetIsHit(false);
+
 	//自分とpTargetのコリジョン情報を使って当たり判定
 	//1つのオブジェクトが複数のコリジョン情報を持ってる場合もあるので二重ループ
 	for (auto i : colliderList_)
@@ -259,6 +271,9 @@ void GameObject::Collision(GameObject* pTarget)
 		{
 			if (i->IsHit(j))
 			{
+				this->SetIsHit(true);
+				pTarget->SetIsHit(true);
+
 				//当たった
 				this->OnCollision(pTarget);
 			}
@@ -325,6 +340,13 @@ void GameObject::UpdateSub()
 			it++;
 		}
 	}
+	
+	//誰とも当たっていない
+	if (!(this->GetIsHit()))
+	{
+		OutCollision();
+	}
+
 }
 
 void GameObject::DrawSub()

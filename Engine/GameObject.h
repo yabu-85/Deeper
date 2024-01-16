@@ -64,7 +64,6 @@ public:
 	XMMATRIX GetWorldMatrix();
 
 
-
 	//各フラグの制御
 	bool IsDead();			// 削除するかどうか
 	virtual void KillMe();	// 自分を削除する
@@ -76,6 +75,8 @@ public:
 	void SetInitialized();	// 初期化済みにする
 	bool IsEntered();		// Update実行していいか
 	bool IsVisibled();		// Draw実行していいか
+	void SetIsHit(bool b);	// 当たっているかどうかセットする
+	bool GetIsHit();		// 当たっているかどうかゲットする
 
 	//子オブジェクトリストを取得
 	//戻値：子オブジェクトリスト
@@ -113,6 +114,9 @@ public:
 	//何かと衝突した場合に呼ばれる（オーバーライド用）
 	//引数：pTarget	衝突した相手
 	virtual void OnCollision(GameObject* pTarget) {};
+	
+	//衝突していないときに呼ばれる
+	virtual void OutCollision() {};
 
 	//コライダー（衝突判定）を追加する
 	void AddCollider(Collider * collider);
@@ -167,6 +171,7 @@ private:
 		unsigned entered : 1;		//更新するか
 		unsigned visible : 1;		//描画するか
 		unsigned dead : 1;			//削除するか
+		unsigned isHit : 1;			//衝突しているか
 	};
 	OBJECT_STATE state_;
 

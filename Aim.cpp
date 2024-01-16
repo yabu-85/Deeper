@@ -52,8 +52,8 @@ float GradualReturn(float defaultNum, float num, float t)
 }
 
 Aim::Aim(GameObject* parent)
-    : GameObject(parent, "Aim"), cameraPos_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 }, plaPos_{ 0,0,0 }, cameraOffset_{ 0,0,0 },
-    compulsionTarget_{0,0,0}, compulsionPos_{0,0,0}, pPlayer_(nullptr), pEnemyBase_(nullptr), pCollisionMap_(nullptr), 
+    : GameObject(parent, "Aim"), cameraPosition_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 }, cameraOffset_{ 0,0,0 },
+    compulsionTarget_{0,0,0}, compulsionPosisiton_{0,0,0}, pPlayer_(nullptr), pEnemyBase_(nullptr), pCollisionMap_(nullptr), 
     isMove_(false), isCompulsion_(false), isTarget_(false)
 {
     mouseSensitivity = 2.0f;
@@ -78,6 +78,29 @@ void Aim::Initialize()
 
 void Aim::Update()
 {
+    //ただ数値表示用
+    {
+        XMVECTOR dir = XMLoadFloat3(&compulsionPosisiton_) - XMLoadFloat3(&compulsionTarget_);
+        dir = XMVector3Normalize(dir);
+        float rotationY = atan2f(XMVectorGetX(dir), XMVectorGetZ(dir));
+        float rotationX = -asinf(XMVectorGetY(dir));
+        rotationY = XMConvertToDegrees(rotationY);
+        rotationX = XMConvertToDegrees(rotationX);
+
+        OutputDebugString("X : ");
+        OutputDebugStringA(std::to_string(rotationX).c_str());
+        OutputDebugString(" , Y : ");
+        OutputDebugStringA(std::to_string(rotationY).c_str());
+        OutputDebugString("\n");
+
+        OutputDebugString("X : ");
+        OutputDebugStringA(std::to_string(transform_.rotate_.x).c_str());
+        OutputDebugString(" , Y : ");
+        OutputDebugStringA(std::to_string(transform_.rotate_.y).c_str());
+        OutputDebugString("\n");
+        OutputDebugString("\n");
+    }
+
     //デバッグ用
     if (Input::IsKeyDown(DIK_T)) isMove_ = !isMove_;
     if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
@@ -85,15 +108,50 @@ void Aim::Update()
 
     //強制移動
     if (isCompulsion_) {
-        XMStoreFloat3(&cameraPos_, (XMVectorLerp(XMLoadFloat3(&cameraPos_), XMLoadFloat3(&compulsionPos_), 0.05f)));
-        XMStoreFloat3(&cameraTarget_, (XMVectorLerp(XMLoadFloat3(&cameraTarget_), XMLoadFloat3(&compulsionTarget_), 0.05f)));
+        if (waruNum < waruNumDefault) isCompulsion_ = false;
+        Compulsion();
+        waruNum--;
+        return;
+    }
+
+    //戻ってる時の移動
+    if (waruNum > 0) {
+
+        //ここでもドル処理を書き直そう
+        {
+            XMFLOAT3 plaPos = pPlayer_->GetPosition();
+            XMFLOAT3 target = { plaPos.x, plaPos.y + HEIGHT_DISTANCE, plaPos.z };
+
+            XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
+            XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+            XMMATRIX mView = mRotX * mRotY;
+            const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+            XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView); //XMVector3TransformNormalを使用することで回転のみを適用します
+            direction = XMVector3Normalize(direction);
+
+            //ここで距離の計算するように今は代入だけ
+            perspectiveDistance_ = perspectiveDistance_;
+
+            //ポジションの計算
+            XMFLOAT3 position = XMFLOAT3();
+            XMVECTOR camPos = XMLoadFloat3(&target) + (direction * perspectiveDistance_);
+            XMStoreFloat3(&position, camPos);
+
+            cameraPosition_ = { cameraPosition_.x - ((cameraPosition_.x - position.x) / waruNum),
+                                cameraPosition_.y - ((cameraPosition_.y - position.y) / waruNum),
+                                cameraPosition_.z - ((cameraPosition_.z - position.z) / waruNum) };
+
+            cameraTarget_ = { cameraTarget_.x - ((cameraTarget_.x - target.x) / waruNum),
+                              cameraTarget_.y - ((cameraTarget_.y - target.y) / waruNum),
+                              cameraTarget_.z - ((cameraTarget_.z - target.z) / waruNum) };
+        }
+
         RayCastStage();
-
-        Camera::SetPosition(cameraPos_);
+        Camera::SetPosition(cameraPosition_);
         Camera::SetTarget(cameraTarget_);
-        isCompulsion_ = false;
 
-        XMVECTOR dir = XMLoadFloat3(&cameraPos_) - XMLoadFloat3(&cameraTarget_);
+        //強制時の視点の距離を求める
+        XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
         perspectiveDistance_ = XMVectorGetX(XMVector3Length(dir));
 
         //強制移動時のRotateを求める
@@ -111,6 +169,8 @@ void Aim::Update()
         XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView);
         XMVector3Normalize(direction);
         XMStoreFloat3(&aimDirection_, -direction);
+
+        waruNum--;
         return;
     }
     
@@ -144,30 +204,6 @@ void Aim::Update()
         CalcCameraOffset(0.0f);
     }
 
-    XMVECTOR dir = XMLoadFloat3(&compulsionPos_) - XMLoadFloat3(&compulsionTarget_);
-    dir = XMVector3Normalize(dir);
-    float rotationY = atan2f(XMVectorGetX(dir), XMVectorGetZ(dir));
-    float rotationX = -asinf(XMVectorGetY(dir));
-    rotationY = XMConvertToDegrees(rotationY);
-    rotationX = XMConvertToDegrees(rotationX);
-
-    OutputDebugString("X : ");
-    OutputDebugStringA(std::to_string(rotationX).c_str());
-    OutputDebugString(" , Y : ");
-    OutputDebugStringA(std::to_string(rotationY).c_str());
-    OutputDebugString("\n");
-
-    OutputDebugString("X : ");
-    OutputDebugStringA(std::to_string(transform_.rotate_.x).c_str());
-    OutputDebugString(" , Y : ");
-    OutputDebugStringA(std::to_string(transform_.rotate_.y).c_str());
-    OutputDebugString("\n");
-    OutputDebugString("\n");
-
-    //でかいほうに小さいの引く
-    //transform_.rotate_.x > rotationX ? transform_.rotate_.x = transform_.rotate_.x - rotationX : transform_.rotate_.x = rotationX - transform_.rotate_.x;
-    //transform_.rotate_.y > rotationY ? transform_.rotate_.y = transform_.rotate_.y - rotationY : rotationY = transform_.rotate_.y - transform_.rotate_.y;
-
     //カメラの回転
     XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
@@ -178,55 +214,29 @@ void Aim::Update()
     XMVector3Normalize(direction);
     XMStoreFloat3(&aimDirection_, -direction);
 
-    if (waruNum > 0) {
-        //プレイヤーの位置をカメラの焦点とする
-        plaPos_ = pPlayer_->GetPosition();
-        cameraTarget_.x = plaPos_.x + cameraOffset_.x / waruNum;
-        cameraTarget_.y = plaPos_.y + HEIGHT_DISTANCE;
-        cameraTarget_.z = plaPos_.z + cameraOffset_.z / waruNum;
-    }
-    else {
-        //プレイヤーの位置をカメラの焦点とする
-        plaPos_ = pPlayer_->GetPosition();
-        cameraTarget_.x = plaPos_.x + cameraOffset_.x;
-        cameraTarget_.y = plaPos_.y + HEIGHT_DISTANCE;
-        cameraTarget_.z = plaPos_.z + cameraOffset_.z;
-    }
-
-    perspectiveDistance_ = GradualReturn(defPerspectDistance_, perspectiveDistance_, 0.1f);
+    //プレイヤーの位置をカメラの焦点とする        
+    XMFLOAT3 plaPos = pPlayer_->GetPosition();
+    cameraTarget_.x = plaPos.x + cameraOffset_.x;
+    cameraTarget_.y = plaPos.y + HEIGHT_DISTANCE;
+    cameraTarget_.z = plaPos.z + cameraOffset_.z;
 
     //RayCastの前に情報を入れる
     XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (direction * perspectiveDistance_);
-    XMStoreFloat3(&cameraPos_, camPos);
-
-    //強制移動から戻ってる時の処理
-    if (waruNum > 0) {
-        //移動方向の計算
-        XMVECTOR pVec = XMLoadFloat3(&cameraPos_) - XMLoadFloat3(&compulsionPos_);
-
-        //移動する
-        XMVECTOR tv = pVec / (float)waruNum;
-        XMStoreFloat3(&cameraPos_, XMLoadFloat3(&compulsionPos_) + tv);
-        waruNum--;
-    }
+    XMStoreFloat3(&cameraPosition_, camPos);
 
     //RayCastしてその値を上書きする
     RayCastStage();
 
-    //最終結果を強制移動情報にも代入
-    compulsionPos_ = cameraPos_;
-    compulsionTarget_ = cameraTarget_;
-
     //カメラ情報をセット
-    Camera::SetPosition(cameraPos_);
+    Camera::SetPosition(cameraPosition_);
     Camera::SetTarget(cameraTarget_);
 }
 
 void Aim::Draw()
 {
-    text->Draw(30, 300, cameraPos_.x);
-    text->Draw(30, 340, cameraPos_.y);
-    text->Draw(30, 380, cameraPos_.z);
+    text->Draw(30, 300, cameraPosition_.x);
+    text->Draw(30, 340, cameraPosition_.y);
+    text->Draw(30, 380, cameraPosition_.z);
 
     text->Draw(30, 450, cameraTarget_.x);
     text->Draw(30, 490, cameraTarget_.y);
@@ -296,14 +306,45 @@ void Aim::SetTargetEnemy()
 
 void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar)
 {
-    compulsionPos_ = pos;
+    compulsionPosisiton_ = pos;
     compulsionTarget_ = tar;
+
     isCompulsion_ = true;
     waruNum = waruNumDefault;
 
 }
 
 //-----------private--------------------------------------------
+
+void Aim::Compulsion()
+{
+    XMStoreFloat3(&cameraPosition_, (XMVectorLerp(XMLoadFloat3(&cameraPosition_), XMLoadFloat3(&compulsionPosisiton_), 0.05f)));
+    XMStoreFloat3(&cameraTarget_, (XMVectorLerp(XMLoadFloat3(&cameraTarget_), XMLoadFloat3(&compulsionTarget_), 0.05f)));
+    RayCastStage();
+
+    Camera::SetPosition(cameraPosition_);
+    Camera::SetTarget(cameraTarget_);
+
+    //強制時の視点の距離を求める
+    XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
+    perspectiveDistance_ = XMVectorGetX(XMVector3Length(dir));
+
+    //強制移動時のRotateを求める
+    dir = XMVector3Normalize(dir);
+    float rotationY = atan2f(XMVectorGetX(dir), XMVectorGetZ(dir));
+    float rotationX = -asinf(XMVectorGetY(dir));
+    transform_.rotate_.x = compulsionPosisiton_.x = XMConvertToDegrees(rotationX);
+    transform_.rotate_.y = compulsionPosisiton_.y = XMConvertToDegrees(rotationY);
+
+    //Rotateの結果を使ってAimDirectionを計算してセット
+    XMMATRIX mRotX = XMMatrixRotationX(rotationX);
+    XMMATRIX mRotY = XMMatrixRotationY(rotationY);
+    XMMATRIX mView = mRotX * mRotY;
+    const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+    XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView);
+    XMVector3Normalize(direction);
+    XMStoreFloat3(&aimDirection_, -direction);
+}
 
 void Aim::FacingTarget()
 {
@@ -313,7 +354,7 @@ void Aim::FacingTarget()
     XMFLOAT3 targetPos = pEnemyBase_->GetPosition();
     targetPos = XMFLOAT3(targetPos.x, targetPos.y + aimTarPos, targetPos.z);
 
-    XMFLOAT3 fAimPos = XMFLOAT3(cameraPos_.x - targetPos.x, 0.0f, cameraPos_.z - targetPos.z);
+    XMFLOAT3 fAimPos = XMFLOAT3(cameraPosition_.x - targetPos.x, 0.0f, cameraPosition_.z - targetPos.z);
     XMVECTOR vAimPos = XMLoadFloat3(&fAimPos);  //正規化用の変数にfloatの値を入れる
     vAimPos = XMVector3Normalize(vAimPos);
     XMVECTOR vDot = XMVector3Dot(vFront, vAimPos);
@@ -339,11 +380,11 @@ void Aim::FacingTarget()
     //-----------------------------X軸計算-----------------------------
     // カメラからターゲットへの方向ベクトルを計算
     XMFLOAT3 taTarget = XMFLOAT3(targetPos.x, 0.0f, targetPos.z);
-    XMFLOAT3 taCamPos = XMFLOAT3(cameraPos_.x, 0.0f, cameraPos_.z);
+    XMFLOAT3 taCamPos = XMFLOAT3(cameraPosition_.x, 0.0f, cameraPosition_.z);
     XMVECTOR direction = XMVectorSubtract(XMLoadFloat3(&taTarget), XMLoadFloat3(&taCamPos));
 
     float distance = XMVectorGetX(XMVector3Length(direction));
-    float height = cameraPos_.y - targetPos.y;
+    float height = cameraPosition_.y - targetPos.y;
 
     // 距離と高さに基づいてX軸回転角度を計算
     float rotationX = (float)atan2(height, distance);
@@ -386,26 +427,24 @@ void Aim::RayCastStage()
 
     RayCastData data;
     XMFLOAT3 start = cameraTarget_;
-    XMVECTOR vDir = XMLoadFloat3(&cameraPos_) - XMLoadFloat3(&cameraTarget_);
+    XMVECTOR vDir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
     vDir = XMVector3Normalize(vDir);
     XMFLOAT3 dir = XMFLOAT3();
     XMStoreFloat3(&dir, vDir);
     data.start = start;
     data.dir = dir;
     float min = 0.0f;
-    pCollisionMap_->GetRayCastMinDist(cameraPos_, pPlayer_->GetPosition(), &data, min);
+    pCollisionMap_->GetRayCastMinDist(cameraPosition_, pPlayer_->GetPosition(), &data, min);
 
     //レイ当たった・判定距離内だったら
     if (min <= (defPerspectDistance_)) {
         perspectiveDistance_ = min - HEIGHT_RAY;
     }
     else {
-        perspectiveDistance_ = GradualReturn(defPerspectDistance_, perspectiveDistance_, 0.1f);
-
         perspectiveDistance_ = defPerspectDistance_ - HEIGHT_RAY;
     }
 
     XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (vDir * perspectiveDistance_);
-    XMStoreFloat3(&cameraPos_, camPos);
+    XMStoreFloat3(&cameraPosition_, camPos);
 
 }

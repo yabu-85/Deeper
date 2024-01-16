@@ -83,9 +83,6 @@ void Aim::Update()
     if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
     if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
 
-    OutputDebugStringA(std::to_string(perspectiveDistance_).c_str());
-    OutputDebugString("\n");
-
     //ã≠êßà⁄ìÆ
     if (isCompulsion_) {
         XMStoreFloat3(&cameraPos_, (XMVectorLerp(XMLoadFloat3(&cameraPos_), XMLoadFloat3(&compulsionPos_), 0.05f)));
@@ -147,6 +144,30 @@ void Aim::Update()
         CalcCameraOffset(0.0f);
     }
 
+    XMVECTOR dir = XMLoadFloat3(&compulsionPos_) - XMLoadFloat3(&compulsionTarget_);
+    dir = XMVector3Normalize(dir);
+    float rotationY = atan2f(XMVectorGetX(dir), XMVectorGetZ(dir));
+    float rotationX = -asinf(XMVectorGetY(dir));
+    rotationY = XMConvertToDegrees(rotationY);
+    rotationX = XMConvertToDegrees(rotationX);
+
+    OutputDebugString("X : ");
+    OutputDebugStringA(std::to_string(rotationX).c_str());
+    OutputDebugString(" , Y : ");
+    OutputDebugStringA(std::to_string(rotationY).c_str());
+    OutputDebugString("\n");
+
+    OutputDebugString("X : ");
+    OutputDebugStringA(std::to_string(transform_.rotate_.x).c_str());
+    OutputDebugString(" , Y : ");
+    OutputDebugStringA(std::to_string(transform_.rotate_.y).c_str());
+    OutputDebugString("\n");
+    OutputDebugString("\n");
+
+    //Ç≈Ç©Ç¢ÇŸÇ§Ç…è¨Ç≥Ç¢ÇÃà¯Ç≠
+    //transform_.rotate_.x > rotationX ? transform_.rotate_.x = transform_.rotate_.x - rotationX : transform_.rotate_.x = rotationX - transform_.rotate_.x;
+    //transform_.rotate_.y > rotationY ? transform_.rotate_.y = transform_.rotate_.y - rotationY : rotationY = transform_.rotate_.y - transform_.rotate_.y;
+
     //ÉJÉÅÉâÇÃâÒì]
     XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
@@ -184,7 +205,8 @@ void Aim::Update()
         XMVECTOR pVec = XMLoadFloat3(&cameraPos_) - XMLoadFloat3(&compulsionPos_);
 
         //à⁄ìÆÇ∑ÇÈ
-        XMStoreFloat3(&cameraPos_, XMLoadFloat3(&compulsionPos_) + pVec / (float)waruNum);
+        XMVECTOR tv = pVec / (float)waruNum;
+        XMStoreFloat3(&cameraPos_, XMLoadFloat3(&compulsionPos_) + tv);
         waruNum--;
     }
 
@@ -232,7 +254,7 @@ void Aim::SetTargetEnemy()
     playerForward.x = (float)sin(XMConvertToRadians(transform_.rotate_.y));
     playerForward.y = 0.0f;
     playerForward.z = (float)cos(XMConvertToRadians(transform_.rotate_.y));
-
+    
     float minLeng = 999999;
     int minLengIndex = -1;
 

@@ -196,6 +196,8 @@
     <ClCompile Include="RotateAction.cpp" />
     <ClCompile Include="SearchAction.cpp" />
     <ClCompile Include="CreateStage.cpp" />
+    <ClCompile Include="Stage3.cpp" />
+    <ClCompile Include="StageBase.cpp" />
     <ClCompile Include="StateCountNode.cpp" />
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="SubPlayScene.cpp" />
@@ -275,6 +277,8 @@
     <ClInclude Include="RotateAction.h" />
     <ClInclude Include="SearchAction.h" />
     <ClInclude Include="CreateStage.h" />
+    <ClInclude Include="Stage3.h" />
+    <ClInclude Include="StageBase.h" />
     <ClInclude Include="StateBase.h" />
     <ClInclude Include="StateCountNode.h" />
     <ClInclude Include="StateManager.h" />

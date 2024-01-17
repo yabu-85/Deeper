@@ -5,8 +5,8 @@
 #include <vector>
 
 PolyLine::PolyLine() :
-	WIDTH_(1.0f),	   //太さ
-	LENGTH_(400),	   //長さ（あくまで位置を記憶する数で、実際の長さは移動速度によって変わる）
+	WIDTH_(3.0f),	   //太さ
+	LENGTH_(200),	   //長さ（あくまで位置を記憶する数で、実際の長さは移動速度によって変わる）
 	alpha_(1.0f),      //透明度 (最初は透明にしないでおく)
 	moveAlpha_(false), //徐々に透明にしてく
 
@@ -57,7 +57,7 @@ void PolyLine::AddPosition(XMFLOAT3 pos)
 
 	//現在のカメラの位置をベクトルとして取得
 	XMFLOAT3 camPos = Camera::GetPosition();
-	//camPos = XMFLOAT3(0, 0, 1);
+	camPos = XMFLOAT3(0, 1, 0);
 
 	XMVECTOR vCamPos = XMLoadFloat3(&camPos);
 

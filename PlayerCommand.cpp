@@ -134,7 +134,8 @@ void PlayerCommand::SetKeyName()
 void PlayerCommand::DrawActionUI()
 {
 	if(keyDraw)
-	text->Draw(Direct3D::screenWidth_ / 2, Direct3D::screenHeight_ / 2 * 1.8, keyName_[PUSH_ACTION].c_str());
+	text->Draw(Direct3D::screenWidth_ / 2, (int)((double)Direct3D::screenHeight_ / 2.0 * 1.8), keyName_[PUSH_ACTION].c_str());
+
 }
 
 void PlayerCommand::SetDrawActionUI()

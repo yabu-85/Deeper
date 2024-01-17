@@ -7,7 +7,8 @@ enum SCENE_ID
 {
 	SCENE_ID_TITLE = 0,
 	SCENE_ID_PLAY,
-	SCENE_ID_SUBPLAY,
+	SCENE_ID_PLAY1,
+	SCENE_ID_PLAY2,
 };
 
 //-----------------------------------------------------------

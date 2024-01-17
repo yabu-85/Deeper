@@ -1,7 +1,8 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include "StageBase.h"
 
-class PlayScene : public GameObject
+class PlayScene : public StageBase
 {
 public:
 	PlayScene(GameObject* parent);
@@ -9,5 +10,7 @@ public:
 	void Update() override;
 	void Draw() override;
 	void Release() override;
+
+	void OnStageCleared() override;
 
 };

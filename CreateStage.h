@@ -24,10 +24,8 @@ public:
     enum StageNum {
         FLOAR = 0,
         WALL,
-		WARP,
 		R_FLOAR,
 		R_WALL,
-		R_WARP,
 		MAX,
     };
 

@@ -11,7 +11,7 @@
 #include "Engine/Model.h"
 
 Warp::Warp(GameObject* parent)
-	: GameObject(parent, "Warp"), warpScene_(SCENE_ID::SCENE_ID_TITLE), isPlayerHit_(false), hModel_(-1)
+	: GameObject(parent, "Warp"), warpScene_(SCENE_ID::SCENE_ID_TITLE), isPlayerHit_(false), isValid_(false), hModel_(-1)
 {
 }
 
@@ -37,14 +37,16 @@ void Warp::Update()
 
 void Warp::Draw()
 {
-	Transform t = transform_;
-	t.position_ = { t.position_.x - floarSize / 2.0f, t.position_.y - floarSize / 2.0f, t.position_.z - floarSize / 2.0f };
-	Model::SetTransform(hModel_, t);
-	Model::Draw(hModel_, 0);
+	if (isValid_) {
+		Transform t = transform_;
+		t.position_ = { t.position_.x - floarSize / 2.0f, t.position_.y - floarSize / 2.0f, t.position_.z - floarSize / 2.0f };
+		Model::SetTransform(hModel_, t);
+		Model::Draw(hModel_, 0);
 
-	CollisionDraw();
+		CollisionDraw();
 
-	GameManager::GetPlayer()->GetCommand()->DrawActionUI();
+		GameManager::GetPlayer()->GetCommand()->DrawActionUI();
+	}
 
 }
 
@@ -54,6 +56,8 @@ void Warp::Release()
 
 void Warp::OnCollision(GameObject* pTarget)
 {
+	if (!isValid_) return;
+
 	if (pTarget->GetObjectName() != "Player") {
 		isPlayerHit_ = false;
 		return;

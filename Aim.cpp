@@ -10,6 +10,7 @@
 
 //デバッグ用
 #include "Engine/Input.h"
+#include "Engine/Image.h"
 
 namespace {
     static const int COMPULSION_TIME_DEFAULT = 60;
@@ -27,6 +28,7 @@ namespace {
     static const float FOV_RADIAN = XMConvertToRadians(60) / 2.0f;  //ターゲットの有効範囲
     static const float TARGET_RATIO = 0.2f;                         //ターゲット時の回転率
 
+    XMFLOAT2 imagePos;
 }
 
 Aim::Aim(GameObject* parent)
@@ -47,6 +49,9 @@ void Aim::Initialize()
 {
     pPlayer_ = static_cast<Player*>(FindObject("Player"));
     DefaultAim();
+
+    hPict_ = Image::Load("Image/TargetFound.png");
+    assert(hPict_ >= 0);
 
 }
 
@@ -78,7 +83,24 @@ void Aim::Update()
             CalcCameraOffset(0.0f);
 
             //ターゲットが生きてるならそいつにAim合わせる
-            if (!pEnemyBase_->IsDead()) FacingTarget();
+            if (!pEnemyBase_->IsDead()) {
+                FacingTarget();
+                {
+                    XMFLOAT3 tarPos = pEnemyBase_->GetPosition();
+                    tarPos.y += pEnemyBase_->GetAimTargetPos();
+
+                    XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&tarPos), Camera::GetViewMatrix());
+                    v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
+                    float x = XMVectorGetX(v2);
+                    float y = XMVectorGetY(v2);
+                    Transform foundTrans;
+                    foundTrans.position_ = XMFLOAT3(x, y, 0.0f);
+                    foundTrans.scale_ = XMFLOAT3(0.2f, 0.2f, 0.0f);
+                    Image::SetAlpha(hPict_, 200);
+                    Image::SetTransform(hPict_, foundTrans);
+
+                }
+            }
             else {
                 //死んでたら今向いている方向にターゲットできるEnemyがいるならそいつをターゲットにする
                 isTarget_ = false;
@@ -101,6 +123,8 @@ void Aim::Update()
 
 void Aim::Draw()
 {
+    Image::Draw(hPict_);
+
 }
 
 void Aim::Release()

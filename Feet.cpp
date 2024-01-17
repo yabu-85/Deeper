@@ -7,6 +7,7 @@
 #include "CreateStage.h"
 #include "Engine/Global.h"
 #include "GameManager.h"
+#include "CollisionMap.h"
 
 #include "MoveAction.h"
 #include "RotateAction.h"
@@ -33,7 +34,7 @@ void Feet::Initialize()
 
 	maxHp_ = 100;
 	hp_ = maxHp_;
-	aimTargetPos_ = 1.0f;
+	aimTargetPos_ = 2.0f;
 
 	//ColliderÇÃê›íË
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 1, 0), 1.5f);
@@ -76,11 +77,18 @@ void Feet::Initialize()
 	transform_.position_ = startPos;
 	transform_.rotate_.y = (float)(rand() % 360);
 
+	bodyWeight_ = 10.0f;
+
 }
 
 void Feet::Update()
 {
 	XMVECTOR prePos = XMLoadFloat3(&transform_.position_);
+
+
+	CollisionMap* pMap = static_cast<CollisionMap*>(FindObject("CollisionMap"));
+	pMap->CalcMapWall(transform_.position_, 1.0f);
+
 	if(pStateManager_) pStateManager_->Update();
 
 	movement_ = prePos - XMLoadFloat3(&transform_.position_);

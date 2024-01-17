@@ -25,13 +25,15 @@ public:
 	void SetParent(GameObject* parent) { pParent_ = parent; }
 	void AllKillEnemy();
 	void KillEnemy(EnemyBase* enemy);
-	void SpawnEnemy(int type);
+	void SpawnEnemy(ENEMY_TYPE type);
 	std::vector<EnemyBase*>& GetAllEnemy();
 	
 	//‰¹‚Ì”ÍˆÍ“à‚ÌPatrolState‚ÌEnemy‚Ìó‘Ô‚ğ•ÏX
 	void PlayAtPosition(XMFLOAT3 position, float range);
 	
 	void SceneTransitionInitialize();
+
+	bool IsEnemyListEmpty(){ return enemyList_.empty(); }
 
 };
 

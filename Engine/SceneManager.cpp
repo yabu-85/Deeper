@@ -7,6 +7,7 @@
 #include "../SubPlayScene.h"
 #include "../GameManager.h"
 #include "../PlayerData.h"
+#include "../Stage3.h"
 
 //コンストラクタ
 SceneManager::SceneManager(GameObject * parent)
@@ -48,7 +49,8 @@ void SceneManager::Update()
 		{
 			case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
 			case SCENE_ID_PLAY: Instantiate<PlayScene>(this); break;
-			case SCENE_ID_SUBPLAY: Instantiate<SubPlayScene>(this); break;
+			case SCENE_ID_PLAY1: Instantiate<SubPlayScene>(this); break;
+			case SCENE_ID_PLAY2: Instantiate<Stage3>(this); break;
 		}
 
 		Audio::Initialize();

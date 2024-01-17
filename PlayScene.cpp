@@ -12,9 +12,16 @@
 #include "WeaponObjectManager.h"
 #include "PlayerWeapon.h"
 
+namespace {
+	static const SCENE_ID WARP_STAGE[2] = { SCENE_ID_PLAY1, SCENE_ID_PLAY2 };
+
+}
+
 PlayScene::PlayScene(GameObject* parent)
-	: GameObject(parent, "PlayScene")
+	: StageBase(parent)
 {
+	objectName_ = "PlayScene";
+
 }
 
 void PlayScene::Initialize()
@@ -27,11 +34,14 @@ void PlayScene::Initialize()
 	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
 
-	Warp* warp = static_cast<Warp*>(FindObject("Warp"));
-	warp->SetWarpScene(SCENE_ID_SUBPLAY);
+	for (int i = 0; i < (int)warpList_.size(); i++) {
+		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
+	}
 
 	//デバッグ用
 	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_SUB1, GameManager::GetCreateStage()->GetPlayerStartPos());
+
+	OnStageCleared();
 
 }
 
@@ -41,10 +51,6 @@ void PlayScene::Update()
 	if (Input::IsKeyDown(DIK_C)) {
 		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
 		pSceneManager->ChangeScene(SCENE_ID_TITLE);
-	}
-	if (Input::IsKeyDown(DIK_F)) {
-		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
-		pSceneManager->ChangeScene(SCENE_ID_SUBPLAY);
 	}
 
 }
@@ -59,5 +65,13 @@ void PlayScene::Draw()
 void PlayScene::Release()
 {
 	AudioManager::Release();
+
+}
+
+void PlayScene::OnStageCleared()
+{
+	for (int i = 0; i < (int)warpList_.size(); i++) {
+		warpList_[i]->SetValid(true);
+	}
 
 }

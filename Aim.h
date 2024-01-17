@@ -11,6 +11,7 @@ class Aim : public GameObject
     bool isCompulsion_;             //強制的に移動させる状態か
     bool isTarget_;                 //ターゲット状態か
     int compulsionTime_;            //強制から戻るのに掛かる時間
+    int hPict_;
 
     float perspectiveDistance_;     //どのくらい後ろから映すか
     float defPerspectDistance_;     //デフォルトの視点の距離

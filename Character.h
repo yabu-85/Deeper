@@ -4,6 +4,9 @@
 class Character : public GameObject
 {
 protected:
+    float bodyRadius_;  //めり込み反射の半径
+    float bodyWeight_;  //めり込み時に使う重さ
+
     XMVECTOR movement_; //今の移動量
 
 public:
@@ -15,5 +18,9 @@ public:
     virtual void Release() override = 0 {};
 
     XMVECTOR GetMovement() { return movement_; }
+
+    //キャラクター同士の衝突の際めり込みを避ける
+    void ReflectCharacter(Character* pCharacter);
+
 };
 

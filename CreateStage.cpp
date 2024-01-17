@@ -8,13 +8,11 @@
 #include "Player.h"
 #include "NavigationAI.h"
 #include "Warp.h"
+#include "StageBase.h"
 
 namespace {
     //デバッグ用
     bool drawCell = false;
-
-    int stageIndex = 0;
-    std::string stageFileName[] = { "Map1", "Map2", "Map3" };
 
 }
 
@@ -30,7 +28,7 @@ CreateStage::~CreateStage()
 
 void CreateStage::Initialize()
 {
-    std::string fileName[MAX] = { "StageT1", "StageT2", "none", "RayStageT1", "RayStageT2", "none"};
+    std::string fileName[MAX] = { "StageT1", "StageT2", "RayStageT1", "RayStageT2"};
     for (int i = 0; i < MAX; i++) {
         if (fileName[i] != "none") {
             hModel_[i] = Model::Load("Model/Stage/" + fileName[i] + ".fbx");
@@ -45,21 +43,6 @@ void CreateStage::Update()
     //デバッグ用
     if (Input::IsKeyDown(DIK_E)) 
         drawCell = !drawCell;
-    
-    if (Input::IsKeyDown(DIK_1)) {
-        stageIndex++;
-        if (stageIndex > 2) stageIndex = 2;
-        CreateStageData("Csv/" + stageFileName[stageIndex] + ".csv");
-        GameManager::GetCollisionMap()->ResetCellTriangle();
-        GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
-    }
-    if (Input::IsKeyDown(DIK_2)) {
-        stageIndex--;
-        if (stageIndex < 0) stageIndex = 0;
-        CreateStageData("Csv/" + stageFileName[stageIndex] + ".csv");
-        GameManager::GetCollisionMap()->ResetCellTriangle();
-        GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
-    }
 
 }
 
@@ -231,11 +214,11 @@ void CreateStage::CreateStageData(std::string name)
                 intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR],
                     XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
                 
-                intersectDatas_.push_back({ hModel_[WARP], hModel_[R_WARP],
-                    XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
-
-                Warp* warp = Instantiate<Warp>(GameManager::GetStage());
+                StageBase* stage = static_cast<StageBase*>(GameManager::GetStage());
+                Warp* warp = Instantiate<Warp>(stage);
                 warp->SetPosition(XMFLOAT3(x * floarSize + floarSize / 2.0f, 3.0f, z * floarSize + floarSize / 2.0f));
+                stage->AddWarpList(warp);
+
             }
         }
     }

@@ -1,4 +1,4 @@
-#include "SubPlayScene.h"
+#include "Stage3.h"
 #include "GameManager.h"
 #include "Engine/SceneManager.h"
 #include "Player.h"
@@ -7,29 +7,26 @@
 #include "AudioManager.h"
 #include "Engine/Input.h"
 #include "Warp.h"
-
-//デバッグ用
-#include "WeaponObjectManager.h"
-#include "PlayerWeapon.h"
+#include "EnemyManager.h"
 
 namespace {
-	static const SCENE_ID WARP_STAGE[1] = { SCENE_ID_PLAY2 };
+	static const SCENE_ID WARP_STAGE[2] = { SCENE_ID_PLAY, SCENE_ID_PLAY1 };
 
 }
 
-SubPlayScene::SubPlayScene(GameObject* parent)
+Stage3::Stage3(GameObject* parent)
 	: StageBase(parent)
 {
-	objectName_ = "SubPlayScene";
+	objectName_ = "Stage3";
 
 }
 
-void SubPlayScene::Initialize()
+void Stage3::Initialize()
 {
 	AudioManager::Initialize();
 
 	GameManager::SetStage(this);
-	GameManager::GetCreateStage()->CreateStageData("Csv/Map2.csv");
+	GameManager::GetCreateStage()->CreateStageData("Csv/Map3.csv");
 	GameManager::SetPlayer(Instantiate<Player>(this));
 	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
@@ -38,14 +35,12 @@ void SubPlayScene::Initialize()
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
 	}
 
-	//デバッグ用
-	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_SUB1, GameManager::GetCreateStage()->GetPlayerStartPos());
-
-	OnStageCleared();
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_FEET);
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_FEET);
 
 }
 
-void SubPlayScene::Update()
+void Stage3::Update()
 {
 	//デバッグ用
 	if (Input::IsKeyDown(DIK_C)) {
@@ -53,22 +48,27 @@ void SubPlayScene::Update()
 		pSceneManager->ChangeScene(SCENE_ID_TITLE);
 	}
 
+	if (!isCleared_ && GameManager::GetEnemyManager()->IsEnemyListEmpty()) {
+		isCleared_ = true;
+		OnStageCleared();
+	}
+
 }
 
-void SubPlayScene::Draw()
+void Stage3::Draw()
 {
 	GameManager::Draw();
 	GameManager::GetCreateStage()->Draw();
 
 }
 
-void SubPlayScene::Release()
+void Stage3::Release()
 {
 	AudioManager::Release();
 
 }
 
-void SubPlayScene::OnStageCleared()
+void Stage3::OnStageCleared()
 {
 	for (int i = 0; i < (int)warpList_.size(); i++) {
 		warpList_[i]->SetValid(true);

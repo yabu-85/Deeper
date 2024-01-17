@@ -99,6 +99,21 @@
     <Filter Include="12Stage">
       <UniqueIdentifier>{f17cee51-8ce2-41ab-b564-b00204fc3e6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03Scene\Stage">
+      <UniqueIdentifier>{cb26ec16-ea84-4e65-9ca3-6bfdbd340bc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03Scene\Stage\Base">
+      <UniqueIdentifier>{8752cc89-5c8f-4eca-a46b-13c5cbf4ed1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03Scene\Stage\Stage1">
+      <UniqueIdentifier>{ca4fc463-693b-40c2-8e29-cf77a712cee3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03Scene\Stage\Stage2">
+      <UniqueIdentifier>{9630320b-6761-4a55-bcef-3caa8c961d5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03Scene\Stage\Stage3">
+      <UniqueIdentifier>{c8f62308-17d4-4d83-af48-fb7a7bc2ad71}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -191,9 +206,6 @@
     </ClCompile>
     <ClCompile Include="EnemyUi.cpp">
       <Filter>08Enemy\EnemyBase</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayScene.cpp">
-      <Filter>03Scene</Filter>
     </ClCompile>
     <ClCompile Include="TitleScene.cpp">
       <Filter>03Scene</Filter>
@@ -318,11 +330,20 @@
     <ClCompile Include="PlayerData.cpp">
       <Filter>07Player</Filter>
     </ClCompile>
-    <ClCompile Include="SubPlayScene.cpp">
-      <Filter>03Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Warp.cpp">
       <Filter>12Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="StageBase.cpp">
+      <Filter>03Scene\Stage\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayScene.cpp">
+      <Filter>03Scene\Stage\Stage1</Filter>
+    </ClCompile>
+    <ClCompile Include="SubPlayScene.cpp">
+      <Filter>03Scene\Stage\Stage2</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage3.cpp">
+      <Filter>03Scene\Stage\Stage3</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -425,9 +446,6 @@
     </ClInclude>
     <ClInclude Include="EnemyUi.h">
       <Filter>08Enemy\EnemyBase</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayScene.h">
-      <Filter>03Scene</Filter>
     </ClInclude>
     <ClInclude Include="TitleScene.h">
       <Filter>03Scene</Filter>
@@ -546,11 +564,20 @@
     <ClInclude Include="PlayerData.h">
       <Filter>07Player</Filter>
     </ClInclude>
-    <ClInclude Include="SubPlayScene.h">
-      <Filter>03Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Warp.h">
       <Filter>12Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="StageBase.h">
+      <Filter>03Scene\Stage\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayScene.h">
+      <Filter>03Scene\Stage\Stage1</Filter>
+    </ClInclude>
+    <ClInclude Include="SubPlayScene.h">
+      <Filter>03Scene\Stage\Stage2</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage3.h">
+      <Filter>03Scene\Stage\Stage3</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

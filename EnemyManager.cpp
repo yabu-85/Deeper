@@ -32,7 +32,7 @@ void EnemyManager::KillEnemy(EnemyBase* enemy)
 	enemy->KillMe();
 }
 
-void EnemyManager::SpawnEnemy(int type)
+void EnemyManager::SpawnEnemy(ENEMY_TYPE type)
 {
 	if (type == ENEMY_MASTERHAND) {
 		MasterHand* e = Instantiate<MasterHand>(pParent_);

@@ -79,10 +79,10 @@ void Player::Initialize()
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 
-    BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), XMFLOAT3(0.5f, 2.6f, 0.5f));
-    AddCollider(collider);
-    //collid = new SphereCollider(XMFLOAT3(0.0f, 2.3f, 0.0f), 0.5f);
-    //AddCollider(collid);
+    //BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), XMFLOAT3(0.5f, 2.6f, 0.5f));
+    //AddCollider(collider);
+    collid = new SphereCollider(XMFLOAT3(0.0f, 2.3f, 0.0f), 0.5f);
+    AddCollider(collid);
 
     pText->Initialize();
 
@@ -170,6 +170,9 @@ void Player::OnCollision(GameObject* pTarget)
     std::string name = pTarget->GetObjectName();
     if (name == "Feet") {
         LifeManager::Damage(10);
+        
+        Character* c = static_cast<Character*>(pTarget);
+        ReflectCharacter(c);
     }
 
 }

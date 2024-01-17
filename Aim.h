@@ -27,8 +27,10 @@ class Aim : public GameObject
     EnemyBase* pEnemyBase_;
     CollisionMap* pCollisionMap_;
 
-    void Compulsion();
-    void BackCompulsion();
+    void DefaultAim();      //’Êí‚ÌAim‚ÌŒvZ
+    void Compulsion();      //‹­§ˆÚ“®‚ÌŒvZ
+    void BackCompulsion();  //‹­§ˆÚ“®‚©‚ç’Êí‚ÉˆÚ‚é‚Æ‚«‚ÌŒvZ
+
     void FacingTarget();
     void CalcCameraOffset(float _aimMove);
     void RayCastStage();

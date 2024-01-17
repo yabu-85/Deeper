@@ -8,9 +8,10 @@
 #include "Aim.h"
 #include "PlayerCommand.h"
 #include "Engine/Direct3D.h"
+#include "Engine/Model.h"
 
 Warp::Warp(GameObject* parent)
-	: GameObject(parent, "Warp"), warpScene_(SCENE_ID::SCENE_ID_TITLE), isPlayerHit_(false)
+	: GameObject(parent, "Warp"), warpScene_(SCENE_ID::SCENE_ID_TITLE), isPlayerHit_(false), hModel_(-1)
 {
 }
 
@@ -23,17 +24,24 @@ void Warp::Initialize()
 	BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(floarSize, floarSize, floarSize));
 	AddCollider(collider);
 
+	hModel_ = Model::Load("Model/Stage/Warp.fbx");
+	assert(hModel_ >= 0);
+
 }
 
 void Warp::Update()
 {
 	if (rand() % 60 == 0) VFXManager::CreatVfxExplode1(transform_.position_);
 
-
 }
 
 void Warp::Draw()
 {
+	Transform t = transform_;
+	t.position_ = { t.position_.x - floarSize / 2.0f, t.position_.y - floarSize / 2.0f, t.position_.z - floarSize / 2.0f };
+	Model::SetTransform(hModel_, t);
+	Model::Draw(hModel_, 0);
+
 	CollisionDraw();
 
 	GameManager::GetPlayer()->GetCommand()->DrawActionUI();
@@ -58,7 +66,7 @@ void Warp::OnCollision(GameObject* pTarget)
 	GameManager::GetPlayer()->GetCommand()->SetDrawActionUI();
 
 	//Player‚ÌAim‹­§ˆÚ“®Žg‚Á‚Ä‚Ý‚é
-	XMFLOAT3 cPos = XMFLOAT3(transform_.position_.x, transform_.position_.y - 5.0f, transform_.position_.z + 13.0f);
+	XMFLOAT3 cPos = XMFLOAT3(transform_.position_.x, transform_.position_.y + 5.0f, transform_.position_.z + 33.0f);
 	GameManager::GetPlayer()->GetAim()->SetCompulsion(cPos, transform_.position_);
 
 	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction()) {

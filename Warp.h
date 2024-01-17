@@ -4,8 +4,10 @@
 
 class Warp : public GameObject
 {
-    SCENE_ID warpScene_;
     bool isPlayerHit_;
+    int hModel_;
+
+    SCENE_ID warpScene_;
 
 public:
     Warp(GameObject* parent);

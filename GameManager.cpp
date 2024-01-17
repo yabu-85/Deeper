@@ -30,7 +30,6 @@ namespace GameManager {
 		pDropTable_ = new DropTable();
 		pNavigationAI_ = new NavigationAI();
 		pCreateStage_ = new CreateStage();
-		pCreateStage_->Initialize();
 		LifeManager::Initialize();
 	}
 

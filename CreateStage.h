@@ -4,12 +4,14 @@
 
 struct IntersectData {
     int hModelNum;
+	int hRayModelNum;
     XMFLOAT3 position;
     XMFLOAT3 scale;
 
-    IntersectData() : hModelNum(-1), position{ 0.0f, 0.0f, 0.0f }, scale{ 1.0f, 1.0f, 1.0f } { }
-    IntersectData(int num, XMFLOAT3 pos) : hModelNum(num), position(pos), scale{1.0f, 1.0f, 1.0f} { }
-    IntersectData(int num, XMFLOAT3 pos, XMFLOAT3 sca) : hModelNum(num), position(pos), scale(sca) { }
+    IntersectData() : hModelNum(-1), hRayModelNum(-1), position{ 0.0f, 0.0f, 0.0f }, scale{ 1.0f, 1.0f, 1.0f } { }
+    IntersectData(int num, XMFLOAT3 pos) : hModelNum(num), hRayModelNum(-1), position(pos), scale{1.0f, 1.0f, 1.0f} { }
+    IntersectData(int num, XMFLOAT3 pos, XMFLOAT3 sca) : hModelNum(num), hRayModelNum(-1), position(pos), scale(sca) { }
+    IntersectData(int num, int ray, XMFLOAT3 pos, XMFLOAT3 sca) : hModelNum(num), hRayModelNum(ray), position(pos), scale(sca) { }
 };
 
 //デバッグ用
@@ -23,18 +25,14 @@ public:
         FLOAR = 0,
         WALL,
 		WARP,
-        MAX,
-    };
-
-    enum RayStageNum {
-        R_FLOAR = 0,
-        R_WALL,
+		R_FLOAR,
+		R_WALL,
 		R_WARP,
-		R_MAX,
+		MAX,
     };
 
 private:
-    int hModel_[MAX + R_MAX];
+    int hModel_[MAX];
     std::vector<IntersectData> intersectDatas_; //ローポリのデータ集
 
     int mapSizeX_;

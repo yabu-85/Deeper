@@ -104,7 +104,8 @@ void CollisionMap::CreatIntersectDataTriangle()
     std::vector<Triangle*> triList;
     std::vector<IntersectData> inteDatas = pCreateStage->GetIntersectDatas();
     for (int i = 0; i < inteDatas.size(); i++) {
-        pFbx = Model::GetFbx(inteDatas[i].hModelNum + CreateStage::MAX);
+        if (inteDatas[i].hRayModelNum <= -1) continue;
+        pFbx = Model::GetFbx(inteDatas[i].hRayModelNum);
         std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
 
         //IntersectDataのCollision用モデルのパーツをすべて取得し、その全ポリゴンの座標を計算

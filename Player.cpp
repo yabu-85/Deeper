@@ -10,6 +10,7 @@
 #include "GameManager.h"
 #include "CreateStage.h"
 #include "LifeManager.h"
+#include "VFXManager.h"
 
 #include "Engine/BoxCollider.h"
 #include "Engine/SphereCollider.h"
@@ -29,6 +30,9 @@ namespace {
     XMFLOAT3 rotateMove = XMFLOAT3(0.0f, 0.0f, 0.0f);
     SphereCollider* collid = nullptr;
     XMFLOAT3 prePos = XMFLOAT3();
+
+    int enterTime;
+    XMFLOAT3 enterPos = XMFLOAT3();
 }
 
 Player::Player(GameObject* parent)
@@ -81,10 +85,37 @@ void Player::Initialize()
     //AddCollider(collid);
 
     pText->Initialize();
+
+    enterTime = 60;
+    enterPos = transform_.position_;
+    transform_.position_.y += (enterTime * 0.5f);
+
 }
 
 void Player::Update()
 {
+    if (Input::IsKey(DIK_3)) {
+        XMFLOAT3 aim = pAim_->GetAimDirection();
+        XMFLOAT3 pos = { transform_.position_.x - aim.x * 10.0f, transform_.position_.y + 5.0f, transform_.position_.z - aim.z * 10.0f };
+        pAim_->SetCompulsion(pos, XMFLOAT3(0, 3, 0));
+        return;
+    }
+
+    if (enterTime > 0) {
+        enterTime--;
+        transform_.position_.y -= 0.5f;
+        
+        XMFLOAT3 cPos = XMFLOAT3(enterPos.x, enterPos.y + 5.0f, enterPos.z + 13.0f);
+        pAim_->SetCompulsion(cPos, enterPos);
+
+        if (enterTime == 0) {
+            XMFLOAT3 pos = { transform_.position_.x, transform_.position_.y + 0.7f, transform_.position_.z };
+            VFXManager::CreatVfxExplode1(pos);
+        }
+
+        return;
+    }
+
     pCommand_->Update();
     pStateManager_->Update();
 
@@ -97,14 +128,11 @@ void Player::Update()
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
     if (Input::IsKeyDown(DIK_RIGHTARROW)) transform_.position_.y += 10.0f;
 
-    //デバッグ用とりあえずRayCastで真下・真上に壁があるかで判定してる
-    //cellに設定したheightより段差が小さいなら乗り越える
+    //デバッグ用
     if (Input::IsKeyDown(DIK_Y)) isCollider = !isCollider;
-
     if (isCollider) {
         CollisionMap* map = static_cast<CollisionMap*>(FindObject("CollisionMap"));
         map->CalcMapWall(transform_.position_, moveSpeed_);
-    
     }
 
     XMVECTOR vec = XMLoadFloat3(&transform_.position_) - XMLoadFloat3(&prePos);

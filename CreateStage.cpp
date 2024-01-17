@@ -21,7 +21,7 @@ namespace {
 CreateStage::CreateStage()
     : startPos_(0,0,0), mapSizeX_(0), mapSizeZ_(0)
 {
-    for (int i = 0; i < MAX + R_MAX; i++) hModel_[i] = -1;
+    for (int i = 0; i < MAX; i++) hModel_[i] = -1;
 }
 
 CreateStage::~CreateStage()
@@ -30,11 +30,12 @@ CreateStage::~CreateStage()
 
 void CreateStage::Initialize()
 {
-    std::string fileName[MAX + R_MAX] = { "StageT1", "StageT2", "Warp", "RayStageT1", "RayStageT2", "none"};
-    for (int i = 0; i < MAX + R_MAX; i++) {
-        if (fileName[i] == "none") continue;
-        hModel_[i] = Model::Load("Model/Stage/" + fileName[i] + ".fbx");
-        assert(hModel_[i] >= 0);
+    std::string fileName[MAX] = { "StageT1", "StageT2", "none", "RayStageT1", "RayStageT2", "none"};
+    for (int i = 0; i < MAX; i++) {
+        if (fileName[i] != "none") {
+            hModel_[i] = Model::Load("Model/Stage/" + fileName[i] + ".fbx");
+            assert(hModel_[i] >= 0);
+        }
     }
 
 }
@@ -76,7 +77,7 @@ void CreateStage::Draw()
     //Ray用のワイヤー表示
     if (drawCell) {
         for (int i = 0; i < intersectDatas_.size(); i++) {
-            int handle = intersectDatas_.at(i).hModelNum + MAX;
+            int handle = intersectDatas_.at(i).hRayModelNum;
             Transform trans;
             trans.position_ = intersectDatas_.at(i).position;
             trans.scale_ = intersectDatas_.at(i).scale;
@@ -199,21 +200,27 @@ void CreateStage::CreateStageData(std::string name)
             //Floar
             if (data == 1)
             {
-                intersectDatas_.push_back({ hModel_[FLOAR], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], 
+                    XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
             }
 
             //Wall
             if (data == 2)
             {
                 mapData_[z][x] = WALL;
-                intersectDatas_.push_back({ hModel_[FLOAR], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f / smallSize, 1.0f / smallSize) });
-                intersectDatas_.push_back({ hModel_[WALL], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f / smallSize, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR],
+                    XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f / smallSize, 1.0f / smallSize) });
+                
+                intersectDatas_.push_back({ hModel_[WALL], hModel_[R_WALL], 
+                    XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f / smallSize, 1.0f / smallSize) });
             }
 
             //PlayerStartPoint
             if (data == 10)
             {
-                intersectDatas_.push_back({ hModel_[FLOAR], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], 
+                    XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
+                
                 startPos_ = XMFLOAT3((float)x, 0.0f, (float)z);
             }
 
@@ -221,11 +228,13 @@ void CreateStage::CreateStageData(std::string name)
             if (data == 11)
             {
                 //修正箇所 : モデルを変更してWarpモデル事態にRayもでるを割り当てたい
-                intersectDatas_.push_back({ hModel_[FLOAR], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR],
+                    XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
                 
-                intersectDatas_.push_back({ hModel_[WARP], XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
-                GameObject* p = GameManager::GetStage();
-                Warp* warp = Instantiate<Warp>(p);
+                intersectDatas_.push_back({ hModel_[WARP], hModel_[R_WARP],
+                    XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
+
+                Warp* warp = Instantiate<Warp>(GameManager::GetStage());
                 warp->SetPosition(XMFLOAT3(x * floarSize + floarSize / 2.0f, 3.0f, z * floarSize + floarSize / 2.0f));
             }
         }

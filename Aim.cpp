@@ -45,7 +45,8 @@ Aim::~Aim()
 
 void Aim::Initialize()
 {
-    pPlayer_ = GameManager::GetPlayer();
+    pPlayer_ = static_cast<Player*>(FindObject("Player"));
+    DefaultAim();
 
 }
 
@@ -95,23 +96,7 @@ void Aim::Update()
         CalcCameraOffset(0.0f);
     }
 
-    XMVECTOR direction = CalcDirection(transform_.rotate_.x, transform_.rotate_.y);
-    XMStoreFloat3(&aimDirection_, -direction);
-
-    //プレイヤーの位置をカメラの焦点とする        
-    XMFLOAT3 plaPos = pPlayer_->GetPosition();
-    cameraTarget_ = { plaPos.x + cameraOffset_.x, plaPos.y + HEIGHT_DISTANCE, plaPos.z + cameraOffset_.z };
-
-    //RayCastの前に情報を入れる
-    XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (direction * perspectiveDistance_);
-    XMStoreFloat3(&cameraPosition_, camPos);
-
-    //RayCastしてその値を上書きする
-    RayCastStage();
-
-    //カメラ情報をセット
-    Camera::SetPosition(cameraPosition_);
-    Camera::SetTarget(cameraTarget_);
+    DefaultAim();
 }
 
 void Aim::Draw()
@@ -189,17 +174,40 @@ void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar)
 
 //------------------------------------private--------------------------------------------
 
+void Aim::DefaultAim()
+{
+    XMVECTOR direction = CalcDirection(transform_.rotate_.x, transform_.rotate_.y);
+    XMStoreFloat3(&aimDirection_, -direction);
+
+    //プレイヤーの位置をカメラの焦点とする        
+    XMFLOAT3 plaPos = pPlayer_->GetPosition();
+    cameraTarget_ = { plaPos.x + cameraOffset_.x, plaPos.y + HEIGHT_DISTANCE, plaPos.z + cameraOffset_.z };
+
+    //RayCastの前に情報を入れる
+    XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (direction * perspectiveDistance_);
+    XMStoreFloat3(&cameraPosition_, camPos);
+
+    //RayCastしてその値を上書きする
+    RayCastStage();
+
+    //カメラ情報をセット
+    Camera::SetPosition(cameraPosition_);
+    Camera::SetTarget(cameraTarget_);
+}
+
 void Aim::Compulsion()
 {
     XMStoreFloat3(&cameraPosition_, (XMVectorLerp(XMLoadFloat3(&cameraPosition_), XMLoadFloat3(&compulsionPosisiton_), 0.05f)));
     XMStoreFloat3(&cameraTarget_, (XMVectorLerp(XMLoadFloat3(&cameraTarget_), XMLoadFloat3(&compulsionTarget_), 0.05f)));
+    
+    XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
+    perspectiveDistance_ = XMVectorGetX(XMVector3Length(dir));
     RayCastStage();
 
     Camera::SetPosition(cameraPosition_);
     Camera::SetTarget(cameraTarget_);
 
     //強制移動時のRotateを求める
-    XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
     dir = XMVector3Normalize(dir);
     float rotationY = atan2f(XMVectorGetX(dir), XMVectorGetZ(dir));
     float rotationX = -asinf(XMVectorGetY(dir));
@@ -216,6 +224,11 @@ void Aim::BackCompulsion()
     CalcCameraOffset(0.0f);
     CalcMouseMove();
 
+    //強制時の視点の距離を求める
+    XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
+    float dist = XMVectorGetX(XMVector3Length(dir));
+    perspectiveDistance_ = perspectiveDistance_ - ((dist - defPerspectDistance_) / (float)compulsionTime_);
+
     //戻り中のPositionとTargetを計算する
     XMFLOAT3 position = pPlayer_->GetPosition();
     XMFLOAT3 target = { position.x + cameraOffset_.x, position.y + HEIGHT_DISTANCE, position.z + cameraOffset_.z };
@@ -223,21 +236,17 @@ void Aim::BackCompulsion()
     XMStoreFloat3(&position, camPos);
 
     XMVECTOR vPos = XMLoadFloat3(&cameraPosition_);
-    vPos = vPos - ((vPos - XMLoadFloat3(&position)) / compulsionTime_);
+    vPos = vPos - ((vPos - XMLoadFloat3(&position)) / (float)compulsionTime_);
     XMStoreFloat3(&cameraPosition_, vPos);
 
     XMVECTOR vTar = XMLoadFloat3(&cameraTarget_);
-    vTar = vTar - ((vTar - XMLoadFloat3(&target)) / compulsionTime_);
+    vTar = vTar - ((vTar - XMLoadFloat3(&target)) / (float)compulsionTime_);
     XMStoreFloat3(&cameraTarget_, vTar);
 
     //計算結果を使ってRayCastするそれをセット
     RayCastStage();
     Camera::SetPosition(cameraPosition_);
     Camera::SetTarget(cameraTarget_);
-
-    //強制時の視点の距離を求める
-    XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
-    perspectiveDistance_ = XMVectorGetX(XMVector3Length(dir));
 
     //強制移動時のRotate・Directionを求める
     dir = XMVector3Normalize(dir);
@@ -342,9 +351,6 @@ void Aim::RayCastStage()
     //レイ当たった・判定距離内だったら
     if (min <= (defPerspectDistance_)) {
         perspectiveDistance_ = min - HEIGHT_RAY;
-    }
-    else {
-        perspectiveDistance_ = defPerspectDistance_ - HEIGHT_RAY;
     }
 
     XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (vDir * perspectiveDistance_);

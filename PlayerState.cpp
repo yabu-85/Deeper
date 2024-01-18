@@ -25,6 +25,7 @@ void PlayerWait::Update()
 	pPlayer_->GetPlayerWeapon()->WeaponChangeIndex();
 	pPlayer_->CalcNoMove();
 	pPlayer_->Move();
+	if (pPlayer_->GetAim()->IsTarget()) pPlayer_->AimTargetRotate();
 
 	//キー入力でステート切り替え
 	if (pPlayer_->GetCommand()->CmdWalk()) {
@@ -86,7 +87,9 @@ void PlayerWalk::Update()
 	pPlayer_->GetPlayerWeapon()->WeaponChangeIndex();
 	pPlayer_->CalcMove();
 	pPlayer_->Move(); 
-	pPlayer_->Rotate();
+
+	if (pPlayer_->GetAim()->IsTarget()) pPlayer_->AimTargetRotate();
+	else pPlayer_->Rotate();
 
 }
 

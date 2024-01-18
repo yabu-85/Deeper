@@ -62,6 +62,7 @@ void Player::Initialize()
     SetPosition(GameManager::GetCreateStage()->GetPlayerStartPos());
     moveSpeed_ = 0.15f;
     rotateRatio_ = 0.2f;
+    bodyWeight_ = 0.01f;
 
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
@@ -169,10 +170,17 @@ void Player::OnCollision(GameObject* pTarget)
 {
     std::string name = pTarget->GetObjectName();
     if (name == "Feet") {
-        LifeManager::Damage(10);
-        
         Character* c = static_cast<Character*>(pTarget);
         ReflectCharacter(c);
+    }
+
+}
+
+void Player::OnAttackCollision(GameObject* pTarget)
+{
+    std::string name = pTarget->GetObjectName();
+    if (name == "Feet") {
+        LifeManager::Damage(10);
     }
 
 }
@@ -200,6 +208,38 @@ void Player::Rotate(float ratio)
     XMStoreFloat2(&a, vA);
     XMStoreFloat2(&b, vB);
 
+    float cross = a.x * b.y - a.y * b.x;
+    float dot = a.x * b.x + a.y * b.y;
+    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * ratio);
+}
+
+void Player::AimTargetRotate()
+{
+    XMFLOAT3 tar = pAim_->GetTargetPos();
+    float rotateY = transform_.rotate_.y;
+
+    XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(rotateY)), cosf(XMConvertToRadians(rotateY)));
+    XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
+    XMFLOAT2 b(transform_.position_.x - tar.x, transform_.position_.z - tar.z);
+    XMVECTOR vB = XMVector2Normalize(XMLoadFloat2(&b)) * -1.0f;
+    XMStoreFloat2(&a, vA);
+    XMStoreFloat2(&b, vB);
+    float cross = a.x * b.y - a.y * b.x;
+    float dot = a.x * b.x + a.y * b.y;
+    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * rotateRatio_);
+}
+
+void Player::AimTargetRotate(float ratio)
+{
+    XMFLOAT3 tar = pAim_->GetTargetPos();
+    float rotateY = transform_.rotate_.y;
+
+    XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(rotateY)), cosf(XMConvertToRadians(rotateY)));
+    XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
+    XMFLOAT2 b(transform_.position_.x - tar.x, transform_.position_.z - tar.z);
+    XMVECTOR vB = XMVector2Normalize(XMLoadFloat2(&b)) * -1.0f;
+    XMStoreFloat2(&a, vA);
+    XMStoreFloat2(&b, vB);
     float cross = a.x * b.y - a.y * b.x;
     float dot = a.x * b.x + a.y * b.y;
     transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * ratio);

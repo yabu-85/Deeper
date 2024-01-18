@@ -6,6 +6,7 @@
 #include "PlayerCommand.h"
 #include "Engine/SegmentCollider.h"
 #include "VFXManager.h"
+#include "Aim.h"
 
 #include "Engine/PolyLine.h"
 #include "Engine/Global.h"
@@ -42,6 +43,8 @@ void TestWeaponMain::Initialize()
     pPlayer_ = (Player*)GetParent();
     
     seg_ = new SegmentCollider(XMFLOAT3(), XMVECTOR());
+    seg_->SetValid(false);
+    seg_->SetAttackCollider(true);
     AddCollider(seg_);
 
     damage_ = 20; 
@@ -83,6 +86,17 @@ void TestWeaponMain::Release()
 
 }
 
+void TestWeaponMain::OnAttackCollision(GameObject* pTarget)
+{
+    if (pTarget->GetObjectName() == "Feet") {
+        EnemyBase* e = static_cast<EnemyBase*>(pTarget);
+        e->ApplyDamage(damage_);
+        VFXManager::CreatVfxExplode1(wandPos_);
+        seg_->SetValid(false);
+    }
+
+}
+
 void TestWeaponMain::ResetState()
 {
     atkEnd_ = true;
@@ -107,11 +121,7 @@ void TestWeaponMain::CalcDamage()
     XMVECTOR vVec = XMLoadFloat3(&vec);
     vVec = XMVector3Normalize(vVec) * weaponSize;
     seg_->SetVector(vVec);
-    
-    //bool hit = pDamageManager_->CalcEnemy(seg_, damage_);
-    //if (hit) {
-    //    VFXManager::CreatVfxExplode1(wandPos_);
-    //}
+    seg_->SetValid(true);
 
     XMStoreFloat3(&vec, vVec * 0.5f);
     vec = XMFLOAT3(wandPos_.x + vec.x, wandPos_.y + vec.y, wandPos_.z + vec.z);
@@ -147,21 +157,26 @@ void TestWeaponCombo1::Update()
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
 
-    if(time_ > 20 && time_ < 40 - 15)
+    pTestWeaponMain_->GetSegmentCollider()->SetValid(false);
+    if(time_ > 14 && time_ < 24)
     pTestWeaponMain_->CalcDamage();
 
-    if (time_ > (comboTime_ - 10)) {
-        pPlayer_->CalcRotate();
-        pPlayer_->Rotate(0.15f);
+    if (time_ < 5) {
+        if (pPlayer_->GetAim()->IsTarget()) {
+            pPlayer_->AimTargetRotate(0.3f);
+        }
+        else {
+            pPlayer_->CalcRotate();
+            pPlayer_->Rotate(0.15f);
+        }
     }
     
-    float speed = (float)time_ / (float)comboTime_;
-    pPlayer_->FrontMove(speed);
+    pPlayer_->FrontMove(0.2f);
 
-    time_--;
+    time_++;
     if (pPlayer_->GetCommand()->CmdAtk()) next_ = true;
     
-    if (time_ <= 0) {
+    if (time_ >= comboTime_) {
         if(next_ == true) owner_->ChangeState("Combo2");
         else {
             owner_->ChangeState("Wait");
@@ -173,7 +188,7 @@ void TestWeaponCombo1::Update()
 
 void TestWeaponCombo1::OnEnter()
 {
-    time_ = comboTime_;
+    time_ = 0;
     next_ = false;
     Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 40, 1.0f);
 }
@@ -199,12 +214,18 @@ void TestWeaponCombo2::Update()
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
     
+    pTestWeaponMain_->GetSegmentCollider()->SetValid(false);
     if (time_ > 10 && time_ < 40 - 15)
     pTestWeaponMain_->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
-        pPlayer_->CalcRotate();
-        pPlayer_->Rotate(0.15f);
+        if (pPlayer_->GetAim()->IsTarget()) {
+            pPlayer_->AimTargetRotate(0.3f);
+        }
+        else {
+            pPlayer_->CalcRotate();
+            pPlayer_->Rotate(0.15f);
+        }
     }
     float speed = (float)time_ / (float)comboTime_;
     pPlayer_->FrontMove(speed * 0.5f);
@@ -250,12 +271,18 @@ void TestWeaponCombo3::Update()
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
     
+    pTestWeaponMain_->GetSegmentCollider()->SetValid(false);
     if (time_ > 35 && time_ < 70 - 25)
     pTestWeaponMain_->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
-        pPlayer_->CalcRotate();
-        pPlayer_->Rotate(0.15f);
+        if (pPlayer_->GetAim()->IsTarget()) {
+            pPlayer_->AimTargetRotate(0.3f);
+        }
+        else {
+            pPlayer_->CalcRotate();
+            pPlayer_->Rotate(0.15f);
+        }
     }
     float speed = (float)time_ / (float)comboTime_;
     pPlayer_->FrontMove(speed);

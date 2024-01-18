@@ -115,6 +115,10 @@ public:
 	//引数：pTarget	衝突した相手
 	virtual void OnCollision(GameObject* pTarget) {};
 	
+	//何かと衝突した場合に呼ばれる（オーバーライド用）
+	//引数：pTarget	衝突した相手
+	virtual void OnAttackCollision(GameObject* pTarget) {};
+
 	//衝突していないときに呼ばれる
 	virtual void OutCollision() {};
 

@@ -7,7 +7,7 @@
 
 //コンストラクタ
 Collider::Collider():
-	pGameObject_(nullptr), center_(0.0f, 0.0f, 0.0f), hDebugModel_(-1), size_(0.0f, 0.0f, 0.0f), type_(COLLIDER_MAX)
+	pGameObject_(nullptr), center_(0.0f, 0.0f, 0.0f), hDebugModel_(-1), size_(0.0f, 0.0f, 0.0f), type_(COLLIDER_MAX), isValid_(true), isAttackCollider_(false)
 {
 }
 

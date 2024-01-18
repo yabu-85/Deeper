@@ -234,11 +234,9 @@ void FeetAttack::Update()
 	time_++;
 
 	//AttackFrame=65 ` 90
-	if (time_ > 65 && time_ < 90 && !pFeet_->GetAttackColliderList().empty()) {\
-		//C³‰ÓŠ
-		//‚±‚±‚ÅCollider‚Ì“–‚½‚è”»’è‚Ìˆ—‚ð‚·‚é‚©‚Ç‚¤‚©‚ÌŠÖ”‚ðŒÄ‚Ô
-
-	}
+	//Feet‚ÌOnAttackCollision‚Ì•û‚ÅPlayer‚É“–‚½‚Á‚½‚çfalse‚É‚·‚éˆ—‚ð‘‚¢‚Ä‚ ‚é
+	if (time_ == 65) pFeet_->GetSphereCollider()->SetValid(true);
+	if (time_ == 90) pFeet_->GetSphereCollider()->SetValid(false);
 
 	if (time_ >= 200) {
 		Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 0, 1.0f);

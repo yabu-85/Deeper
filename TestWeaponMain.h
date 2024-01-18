@@ -21,10 +21,13 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
+    void OnAttackCollision(GameObject* pTarget) override;
+
     void ResetState() override;
     void CalcDamage();
 
     PolyLine* GetPolyLine() { return pPolyLine_; }
+    SegmentCollider* GetSegmentCollider() { return seg_; }
 };
 
 //-------------------State----------------------

@@ -267,17 +267,21 @@ void GameObject::Collision(GameObject* pTarget)
 	//1つのオブジェクトが複数のコリジョン情報を持ってる場合もあるので二重ループ
 	for (auto i : colliderList_)
 	{
+		if (!i->IsValid()) continue;
+		
 		for (auto j : pTarget->colliderList_)
 		{
-			if (i->IsHit(j))
+			if (j->IsValid() && i->IsHit(j))
 			{
 				this->SetIsHit(true);
 				pTarget->SetIsHit(true);
 
 				//当たった
-				this->OnCollision(pTarget);
+				if (i->IsAttackCollider() || j->IsAttackCollider()) this->OnAttackCollision(pTarget);
+				else this->OnCollision(pTarget);
+				
 			}
-		}
+		}	
 	}
 
 	//子供も当たり判定

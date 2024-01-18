@@ -26,9 +26,12 @@ public:
     void Draw() override;
     void Release() override;
     void OnCollision(GameObject* pTarget) override;
+    void OnAttackCollision(GameObject* pTarget) override;
 
     void Rotate();
     void Rotate(float ratio);
+    void AimTargetRotate();
+    void AimTargetRotate(float ratio);
 
     XMFLOAT3 GetInputMove();        //Input‚ÌˆÚ“®—ÊŽæ“¾
     void FrontMove(float f = 1.0f); //‘O‚Ö‚ÌˆÚ“®

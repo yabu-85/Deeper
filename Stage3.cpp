@@ -10,7 +10,7 @@
 #include "EnemyManager.h"
 
 namespace {
-	static const SCENE_ID WARP_STAGE[2] = { SCENE_ID_PLAY, SCENE_ID_PLAY1 };
+	static const SCENE_ID WARP_STAGE[] = { SCENE_ID_PLAY0 };
 
 }
 

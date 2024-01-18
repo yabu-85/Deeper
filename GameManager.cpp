@@ -9,6 +9,7 @@
 #include "Engine/GameObject.h"
 #include "Engine/Global.h"
 #include "LifeManager.h"
+#include "PlayerData.h"
 
 //デバッグ用
 #include "Engine/Input.h"
@@ -31,6 +32,8 @@ namespace GameManager {
 		pNavigationAI_ = new NavigationAI();
 		pCreateStage_ = new CreateStage();
 		LifeManager::Initialize();
+		PlayerData::Initialize();
+
 	}
 
 	void GameManager::Update()
@@ -71,6 +74,7 @@ namespace GameManager {
 	void Draw()
 	{
 		pWeaponObjectManager_;
+		PlayerData::Draw();
 		LifeManager::Draw();
 
 	}

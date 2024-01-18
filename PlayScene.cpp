@@ -13,7 +13,7 @@
 #include "PlayerWeapon.h"
 
 namespace {
-	static const SCENE_ID WARP_STAGE[2] = { SCENE_ID_PLAY1, SCENE_ID_PLAY2 };
+	static const SCENE_ID WARP_STAGE[2] = { SCENE_ID_PLAY1 };
 
 }
 
@@ -38,10 +38,10 @@ void PlayScene::Initialize()
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
 	}
 
+	OnStageCleared();
+
 	//デバッグ用
 	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_SUB1, GameManager::GetCreateStage()->GetPlayerStartPos());
-
-	OnStageCleared();
 
 }
 

@@ -19,7 +19,7 @@ SceneManager::SceneManager(GameObject * parent)
 void SceneManager::Initialize()
 {
 	//最初のシーンを準備
-	currentSceneID_ = SCENE_ID_PLAY;
+	currentSceneID_ = SCENE_ID_PLAY0;
 	nextSceneID_ = currentSceneID_;
 	Instantiate<PlayScene>(this);
 }
@@ -32,6 +32,9 @@ void SceneManager::Update()
 	{
 		//今のプレイヤーのデータを保存する
 		PlayerData::SavePlayerData();
+
+		//指定のStageならStageClear数を増やす
+		PlayerData::AddClearStageCount(currentSceneID_);
 
 		//そのシーンのオブジェクトを全削除
 		KillAllChildren();
@@ -48,7 +51,7 @@ void SceneManager::Update()
 		switch (nextSceneID_)
 		{
 			case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
-			case SCENE_ID_PLAY: Instantiate<PlayScene>(this); break;
+			case SCENE_ID_PLAY0: Instantiate<PlayScene>(this); break;
 			case SCENE_ID_PLAY1: Instantiate<SubPlayScene>(this); break;
 			case SCENE_ID_PLAY2: Instantiate<Stage3>(this); break;
 		}

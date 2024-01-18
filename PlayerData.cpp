@@ -3,10 +3,32 @@
 #include "GameManager.h"
 #include "Player.h"
 #include "WeaponBase.h"
+#include "Engine/Text.h"
 
 namespace PlayerData {
     PlayerStats data_;
-    
+    Text* pText = nullptr;
+
+    void Initialize()
+    {
+        data_.clearStageCount_ = 0;
+        
+        for (int i = 0; i < 2; i++) {
+            data_.subWeapon_[i].durability_ = 0;
+            data_.subWeapon_[i].type_ = 0;
+        }
+
+        pText = new Text();
+        pText->Initialize();
+
+    }
+
+    void Draw()
+    {
+        pText->Draw(30, 250, data_.clearStageCount_);
+
+    }
+
     void SavePlayerData()
     {
         Player* player = GameManager::GetPlayer();
@@ -28,6 +50,13 @@ namespace PlayerData {
 
     void SetWeaponData(int index, const WeaponData& data) { data_.subWeapon_[index] = data; }
     WeaponData& GetWeaponData(int index) { return data_.subWeapon_[index]; }
+    
+    void AddClearStageCount(SCENE_ID id) { 
+        if (id == SCENE_ID_PLAY1 || id == SCENE_ID_PLAY2) {
+            data_.clearStageCount_++;
+
+        }
+    }
 
 }
 

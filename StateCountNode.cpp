@@ -16,7 +16,7 @@ StateCountNode::Status StateCountNode::Update()
 	int con = 0;
 	for (auto e : eneList) {
 		for (auto it : stateName_) {
-			if (e->GetStateManager()->GetName() == it) con++;
+			if (e->GetStateManager() && e->GetStateManager()->GetName() == it) con++;
 		}
 	}
 
@@ -37,7 +37,7 @@ CombatStateCountNode::Status CombatStateCountNode::Update()
 	int con = 0;
 	for (auto e : eneList) {
 		for (auto it : stateName_) {
-			if (e->GetCombatStateManager()->GetName() == it) con++;
+			if (e->GetCombatStateManager() && e->GetCombatStateManager()->GetName() == it) con++;
 		}
 	}
 

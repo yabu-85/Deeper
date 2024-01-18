@@ -208,7 +208,7 @@ void Aim::DefaultAim()
     cameraTarget_ = { plaPos.x + cameraOffset_.x, plaPos.y + HEIGHT_DISTANCE, plaPos.z + cameraOffset_.z };
 
     //RayCast‚Ì‘O‚Éî•ñ‚ğ“ü‚ê‚é
-    XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (direction * perspectiveDistance_);
+    XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (direction * defPerspectDistance_);
     XMStoreFloat3(&cameraPosition_, camPos);
 
     //RayCast‚µ‚Ä‚»‚Ì’l‚ğã‘‚«‚·‚é
@@ -358,9 +358,14 @@ void Aim::CalcCameraOffset(float _aimMove)
 
 void Aim::RayCastStage()
 {
-    pCollisionMap_ = static_cast<CollisionMap*>(FindObject("CollisionMap"));
-    if (pCollisionMap_ == nullptr) return;
+    //’n–Ê‚Ì”»’è
+    if (cameraPosition_.y < 0.0f) {
 
+    }
+    
+    pCollisionMap_ = GameManager::GetCollisionMap();
+    if (pCollisionMap_ == nullptr) return;
+    
     RayCastData data;
     XMFLOAT3 start = cameraTarget_;
     XMVECTOR vDir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);

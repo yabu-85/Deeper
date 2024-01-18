@@ -7,13 +7,14 @@
 #include "AudioManager.h"
 #include "Engine/Input.h"
 #include "Warp.h"
+#include "EnemyManager.h"
 
 //デバッグ用
 #include "WeaponObjectManager.h"
 #include "PlayerWeapon.h"
 
 namespace {
-	static const SCENE_ID WARP_STAGE[1] = { SCENE_ID_PLAY2 };
+	static const SCENE_ID WARP_STAGE[] = { SCENE_ID_PLAY2, SCENE_ID_PLAY0 };
 
 }
 
@@ -38,10 +39,13 @@ void SubPlayScene::Initialize()
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
 	}
 
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_ASTAR);
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_ASTAR);
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_FEET);
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_FEET);
+
 	//デバッグ用
 	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_SUB1, GameManager::GetCreateStage()->GetPlayerStartPos());
-
-	OnStageCleared();
 
 }
 
@@ -51,6 +55,11 @@ void SubPlayScene::Update()
 	if (Input::IsKeyDown(DIK_C)) {
 		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
 		pSceneManager->ChangeScene(SCENE_ID_TITLE);
+	}
+
+	if (!isCleared_ && GameManager::GetEnemyManager()->IsEnemyListEmpty()) {
+		isCleared_ = true;
+		OnStageCleared();
 	}
 
 }

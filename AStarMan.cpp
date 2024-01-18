@@ -4,6 +4,7 @@
 #include "Engine/Global.h"
 #include "GameManager.h"
 #include "CreateStage.h"
+#include "Engine/SphereCollider.h"
 
 #include "MoveAction.h"
 #include "RotateAction.h"
@@ -16,6 +17,7 @@
 AStarMan::AStarMan(GameObject* parent)
 	:EnemyBase(parent), hModel_(-1), pAstarMoveAction_(nullptr)
 {
+	objectName_ = "AStarMan";
 }
 
 AStarMan::~AStarMan()
@@ -37,6 +39,9 @@ void AStarMan::Initialize()
 
 	pAstarMoveAction_ = new AstarMoveAction(this, 0.03f, 0.1f);
 	pAstarMoveAction_->Initialize();
+
+	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5f, 0), 1.5f);
+	AddCollider(collision1);
 
 }
 
@@ -72,6 +77,8 @@ void AStarMan::Draw()
 	draw.position_.y += 1.0f;
 	Model::SetTransform(hModel_, draw);
 	Model::Draw(hModel_);
+
+	CollisionDraw();
 
 	if (!Input::IsKey(DIK_F)) {
 		Transform target;

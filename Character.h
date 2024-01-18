@@ -4,7 +4,6 @@
 class Character : public GameObject
 {
 protected:
-    float bodyRadius_;  //‚ß‚è‚İ”½Ë‚Ì”¼Œa
     float bodyWeight_;  //‚ß‚è‚İ‚Ég‚¤d‚³
 
     XMVECTOR movement_; //¡‚ÌˆÚ“®—Ê

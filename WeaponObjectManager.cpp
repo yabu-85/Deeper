@@ -23,7 +23,8 @@ WeaponObjectManager::~WeaponObjectManager()
 
 void WeaponObjectManager::SceneTransitionInitialize()
 {
-	AllKillWeaponObject();
+	objctList_.clear();
+	nearestObject_ = nullptr;
 
 }
 

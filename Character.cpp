@@ -1,7 +1,7 @@
 #include "Character.h"
 
 Character::Character(GameObject* parent) 
-	: GameObject(parent), movement_(XMVectorZero()), bodyRadius_(1.0f), bodyWeight_(1.0f)
+	: GameObject(parent), movement_(XMVectorZero()), bodyWeight_(1.0f)
 {
 }
 
@@ -12,7 +12,6 @@ void Character::ReflectCharacter(Character* pCharacter) {
 	
 	//”¼Œa‚æ‚è‘å‚«‚¯‚ê‚ÎI‚í‚è
 	float leng = XMVectorGetX(XMVector3Length(direction));
-	//if (leng > this->bodyRadius_ + pCharacter->bodyRadius_) return;
 	direction = XMVector3Normalize(direction);
 
 	float w = this->bodyWeight_ + pCharacter->bodyWeight_;

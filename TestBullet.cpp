@@ -4,9 +4,10 @@
 #include "GameManager.h"
 #include "AudioManager.h"
 #include "VFXManager.h"
+#include "EnemyBase.h"
 
 TestBullet::TestBullet(GameObject* parent)
-	: BulletBase(parent), collision_(nullptr), damage_(0)
+	: BulletBase(parent), damage_(0)
 {
 	objectName_ = "TestBullet";
 }
@@ -27,8 +28,9 @@ void TestBullet::Initialize()
 	lifeTime_ = 30;
 	damage_ = rand() % 11;
 
-	collision_ = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
-	AddCollider(collision_);
+	SphereCollider* collision = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
+	collision->SetAttackCollider(true);
+	AddCollider(collision);
 
 }
 
@@ -44,13 +46,6 @@ void TestBullet::Update()
 		KillMe();
 	}
 
-	//“–‚½‚Á‚½‚ç
-	//if (pDamageManager_->CalcEnemy(collision_, damage_)) {
-	//	VFXManager::CreatVfxExplode1(transform_.position_);
-	//	AudioManager::Play(transform_.position_, 10.0f);
-	//	KillMe();
-	//}
-
 }
 
 void TestBullet::Draw()
@@ -62,4 +57,17 @@ void TestBullet::Draw()
 void TestBullet::Release()
 {
 	Model::Release(hModel_);
+}
+
+void TestBullet::OnAttackCollision(GameObject* pTarget)
+{
+	if (pTarget->GetObjectName() == "Feet" || pTarget->GetObjectName() == "AStarMan") {
+		EnemyBase* e = static_cast<EnemyBase*>(pTarget);
+		e->ApplyDamage(damage_);
+		VFXManager::CreatVfxExplode1(transform_.position_);
+		AudioManager::Play(transform_.position_, 10.0f);
+		KillMe();
+
+	}
+
 }

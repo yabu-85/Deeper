@@ -1,12 +1,9 @@
 #pragma once
 #include "BulletBase.h"
 
-class SphereCollider;
-
 class TestBullet : public BulletBase
 {
     int damage_;
-    SphereCollider* collision_;
 
 public:
     TestBullet(GameObject* parent);
@@ -15,5 +12,7 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
+    void OnAttackCollision(GameObject* pTarget);
+
 };
 

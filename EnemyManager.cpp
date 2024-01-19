@@ -56,7 +56,7 @@ std::vector<EnemyBase*>& EnemyManager::GetAllEnemy()
 void EnemyManager::PlayAtPosition(XMFLOAT3 position, float range)
 {
 	for (auto it : enemyList_) {
-		if (it->GetStateManager()->GetName() == "Patrol") {
+		if (it->GetStateManager() && it->GetStateManager()->GetName() == "Patrol") {
 			XMFLOAT3 fEnemy = it->GetPosition();
 			XMVECTOR ePos = XMLoadFloat3(&fEnemy);
 			XMVECTOR sPos = XMLoadFloat3(&position);

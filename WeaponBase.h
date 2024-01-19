@@ -7,10 +7,10 @@ class WeaponBase : public GameObject
 {
 protected:
 	int hModel_;
-	unsigned durance_;
-	bool atkEnd_;
-	Transform offsetTrans_;
-	StateManager* pStateManager_;
+	unsigned durance_;				//耐久値
+	bool atkEnd_;					//攻撃が終わったかどうかのフラグ
+	Transform offsetTrans_;			//移動量
+	StateManager* pStateManager_;	
 
 public:
 	WeaponBase(GameObject* parent);

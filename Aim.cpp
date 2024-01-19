@@ -52,6 +52,7 @@ void Aim::Initialize()
 
     hPict_ = Image::Load("Image/TargetFound.png");
     assert(hPict_ >= 0);
+    Image::SetAlpha(hPict_, 50);
 
 }
 
@@ -86,9 +87,9 @@ void Aim::Update()
             if (!pEnemyBase_->IsDead()) {
                 FacingTarget();
                 {
+                    //‚¿‚å‚Á‚ÆAimTarget‚Ì•`‰æ‚µ‚Ä‚İ‚é
                     XMFLOAT3 tarPos = pEnemyBase_->GetPosition();
                     tarPos.y += pEnemyBase_->GetAimTargetPos();
-
                     XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&tarPos), Camera::GetViewMatrix());
                     v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
                     float x = XMVectorGetX(v2);
@@ -96,7 +97,7 @@ void Aim::Update()
                     Transform foundTrans;
                     foundTrans.position_ = XMFLOAT3(x, y, 0.0f);
                     foundTrans.scale_ = XMFLOAT3(0.2f, 0.2f, 0.0f);
-                    Image::SetAlpha(hPict_, 200);
+                    Image::SetAlpha(hPict_, 50);
                     Image::SetTransform(hPict_, foundTrans);
 
                 }
@@ -208,7 +209,8 @@ void Aim::DefaultAim()
     cameraTarget_ = { plaPos.x + cameraOffset_.x, plaPos.y + HEIGHT_DISTANCE, plaPos.z + cameraOffset_.z };
 
     //RayCast‚Ì‘O‚Éî•ñ‚ğ“ü‚ê‚é
-    XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (direction * defPerspectDistance_);
+    perspectiveDistance_ = perspectiveDistance_ + ((defPerspectDistance_ - perspectiveDistance_) * 0.1f);
+    XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (direction * perspectiveDistance_);
     XMStoreFloat3(&cameraPosition_, camPos);
 
     //RayCast‚µ‚Ä‚»‚Ì’l‚ğã‘‚«‚·‚é

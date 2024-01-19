@@ -96,6 +96,6 @@ void AStarMan::Draw()
 
 void AStarMan::Release()
 {
-	SAFE_DELETE(pAstarMoveAction_);
+	EnemyBase::Release();
 
 }

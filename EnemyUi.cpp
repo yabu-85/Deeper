@@ -9,7 +9,7 @@ namespace {
 	const float maxLength = 50.0f;
 	const float defSizeX = 2.0f;
 	const float defSizeY = 0.5f;
-	const float drawSize = 0.85f;
+	const float drawSize = 0.9f;
 	const int maxAlpha = 255;
 	const int alphaValue = 30;
 	const float PngSizeX = 256.0f;

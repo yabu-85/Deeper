@@ -123,6 +123,7 @@ void TestWeaponMain::CalcDamage()
     seg_->SetVector(vVec);
     seg_->SetValid(true);
 
+    return;
     XMStoreFloat3(&vec, vVec * 0.5f);
     vec = XMFLOAT3(wandPos_.x + vec.x, wandPos_.y + vec.y, wandPos_.z + vec.z);
     pPolyLine_->AddPosition(vec);

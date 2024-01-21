@@ -12,7 +12,8 @@ namespace PlayerData {
     void Initialize()
     {
         data_.clearStageCount_ = 0;
-        
+        data_.money_ = 0;
+
         for (int i = 0; i < 2; i++) {
             data_.subWeapon_[i].durability_ = 0;
             data_.subWeapon_[i].type_ = 0;
@@ -51,12 +52,8 @@ namespace PlayerData {
     void SetWeaponData(int index, const WeaponData& data) { data_.subWeapon_[index] = data; }
     WeaponData& GetWeaponData(int index) { return data_.subWeapon_[index]; }
     
-    void AddClearStageCount(SCENE_ID id) { 
-        if (id == SCENE_ID_PLAY1 || id == SCENE_ID_PLAY2) {
-            data_.clearStageCount_++;
-
-        }
-    }
+    void AddClearStageCount(SCENE_ID id) { if (id != SCENE_ID_TITLE) data_.clearStageCount_++; }
+    void AddMoney(int i) { data_.money_ += i; }
 
 }
 

@@ -102,10 +102,7 @@ namespace GameManager {
 	void SetPlayer(Player* player) { pPlayer_ = player; }
 
 	GameObject* GetStage() { return pNowStage_; }
-	void SetStage(GameObject* stage) {
-		pNowStage_ = stage;
-		pEnemyManager_->SetParent(stage); 
-	}
+	void SetStage(GameObject* stage) { pNowStage_ = stage; pEnemyManager_->SetParent(stage); }
 
 }
 

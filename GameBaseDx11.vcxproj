@@ -142,7 +142,6 @@
     <ClCompile Include="IsEnemyActionReady.cpp" />
     <ClCompile Include="IsEnemyStateNode.cpp" />
     <ClCompile Include="LifeManager.cpp" />
-    <ClCompile Include="MoneyManager.cpp" />
     <ClCompile Include="MoveAction.cpp" />
     <ClCompile Include="Aim.cpp" />
     <ClCompile Include="AudioManager.cpp" />
@@ -223,7 +222,6 @@
     <ClInclude Include="IsEnemyActionReady.h" />
     <ClInclude Include="IsEnemyStateNode.h" />
     <ClInclude Include="LifeManager.h" />
-    <ClInclude Include="MoneyManager.h" />
     <ClInclude Include="MoveAction.h" />
     <ClInclude Include="Aim.h" />
     <ClInclude Include="AudioManager.h" />

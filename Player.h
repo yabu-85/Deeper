@@ -11,7 +11,6 @@ class Player : public Character
     int hModel_[2];
     float moveSpeed_;           //移動スピード
     float rotateRatio_;         //回転の比率
-    XMFLOAT3 playerMovement_;   //今の移動量(Keyの情報だけ
 
     Aim* pAim_;
     StateManager* pStateManager_;
@@ -40,9 +39,8 @@ public:
     void CalcMove();                //Inputを考慮したやつ
     void CalcNoMove();              //Input考慮してない、滑るやつとかの計算用
 
-    void ResetKeyMovement() { playerMovement_ = XMFLOAT3(0.0f, 0.0f, 0.0f); }
-    XMFLOAT3 GetKeyMovement() { return playerMovement_; }
     XMVECTOR GetDirectionVec();     //向いている方向（正規化済み
+    void ResetKeyMovement() { movement_ = XMFLOAT3(0.0f, 0.0f, 0.0f); }
 
     void InitAvo();
 

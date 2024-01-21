@@ -2,7 +2,7 @@
 #include "EnemyBase.h"
 #include "GameManager.h"
 #include "WeaponObjectManager.h"
-#include "MoneyManager.h"
+#include "PlayerData.h"
 
 DropTable::DropTable()
 {
@@ -13,7 +13,7 @@ DropTable::DropTable()
 
 void DropTable::DropItem(int type, XMFLOAT3 pos)
 {
-	MoneyManager::AddMoney(table_[type].money_);
+	PlayerData::AddMoney(table_[type].money_);
 
 	if (rand() % 100 < (int)table_[type].weaponParcent_) {
 		WeaponObjectManager* ma = GameManager::GetWeaponObjectManager();

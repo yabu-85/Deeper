@@ -324,9 +324,6 @@
     <ClCompile Include="LifeManager.cpp">
       <Filter>07Player</Filter>
     </ClCompile>
-    <ClCompile Include="MoneyManager.cpp">
-      <Filter>07Player</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerData.cpp">
       <Filter>07Player</Filter>
     </ClCompile>
@@ -557,9 +554,6 @@
     </ClInclude>
     <ClInclude Include="CreateStage.h">
       <Filter>12Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="MoneyManager.h">
-      <Filter>07Player</Filter>
     </ClInclude>
     <ClInclude Include="PlayerData.h">
       <Filter>07Player</Filter>

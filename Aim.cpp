@@ -52,7 +52,11 @@ void Aim::Initialize()
 
     hPict_ = Image::Load("Image/TargetFound.png");
     assert(hPict_ >= 0);
-    Image::SetAlpha(hPict_, 50);
+    Transform foundTrans;
+    foundTrans.position_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    foundTrans.scale_ = XMFLOAT3(0.2f, 0.2f, 0.0f);
+    Image::SetAlpha(hPict_, 255);
+    Image::SetTransform(hPict_, foundTrans);
 
 }
 
@@ -83,6 +87,8 @@ void Aim::Update()
         if (isTarget_) {
             CalcCameraOffset(0.0f);
 
+            compulsionTime_ = 0;
+
             //ターゲットが生きてるならそいつにAim合わせる
             if (!pEnemyBase_->IsDead()) {
                 FacingTarget();
@@ -97,7 +103,7 @@ void Aim::Update()
                     Transform foundTrans;
                     foundTrans.position_ = XMFLOAT3(x, y, 0.0f);
                     foundTrans.scale_ = XMFLOAT3(0.2f, 0.2f, 0.0f);
-                    Image::SetAlpha(hPict_, 50);
+                    Image::SetAlpha(hPict_, 255);
                     Image::SetTransform(hPict_, foundTrans);
 
                 }
@@ -349,7 +355,7 @@ void Aim::CalcCameraOffset(float _aimMove)
     cameraOffset_.z += (cameraOffset_.z * -1.0f) * abs(_aimMove);
 
     XMVECTOR vCameraOffset = XMLoadFloat3(&cameraOffset_);
-    XMVECTOR vTargetOffset = pPlayer_->GetMovement();
+    XMVECTOR vTargetOffset = pPlayer_->GetMovementVector();
     vTargetOffset *= MAX_CAMERA_OFFSET * -1;
 
     if (pPlayer_->GetCommand()->CmdWalk()) vCameraOffset += (vTargetOffset - vCameraOffset) * MOVE_SUPRESS;   //move

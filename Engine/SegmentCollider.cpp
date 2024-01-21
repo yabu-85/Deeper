@@ -38,6 +38,6 @@ bool SegmentCollider::IsHit(Collider* target)
 		return IsHitBoxVsSegment((BoxCollider*)target, this);
 	else if (target->type_ == COLLIDER_CIRCLE)
 		return IsHitCircleVsSegment((SphereCollider*)target, this);
-	else 
-		return IsHitSegmentVsSegment((SegmentCollider*)target, this);
+
+	return false;
 }

@@ -44,6 +44,7 @@ void AstarMoveAction::Update()
 
 	//移動終了した
 	if (targetList_.empty()) {
+		pCharacter_->SetMovement(XMFLOAT3(0,0,0));
 		isInRange_ = true;
 		return;
 	}
@@ -53,19 +54,16 @@ void AstarMoveAction::Update()
 	XMVECTOR vPos = XMLoadFloat3(&pos);
 	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) * floarSize + half;
 	XMVECTOR vMove = vTar - vPos;
-	XMVECTOR vMoveN = XMVector3Normalize(vMove);
 	const float safeSize = 6.0f;
 	bool isSafe = false;
 
 	//他のEnemyとの当たり判定
-	EnemyBase* enemy = dynamic_cast<EnemyBase*>(pCharacter_);
 	XMVECTOR vSafeMove = XMVectorZero();
-	if (enemy) {
-		EnemyManager* enemyMa = GameManager::GetEnemyManager();
-		std::vector<EnemyBase*> eList = enemyMa->GetAllEnemy();
+	if (pCharacter_) {
+		std::vector<EnemyBase*> eList = GameManager::GetEnemyManager()->GetAllEnemy();
 
 		for (auto& e : eList) {
-			if (e == enemy) continue;
+			if (e == pCharacter_) continue;
 			XMFLOAT3 f = e->GetPosition();
 			XMVECTOR vTarget = XMLoadFloat3(&f);
 			XMVECTOR vec = vTarget - vPos;
@@ -95,12 +93,14 @@ void AstarMoveAction::Update()
 		return;
 	}
 
+	pCharacter_->SetMovement(-vMove);
 	XMStoreFloat3(&pos, vPos + vMove);
 
 	//壁とのあたり判定してからポジションセット
 	CollisionMap* pMap = static_cast<CollisionMap*>(pCharacter_->FindObject("CollisionMap"));
 	pMap->CalcMapWall(pos, moveSpeed_);
 	pCharacter_->SetPosition(pos);
+
 }
 
 bool AstarMoveAction::IsOutEndTarget()

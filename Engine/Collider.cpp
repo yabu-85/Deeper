@@ -7,7 +7,7 @@
 
 //コンストラクタ
 Collider::Collider():
-	pGameObject_(nullptr), center_(0.0f, 0.0f, 0.0f), hDebugModel_(-1), size_(0.0f, 0.0f, 0.0f), type_(COLLIDER_MAX), isValid_(true), isAttackCollider_(false)
+	pGameObject_(nullptr), center_(0.0f, 0.0f, 0.0f), hDebugModel_(-1), size_(0.0f, 0.0f, 0.0f), type_(COLLIDER_MAX), isValid_(true)
 {
 }
 
@@ -47,12 +47,12 @@ bool Collider::IsHitBoxVsCircle(BoxCollider* box, SphereCollider* sphere)
 	XMFLOAT3 circlePos = Transform::Float3Add(sphere->pGameObject_->GetWorldPosition(), sphere->center_);
 	XMFLOAT3 boxPos = Transform::Float3Add(box->pGameObject_->GetWorldPosition(), box->center_);
 
-	if (circlePos.x > boxPos.x - box->size_.x - sphere->size_.x &&
-		circlePos.x < boxPos.x + box->size_.x + sphere->size_.x &&
-		circlePos.y > boxPos.y - box->size_.y - sphere->size_.x &&
-		circlePos.y < boxPos.y + box->size_.y + sphere->size_.x &&
-		circlePos.z > boxPos.z - box->size_.z - sphere->size_.x &&
-		circlePos.z < boxPos.z + box->size_.z + sphere->size_.x )
+	if (circlePos.x > boxPos.x - box->size_.x / 2 - sphere->size_.x &&
+		circlePos.x < boxPos.x + box->size_.x / 2 + sphere->size_.x &&
+		circlePos.y > boxPos.y - box->size_.y / 2 - sphere->size_.x &&
+		circlePos.y < boxPos.y + box->size_.y / 2 + sphere->size_.x &&
+		circlePos.z > boxPos.z - box->size_.z / 2 - sphere->size_.x &&
+		circlePos.z < boxPos.z + box->size_.z / 2+ sphere->size_.x )
 	{
 		return true;
 	}
@@ -66,9 +66,46 @@ bool Collider::IsHitBoxVsCircle(BoxCollider* box, SphereCollider* sphere)
 //戻値：接触していればtrue
 bool Collider::IsHitBoxVsSegment(BoxCollider* box, SegmentCollider* seg)
 {
+	//なんかよくわからんけど直線と箱型作ってた
+	return true;
 
-	return false;
+	//ボックスの四つ角の位置を求める
+	float s = box->size_.x / 2.0f;
+	XMVECTOR c[4] = {
+		{ -s, 0.0f, -s},
+		{ s, 0.0f, -s },
+		{ s, 0.0f, s },
+		{ -s, 0.0f, s }
+	};
+
+	XMFLOAT3 f = Transform::Float3Add(seg->pGameObject_->GetWorldPosition(), seg->center_);
+	XMVECTOR lineBase = XMLoadFloat3(&f);
+
+	f = Transform::Float3Add(box->pGameObject_->GetWorldPosition(), box->center_);
+	XMVECTOR boxPos = XMLoadFloat3(&f);
+
+	float leng = XMVectorGetX(XMVector3Length(lineBase - boxPos));
+	if (seg->size_.x + (seg->size_.x / 2.0f) < leng)
+		return false;
+
+	//lineベクトルに垂直なベクトルを計算
+	XMVECTOR upVector = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // もし他のベクトルが必要なら変更
+	XMVECTOR lineNormal = XMVector3Normalize(XMVector3Cross((seg->vec_ * -1), upVector));
+
+	float dp[4] = {};
+	for (int i = 0; i < 4; i++) {
+		//四つ角からstartまでの方向を計算
+		c[i] = { c[i] + boxPos - lineBase};
+
+		//内積により線の方向を求める
+		dp[i] = XMVectorGetY(XMVector3Dot(lineNormal, c[i]));
+	}
+
+	//全部同じ方向にあれば、線と四角形が当たっていることはない
+	return (dp[0] * dp[1] <= 0) || (dp[1] * dp[2] <= 0) || (dp[2] * dp[3] <= 0);
+
 }
+
 
 //球体同士の衝突判定
 //引数：circleA	１つ目の球体判定
@@ -129,15 +166,6 @@ bool Collider::IsHitCircleVsSegment(SphereCollider* circle, SegmentCollider* seg
 	
 }
 
-
-//線分同士の衝突判定
-//引数：SegA	１つ目の線分
-//引数：SegmB	２つ目の線分
-//戻値：接触していればtrue
-bool Collider::IsHitSegmentVsSegment(SegmentCollider* segA, SegmentCollider* segB)
-{
-	return false;
-}
 
 //テスト表示用の枠を描画
 //引数：position	オブジェクトの位置

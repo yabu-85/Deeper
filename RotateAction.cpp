@@ -20,7 +20,7 @@ void RotateAction::Update()
         tar = pTarget_->GetPosition();
     }
     else {
-        XMStoreFloat3(&tar, XMLoadFloat3(&pos) - pCharacter_->GetMovement());
+        XMStoreFloat3(&tar, XMLoadFloat3(&pos) - pCharacter_->GetMovementVector());
     }
 
     float rotateY = pCharacter_->GetRotate().y;

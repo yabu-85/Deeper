@@ -117,7 +117,7 @@ FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 	IsEnemyAttackReady* condition2 = new IsEnemyAttackReady(action1, pFeet_);
 
 	//§ŒäAI‚ÌConditionNodeiUŒ‚‰Â”\Å‘å””ÍˆÍ“à‚©Test
-	CombatStateCountNode* conditionA = new CombatStateCountNode(condition2, 1, { "Move", "Attack" });
+	CombatStateCountNode* conditionA = new CombatStateCountNode(condition2, 2, { "Move", "Attack" });
 	IsEnemyCombatState* condition3 = new IsEnemyCombatState(conditionA, "Wait", pFeet_);
 	selector2->AddChildren(condition3);
 
@@ -140,6 +140,7 @@ void FeetCombat::OnEnter()
 {
 	pFeet_->GetEnemyUi()->InitTargetFoundUi();
 	pFeet_->GetRotateAction()->Initialize();
+	pFeet_->GetRotateAction()->SetTarget(GameManager::GetPlayer());
 
 }
 
@@ -232,6 +233,8 @@ FeetAttack::FeetAttack(StateManager* owner) : StateBase(owner), time_(0)
 void FeetAttack::Update()
 {
 	time_++;
+
+	if (time_ < 30) pFeet_->GetRotateAction()->Update();
 
 	//AttackFrame=65 ` 90
 	//Feet‚ÌOnAttackCollision‚Ì•û‚ÅPlayer‚É“–‚½‚Á‚½‚çfalse‚É‚·‚éˆ—‚ğ‘‚¢‚Ä‚ ‚é

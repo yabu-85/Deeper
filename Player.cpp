@@ -37,7 +37,7 @@ namespace {
 
 Player::Player(GameObject* parent)
     : Character(parent), hModel_{-1, -1}, pAim_(nullptr),  pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr), 
-    moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_{ 0,0,0 }
+    moveSpeed_(0.0f), rotateRatio_(0.0f)
 {
     objectName_ = "Player";
 }
@@ -95,13 +95,6 @@ void Player::Initialize()
 
 void Player::Update()
 {
-    if (Input::IsKey(DIK_3)) {
-        XMFLOAT3 aim = pAim_->GetAimDirection();
-        XMFLOAT3 pos = { transform_.position_.x - aim.x * 10.0f, transform_.position_.y + 5.0f, transform_.position_.z - aim.z * 10.0f };
-        pAim_->SetCompulsion(pos, XMFLOAT3(0, 3, 0));
-        return;
-    }
-
     if (enterTime > 0) {
         enterTime--;
         transform_.position_.y -= 0.5f;
@@ -135,13 +128,6 @@ void Player::Update()
         CollisionMap* map = static_cast<CollisionMap*>(FindObject("CollisionMap"));
         map->CalcMapWall(transform_.position_, moveSpeed_);
     }
-
-    XMVECTOR vec = XMLoadFloat3(&transform_.position_) - XMLoadFloat3(&prePos);
-    vec *= 10.0f;
-    if (1.0f <= XMVectorGetX(XMVector3Length(vec))) {
-        vec = XMVector3Normalize(vec);
-    }
-    movement_ = vec;
 
 }
 
@@ -181,6 +167,7 @@ void Player::OnAttackCollision(GameObject* pTarget)
     std::string name = pTarget->GetObjectName();
     if (name == "Feet") {
         LifeManager::Damage(10);
+
     }
 
 }
@@ -283,7 +270,7 @@ void Player::FrontMove(float f)
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
     vMove = XMVector3TransformCoord(vMove, mRotY);
     vMove = XMVector3Normalize(vMove);
-    vMove = XMVector3Normalize(vMove + XMLoadFloat3(&playerMovement_));
+    vMove = XMVector3Normalize(vMove + XMLoadFloat3(&movement_));
     XMFLOAT3 move{};
     XMStoreFloat3(&move, vMove);
 
@@ -295,8 +282,8 @@ void Player::Move(float f)
 {
     prePos = transform_.position_;
 
-    transform_.position_.x += ((playerMovement_.x * moveSpeed_) * f);
-    transform_.position_.z += ((playerMovement_.z * moveSpeed_) * f);
+    transform_.position_.x += ((movement_.x * moveSpeed_) * f);
+    transform_.position_.z += ((movement_.z * moveSpeed_) * f);
 }
 
 XMVECTOR Player::GetDirectionVec()
@@ -320,17 +307,17 @@ void Player::CalcMove()
     XMFLOAT3 fMove = GetInputMove();
     rotateMove = fMove;
 
-    XMFLOAT3 move = { ((fMove.x - playerMovement_.x) * gradually) , 0.0f , ((fMove.z - playerMovement_.z) * gradually) };
-    playerMovement_ = { playerMovement_.x + move.x , 0.0f , playerMovement_.z + move.z };
+    XMFLOAT3 move = { ((fMove.x - movement_.x) * gradually) , 0.0f , ((fMove.z - movement_.z) * gradually) };
+    movement_ = { movement_.x + move.x , 0.0f , movement_.z + move.z };
 
     //MaxSpeed超えていたら正規化・MaxSpeedの値にする
-    float currentSpeed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerMovement_)));
+    float currentSpeed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&movement_)));
     if (currentSpeed > maxMoveSpeed) {
         XMVECTOR vMove;
-        vMove = XMLoadFloat3(&playerMovement_);
+        vMove = XMLoadFloat3(&movement_);
         vMove = XMVector3Normalize(vMove);
         vMove *= maxMoveSpeed;
-        XMStoreFloat3(&playerMovement_, vMove);
+        XMStoreFloat3(&movement_, vMove);
     }
 }
 
@@ -338,8 +325,8 @@ void Player::CalcNoMove()
 {
     XMFLOAT3 move = { 0,0,0 };
     gradually = stopGradually;
-    move = { ((move.x - playerMovement_.x) * gradually) , 0.0f , ((move.z - playerMovement_.z) * gradually) };
-    playerMovement_ = { playerMovement_.x + move.x , 0.0f , playerMovement_.z + move.z };
+    move = { ((move.x - movement_.x) * gradually) , 0.0f , ((move.z - movement_.z) * gradually) };
+    movement_ = { movement_.x + move.x , 0.0f , movement_.z + move.z };
 }
 
 void Player::InitAvo()
@@ -348,16 +335,16 @@ void Player::InitAvo()
     if (pCommand_->CmdWalk()) {
         CalcMove();
         Rotate(avoRotateRatio);
-        XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
+        XMStoreFloat3(&movement_, GetDirectionVec() * maxMoveSpeed);
     }
     //動いていなくて、ターゲット状態の時は向いている方向の逆に
     else if(pAim_->IsTarget()) {
-        XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0);
+        XMStoreFloat3(&movement_, GetDirectionVec() * maxMoveSpeed * -1.0);
         rotateMove = XMFLOAT3(-rotateMove.x, -rotateMove.y, -rotateMove.z);
     }
     //動いていなくて、かつターゲットもしていない時は向いている方向に
     else {
-        XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
+        XMStoreFloat3(&movement_, GetDirectionVec() * maxMoveSpeed);
     }
 
 }

@@ -44,8 +44,7 @@ void TestWeaponMain::Initialize()
     
     seg_ = new SegmentCollider(XMFLOAT3(), XMVECTOR());
     seg_->SetValid(false);
-    seg_->SetAttackCollider(true);
-    AddCollider(seg_);
+    AddAttackCollider(seg_);
 
     damage_ = 20; 
     transform_.scale_.z = 2.0f;
@@ -123,7 +122,6 @@ void TestWeaponMain::CalcDamage()
     seg_->SetVector(vVec);
     seg_->SetValid(true);
 
-    return;
     XMStoreFloat3(&vec, vVec * 0.5f);
     vec = XMFLOAT3(wandPos_.x + vec.x, wandPos_.y + vec.y, wandPos_.z + vec.z);
     pPolyLine_->AddPosition(vec);

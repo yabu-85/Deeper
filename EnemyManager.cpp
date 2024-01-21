@@ -35,15 +35,15 @@ void EnemyManager::KillEnemy(EnemyBase* enemy)
 void EnemyManager::SpawnEnemy(ENEMY_TYPE type)
 {
 	if (type == ENEMY_MASTERHAND) {
-		MasterHand* e = Instantiate<MasterHand>(pParent_);
+		MasterHand* e = InstantiateFront<MasterHand>(pParent_);
 		AddEnemyList(e, type);
 	}
 	else if (type == ENEMY_FEET) {
-		Feet* e = Instantiate<Feet>(pParent_);
+		Feet* e = InstantiateFront<Feet>(pParent_);
 		AddEnemyList(e, type);
 	}
 	else if (type == ENEMY_ASTAR) {
-		AStarMan* e = Instantiate<AStarMan>(pParent_);
+		AStarMan* e = InstantiateFront<AStarMan>(pParent_);
 		AddEnemyList(e, type);
 	}
 }

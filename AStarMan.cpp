@@ -80,7 +80,7 @@ void AStarMan::Draw()
 
 	CollisionDraw();
 
-	if (!Input::IsKey(DIK_F)) {
+	if (Input::IsKey(DIK_F)) {
 		Transform target;
 		target.scale_ = XMFLOAT3(0.2f, 0.2f, 0.2f);
 		std::vector<XMFLOAT3> targetList = pAstarMoveAction_->GetTarget();

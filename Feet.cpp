@@ -39,11 +39,10 @@ void Feet::Initialize()
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 1, 0), 1.5f);
 	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 3, 0), 1.5f);
 	pHandCollider_ = new SphereCollider(XMFLOAT3(0, 0, 0), 1.0f);
-	pHandCollider_->SetAttackCollider(true);
 	pHandCollider_->SetValid(false);
 	AddCollider(collision1);
 	AddCollider(collision2);
-	AddCollider(pHandCollider_);
+	AddAttackCollider(pHandCollider_);
 
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize(5.0f);
@@ -84,15 +83,10 @@ void Feet::Initialize()
 
 void Feet::Update()
 {
-	XMVECTOR prePos = XMLoadFloat3(&transform_.position_);
-
-
 	CollisionMap* pMap = static_cast<CollisionMap*>(FindObject("CollisionMap"));
 	pMap->CalcMapWall(transform_.position_, 1.0f);
 
-	if(pStateManager_) pStateManager_->Update();
-
-	movement_ = prePos - XMLoadFloat3(&transform_.position_);
+	pStateManager_->Update();
 
 }
 
@@ -146,11 +140,5 @@ void Feet::ApplyDamage(int da)
 	if (pStateManager_->GetName() != "Combat") {
 		pStateManager_->ChangeState("Combat");
 	}
-
-}
-
-void Feet::OnAttackCollision(GameObject* pTarget)
-{
-	if (pTarget->GetObjectName() == "Player") pHandCollider_->SetValid(false);
 
 }

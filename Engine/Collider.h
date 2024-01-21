@@ -34,7 +34,6 @@ protected:
 	XMFLOAT3		center_;			//中心位置（ゲームオブジェクトの原点から見た位置）
 	XMFLOAT3		size_;				//判定サイズ（幅、高さ、奥行き）
 	int				hDebugModel_;		//デバッグ表示用のモデルのID
-	bool			isAttackCollider_;	//攻撃判定用のコライダー
 	bool			isValid_;			//判定するかどうか
 
 public:
@@ -48,9 +47,6 @@ public:
 	//引数：target	相手の当たり判定
 	//戻値：接触してればtrue
 	virtual bool IsHit(Collider* target) = 0;
-
-	bool IsAttackCollider() { return isAttackCollider_; }
-	void SetAttackCollider(bool b) { isAttackCollider_ = b; }
 
 	void SetValid(bool b) { isValid_ = b; }
 	bool IsValid() { return isValid_; }
@@ -88,14 +84,6 @@ public:
 	//引数：seg	    ２つ目の直線判定
 	//戻値：接触していればtrue
 	bool IsHitCircleVsSegment(SphereCollider* circle, SegmentCollider* seg);
-
-	//-------------------------------------------------------
-
-	//直線同士の衝突判定
-	//引数：segA	１つ目の直線判定
-	//引数：segB	２つ目の直線判定
-	//戻値：接触していればtrue
-	bool IsHitSegmentVsSegment(SegmentCollider* segA, SegmentCollider* segB);
 
 	//-------------------------------------------------------
 

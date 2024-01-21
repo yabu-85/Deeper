@@ -277,12 +277,32 @@ void GameObject::Collision(GameObject* pTarget)
 				pTarget->SetIsHit(true);
 
 				//“–‚½‚Á‚½
-				if (i->IsAttackCollider() || j->IsAttackCollider()) this->OnAttackCollision(pTarget);
-				else this->OnCollision(pTarget);
-				
+				this->OnCollision(pTarget);
+				pTarget->OnCollision(this);
+
 			}
 		}	
 	}
+
+	for (auto i : attackColliderList_) {
+		if (!i->IsValid()) continue;
+
+		for (auto j : pTarget->colliderList_)
+		{
+			if (j->IsValid() && i->IsHit(j))
+			{
+				this->SetIsHit(true);
+				pTarget->SetIsHit(true);
+
+				//“–‚½‚Á‚½
+				this->OnAttackCollision(pTarget);
+				pTarget->OnAttackCollision(this);
+
+			}
+		}
+	}
+
+
 
 	//Žq‹Ÿ‚à“–‚½‚è”»’è
 	for (auto i : pTarget->childList_)

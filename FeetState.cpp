@@ -8,6 +8,7 @@
 #include "Engine/Model.h"
 #include "Engine/Global.h"
 #include <vector>
+#include "VFXManager.h"
 
 #include "IsEnemyActionReady.h"
 #include "ChangeStateNode.h"
@@ -38,6 +39,13 @@ void FeetAppear::Update()
 void FeetAppear::Initialize()
 {
 	appearTime_ = 60;
+}
+
+void FeetAppear::OnEnter()
+{
+	XMFLOAT3 pos = pFeet_->GetPosition();
+	VFXManager::CreatVfxEnemySpawn(pos);
+
 }
 
 //--------------------------------------------------------------------------------

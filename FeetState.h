@@ -15,6 +15,7 @@ public:
 	const char* GetName() const override { return "Appear"; }
 	void Update() override;
 	void Initialize() override;
+	void OnEnter() override;
 };
 
 class FeetIdle : public StateBase

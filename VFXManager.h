@@ -6,5 +6,7 @@ namespace VFXManager
 {
 	void CreatVfxExplode1(XMFLOAT3 &pos);
 
+	void CreatVfxEnemySpawn(XMFLOAT3& pos);
+
 };
 

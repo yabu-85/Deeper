@@ -15,8 +15,7 @@
 #include "Engine/Input.h"
 
 Feet::Feet(GameObject* parent)
-	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr), pVisionSearchAction_(nullptr),
-	pAuditorySearchAction_(nullptr)
+	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr), pVisionSearchAction_(nullptr)
 {
 	objectName_ = "Feet";
 }
@@ -57,7 +56,6 @@ void Feet::Initialize()
 	pMoveAction_ = new AstarMoveAction(this, 0.05f, 2.0f);
 	pRotateAction_ = new RotateAction(this, 0.07f);
 	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f / floarSize, 90.0f);
-	pAuditorySearchAction_ = new AuditorySearchAction(this);
 	pRotateAction_->Initialize();
 
 	//ステートの設定
@@ -91,13 +89,11 @@ void Feet::Update()
 
 void Feet::Draw()
 {
-	if (pEnemyUi_) pEnemyUi_->Draw();
+	pEnemyUi_->Draw();
 
-	if (pHandCollider_) {
-		XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, "hand.R");
-		center = XMFLOAT3(center.x - transform_.position_.x, center.y - transform_.position_.y, center.z - transform_.position_.z);
-		pHandCollider_->SetCenter(center);
-	}
+	XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, "hand.R");
+	center = XMFLOAT3(center.x - transform_.position_.x, center.y - transform_.position_.y, center.z - transform_.position_.z);
+	pHandCollider_->SetCenter(center);
 
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
@@ -120,15 +116,11 @@ void Feet::Draw()
 
 void Feet::Release()
 {
-	EnemyBase::Release();
-
-	SAFE_DELETE(pAuditorySearchAction_);
 	SAFE_DELETE(pVisionSearchAction_);
 	SAFE_DELETE(pRotateAction_);
 	SAFE_DELETE(pMoveAction_);
-	SAFE_DELETE(pEnemyUi_);
-	SAFE_DELETE(pCombatStateManager_);
-	SAFE_DELETE(pStateManager_);
+
+	EnemyBase::Release();
 
 }
 

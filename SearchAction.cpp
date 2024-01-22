@@ -60,14 +60,3 @@ void VisionSearchAction::Update()
     }
 
 }
-
-//------------------------------Audio---------------------------------
-
-AuditorySearchAction::AuditorySearchAction(Character* obj) : BaseAction(obj)
-{
-}
-
-void AuditorySearchAction::Update()
-{
-}
-

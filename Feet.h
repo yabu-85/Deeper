@@ -6,7 +6,6 @@ class SphereCollider;
 class AstarMoveAction;
 class RotateAction;
 class VisionSearchAction;
-class AuditorySearchAction;
 
 class Feet : public EnemyBase
 {
@@ -17,7 +16,6 @@ class Feet : public EnemyBase
     AstarMoveAction* pMoveAction_;
     RotateAction* pRotateAction_;
     VisionSearchAction* pVisionSearchAction_;
-    AuditorySearchAction* pAuditorySearchAction_;
 
 public:
     Feet(GameObject* parent);
@@ -34,6 +32,5 @@ public:
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }
     VisionSearchAction* GetVisionSearchAction() { return pVisionSearchAction_; }
-    AuditorySearchAction* GetAuditorySearchAction() { return pAuditorySearchAction_; }
 
 };

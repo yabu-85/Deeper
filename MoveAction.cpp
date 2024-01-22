@@ -34,7 +34,7 @@ void MoveAction::Update()
 
 //------------------------------Astar----------------------
 
-AstarMoveAction::AstarMoveAction(Character* obj, float speed, float range) : MoveAction(obj, speed, range)
+AstarMoveAction::AstarMoveAction(Character* obj, float speed, float range) : MoveAction(obj, speed, range), lastTarget_(0,0,0)
 {
 }
 

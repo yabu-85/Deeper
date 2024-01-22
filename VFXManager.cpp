@@ -43,3 +43,32 @@ void VFXManager::CreatVfxExplode1(XMFLOAT3 &pos)
 	VFX::Start(data);
 
 }
+
+void VFXManager::CreatVfxEnemySpawn(XMFLOAT3& pos)
+{
+	EmitterData data;
+	data.textureFileName = "Particle/Red.png";
+	data.delay = 0;
+	data.number = 1;
+	data.lifeTime = 50;
+	data.position = pos;
+	data.position.y += 0.01f;
+	data.positionRnd = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	data.direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	data.directionRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	data.speed = 0.0f;
+	data.speedRnd = 0.0f;
+	data.accel = 0.0f;
+	data.size = XMFLOAT2(10.0f, 10.0f);
+	data.sizeRnd = XMFLOAT2(0.0f, 0.0f);
+	data.scale = XMFLOAT2(1.0f, 1.0f);
+	data.color = XMFLOAT4(1.0f, 1.0f, 0.1f, 1.0f);
+	data.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / data.lifeTime);
+	data.rotate = XMFLOAT3(90.0f, 0.0f, 0.0f);
+	data.rotateRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	data.spin = XMFLOAT3(0.0f, 10.0f, 0.0f);
+	data.gravity = 0.0f;
+	data.isBillBoard = false;
+	VFX::Start(data);
+	
+}

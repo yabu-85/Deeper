@@ -20,13 +20,3 @@ public:
     bool IsFoundTarget() { return isFoundTarget_; }
 
 };
-
-//’®Šo‚Ì’Tõ
-class AuditorySearchAction : public BaseAction
-{
-public:
-    AuditorySearchAction(Character* obj);
-    virtual ~AuditorySearchAction() override {};
-    virtual void Update() override;
-};
-

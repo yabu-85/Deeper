@@ -31,9 +31,15 @@ void Feet::Initialize()
 	hModel_ = Model::Load("Model/stoneGolem.fbx");
 	assert(hModel_ >= 0);
 
+	CreateStage* pCreateStage = GameManager::GetCreateStage();
+	XMFLOAT3 startPos = pCreateStage->GetRandomFloarPosition();
+	transform_.position_ = startPos;
+	transform_.rotate_.y = (float)(rand() % 360);
+
 	maxHp_ = 100;
 	hp_ = maxHp_;
 	aimTargetPos_ = 2.0f;
+	bodyWeight_ = 10.0f;
 
 	//Collider‚ÌÝ’è
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 1, 0), 1.5f);
@@ -71,14 +77,7 @@ void Feet::Initialize()
 	pCombatStateManager_->AddState(new FeetAttack(pCombatStateManager_));
 	pCombatStateManager_->ChangeState("Wait");
 	pCombatStateManager_->Initialize();
-
-	CreateStage* pCreateStage = GameManager::GetCreateStage();
-	XMFLOAT3 startPos = pCreateStage->GetRandomFloarPosition();
-	transform_.position_ = startPos;
-	transform_.rotate_.y = (float)(rand() % 360);
-
-	bodyWeight_ = 10.0f;
-
+	
 }
 
 void Feet::Update()
@@ -139,6 +138,16 @@ void Feet::ApplyDamage(int da)
 
 	if (pStateManager_->GetName() != "Combat") {
 		pStateManager_->ChangeState("Combat");
+	}
+
+}
+
+void Feet::OnCollision(GameObject* pTarget)
+{
+	std::string name = pTarget->GetObjectName();
+	if (name == "AStarMan" || name == "Feet" || name == "Player") {
+		Character* c = static_cast<Character*>(pTarget);
+		ReflectCharacter(c);
 	}
 
 }

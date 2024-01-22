@@ -4,7 +4,7 @@
 #include "EnemyUi.h"
 #include "DropTable.h"
 #include "Engine/Global.h"
-
+#include "Engine/SphereCollider.h"
 #include "Aim.h"
 #include "Player.h"
 
@@ -30,21 +30,24 @@ void MasterHand::Initialize()
 	hModel_ = Model::Load("Model/Hand.fbx");
 	assert(hModel_ >= 0);
 
-	transform_.rotate_.y = -90;
+	maxHp_ = 10;
+	hp_ = maxHp_;
 
 	//Ç‹Ç∑ÇΩÅ[ÇÕÇÒÇ«î≠éÀÇÊÇ§ÇÃ
 	Aim* pAim = static_cast<Aim*>(FindObject("Aim"));
 	Player* pPlayer = static_cast<Player*>(FindObject("Player"));
 
+	transform_.position_ = pPlayer->GetPosition();
 	transform_.rotate_.y = pAim->GetRotate().y;
 	transform_.rotate_.y -= 180.0f;
-	transform_.position_ = pPlayer->GetPosition();
+	
+	//ColliderÇÃê›íË
+	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 1, 0), 1.5f);
+	AddCollider(collision1);
 
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize(3.0f);
 
-	maxHp_ = 10;
-	hp_ = maxHp_;
 }
 
 void MasterHand::Update()
@@ -72,6 +75,8 @@ void MasterHand::Draw()
 
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
+
+	CollisionDraw();
 
 }
 

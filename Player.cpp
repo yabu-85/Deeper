@@ -29,7 +29,6 @@ namespace {
     Text* pText = new Text;
     XMFLOAT3 rotateMove = XMFLOAT3(0.0f, 0.0f, 0.0f);
     SphereCollider* collid = nullptr;
-    XMFLOAT3 prePos = XMFLOAT3();
 
     int enterTime;
     XMFLOAT3 enterPos = XMFLOAT3();
@@ -62,7 +61,8 @@ void Player::Initialize()
     SetPosition(GameManager::GetCreateStage()->GetPlayerStartPos());
     moveSpeed_ = 0.15f;
     rotateRatio_ = 0.2f;
-    bodyWeight_ = 0.01f;
+    bodyWeight_ = 5.1f;
+    enterTime = 60;
 
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
@@ -85,11 +85,11 @@ void Player::Initialize()
     collid = new SphereCollider(XMFLOAT3(0.0f, 2.3f, 0.0f), 0.5f);
     AddCollider(collid);
 
-    pText->Initialize();
-
-    enterTime = 60;
     enterPos = transform_.position_;
     transform_.position_.y += (enterTime * 0.5f);
+
+    pText->Initialize();
+
 
 }
 
@@ -155,7 +155,7 @@ void Player::Release()
 void Player::OnCollision(GameObject* pTarget)
 {
     std::string name = pTarget->GetObjectName();
-    if (name == "Feet") {
+    if (name == "Feet" || name == "AStarMan") {
         Character* c = static_cast<Character*>(pTarget);
         ReflectCharacter(c);
     }
@@ -270,20 +270,20 @@ void Player::FrontMove(float f)
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
     vMove = XMVector3TransformCoord(vMove, mRotY);
     vMove = XMVector3Normalize(vMove);
-    vMove = XMVector3Normalize(vMove + XMLoadFloat3(&movement_));
+    vMove = XMVector3Normalize(vMove + XMLoadFloat3(&playerMovement_));
     XMFLOAT3 move{};
     XMStoreFloat3(&move, vMove);
 
     transform_.position_.x += ((move.x * moveSpeed_) * f);
     transform_.position_.z += ((move.z * moveSpeed_) * f);
+    SetMovement((XMLoadFloat3(&move) * moveSpeed_) * f);
 }
 
 void Player::Move(float f)
 {
-    prePos = transform_.position_;
-
-    transform_.position_.x += ((movement_.x * moveSpeed_) * f);
-    transform_.position_.z += ((movement_.z * moveSpeed_) * f);
+    transform_.position_.x += ((playerMovement_.x * moveSpeed_) * f);
+    transform_.position_.z += ((playerMovement_.z * moveSpeed_) * f);
+    SetMovement((XMLoadFloat3(&playerMovement_) * moveSpeed_) * f);
 }
 
 XMVECTOR Player::GetDirectionVec()
@@ -293,6 +293,12 @@ XMVECTOR Player::GetDirectionVec()
     vMove = XMVector3TransformCoord(vMove, mRotY);
     vMove = XMVector3Normalize(vMove);
     return vMove;
+}
+
+void Player::ResetMovement()
+{
+    movement_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    playerMovement_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 
 void Player::CalcRotate()
@@ -307,17 +313,17 @@ void Player::CalcMove()
     XMFLOAT3 fMove = GetInputMove();
     rotateMove = fMove;
 
-    XMFLOAT3 move = { ((fMove.x - movement_.x) * gradually) , 0.0f , ((fMove.z - movement_.z) * gradually) };
-    movement_ = { movement_.x + move.x , 0.0f , movement_.z + move.z };
+    XMFLOAT3 move = { ((fMove.x - playerMovement_.x) * gradually) , 0.0f , ((fMove.z - playerMovement_.z) * gradually) };
+    playerMovement_ = { playerMovement_.x + move.x , 0.0f , playerMovement_.z + move.z };
 
     //MaxSpeed超えていたら正規化・MaxSpeedの値にする
-    float currentSpeed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&movement_)));
+    float currentSpeed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&playerMovement_)));
     if (currentSpeed > maxMoveSpeed) {
         XMVECTOR vMove;
-        vMove = XMLoadFloat3(&movement_);
+        vMove = XMLoadFloat3(&playerMovement_);
         vMove = XMVector3Normalize(vMove);
         vMove *= maxMoveSpeed;
-        XMStoreFloat3(&movement_, vMove);
+        XMStoreFloat3(&playerMovement_, vMove);
     }
 }
 
@@ -325,8 +331,8 @@ void Player::CalcNoMove()
 {
     XMFLOAT3 move = { 0,0,0 };
     gradually = stopGradually;
-    move = { ((move.x - movement_.x) * gradually) , 0.0f , ((move.z - movement_.z) * gradually) };
-    movement_ = { movement_.x + move.x , 0.0f , movement_.z + move.z };
+    move = { ((move.x - playerMovement_.x) * gradually) , 0.0f , ((move.z - playerMovement_.z) * gradually) };
+    playerMovement_ = { playerMovement_.x + move.x , 0.0f , playerMovement_.z + move.z };
 }
 
 void Player::InitAvo()
@@ -335,16 +341,16 @@ void Player::InitAvo()
     if (pCommand_->CmdWalk()) {
         CalcMove();
         Rotate(avoRotateRatio);
-        XMStoreFloat3(&movement_, GetDirectionVec() * maxMoveSpeed);
+        XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
     }
     //動いていなくて、ターゲット状態の時は向いている方向の逆に
     else if(pAim_->IsTarget()) {
-        XMStoreFloat3(&movement_, GetDirectionVec() * maxMoveSpeed * -1.0);
+        XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0);
         rotateMove = XMFLOAT3(-rotateMove.x, -rotateMove.y, -rotateMove.z);
     }
     //動いていなくて、かつターゲットもしていない時は向いている方向に
     else {
-        XMStoreFloat3(&movement_, GetDirectionVec() * maxMoveSpeed);
+        XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
     }
 
 }

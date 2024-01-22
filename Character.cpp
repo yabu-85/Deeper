@@ -12,30 +12,32 @@ void Character::ReflectCharacter(Character* pCharacter) {
 	
 	//距離が判定内の距離だったら離れさせる
 	float range = bodyRange_ + pCharacter->bodyRange_;
-	if ( XMVectorGetX(XMVector3Length(direction)) < range ) {
-		
+	float vecRange = XMVectorGetX(XMVector3Length(direction));
+	if ( vecRange < range ) {
+		//移動量を考慮した座標を設定
+		XMVECTOR vTarPos = XMLoadFloat3(&tarPos) - pCharacter->GetMovementVector();
+		direction = vTarPos - XMLoadFloat3(&transform_.position_) - GetMovementVector();
+		vecRange = XMVectorGetX(XMVector3Length(direction));
+
 		//二つの座標の真ん中を求める
 		direction *= 0.5f;
 		XMVECTOR sPos = XMLoadFloat3(&transform_.position_) + direction;
 		XMVECTOR oPos = XMLoadFloat3(&pCharacter->transform_.position_) - direction;
 		
-		//押し出すベクトルを求める
-		direction = XMVector3Normalize(direction) * range * 0.5f;
-
+		//押し出しベクトルを求める
 		float w = this->bodyWeight_ + pCharacter->bodyWeight_;
 		float sWeight = pCharacter->bodyWeight_ / w + 0.001f;
 		float oWeight = this->bodyWeight_ / w + 0.001f;
-
-		sWeight = 1.0f;
-		oWeight = 1.0f;
+		direction = XMVector3Normalize(direction) * range * 0.5f;
+		XMVECTOR push = direction * (range - vecRange);
 
 		//押し出す
-		sPos = sPos - direction * oWeight;
+		sPos = sPos - direction - (push * sWeight);
 		XMStoreFloat3(&transform_.position_, sPos);
-		oPos = oPos + direction * sWeight;
+		oPos = oPos + direction + (push * oWeight);
 		XMStoreFloat3(&pCharacter->transform_.position_, oPos);
 
-		return;
-
+		ResetMovement();
+		pCharacter->ResetMovement();
 	}
 }

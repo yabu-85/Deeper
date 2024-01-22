@@ -30,13 +30,13 @@ void AStarMan::Initialize()
 	hModel_ = Model::Load("Model/SphereCollider.fbx");
 	assert(hModel_ >= 0);
 	
-	aimTargetPos_ = 1.0f;
-
 	CreateStage* pCreateStage = GameManager::GetCreateStage();
 	XMFLOAT3 startPos = pCreateStage->GetRandomFloarPosition();
 	transform_.position_ = startPos;
 	transform_.scale_ = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
+	aimTargetPos_ = 1.0f;
+	bodyWeight_ = 0.1f;
 	pAstarMoveAction_ = new AstarMoveAction(this, 0.03f, 0.1f);
 	pAstarMoveAction_->Initialize();
 
@@ -97,5 +97,15 @@ void AStarMan::Draw()
 void AStarMan::Release()
 {
 	EnemyBase::Release();
+
+}
+
+void AStarMan::OnCollision(GameObject* pTarget)
+{
+	std::string name = pTarget->GetObjectName();
+	if (name == "AStarMan" || name == "Feet" || name == "Player") {
+		Character* c = static_cast<Character*>(pTarget);
+		ReflectCharacter(c);
+	}
 
 }

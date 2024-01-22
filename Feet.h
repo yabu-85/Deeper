@@ -27,6 +27,7 @@ public:
     void Draw() override;
     void Release() override;
     void ApplyDamage(int da) override;
+    void OnCollision(GameObject* pTarget) override;
 
     int GetModelHandle() { return hModel_; }
     SphereCollider* GetSphereCollider() { return pHandCollider_; }

@@ -55,7 +55,6 @@ void AstarMoveAction::Update()
 	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) * floarSize + half;
 	XMVECTOR vMove = vTar - vPos;
 	const float safeSize = 6.0f;
-	bool isSafe = false;
 
 	//‘¼‚ÌEnemy‚Æ‚Ì“–‚½‚è”»’è
 	XMVECTOR vSafeMove = XMVectorZero();
@@ -70,14 +69,10 @@ void AstarMoveAction::Update()
 			float range = XMVectorGetX(XMVector3Length(vec));
 			
 			if (range < safeSize) {
-				if (range > safeSize) range = safeSize;
 				range -= safeSize;
 				vSafeMove += XMVector3Normalize(vec) * range;
-				isSafe = true;
 			}
 		}
-		float range = XMVectorGetX(XMVector3Length(vSafeMove));
-		if (range > safeSize) vSafeMove = XMVector3Normalize(vSafeMove) * safeSize;
 
 		vMove += vSafeMove;
 	}

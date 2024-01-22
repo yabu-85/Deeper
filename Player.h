@@ -11,6 +11,7 @@ class Player : public Character
     int hModel_[2];
     float moveSpeed_;           //移動スピード
     float rotateRatio_;         //回転の比率
+    XMFLOAT3 playerMovement_;   //Normalizeの移動量を保存する用
 
     Aim* pAim_;
     StateManager* pStateManager_;
@@ -41,6 +42,7 @@ public:
 
     XMVECTOR GetDirectionVec();     //向いている方向（正規化済み
     void ResetKeyMovement() { movement_ = XMFLOAT3(0.0f, 0.0f, 0.0f); }
+    void ResetMovement() override;
 
     void InitAvo();
 

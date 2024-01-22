@@ -5,6 +5,7 @@
 #include "GameManager.h"
 #include "CreateStage.h"
 #include "Engine/SphereCollider.h"
+#include "StateBase.h"
 
 #include "MoveAction.h"
 #include "RotateAction.h"
@@ -17,7 +18,7 @@
 AStarMan::AStarMan(GameObject* parent)
 	:EnemyBase(parent), hModel_(-1), pAstarMoveAction_(nullptr)
 {
-	objectName_ = "AStarMan";
+	objectName_ = "AStarManEnemy";
 }
 
 AStarMan::~AStarMan()
@@ -100,10 +101,12 @@ void AStarMan::Release()
 
 }
 
+#include <string>
+
 void AStarMan::OnCollision(GameObject* pTarget)
 {
 	std::string name = pTarget->GetObjectName();
-	if (name == "AStarMan" || name == "Feet" || name == "Player") {
+	if (pTarget->GetObjectName().find("Enemy") != std::string::npos || name == "Player") {
 		Character* c = static_cast<Character*>(pTarget);
 		ReflectCharacter(c);
 	}

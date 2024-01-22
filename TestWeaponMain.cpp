@@ -87,7 +87,7 @@ void TestWeaponMain::Release()
 
 void TestWeaponMain::OnAttackCollision(GameObject* pTarget)
 {
-    if (pTarget->GetObjectName() == "Feet" || pTarget->GetObjectName() == "AStarMan") {
+    if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
         e->ApplyDamage(damage_);
         VFXManager::CreatVfxExplode1(wandPos_);

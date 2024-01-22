@@ -14,8 +14,8 @@ public:
 	FeetAppear(StateManager* owner);
 	const char* GetName() const override { return "Appear"; }
 	void Update() override;
-	void Initialize() override;
 	void OnEnter() override;
+	void OnExit() override;
 };
 
 class FeetIdle : public StateBase

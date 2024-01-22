@@ -34,17 +34,23 @@ void FeetAppear::Update()
 	time_++;
 	if (time_ > appearTime_) owner_->ChangeState("Idle");
 
-}
+	float tsize = (float)time_ / (float)appearTime_;
+	pFeet_->SetScale(XMFLOAT3(tsize, tsize, tsize));
 
-void FeetAppear::Initialize()
-{
-	appearTime_ = 60;
 }
 
 void FeetAppear::OnEnter()
 {
+	appearTime_ = 180;
+
 	XMFLOAT3 pos = pFeet_->GetPosition();
 	VFXManager::CreatVfxEnemySpawn(pos);
+
+}
+
+void FeetAppear::OnExit()
+{
+	pFeet_->SetScale(XMFLOAT3(1, 1, 1));
 
 }
 

@@ -1,14 +1,11 @@
 #pragma once
 #include "EnemyBase.h"
-#include "StateBase.h"
 
-#include "MoveAction.h"
+class AstarMoveAction;
 
-class SphereCollider;
 class AStarMan : public EnemyBase
 {
     int hModel_;
-    
     AstarMoveAction* pAstarMoveAction_;
 
 public:

@@ -9,11 +9,8 @@
 #include "EnemyBase.h"
 
 TestWeaponSub::TestWeaponSub(GameObject* parent)
-    :WeaponBase(parent)
+    : WeaponBase(parent), pPlayer_(nullptr)
 {
-    //std::string str;
-    //str = std::to_string(rand() % 1000);
-    //objectName_ = "TestWeaponSub" + str;
     objectName_ = "TestWeaponSub";
 }
 

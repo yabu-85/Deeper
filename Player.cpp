@@ -36,7 +36,7 @@ namespace {
 
 Player::Player(GameObject* parent)
     : Character(parent), hModel_{-1, -1}, pAim_(nullptr),  pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr), 
-    moveSpeed_(0.0f), rotateRatio_(0.0f)
+    moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0)
 {
     objectName_ = "Player";
 }

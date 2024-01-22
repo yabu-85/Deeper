@@ -17,7 +17,7 @@
 Feet::Feet(GameObject* parent)
 	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr), pVisionSearchAction_(nullptr)
 {
-	objectName_ = "Feet";
+	objectName_ = "FeetEnemy";
 }
 
 Feet::~Feet()
@@ -137,7 +137,7 @@ void Feet::ApplyDamage(int da)
 void Feet::OnCollision(GameObject* pTarget)
 {
 	std::string name = pTarget->GetObjectName();
-	if (name == "AStarMan" || name == "Feet" || name == "Player") {
+	if (pTarget->GetObjectName().find("Enemy") != std::string::npos || name == "Player") {
 		Character* c = static_cast<Character*>(pTarget);
 		ReflectCharacter(c);
 	}

@@ -9,7 +9,7 @@
 
 EnemyBase::EnemyBase(GameObject* parent)
 	: Character(parent), pEnemyUi_(nullptr), pStateManager_(nullptr), pCombatStateManager_(nullptr),
-	type_(ENEMY_MAX), aimTargetPos_(0.0f), attackCoolDown_(0)
+	type_(ENEMY_MAX), aimTargetPos_(0.0f), attackCoolDown_(0), hp_(0), maxHp_(0)
 {
 }
 

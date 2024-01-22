@@ -16,7 +16,7 @@ namespace {
 MasterHand::MasterHand(GameObject* parent)
 	: EnemyBase(parent), hModel_(-1), lifeTime_(0)
 {
-	objectName_ = "MasterHand";
+	objectName_ = "MasterHandEnemy";
 }
 
 MasterHand::~MasterHand()

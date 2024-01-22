@@ -101,8 +101,6 @@ void AStarMan::Release()
 
 }
 
-#include <string>
-
 void AStarMan::OnCollision(GameObject* pTarget)
 {
 	std::string name = pTarget->GetObjectName();

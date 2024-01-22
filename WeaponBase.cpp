@@ -2,7 +2,7 @@
 #include "StateManager.h"
 
 WeaponBase::WeaponBase(GameObject* parent)
-	: GameObject(parent, "WeaponBase"), hModel_(-1), pStateManager_(nullptr), atkEnd_(true), durance_(0)
+	: hModel_(-1), pStateManager_(nullptr), atkEnd_(true), durance_(0)
 {
     offsetTrans_.scale_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }

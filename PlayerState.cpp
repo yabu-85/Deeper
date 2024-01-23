@@ -95,9 +95,12 @@ void PlayerWalk::Update()
 
 //--------------------------------------------------------------------------------
 
+namespace {
+	static const float CHANGE_TIME = 60;
+}
+
 PlayerWeaponChange::PlayerWeaponChange(StateManager* owner) : StateBase(owner), time_(0)
 {
-	changeTime_ = 60;
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
 
@@ -110,7 +113,7 @@ void PlayerWeaponChange::Update()
 		time_++;
 
 		//切り替え時間までボタン押し続けた
-		if (time_ > changeTime_) {
+		if (time_ > CHANGE_TIME) {
 			WeaponBase* weapon = GameManager::GetWeaponObjectManager()->GetNearestWeapon();
 			if (weapon) {
 				pPlayer_->GetPlayerWeapon()->SetWeapon(weapon);
@@ -188,7 +191,7 @@ void PlayerAvo::OnExit()
 
 //--------------------------------------------------------------------------------
 
-PlayerAtk::PlayerAtk(StateManager* owner) : StateBase(owner), nextCmd_(0)
+PlayerAtk::PlayerAtk(StateManager* owner) : StateBase(owner), nextCmd_(0), time_(0)
 {
 	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
 }
@@ -201,6 +204,12 @@ void PlayerAtk::Update()
 	if (pPlayer_->GetCommand()->CmdAvo()) nextCmd_ = 1;
 	if (pPlayer_->GetCommand()->CmdSubAtk()) nextCmd_ = 2;
 	
+	if (time_ < 10 && nextCmd_ == 1) {
+		owner_->ChangeState("Avo");
+		return;
+	}
+	time_++;
+
 	//コンボ終了NextCmdのステートへ
 	if (pPlayer_->GetPlayerWeapon()->GetMainWeapon()->IsAtkEnd()) {
 		if (nextCmd_ == 1) {
@@ -222,6 +231,7 @@ void PlayerAtk::Update()
 
 void PlayerAtk::OnEnter()
 {
+	time_ = 0;
 	nextCmd_ = 0;
 	pPlayer_->GetPlayerWeapon()->GetMainWeapon()->SetAtkEnd(false);
 

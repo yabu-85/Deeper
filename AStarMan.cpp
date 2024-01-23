@@ -53,7 +53,7 @@ void AStarMan::Update()
 		pAstarMoveAction_->SetTarget(pCreateStage->GetRandomFloarPosition());
 	}
 
-	if (rand() % 10 == 0 && pAstarMoveAction_->IsOutEndTarget()) {
+	if (rand() % 180 == 0 && pAstarMoveAction_->IsOutTarget()) {
 		Player* pPlayer = static_cast<Player*>(FindObject("Player"));
 		pAstarMoveAction_->UpdatePath(pPlayer->GetPosition());
 	}

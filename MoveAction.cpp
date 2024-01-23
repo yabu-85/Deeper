@@ -98,7 +98,7 @@ void AstarMoveAction::Update()
 
 }
 
-bool AstarMoveAction::IsOutEndTarget()
+bool AstarMoveAction::IsOutTarget()
 {
 	if (!targetList_.empty()) {
 		lastTarget_ = targetList_.front();

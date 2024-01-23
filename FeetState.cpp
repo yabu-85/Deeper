@@ -184,7 +184,7 @@ FeetWait::FeetWait(StateManager* owner) : StateBase(owner)
 void FeetWait::Update()
 {
 	if (rand() % 100 == 0) {
-		if (pFeet_->GetMoveAction()->IsInRange() || pFeet_->GetMoveAction()->IsOutEndTarget()) {
+		if (pFeet_->GetMoveAction()->IsInRange() || pFeet_->GetMoveAction()->IsOutTarget()) {
 			CreateStage* pCreateStage = GameManager::GetCreateStage();
 			pFeet_->GetMoveAction()->UpdatePath(pCreateStage->GetFloarPosition(pFeet_->GetPosition(), 10.0f));
 		}
@@ -211,12 +211,13 @@ FeetMove::FeetMove(StateManager* owner) : StateBase(owner)
 
 void FeetMove::Update()
 {
-	//rand() ‚É‚µ‚Ä‚é‚¯‚Ç‚È‚ñ‚©‚â‚Á‚Ä‚¿‚á‚ñ‚Æ‚µ‚½‚â‚Âì‚Á‚½‚Ù‚¤‚ª‚¢‚¢‚Ë
+	//‚ç‚ñ‚„‚â‚ß‚æ‚¤
+	pFeet_->GetMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
 	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
 		pFeet_->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
 	}
 
-	if (pFeet_->GetMoveAction()->IsOutEndTarget() && rand() % 60 == 0) {
+	if (pFeet_->GetMoveAction()->IsOutTarget()) {
 		pFeet_->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
 	}
 

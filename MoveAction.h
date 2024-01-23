@@ -24,8 +24,11 @@ public:
 
     void SetMoveSpeed(float speed) { moveSpeed_ = speed; }
     void SetMoveRange(float range) { moveRange_ = range; }
+    
+    //移動が終わった、Targetの位置についたか移動終わった
     bool IsInRange() { return isInRange_; }
 
+    //Astarの場合Update呼ばないと移動しない・IsOutEndTargetに使う
     virtual void SetTarget(XMFLOAT3 target) { targetPos_ = target; }
 };
 
@@ -35,12 +38,20 @@ class AstarMoveAction : public MoveAction {
 
 public:
     AstarMoveAction(Character* obj, float speed, float range);
-    ~AstarMoveAction() {};
+    ~AstarMoveAction() override {};
 
     void Update() override;
+    
+    //今の移動目標リストを取得
     std::vector<XMFLOAT3> GetTarget() { return targetList_; }
+    
+    //移動やめさせる
     void StopMove() { targetList_.clear(); }
-    bool IsOutEndTarget();
+
+    //なにこれ今の目標の位置が遠くなりすぎたらtrue
+    bool IsOutTarget();
+    
+    //新しく経路を求める
     void UpdatePath(XMFLOAT3 target);
 
 };

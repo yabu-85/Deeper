@@ -35,8 +35,7 @@ public:
 
     XMFLOAT3 GetInputMove();        //Inputの移動量取得
     void FrontMove(float f = 1.0f); //前への移動
-    void Move(float f = 1.0f);      //実際の移動
-    void CalcRotate();              //移動量は考慮しない回転のみの計算
+    void Move(float f = 1.0f);      //移動
     void CalcMove();                //Inputを考慮したやつ
     void CalcNoMove();              //Input考慮してない、滑るやつとかの計算用
 

@@ -16,7 +16,7 @@ namespace {
 }
 
 TestWeaponMain::TestWeaponMain(GameObject* parent)
-	:WeaponBase(parent), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0), pPolyLine_(nullptr)
+	: WeaponBase(parent), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0), pPolyLine_(nullptr)
 {
 	objectName_ = "TestWeaponMain";
 }
@@ -165,7 +165,6 @@ void TestWeaponCombo1::Update()
             pPlayer_->AimTargetRotate(0.3f);
         }
         else {
-            pPlayer_->CalcRotate();
             pPlayer_->Rotate(0.15f);
         }
     }
@@ -222,7 +221,6 @@ void TestWeaponCombo2::Update()
             pPlayer_->AimTargetRotate(0.3f);
         }
         else {
-            pPlayer_->CalcRotate();
             pPlayer_->Rotate(0.15f);
         }
     }
@@ -279,7 +277,6 @@ void TestWeaponCombo3::Update()
             pPlayer_->AimTargetRotate(0.3f);
         }
         else {
-            pPlayer_->CalcRotate();
             pPlayer_->Rotate(0.15f);
         }
     }

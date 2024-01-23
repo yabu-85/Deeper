@@ -174,6 +174,8 @@ void Player::OnAttackCollision(GameObject* pTarget)
 
 void Player::Rotate()
 {
+    rotateMove = GetInputMove();
+
     XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(transform_.rotate_.y)), cosf(XMConvertToRadians(transform_.rotate_.y)));
     XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
     XMFLOAT2 b = XMFLOAT2(rotateMove.x, rotateMove.z);
@@ -188,6 +190,8 @@ void Player::Rotate()
 
 void Player::Rotate(float ratio)
 {
+    rotateMove = GetInputMove();
+
     XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(transform_.rotate_.y)), cosf(XMConvertToRadians(transform_.rotate_.y)));
     XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
     XMFLOAT2 b = XMFLOAT2(rotateMove.x, rotateMove.z);
@@ -299,11 +303,6 @@ void Player::ResetMovement()
 {
     movement_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
     playerMovement_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
-}
-
-void Player::CalcRotate()
-{
-    rotateMove = GetInputMove();
 }
 
 void Player::CalcMove()

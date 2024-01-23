@@ -23,7 +23,6 @@ public:
 class PlayerWeaponChange : public StateBase
 {
 	int time_;
-	int changeTime_;
 	Player* pPlayer_;
 public:
 	PlayerWeaponChange(StateManager* owner);
@@ -47,6 +46,7 @@ public:
 
 class PlayerAtk : public StateBase
 {
+	int time_;
 	int nextCmd_;
 	Player* pPlayer_;
 public:

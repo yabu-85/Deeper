@@ -1,21 +1,10 @@
 #include "PlayerCommand.h"
 #include "Engine/Input.h"
 
-//デバッグ用？
-#include "Engine/Text.h"
-#include "Engine/Direct3D.h"
-
-namespace {
-	Text* text = new Text();
-	bool keyDraw = false;
-}
-
 PlayerCommand::PlayerCommand()
 	: walk_(false)
 {
 	SetDefaultKeyConfig();
-	
-	text->Initialize();
 
 }
 
@@ -37,8 +26,6 @@ void PlayerCommand::Update()
 	commandFlags[CENTER_UP] = Input::IsUpScroll();
 	commandFlags[CENTER_DOWN] = Input::IsDownScroll();
 	walk_ = commandFlags[LEFT] || commandFlags[RIGHT] || commandFlags[UP] || commandFlags[DOWN];
-
-	keyDraw = false;
 
 }
 
@@ -62,9 +49,6 @@ void PlayerCommand::SetDefaultKeyConfig()
 	downMouseCommand_.push_back(std::make_pair(0, ATK));
 	downMouseCommand_.push_back(std::make_pair(1, SUB_ATK));
 	downMouseCommand_.push_back(std::make_pair(2, CENTER));
-
-	SetKeyName();
-
 }
 
 void PlayerCommand::ChangeCmd(COMMAND number, int conf, int type)
@@ -122,23 +106,4 @@ void PlayerCommand::DeleteCmd(COMMAND number)
 			return;
 		}
 	}
-}
-
-void PlayerCommand::SetKeyName()
-{
-	keyName_[PUSH_ACTION] = "E";
-	keyName_[DOWN_ACTION] = "E";
-
-}
-
-void PlayerCommand::DrawActionUI()
-{
-	if(keyDraw)
-	text->Draw(Direct3D::screenWidth_ / 2, (int)((double)Direct3D::screenHeight_ / 2.0 * 1.8), keyName_[PUSH_ACTION].c_str());
-
-}
-
-void PlayerCommand::SetDrawActionUI()
-{
-	keyDraw = true;
 }

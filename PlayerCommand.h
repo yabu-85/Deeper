@@ -33,9 +33,6 @@ private:
 	
 	bool walk_;
 
-	//テストでここに置いてるけどよく考える
-	std::string keyName_[CMD_MAX];
-
 public:
 	PlayerCommand();
 	void Update();
@@ -66,10 +63,6 @@ public:
 	bool CmdWalk() { return walk_; }
 	bool CmdPushAction() { return commandFlags[PUSH_ACTION]; }
 	bool CmdDownAction() { return commandFlags[DOWN_ACTION]; }
-
-	void SetKeyName();
-	void DrawActionUI();
-	void SetDrawActionUI();
 
 };
 

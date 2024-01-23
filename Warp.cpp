@@ -45,7 +45,6 @@ void Warp::Draw()
 
 		CollisionDraw();
 
-		GameManager::GetPlayer()->GetCommand()->DrawActionUI();
 	}
 
 }
@@ -65,9 +64,6 @@ void Warp::OnCollision(GameObject* pTarget)
 
 	//Player‚ÉÕ“Ë‚µn‚ß‚½
 	isPlayerHit_ = true;
-
-	//‚±‚±‚ÅKey‚ÌUI‚ğ•\¦‚³‚¹‚é
-	GameManager::GetPlayer()->GetCommand()->SetDrawActionUI();
 
 	//Player‚ÌAim‹­§ˆÚ“®g‚Á‚Ä‚İ‚é
 	XMFLOAT3 cPos = XMFLOAT3(transform_.position_.x, transform_.position_.y + 5.0f, transform_.position_.z + 33.0f);

@@ -342,6 +342,9 @@
     <ClCompile Include="Stage3.cpp">
       <Filter>03Scene\Stage\Stage3</Filter>
     </ClCompile>
+    <ClCompile Include="ActionImage.cpp">
+      <Filter>04UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -572,6 +575,9 @@
     </ClInclude>
     <ClInclude Include="Stage3.h">
       <Filter>03Scene\Stage\Stage3</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionImage.h">
+      <Filter>04UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

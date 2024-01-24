@@ -7,6 +7,7 @@
 #include "AudioManager.h"
 #include "Engine/Input.h"
 #include "Warp.h"
+#include "ActionImage.h"
 
 //デバッグ用
 #include "WeaponObjectManager.h"
@@ -33,6 +34,8 @@ void PlayScene::Initialize()
 	GameManager::SetPlayer(Instantiate<Player>(this));
 	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
+
+	Instantiate<ActionImage>(this);
 
 	for (int i = 0; i < (int)warpList_.size(); i++) {
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);

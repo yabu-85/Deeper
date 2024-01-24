@@ -1,10 +1,21 @@
 #pragma once
 #include "Engine/GameObject.h"
-#include "PlayerCommand.h"
+
+enum ACTION_UI_TABLE {
+    WAIT = 0,
+    WALK,
+    WEAPON_CHANGE,
+    AVO,
+    ATK,
+    ATK_SUB,
+    MAX,
+};
 
 class ActionImage : public GameObject
 {
-    std::string keyName_[10];
+    bool isDraw_;       //描画するかどうか
+    bool isDrawAction_; //アクションボタンの表示をするかどうか
+    ACTION_UI_TABLE type_;
 
 public:
     ActionImage(GameObject* parent);
@@ -14,9 +25,17 @@ public:
     void Draw() override;
     void Release() override;
 
-    void SetKeyName();
-    void DrawActionUI();
-    void SetDrawActionUI();
+    //名前の初期化
+    void SetName();
+    
+    //どのテーブルを表示するか設定する
+    void SetActionTable(ACTION_UI_TABLE type) { type_ = type; }
+    
+    //表示するかどうか
+    void SetActionIsDraw(bool b) { isDraw_ = b; }
+    
+    //ActionButtonの描画するかどうか
+    void SetActionUI(bool b) { isDrawAction_ = b; }
 
 };
 

@@ -1,6 +1,18 @@
 #include "ActionImage.h"
+#include <vector>
+#include "Engine/Text.h"
+#include "Engine/Input.h"
+
+namespace {
+	std::vector<std::vector<std::string>> explanations(MAX);
+	Text* pText = nullptr;
+	int drawPos[2] = {20, 500};
+	int drawPosAction[2] = {20, 550};
+
+}
 
 ActionImage::ActionImage(GameObject* parent)
+	: GameObject(parent, "ActionImage"), isDraw_(true), isDrawAction_(true), type_(WAIT)
 {
 }
 
@@ -10,42 +22,67 @@ ActionImage::~ActionImage()
 
 void ActionImage::Initialize()
 {
+	SetName();
+	pText = new Text();
+	pText->Initialize();
+
 }
 
 void ActionImage::Update()
 {
+	if (Input::IsKeyDown(DIK_1)) type_ = (ACTION_UI_TABLE)(rand() % MAX);
+
 }
 
 void ActionImage::Draw()
 {
+	if (isDraw_) {
+
+		//テーブルの表示
+		int posX = 0;
+		for (auto t : explanations[type_]) {
+			pText->Draw(drawPos[0], drawPos[1] + posX , t.c_str());
+			posX += 40;
+
+			//Direct3D::screenWidth_ / 2, (int)((double)Direct3D::screenHeight_ / 2.0 * 1.8),
+		}
+
+		//アクションボタンの表示
+		if (isDrawAction_) {
+			pText->Draw(drawPosAction[0], drawPosAction[1] + posX, "EKey");
+		}
+	}
+
+	pText->Draw(30, 450, (int)(type_));
+
+
 }
 
 void ActionImage::Release()
 {
 }
 
-void ActionImage::SetKeyName()
+void ActionImage::SetName()
 {
-	keyName_[0] = "LEFT_MOUSE";
-	keyName_[1] = "RIGHT_MOUSE";
-	keyName_[2] = "CENTER";
-	keyName_[3] = "SCROOL";
-	keyName_[4] = "SCROOL";
-	keyName_[5] = "SPACE";
-	keyName_[6] = "Q";
-	keyName_[7] = "E";
-	keyName_[8] = "E";
+	//Wait
+	explanations[WAIT].push_back("aaa");
+	explanations[WAIT].push_back("bbb");
 
-}
+	//Walk
+	explanations[WALK].push_back("ccc");
 
-void ActionImage::DrawActionUI()
-{
-	//if (keyDraw)
-	//	text->Draw(Direct3D::screenWidth_ / 2, (int)((double)Direct3D::screenHeight_ / 2.0 * 1.8), keyName_[PUSH_ACTION].c_str());
+	//WEAPON_CHANGE
+	//explanations[WEAPON_CHANGE].push_back("");
 
-}
+	//AVO
+	explanations[AVO].push_back("ddd");
 
-void ActionImage::SetDrawActionUI()
-{
-	//keyDraw = true;
+	//ATK
+	explanations[ATK].push_back("eee");
+	explanations[ATK].push_back("fff");
+	explanations[ATK].push_back("ggg");
+
+	//ATK_SUB
+	explanations[ATK_SUB].push_back("hhh");
+
 }

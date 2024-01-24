@@ -8,6 +8,7 @@
 #include "Engine/Input.h"
 #include "Warp.h"
 #include "EnemyManager.h"
+#include "ActionImage.h"
 
 namespace {
 	static const SCENE_ID WARP_STAGE[] = { SCENE_ID_PLAY0 };
@@ -30,7 +31,9 @@ void Stage3::Initialize()
 	GameManager::SetPlayer(Instantiate<Player>(this));
 	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
-
+	
+	Instantiate<ActionImage>(this);
+	
 	for (int i = 0; i < (int)warpList_.size(); i++) {
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
 	}

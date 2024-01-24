@@ -4,9 +4,6 @@
 
 class ActionImage : public GameObject
 {
-public:
-
-private:
     std::string keyName_[10];
 
 public:

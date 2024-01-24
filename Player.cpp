@@ -155,7 +155,7 @@ void Player::Release()
 void Player::OnCollision(GameObject* pTarget)
 {
     std::string name = pTarget->GetObjectName();
-    if (name == "Feet" || name == "AStarMan") {
+    if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         Character* c = static_cast<Character*>(pTarget);
         ReflectCharacter(c);
     }
@@ -165,7 +165,7 @@ void Player::OnCollision(GameObject* pTarget)
 void Player::OnAttackCollision(GameObject* pTarget)
 {
     std::string name = pTarget->GetObjectName();
-    if (name == "Feet") {
+    if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         LifeManager::Damage(10);
 
     }

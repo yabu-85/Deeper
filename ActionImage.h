@@ -17,6 +17,9 @@ class ActionImage : public GameObject
     bool isDrawAction_; //アクションボタンの表示をするかどうか
     ACTION_UI_TABLE type_;
 
+    //修正箇所
+    int hPict_[10];
+
 public:
     ActionImage(GameObject* parent);
     ~ActionImage();

@@ -29,7 +29,7 @@ public:
 	void AllKillWeaponObject();
 
 	//”ÍˆÍ“à‚ÉWeaponObject‚ª‚ ‚é‚©‚Ç‚¤‚©
-	bool IsInPlayerRangeA();
+	bool IsInPlayerRange();
 
 	//ˆê”Ô‹ß‚¢WeaponObject‚ÌWeaponBase‚Ìƒ|ƒCƒ“ƒ^‚ðŽæ“¾
 	WeaponBase* GetNearestWeapon();

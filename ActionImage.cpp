@@ -71,15 +71,23 @@ void ActionImage::Draw()
 		//テーブルの表示
 		int posY = 0;
 		for (auto t : explanations[type_]) {
-			string text = t.first + " : " + keyName[t.second];
+			string text = t.first + " : ";
 			pText->Draw(drawPos[0], drawPos[1] + posY, text.c_str());
-			posY += 40;
 
-			Transform trans;
-			trans.position_ = XMFLOAT3(0.5f, 0.0f + (float)posY / (float)Direct3D::screenHeight_, 1.0f);
+			//ピクセル左下が始点右上が終点
+			float x = (float)Direct3D::screenWidth_ / 2.0f * 1.54f;
+			float y = ((float)drawPos[1] + (float)posY);
+			x = 2.0f * x / (float)Direct3D::screenWidth_ - 1.0f;
+			y = 2.0f * y / (float)Direct3D::screenHeight_ - 1.0f;
+
+			Transform tr;
+			tr.position_ = XMFLOAT3(x, (y * -1.0f), 1.0f);
+
 			Image::SetAlpha(hPict_[t.second], 255);
-			Image::SetTransform(hPict_[t.second], trans);
+			Image::SetTransform(hPict_[t.second], tr);
 			Image::Draw(hPict_[t.second]);
+			
+			posY += 40;
 
 		}
 
@@ -88,7 +96,7 @@ void ActionImage::Draw()
 		bool hitFlag = GameManager::GetWeaponObjectManager()->IsInPlayerRange() || false;
 		
 		if (isDrawAction_ && hitFlag) {
-			pText->Draw(drawPos[0], drawPos[1] + posY, "EKey");
+			pText->Draw(drawPos[0], drawPos[1] + posY, "      EKey");
 		}
 	}
 

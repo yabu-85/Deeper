@@ -25,14 +25,13 @@ Stage3::Stage3(GameObject* parent)
 void Stage3::Initialize()
 {
 	AudioManager::Initialize();
+	Instantiate<ActionImage>(this);
 
 	GameManager::SetStage(this);
 	GameManager::GetCreateStage()->CreateStageData("Csv/Map3.csv");
 	GameManager::SetPlayer(Instantiate<Player>(this));
 	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
-	
-	Instantiate<ActionImage>(this);
 	
 	for (int i = 0; i < (int)warpList_.size(); i++) {
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);

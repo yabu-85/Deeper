@@ -8,6 +8,8 @@
 #include "Aim.h"
 #include "PlayerWeapon.h"
 
+#include "ActionImage.h"
+
 namespace {
 	const int defAvoTime = 30;
 	const float defAvoSpeed = 2.0f;
@@ -52,6 +54,13 @@ void PlayerWait::Update()
 	}
 }
 
+void PlayerWait::OnEnter()
+{
+	ActionImage* pActImage = static_cast<ActionImage*>(pPlayer_->FindObject("ActionImage"));
+	pActImage->SetActionTable(WAIT);
+
+}
+
 //--------------------------------------------------------------------------------
 
 PlayerWalk::PlayerWalk(StateManager* owner) : StateBase(owner)
@@ -93,6 +102,13 @@ void PlayerWalk::Update()
 
 }
 
+void PlayerWalk::OnEnter()
+{
+	ActionImage* pActImage = static_cast<ActionImage*>(pPlayer_->FindObject("ActionImage"));
+	pActImage->SetActionTable(WALK);
+
+}
+
 //--------------------------------------------------------------------------------
 
 namespace {
@@ -113,7 +129,7 @@ void PlayerWeaponChange::Update()
 		time_++;
 
 		//Ø‚è‘Ö‚¦ŽžŠÔ‚Ü‚Åƒ{ƒ^ƒ“‰Ÿ‚µ‘±‚¯‚½
-		if (time_ > CHANGE_TIME) {
+		if (time_ >= CHANGE_TIME) {
 			WeaponBase* weapon = GameManager::GetWeaponObjectManager()->GetNearestWeapon();
 			if (weapon) {
 				pPlayer_->GetPlayerWeapon()->SetWeapon(weapon);
@@ -134,6 +150,9 @@ void PlayerWeaponChange::Update()
 void PlayerWeaponChange::OnEnter()
 {
 	time_ = 0;
+	ActionImage* pActImage = static_cast<ActionImage*>(pPlayer_->FindObject("ActionImage"));
+	pActImage->SetActionTable(WEAPON_CHANGE);
+
 }
 
 //--------------------------------------------------------------------------------
@@ -182,6 +201,9 @@ void PlayerAvo::OnEnter()
 	pPlayer_->InitAvo();
 	nextCmd_ = 0;
 	avoTime_ = defAvoTime;
+	ActionImage* pActImage = static_cast<ActionImage*>(pPlayer_->FindObject("ActionImage"));
+	pActImage->SetActionTable(AVO);
+
 }
 
 void PlayerAvo::OnExit()
@@ -234,6 +256,8 @@ void PlayerAtk::OnEnter()
 	time_ = 0;
 	nextCmd_ = 0;
 	pPlayer_->GetPlayerWeapon()->GetMainWeapon()->SetAtkEnd(false);
+	ActionImage* pActImage = static_cast<ActionImage*>(pPlayer_->FindObject("ActionImage"));
+	pActImage->SetActionTable(ATK);
 
 }
 
@@ -280,6 +304,9 @@ void PlayerSubAtk::OnEnter()
 {
 	nextCmd_ = 0;
 	pPlayer_->GetPlayerWeapon()->GetSubWeapon()->SetAtkEnd(false);
+	ActionImage* pActImage = static_cast<ActionImage*>(pPlayer_->FindObject("ActionImage"));
+	pActImage->SetActionTable(ATK_SUB);
+
 }
 
 void PlayerSubAtk::OnExit()
@@ -307,4 +334,7 @@ void PlayerDead::Update()
 void PlayerDead::OnEnter()
 {
 	pPlayer_->GetAim()->SetAimMove(false);
+	ActionImage* pActImage = static_cast<ActionImage*>(pPlayer_->FindObject("ActionImage"));
+	pActImage->SetActionUI(false);
+
 }

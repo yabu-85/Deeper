@@ -11,6 +11,32 @@ namespace {
 	Player* pPlayer = nullptr;
 }
 
+void WeaponObjectManager::CaclNearestObject()
+{
+	Player* pPlayer = GameManager::GetPlayer();
+	XMFLOAT3 plaPos = pPlayer->GetPosition();
+
+	int minRangeIndex = -1;
+	float minRange = range_;
+
+	for (int i = 0; i < objctList_.size(); i++) {
+		XMFLOAT3 objPos = objctList_.at(i)->GetPosition();
+		objPos = XMFLOAT3(plaPos.x - objPos.x, plaPos.y - objPos.y, plaPos.z - objPos.z);
+
+		float currentSpeed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
+		if (minRange > currentSpeed) {
+			minRangeIndex = i;
+			minRange = currentSpeed;
+		}
+	}
+	
+	nearestObject_ = nullptr;
+	if (minRangeIndex >= 0) {
+		nearestObject_ = objctList_.at(minRangeIndex);
+	}
+
+}
+
 WeaponObjectManager::WeaponObjectManager()
 	: range_(0), nearestObject_(nullptr)
 {
@@ -67,26 +93,16 @@ void WeaponObjectManager::AllKillWeaponObject()
 
 bool WeaponObjectManager::IsInPlayerRange()
 {
-	Player* pPlayer = GameManager::GetPlayer();
-    XMFLOAT3 plaPos = pPlayer->GetPosition();
-	
-	int minRangeIndex = -1;
-	float minRange = range_;
-	
+	XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
+
 	for (int i = 0; i < objctList_.size(); i++) {
 		XMFLOAT3 objPos = objctList_.at(i)->GetPosition();
 		objPos = XMFLOAT3(plaPos.x - objPos.x, plaPos.y - objPos.y, plaPos.z - objPos.z);
 
-		float currentSpeed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
-		if (minRange > currentSpeed) {
-			minRangeIndex = i;
-			minRange = currentSpeed;
+		float range = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
+		if (range <= range_) {
+			return true;
 		}
-	}
-
-	if (minRangeIndex >= 0) {
-		nearestObject_ = objctList_.at(minRangeIndex);
-		return true;
 	}
 
 	return false;
@@ -94,6 +110,13 @@ bool WeaponObjectManager::IsInPlayerRange()
 
 WeaponBase* WeaponObjectManager::GetNearestWeapon()
 {
+	CaclNearestObject();
+
+	if (nearestObject_ == nullptr) {
+		return nullptr;
+		OutputDebugString("nearestObject->Is NullPtr Deth");
+	}
+
 	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_SUB1) {
 		RemoveWeaponObject(nearestObject_);
 		nearestObject_->KillMe();

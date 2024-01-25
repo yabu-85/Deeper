@@ -9,6 +9,7 @@ public:
 	PlayerWait(StateManager* owner);
 	const char* GetName() const override { return "Wait"; }
 	void Update() override;
+	void OnEnter() override;
 };
 
 class PlayerWalk : public StateBase
@@ -18,6 +19,7 @@ public:
 	PlayerWalk(StateManager* owner);
 	const char* GetName() const override { return "Walk"; }
 	void Update() override;
+	void OnEnter() override;
 };
 
 class PlayerWeaponChange : public StateBase

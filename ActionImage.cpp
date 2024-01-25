@@ -2,6 +2,8 @@
 #include <vector>
 #include "Engine/Text.h"
 #include "Engine/Input.h"
+#include "GameManager.h"
+#include "WeaponObjectManager.h"
 
 namespace {
 	std::vector<std::vector<std::string>> explanations(MAX);
@@ -12,7 +14,7 @@ namespace {
 }
 
 ActionImage::ActionImage(GameObject* parent)
-	: GameObject(parent, "ActionImage"), isDraw_(true), isDrawAction_(true), type_(WAIT)
+	: GameObject(parent, "ActionImage"), isDraw_(true), isDrawAction_(false), type_(WAIT)
 {
 }
 
@@ -48,7 +50,10 @@ void ActionImage::Draw()
 		}
 
 		//アクションボタンの表示
-		if (isDrawAction_) {
+		//いろいろ見てフラグやる
+		bool hitFlag = GameManager::GetWeaponObjectManager()->IsInPlayerRange() || false;
+		
+		if (isDrawAction_ && hitFlag) {
 			pText->Draw(drawPosAction[0], drawPosAction[1] + posX, "EKey");
 		}
 	}

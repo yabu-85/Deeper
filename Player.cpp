@@ -95,6 +95,7 @@ void Player::Initialize()
 
 void Player::Update()
 {
+    //Case司雄
     if (enterTime > 0) {
         enterTime--;
         transform_.position_.y -= 0.5f;
@@ -122,7 +123,6 @@ void Player::Update()
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
     if (Input::IsKeyDown(DIK_RIGHTARROW)) transform_.position_.y += 10.0f;
 
-    //デバッグ用
     if (Input::IsKeyDown(DIK_Y)) isCollider = !isCollider;
     if (isCollider) {
         CollisionMap* map = static_cast<CollisionMap*>(FindObject("CollisionMap"));

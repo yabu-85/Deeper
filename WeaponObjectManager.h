@@ -12,6 +12,8 @@ class WeaponObjectManager
 	WeaponObject* nearestObject_;			//一番近いWeaponObject
 	std::vector<WeaponObject* > objctList_;	//WeaponObjectのリスト
 	
+	void CaclNearestObject();
+
 public:
 	enum class WEAPON_TYPE {
 		WT_SUB1 = 0,
@@ -26,8 +28,8 @@ public:
 	void RemoveWeaponObject(WeaponObject* obj);
 	void AllKillWeaponObject();
 
-	//範囲内に一つでもあればtrue / nearestObjectの更新も担ってる
-	bool IsInPlayerRange();
+	//範囲内にWeaponObjectがあるかどうか
+	bool IsInPlayerRangeA();
 
 	//一番近いWeaponObjectのWeaponBaseのポインタを取得
 	WeaponBase* GetNearestWeapon();

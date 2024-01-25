@@ -29,6 +29,7 @@ SubPlayScene::SubPlayScene(GameObject* parent)
 void SubPlayScene::Initialize()
 {
 	AudioManager::Initialize();
+	Instantiate<ActionImage>(this);
 
 	GameManager::SetStage(this);
 	GameManager::GetCreateStage()->CreateStageData("Csv/Map2.csv");
@@ -36,8 +37,6 @@ void SubPlayScene::Initialize()
 	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
 
-	Instantiate<ActionImage>(this);
-	
 	for (int i = 0; i < (int)warpList_.size(); i++) {
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
 	}

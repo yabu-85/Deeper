@@ -13,12 +13,12 @@
 
 namespace {
     float weaponSize = 5.0f;
+
 }
 
 TestWeaponMain::TestWeaponMain(GameObject* parent)
-	: WeaponBase(parent), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0), pPolyLine_(nullptr)
+	: WeaponBase(parent, "TestWeaponMain"), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0), pPolyLine_(nullptr)
 {
-	objectName_ = "TestWeaponMain";
 }
 
 TestWeaponMain::~TestWeaponMain()
@@ -161,12 +161,8 @@ void TestWeaponCombo1::Update()
     pTestWeaponMain_->CalcDamage();
 
     if (time_ < 5) {
-        if (pPlayer_->GetAim()->IsTarget()) {
-            pPlayer_->AimTargetRotate(0.3f);
-        }
-        else {
-            pPlayer_->Rotate(0.15f);
-        }
+        if (pPlayer_->GetAim()->IsTarget()) pPlayer_->AimTargetRotate(0.3f);
+        else if(pPlayer_->GetCommand()->CmdWalk()) pPlayer_->Rotate(0.15f);
     }
     
     pPlayer_->FrontMove(0.2f);
@@ -217,13 +213,10 @@ void TestWeaponCombo2::Update()
     pTestWeaponMain_->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
-        if (pPlayer_->GetAim()->IsTarget()) {
-            pPlayer_->AimTargetRotate(0.3f);
-        }
-        else {
-            pPlayer_->Rotate(0.15f);
-        }
+        if (pPlayer_->GetAim()->IsTarget()) pPlayer_->AimTargetRotate(0.3f);
+        else if (pPlayer_->GetCommand()->CmdWalk()) pPlayer_->Rotate(0.15f);
     }
+
     float speed = (float)time_ / (float)comboTime_;
     pPlayer_->FrontMove(speed * 0.5f);
 
@@ -273,13 +266,10 @@ void TestWeaponCombo3::Update()
     pTestWeaponMain_->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
-        if (pPlayer_->GetAim()->IsTarget()) {
-            pPlayer_->AimTargetRotate(0.3f);
-        }
-        else {
-            pPlayer_->Rotate(0.15f);
-        }
+        if (pPlayer_->GetAim()->IsTarget()) pPlayer_->AimTargetRotate(0.3f);
+        else if (pPlayer_->GetCommand()->CmdWalk()) pPlayer_->Rotate(0.15f);
     }
+
     float speed = (float)time_ / (float)comboTime_;
     pPlayer_->FrontMove(speed);
 

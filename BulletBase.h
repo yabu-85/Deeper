@@ -10,7 +10,7 @@ protected:
 	XMFLOAT3 moveVec_;	//ˆÚ“®—Ê
 
 public:
-	BulletBase(GameObject* parent);
+	BulletBase(GameObject* parent, std::string name);
 	virtual ~BulletBase() = 0 {};
 	virtual void Initialize() override = 0 {};
 	virtual void Update() override = 0 {};

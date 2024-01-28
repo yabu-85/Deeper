@@ -10,7 +10,7 @@ protected:
     XMFLOAT3 movement_; //ˆÚ“®—Ê‚ð•Û‘¶‚·‚é‚½‚ß‚Ì‚â‚Â
 
 public:
-    Character(GameObject* parent);
+    Character(GameObject* parent, std::string name);
     virtual ~Character() {};
     virtual void Initialize() override = 0 {};
     virtual void Update() override = 0 {};

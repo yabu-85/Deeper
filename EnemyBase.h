@@ -20,7 +20,7 @@ protected:
     StateManager* pCombatStateManager_;
 
 public:
-    EnemyBase(GameObject* parent);
+    EnemyBase(GameObject* parent, std::string name);
     virtual ~EnemyBase();
     virtual void Initialize() override = 0;
     virtual void Update() override;

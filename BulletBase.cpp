@@ -1,7 +1,7 @@
 #include "BulletBase.h"
 
-BulletBase::BulletBase(GameObject* parent)
-	: GameObject(nullptr, ""), hModel_(-1), lifeTime_(0), moveVec_(0.0f, 0.0f, 0.0f), velocity_(1.0f)
+BulletBase::BulletBase(GameObject* parent, std::string name)
+	: GameObject(nullptr, name), hModel_(-1), lifeTime_(0), moveVec_(0.0f, 0.0f, 0.0f), velocity_(1.0f)
 {
 }
 

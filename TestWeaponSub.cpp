@@ -9,9 +9,8 @@
 #include "EnemyBase.h"
 
 TestWeaponSub::TestWeaponSub(GameObject* parent)
-    : WeaponBase(parent)
+    : WeaponBase(parent, "TestWeaponSub"), pPlayer_(nullptr)
 {
-    objectName_ = "TestWeaponSub";
 }
 
 TestWeaponSub::~TestWeaponSub()

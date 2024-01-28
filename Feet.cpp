@@ -15,9 +15,8 @@
 #include "Engine/Input.h"
 
 Feet::Feet(GameObject* parent)
-	:EnemyBase(parent), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr), pVisionSearchAction_(nullptr)
+	:EnemyBase(parent, "FeetEnemy"), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr), pVisionSearchAction_(nullptr)
 {
-	objectName_ = "FeetEnemy";
 }
 
 Feet::~Feet()

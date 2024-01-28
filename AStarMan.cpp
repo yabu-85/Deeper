@@ -16,7 +16,7 @@
 #include "Player.h"
 
 AStarMan::AStarMan(GameObject* parent)
-	:EnemyBase(parent), hModel_(-1), pAstarMoveAction_(nullptr)
+	:EnemyBase(parent, "AstarMan"), hModel_(-1), pAstarMoveAction_(nullptr)
 {
 	objectName_ = "AStarManEnemy";
 }

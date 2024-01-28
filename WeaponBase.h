@@ -13,7 +13,7 @@ protected:
 	StateManager* pStateManager_;	
 
 public:
-	WeaponBase(GameObject* parent);
+	WeaponBase(GameObject* parent, std::string name);
 	virtual ~WeaponBase() = 0 {};
 	virtual void Initialize() override = 0 {};
 	virtual void Update() override = 0 {};

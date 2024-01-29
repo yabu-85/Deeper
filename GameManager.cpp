@@ -10,6 +10,7 @@
 #include "Engine/Global.h"
 #include "LifeManager.h"
 #include "PlayerData.h"
+#include "Interaction.h"
 
 //デバッグ用
 #include "Engine/Input.h"
@@ -33,6 +34,7 @@ namespace GameManager {
 		pCreateStage_ = new CreateStage();
 		LifeManager::Initialize();
 		PlayerData::Initialize();
+		Interaction::Initialize();
 
 	}
 
@@ -73,9 +75,10 @@ namespace GameManager {
 
 	void Draw()
 	{
-		pWeaponObjectManager_;
+
 		PlayerData::Draw();
 		LifeManager::Draw();
+		Interaction::Draw();
 
 	}
 

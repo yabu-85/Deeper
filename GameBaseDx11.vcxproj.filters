@@ -51,9 +51,6 @@
     <Filter Include="09Weapon\Bullet">
       <UniqueIdentifier>{6dd57487-9671-4a91-b667-b5c85bbb2e66}</UniqueIdentifier>
     </Filter>
-    <Filter Include="09Weapon\Weapon">
-      <UniqueIdentifier>{4c9605a3-36b8-48d2-915e-a1299ca77da3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="09Weapon\Base">
       <UniqueIdentifier>{c3450bad-3506-4e41-8646-7fe925f04220}</UniqueIdentifier>
     </Filter>
@@ -113,6 +110,9 @@
     </Filter>
     <Filter Include="03Scene\Stage\Stage3">
       <UniqueIdentifier>{c8f62308-17d4-4d83-af48-fb7a7bc2ad71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09Weapon\Object\Weapon">
+      <UniqueIdentifier>{4c9605a3-36b8-48d2-915e-a1299ca77da3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -227,10 +227,10 @@
       <Filter>09Weapon\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="TestWeaponMain.cpp">
-      <Filter>09Weapon\Weapon</Filter>
+      <Filter>09Weapon\Object\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="TestWeaponSub.cpp">
-      <Filter>09Weapon\Weapon</Filter>
+      <Filter>09Weapon\Object\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="WeaponBase.cpp">
       <Filter>09Weapon\Base</Filter>
@@ -342,7 +342,7 @@
     <ClCompile Include="Stage3.cpp">
       <Filter>03Scene\Stage\Stage3</Filter>
     </ClCompile>
-    <ClCompile Include="ActionImage.cpp">
+    <ClCompile Include="Interaction.cpp">
       <Filter>04UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -467,10 +467,10 @@
       <Filter>09Weapon\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="TestWeaponMain.h">
-      <Filter>09Weapon\Weapon</Filter>
+      <Filter>09Weapon\Object\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="TestWeaponSub.h">
-      <Filter>09Weapon\Weapon</Filter>
+      <Filter>09Weapon\Object\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="WeaponBase.h">
       <Filter>09Weapon\Base</Filter>
@@ -576,7 +576,7 @@
     <ClInclude Include="Stage3.h">
       <Filter>03Scene\Stage\Stage3</Filter>
     </ClInclude>
-    <ClInclude Include="ActionImage.h">
+    <ClInclude Include="Interaction.h">
       <Filter>04UI</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,7 +8,6 @@
 #include "Engine/Input.h"
 #include "Warp.h"
 #include "EnemyManager.h"
-#include "ActionImage.h"
 
 namespace {
 	static const SCENE_ID WARP_STAGE[] = { SCENE_ID_PLAY0 };
@@ -25,7 +24,6 @@ Stage3::Stage3(GameObject* parent)
 void Stage3::Initialize()
 {
 	AudioManager::Initialize();
-	Instantiate<ActionImage>(this);
 
 	GameManager::SetStage(this);
 	GameManager::GetCreateStage()->CreateStageData("Csv/Map3.csv");

@@ -135,7 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ActionImage.cpp" />
+    <ClCompile Include="Interaction.cpp" />
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AStarMan.cpp" />
     <ClCompile Include="Character.cpp" />
@@ -216,7 +216,7 @@
     <ClCompile Include="WeaponObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ActionImage.h" />
+    <ClInclude Include="Interaction.h" />
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AStarMan.h" />
     <ClInclude Include="Character.h" />

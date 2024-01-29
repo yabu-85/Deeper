@@ -23,10 +23,10 @@ void WeaponObjectManager::CaclNearestObject()
 		XMFLOAT3 objPos = objctList_.at(i)->GetPosition();
 		objPos = XMFLOAT3(plaPos.x - objPos.x, plaPos.y - objPos.y, plaPos.z - objPos.z);
 
-		float currentSpeed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
-		if (minRange > currentSpeed) {
+		float range = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
+		if (minRange > range) {
 			minRangeIndex = i;
-			minRange = currentSpeed;
+			minRange = range;
 		}
 	}
 	
@@ -108,13 +108,20 @@ bool WeaponObjectManager::IsInPlayerRange()
 	return false;
 }
 
-WeaponBase* WeaponObjectManager::GetNearestWeapon()
+WeaponObject* WeaponObjectManager::GetNearestWeapon()
+{
+	CaclNearestObject();
+
+	return nearestObject_;
+}
+
+WeaponBase* WeaponObjectManager::PlayerWeaponSet()
 {
 	CaclNearestObject();
 
 	if (nearestObject_ == nullptr) {
-		return nullptr;
 		OutputDebugString("nearestObject->Is NullPtr Deth");
+		return nullptr;
 	}
 
 	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_SUB1) {
@@ -133,4 +140,28 @@ WeaponBase* WeaponObjectManager::GetNearestWeapon()
 	}
 
 	return nullptr;
+}
+
+float WeaponObjectManager::GetNearestDistance()
+{
+	Player* pPlayer = GameManager::GetPlayer();
+	XMFLOAT3 plaPos = pPlayer->GetPosition();
+
+	float minRange = range_;
+	bool in = false;
+
+	for (int i = 0; i < objctList_.size(); i++) {
+		XMFLOAT3 objPos = objctList_.at(i)->GetPosition();
+		objPos = XMFLOAT3(plaPos.x - objPos.x, plaPos.y - objPos.y, plaPos.z - objPos.z);
+
+		float currentSpeed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
+		if (minRange > currentSpeed) {
+			minRange = currentSpeed;
+			in = true;
+		}
+	}
+
+	if (in) return minRange;
+	return FBXSDK_FLOAT_MAX;
+
 }

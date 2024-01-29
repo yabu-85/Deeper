@@ -8,7 +8,6 @@
 #include "Engine/Input.h"
 #include "Warp.h"
 #include "EnemyManager.h"
-#include "ActionImage.h"
 
 //デバッグ用
 #include "WeaponObjectManager.h"
@@ -29,7 +28,6 @@ SubPlayScene::SubPlayScene(GameObject* parent)
 void SubPlayScene::Initialize()
 {
 	AudioManager::Initialize();
-	Instantiate<ActionImage>(this);
 
 	GameManager::SetStage(this);
 	GameManager::GetCreateStage()->CreateStageData("Csv/Map2.csv");

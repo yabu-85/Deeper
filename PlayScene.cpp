@@ -7,7 +7,6 @@
 #include "AudioManager.h"
 #include "Engine/Input.h"
 #include "Warp.h"
-#include "ActionImage.h"
 
 //デバッグ用
 #include "WeaponObjectManager.h"
@@ -28,7 +27,6 @@ PlayScene::PlayScene(GameObject* parent)
 void PlayScene::Initialize()
 {
 	AudioManager::Initialize();
-	Instantiate<ActionImage>(this);
 
 	GameManager::SetStage(this);
 	GameManager::GetCreateStage()->CreateStageData("Csv/Map1.csv");

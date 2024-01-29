@@ -54,7 +54,6 @@ namespace Image
 
 	//描画
 	//引数：handle	描画したい画像の番号
-	//引数：matrix	ワールド行列
 	void Draw(int handle, int type = 1);
 
 	//任意の画像を開放

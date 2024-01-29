@@ -32,7 +32,12 @@ public:
 	bool IsInPlayerRange();
 
 	//一番近いWeaponObjectのWeaponBaseのポインタを取得
-	WeaponBase* GetNearestWeapon();
+	WeaponObject* GetNearestWeapon();
+
+	//一番近いWeaponObjectをプレイヤーにセットする
+	WeaponBase* PlayerWeaponSet();
+
+	float GetNearestDistance();
 
 };
 

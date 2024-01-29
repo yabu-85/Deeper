@@ -1,7 +1,6 @@
 #pragma once
 
-namespace LifeManager
-{
+namespace LifeManager {
 	void Initialize();
 	void Update();
 	void Draw();

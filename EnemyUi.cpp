@@ -80,12 +80,11 @@ void EnemyUi::Draw()
 		Image::Draw(hPict_[FOUND]);
 	}
 
-	if (parcent >= 1.0f) {
-		return;
-	}
+	//HPÅ‘å‚Ìê‡EŒã‚ë‚É•\Ž¦‚³‚ê‚Ä‚¢‚éê‡ˆ—I‚í‚è
+	if (parcent >= 1.0f || XMVectorGetZ(v2) > 1.0f) return;
 
 	//‰æŠp§ŒÀ‚·‚é
-	if (x >= drawSize || y >= drawSize || x <= -drawSize || y <= -drawSize || XMVectorGetZ(v2) > 1.0f) {
+	if (x >= drawSize || y >= drawSize || x <= -drawSize || y <= -drawSize) {
 		SetGageAlpha(-alphaValue);
 	}
 	else {

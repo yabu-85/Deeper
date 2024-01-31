@@ -21,11 +21,15 @@ Warp::~Warp()
 
 void Warp::Initialize()
 {
-	BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(floarSize, floarSize, floarSize));
+	BoxCollider* collider = new BoxCollider(XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f));
 	AddCollider(collider);
 
 	hModel_ = Model::Load("Model/Stage/Warp.fbx");
 	assert(hModel_ >= 0);
+
+	transform_.position_.x += 0.5f;
+	transform_.position_.y += 0.5f;
+	transform_.position_.z += 0.5f;
 
 }
 
@@ -39,7 +43,7 @@ void Warp::Draw()
 {
 	if (isValid_) {
 		Transform t = transform_;
-		t.position_ = { t.position_.x - floarSize / 2.0f, t.position_.y - floarSize / 2.0f, t.position_.z - floarSize / 2.0f };
+		t.position_ = { t.position_.x, t.position_.y, t.position_.z};
 		Model::SetTransform(hModel_, t);
 		Model::Draw(hModel_, 0);
 
@@ -66,7 +70,7 @@ void Warp::OnCollision(GameObject* pTarget)
 	isPlayerHit_ = true;
 
 	//Player‚ÌAim‹­§ˆÚ“®Žg‚Á‚Ä‚Ý‚é
-	XMFLOAT3 cPos = XMFLOAT3(transform_.position_.x, transform_.position_.y + 5.0f, transform_.position_.z + 33.0f);
+	XMFLOAT3 cPos = XMFLOAT3(transform_.position_.x, transform_.position_.y + 3.0f, transform_.position_.z + 10.0f);
 	GameManager::GetPlayer()->GetAim()->SetCompulsion(cPos, transform_.position_);
 
 	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction()) {

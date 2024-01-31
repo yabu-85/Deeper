@@ -137,7 +137,6 @@
   <ItemGroup>
     <ClCompile Include="Interaction.cpp" />
     <ClCompile Include="AnimationController.cpp" />
-    <ClCompile Include="AStarMan.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Engine\PolyLine.cpp" />
     <ClCompile Include="IsEnemyActionReady.cpp" />
@@ -183,7 +182,6 @@
     <ClCompile Include="Feet.cpp" />
     <ClCompile Include="FeetState.cpp" />
     <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="MasterHand.cpp" />
     <ClCompile Include="ChangeStateNode.cpp" />
     <ClCompile Include="NavigationAI.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -218,7 +216,6 @@
   <ItemGroup>
     <ClInclude Include="Interaction.h" />
     <ClInclude Include="AnimationController.h" />
-    <ClInclude Include="AStarMan.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="Engine\PolyLine.h" />
     <ClInclude Include="IsEnemyActionReady.h" />
@@ -264,7 +261,6 @@
     <ClInclude Include="Feet.h" />
     <ClInclude Include="FeetState.h" />
     <ClInclude Include="GameManager.h" />
-    <ClInclude Include="MasterHand.h" />
     <ClInclude Include="ChangeStateNode.h" />
     <ClInclude Include="NavigationAI.h" />
     <ClInclude Include="Player.h" />

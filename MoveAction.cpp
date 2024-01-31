@@ -49,12 +49,12 @@ void AstarMoveAction::Update()
 		return;
 	}
 	
-	XMVECTOR half = XMVectorSet(floarSize / 2.0f, 0.0f, floarSize / 2.0f, 0.0f);
+	XMVECTOR half = XMVectorSet(0.5f, 0.0f, 0.5f, 0.0f);
 	XMFLOAT3 pos = pCharacter_->GetPosition();
 	XMVECTOR vPos = XMLoadFloat3(&pos);
-	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) * floarSize + half;
+	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) + half;
 	XMVECTOR vMove = vTar - vPos;
-	const float safeSize = 6.0f;
+	const float safeSize = 2.5f;
 
 	//他のEnemyとの当たり判定
 	XMVECTOR vSafeMove = XMVectorZero();
@@ -78,7 +78,7 @@ void AstarMoveAction::Update()
 	}
 	
 	float currentSpeed = XMVectorGetX(XMVector3Length(vMove));
-	if (currentSpeed > moveSpeed_ * floarSize) vMove = XMVector3Normalize(vMove) * (moveSpeed_ * floarSize);
+	if (currentSpeed > moveSpeed_) vMove = XMVector3Normalize(vMove) * moveSpeed_;
 
 	//Target位置ついた：カクカクしないように再起処理する
 	float length = XMVectorGetX(XMVector3Length(vTar - vPos));
@@ -98,17 +98,16 @@ void AstarMoveAction::Update()
 
 }
 
-bool AstarMoveAction::IsOutTarget()
+bool AstarMoveAction::IsOutTarget(float range)
 {
 	if (!targetList_.empty()) {
 		lastTarget_ = targetList_.front();
 	}
 
-	const float endTargetRange = 10.0f;
 	XMVECTOR vLatestTarget = XMLoadFloat3(&targetPos_);
 	XMVECTOR vLastTarget = XMLoadFloat3(&lastTarget_);
-	float range = XMVectorGetX(XMVector3Length(vLatestTarget - vLastTarget));
-	if (endTargetRange < range) {
+	float r = XMVectorGetX(XMVector3Length(vLatestTarget - vLastTarget));
+	if (range < r) {
 		return true;
 	}
 

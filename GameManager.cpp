@@ -11,6 +11,7 @@
 #include "LifeManager.h"
 #include "PlayerData.h"
 #include "Interaction.h"
+#include "VFXManager.h"
 
 //デバッグ用
 #include "Engine/Input.h"
@@ -35,6 +36,7 @@ namespace GameManager {
 		LifeManager::Initialize();
 		PlayerData::Initialize();
 		Interaction::Initialize();
+		VFXManager::Initialize();
 
 	}
 
@@ -52,14 +54,8 @@ namespace GameManager {
 
 		//デバッグ用
 		if (GetStage()) {
-			if (Input::IsKeyDown(DIK_M)) { pEnemyManager_->SpawnEnemy(ENEMY_MASTERHAND); }
-			if (Input::IsKeyDown(DIK_J)) { for (int i = 0; i < 25; i++) pEnemyManager_->SpawnEnemy(ENEMY_MASTERHAND); }
-
 			if (Input::IsKeyDown(DIK_N)) { pEnemyManager_->SpawnEnemy(ENEMY_FEET); }
 			if (Input::IsKeyDown(DIK_H)) { for (int i = 0; i < 25; i++) pEnemyManager_->SpawnEnemy(ENEMY_FEET); }
-
-			if (Input::IsKeyDown(DIK_K)) { pEnemyManager_->SpawnEnemy(ENEMY_ASTAR); }
-			if (Input::IsKeyDown(DIK_L)) { for (int i = 0; i < 25; i++) pEnemyManager_->SpawnEnemy(ENEMY_ASTAR); }
 
 			if (Input::IsKeyDown(DIK_B)) pWeaponObjectManager_->AllKillWeaponObject();
 			if (Input::IsKeyDown(DIK_V)) { pEnemyManager_->AllKillEnemy(); }
@@ -75,7 +71,6 @@ namespace GameManager {
 
 	void Draw()
 	{
-
 		PlayerData::Draw();
 		LifeManager::Draw();
 		Interaction::Draw();

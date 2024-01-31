@@ -49,7 +49,7 @@ public:
     void StopMove() { targetList_.clear(); }
 
     //なにこれ今の目標の位置が遠くなりすぎたらtrue
-    bool IsOutTarget();
+    bool IsOutTarget(float range);
     
     //新しく経路を求める
     void UpdatePath(XMFLOAT3 target);

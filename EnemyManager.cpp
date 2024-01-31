@@ -1,8 +1,6 @@
 #include "EnemyManager.h"
 #include "GameManager.h"
-#include "MasterHand.h"
 #include "Feet.h"
-#include "AStarMan.h"
 #include "StateManager.h"
 
 EnemyManager::EnemyManager() : pParent_(nullptr)
@@ -34,18 +32,8 @@ void EnemyManager::KillEnemy(EnemyBase* enemy)
 
 void EnemyManager::SpawnEnemy(ENEMY_TYPE type)
 {
-	if (type == ENEMY_MASTERHAND) {
-		MasterHand* e = InstantiateFront<MasterHand>(pParent_);
-		AddEnemyList(e, type);
-	}
-	else if (type == ENEMY_FEET) {
-		Feet* e = InstantiateFront<Feet>(pParent_);
-		AddEnemyList(e, type);
-	}
-	else if (type == ENEMY_ASTAR) {
-		AStarMan* e = InstantiateFront<AStarMan>(pParent_);
-		AddEnemyList(e, type);
-	}
+	if (type == ENEMY_FEET) AddEnemyList(InstantiateFront<Feet>(pParent_), type);
+
 }
 
 std::vector<EnemyBase*>& EnemyManager::GetAllEnemy()

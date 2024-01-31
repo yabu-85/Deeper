@@ -8,7 +8,6 @@ DropTable::DropTable()
 {
 	//Monew, weapon, health
 	table_[ENEMY_TYPE::ENEMY_FEET] = { 30, 50, 50 };
-	table_[ENEMY_TYPE::ENEMY_MASTERHAND] = { 50, 50, 50 };
 }
 
 void DropTable::DropItem(int type, XMFLOAT3 pos)

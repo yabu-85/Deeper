@@ -7,9 +7,7 @@ class EnemyBase;
 class GameObject;
 
 enum ENEMY_TYPE {
-	ENEMY_MASTERHAND = 0,
 	ENEMY_FEET,
-	ENEMY_ASTAR,
 	ENEMY_MAX,
 };
 

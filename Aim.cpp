@@ -13,12 +13,12 @@
 #include "Engine/Image.h"
 
 namespace {
-    static const int COMPULSION_TIME_DEFAULT = 60;
-
-    static const float HEIGHT_DISTANCE = 3.0f;
     static const float UP_MOUSE_LIMIT = -60.0f;
     static const float DOWN_MOUSE_LIMIT = 60.0f;
-    static const float MOUSE_SPEED = 0.05f;
+    
+    static const int COMPULSION_TIME_DEFAULT = 60;                  //強制から戻る時間
+    static const float HEIGHT_DISTANCE = 1.5f;                      //Aimの高さ
+    static const float MOUSE_SPEED = 0.05f;                         //感度
     static const float HEIGHT_RAY = 0.1f;                           //RayCastの値にプラスする高さ
     static const float MAX_CAMERA_OFFSET = 2.0f;                    //cameraOffsetの最大距離
     static const float SUPRESS = 0.002f;                            //Offsetの値を抑えるやつ
@@ -37,7 +37,7 @@ Aim::Aim(GameObject* parent)
     isMove_(true), isCompulsion_(false), isTarget_(false), compulsionTime_(0)
 {
     mouseSensitivity = 2.0f;
-    defPerspectDistance_ = 10.0f;
+    defPerspectDistance_ = 5.0f;
     perspectiveDistance_ = defPerspectDistance_;
 }
 
@@ -63,7 +63,7 @@ void Aim::Initialize()
 void Aim::Update()
 {
     //デバッグ用
-    if (Input::IsKeyDown(DIK_T)) isMove_ = !isMove_;
+    if (Input::IsKeyDown(DIK_R)) isMove_ = !isMove_;
     if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
     if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
 

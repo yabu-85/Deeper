@@ -6,8 +6,6 @@
 #include "GameManager.h"
 #include "EnemyUi.h"
 #include "Engine/Model.h"
-#include "Engine/Global.h"
-#include <vector>
 #include "VFXManager.h"
 
 #include "IsEnemyActionReady.h"
@@ -21,10 +19,14 @@
 #include "StateCountNode.h"
 
 namespace {
-	const short foundSearch = 10;
+	static const int FOUND_SEARCH = 10;		//視覚探知の更新時間
+	static const int APPER_TIME = 180;
+	static const float FAST_SPEED = 0.08f;
+	static const float SLOW_SPEED = 0.06f;
+
 }
 
-FeetAppear::FeetAppear(StateManager* owner) : StateBase(owner), time_(0), appearTime_(0)
+FeetAppear::FeetAppear(StateManager* owner) : StateBase(owner), time_(0)
 {
 	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
@@ -32,19 +34,17 @@ FeetAppear::FeetAppear(StateManager* owner) : StateBase(owner), time_(0), appear
 void FeetAppear::Update()
 {
 	time_++;
-	if (time_ > appearTime_) owner_->ChangeState("Idle");
+	if (time_ > APPER_TIME) owner_->ChangeState("Idle");
 
-	float tsize = (float)time_ / (float)appearTime_;
+	float tsize = (float)time_ / (float)APPER_TIME;
 	pFeet_->SetScale(XMFLOAT3(tsize, tsize, tsize));
 
 }
 
 void FeetAppear::OnEnter()
 {
-	appearTime_ = 180;
-
 	XMFLOAT3 pos = pFeet_->GetPosition();
-	VFXManager::CreatVfxEnemySpawn(pos);
+	VFXManager::CreatVfxEnemySpawn(pos, APPER_TIME);
 
 }
 
@@ -87,7 +87,7 @@ void FeetPatrol::Update()
 
 	//FoundSearchの実行待ち時間がfoundSearch
 	foundSearchTime_++;
-	if (foundSearchTime_ > foundSearch) {
+	if (foundSearchTime_ > FOUND_SEARCH) {
 		foundSearchTime_ = 0;
 		pFeet_->GetVisionSearchAction()->Update();
 
@@ -100,13 +100,13 @@ void FeetPatrol::Update()
 
 void FeetPatrol::OnEnter()
 {
-	pFeet_->GetMoveAction()->SetMoveSpeed(0.02f);
+	pFeet_->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
 	pFeet_->GetRotateAction()->SetTarget(nullptr);
 }
 
 void FeetPatrol::OnExit()
 {
-	pFeet_->GetMoveAction()->SetMoveSpeed(0.03f);
+	pFeet_->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
 	pFeet_->GetMoveAction()->StopMove();
 }
 
@@ -137,7 +137,7 @@ FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 
 	//--------------------Attackへ移行する-----------------------
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(pFeet_, "Attack");
-	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 5.0f, pFeet_, GameManager::GetPlayer());
+	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 2.0f, pFeet_, GameManager::GetPlayer());
 	IsEnemyCombatState* condition5 = new IsEnemyCombatState(condition4, "Move", pFeet_);
 	selector2->AddChildren(condition5);
 
@@ -184,7 +184,7 @@ FeetWait::FeetWait(StateManager* owner) : StateBase(owner)
 void FeetWait::Update()
 {
 	if (rand() % 100 == 0) {
-		if (pFeet_->GetMoveAction()->IsInRange() || pFeet_->GetMoveAction()->IsOutTarget()) {
+		if (pFeet_->GetMoveAction()->IsInRange() || pFeet_->GetMoveAction()->IsOutTarget(3.0f)) {
 			CreateStage* pCreateStage = GameManager::GetCreateStage();
 			pFeet_->GetMoveAction()->UpdatePath(pCreateStage->GetFloarPosition(pFeet_->GetPosition(), 10.0f));
 		}
@@ -199,7 +199,7 @@ void FeetWait::OnEnter()
 {
 	OutputDebugString("WaitState\n");
 
-	pFeet_->GetMoveAction()->SetMoveSpeed(0.02f);
+	pFeet_->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
 }
 
 //--------------------------------------------------------------------------------
@@ -217,7 +217,7 @@ void FeetMove::Update()
 		pFeet_->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
 	}
 
-	if (pFeet_->GetMoveAction()->IsOutTarget()) {
+	if (pFeet_->GetMoveAction()->IsOutTarget(3.0f)) {
 		pFeet_->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
 	}
 
@@ -229,7 +229,7 @@ void FeetMove::OnEnter()
 {
 	OutputDebugString("MoveState\n");
 
-	pFeet_->GetMoveAction()->SetMoveSpeed(0.03f);
+	pFeet_->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
 
 }
 

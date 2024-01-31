@@ -93,7 +93,7 @@ void CellBox::Initialize()
 void CellBox::Update()
 {
 	//デバッグ用
-	if (Input::IsKeyDown(DIK_R)) boxDraw = !boxDraw;
+	if (Input::IsKeyDown(DIK_Y)) boxDraw = !boxDraw;
 
 }
 

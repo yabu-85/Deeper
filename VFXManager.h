@@ -4,9 +4,10 @@ using namespace DirectX;
 
 namespace VFXManager
 {
-	void CreatVfxExplode1(XMFLOAT3 &pos);
+	void Initialize();
 
-	void CreatVfxEnemySpawn(XMFLOAT3& pos);
+	void CreatVfxExplode1(XMFLOAT3 &pos);
+	void CreatVfxEnemySpawn(XMFLOAT3& pos, int lifeTime);
 
 };
 

@@ -41,7 +41,7 @@ void CreateStage::Initialize()
 void CreateStage::Update()
 {
     //デバッグ用
-    if (Input::IsKeyDown(DIK_E)) 
+    if (Input::IsKeyDown(DIK_U)) 
         drawCell = !drawCell;
 
 }
@@ -76,7 +76,7 @@ void CreateStage::Release()
 
 XMFLOAT3 CreateStage::GetPlayerStartPos()
 {
-    return XMFLOAT3(startPos_.x * floarSize + (floarSize / 2), 0.0f, startPos_.z * floarSize + (floarSize / 2));
+    return XMFLOAT3(startPos_.x + 0.5f, 0.0f, startPos_.z + 0.5f);
 }
 
 XMFLOAT3 CreateStage::GetRandomFloarPosition()
@@ -98,7 +98,7 @@ XMFLOAT3 CreateStage::GetRandomFloarPosition()
     }
 
     int index = rand() % posList.size();
-    return XMFLOAT3(posList.at(index).x * floarSize + (floarSize / 2), 0.0f, posList.at(index).z * floarSize + (floarSize / 2));
+    return XMFLOAT3(posList.at(index).x + 0.5f, 0.0f, posList.at(index).z + 0.5f);
 }
 
 XMFLOAT3 CreateStage::GetFloarPosition(XMFLOAT3 position, float range)
@@ -115,8 +115,8 @@ XMFLOAT3 CreateStage::GetFloarPosition(XMFLOAT3 position, float range)
     XMStoreFloat3(&f, endPosition);
 
     int pos[2] = { 0,0 };
-    pos[0] = static_cast<int>(f.x / floarSize);
-    pos[1] = static_cast<int>(f.z / floarSize);
+    pos[0] = static_cast<int>(f.x / 0.5f);
+    pos[1] = static_cast<int>(f.z / 0.5f);
     int size = 0;
     int max = 5;
     int maxCount = 0;
@@ -145,7 +145,7 @@ XMFLOAT3 CreateStage::GetFloarPosition(XMFLOAT3 position, float range)
         if (!cellList.empty()) {
             int randamIndex = rand() % cellList.size();
             XMFLOAT3 out = XMFLOAT3((float)cellList.at(randamIndex).x, 0.0f, (float)cellList.at(randamIndex).z);
-            out = XMFLOAT3(out.x * floarSize + floarSize / 2.0f, out.y, out.z * floarSize + floarSize / 2.0f);
+            out = XMFLOAT3(out.x + 0.5f, out.y, out.z + 0.5f);
             return out;
         }
 
@@ -183,40 +183,32 @@ void CreateStage::CreateStageData(std::string name)
             //Floar
             if (data == 1)
             {
-                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], 
-                    XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3((float)x, 0.0f, (float)z) });
             }
 
             //Wall
             if (data == 2)
             {
                 mapData_[z][x] = WALL;
-                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR],
-                    XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f / smallSize, 1.0f / smallSize) });
-                
-                intersectDatas_.push_back({ hModel_[WALL], hModel_[R_WALL], 
-                    XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f * 0.1f / smallSize, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3((float)x, 0.0f, (float)z) });
+                intersectDatas_.push_back({ hModel_[WALL], hModel_[R_WALL], XMFLOAT3((float)x, 0.0f, (float)z) });
             }
 
             //PlayerStartPoint
             if (data == 10)
             {
-                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], 
-                    XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
-                
+                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3((float)x, 0.0f, (float)z) });
                 startPos_ = XMFLOAT3((float)x, 0.0f, (float)z);
             }
 
             //WarpPoint
             if (data == 11)
             {
-                //修正箇所 : モデルを変更してWarpモデル事態にRayもでるを割り当てたい
-                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR],
-                    XMFLOAT3(x * floarSize, 0.0f, z * floarSize), XMFLOAT3(1.0f / smallSize, 1.0f / smallSize, 1.0f / smallSize) });
+                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3((float)x, 0.0f, (float)z) });
                 
                 StageBase* stage = static_cast<StageBase*>(GameManager::GetStage());
                 Warp* warp = Instantiate<Warp>(stage);
-                warp->SetPosition(XMFLOAT3(x * floarSize + floarSize / 2.0f, 3.0f, z * floarSize + floarSize / 2.0f));
+                warp->SetPosition(XMFLOAT3((float)x, 0.0f, (float)z));
                 stage->AddWarpList(warp);
 
             }

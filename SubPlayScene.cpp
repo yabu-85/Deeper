@@ -39,8 +39,6 @@ void SubPlayScene::Initialize()
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
 	}
 
-	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_ASTAR);
-	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_ASTAR);
 	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_FEET);
 	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_FEET);
 

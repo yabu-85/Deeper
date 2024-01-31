@@ -19,7 +19,7 @@ TestBullet::~TestBullet()
 void TestBullet::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("Model/Feet.fbx");
+	hModel_ = Model::Load("DebugCollision/SphereCollider.fbx");
 	assert(hModel_ >= 0);
 
 	transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);

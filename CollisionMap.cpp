@@ -271,8 +271,8 @@ void CollisionMap::RaySelectCellVsSegment(RayCastData& _data, XMFLOAT3 target)
 void CollisionMap::CalcMapWall(XMFLOAT3& _pos, float speed)
 {
     const float radDef = 0.15f;
-    const float rad = 0.15f * (1 + speed);
-    const float dia = (0.15f * 2.0f) * (1 + speed);
+    const float rad = radDef * (1 + speed);
+    const float dia = (radDef * 2.0f) * (1 + speed);
 
     int checkX1, checkX2;
     int checkZ1, checkZ2;
@@ -314,8 +314,8 @@ void CollisionMap::CalcMapWall(XMFLOAT3& _pos, float speed)
 bool CollisionMap::IsWall(int _x, int _z)
 {
     int pos[2];
-    pos[0] = static_cast<int>((float)_x / floarSize);
-    pos[1] = static_cast<int>((float)_z / floarSize);
+    pos[0] = static_cast<int>((float)_x);
+    pos[1] = static_cast<int>((float)_z);
     std::vector<std::vector<int>> data = pCreateStage->GetMapData();
     
     int z = (int)(data.size());

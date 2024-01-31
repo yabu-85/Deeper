@@ -10,16 +10,10 @@ struct IntersectData {
 
     IntersectData() : hModelNum(-1), hRayModelNum(-1), position{ 0.0f, 0.0f, 0.0f }, scale{ 1.0f, 1.0f, 1.0f } { }
     IntersectData(int num, XMFLOAT3 pos) : hModelNum(num), hRayModelNum(-1), position(pos), scale{1.0f, 1.0f, 1.0f} { }
-    IntersectData(int num, XMFLOAT3 pos, XMFLOAT3 sca) : hModelNum(num), hRayModelNum(-1), position(pos), scale(sca) { }
-    IntersectData(int num, int ray, XMFLOAT3 pos, XMFLOAT3 sca) : hModelNum(num), hRayModelNum(ray), position(pos), scale(sca) { }
+    IntersectData(int num, int ray, XMFLOAT3 pos) : hModelNum(num), hRayModelNum(ray), position(pos), scale{1.0f, 1.0f, 1.0f} { }
 };
 
-//デバッグ用
-const float floarSize = 5.0f;
-const float smallSize = 1.0f;
-
-class CreateStage
-{
+class CreateStage {
 public:
     enum StageNum {
         FLOAR = 0,

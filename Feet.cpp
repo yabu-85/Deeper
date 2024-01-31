@@ -36,25 +36,25 @@ void Feet::Initialize()
 
 	maxHp_ = 100;
 	hp_ = maxHp_;
-	aimTargetPos_ = 2.0f;
+	aimTargetPos_ = 1.0f;
 	bodyWeight_ = 10.0f;
 
 	//Colliderの設定
-	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 1, 0), 1.5f);
-	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 3, 0), 1.5f);
-	pHandCollider_ = new SphereCollider(XMFLOAT3(0, 0, 0), 1.0f);
+	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5, 0), 0.75f);
+	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 1.5, 0), 0.75f);
+	pHandCollider_ = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
 	pHandCollider_->SetValid(false);
 	AddCollider(collision1);
 	AddCollider(collision2);
 	AddAttackCollider(pHandCollider_);
 
 	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize(5.0f);
+	pEnemyUi_->Initialize(2.5f);
 
 	//Actionの設定
-	pMoveAction_ = new AstarMoveAction(this, 0.05f, 2.0f);
+	pMoveAction_ = new AstarMoveAction(this, 0.0f, 0.3f);
 	pRotateAction_ = new RotateAction(this, 0.07f);
-	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f / floarSize, 90.0f);
+	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f, 90.0f);
 	pRotateAction_->Initialize();
 
 	//ステートの設定
@@ -80,7 +80,7 @@ void Feet::Initialize()
 void Feet::Update()
 {
 	CollisionMap* pMap = static_cast<CollisionMap*>(FindObject("CollisionMap"));
-	pMap->CalcMapWall(transform_.position_, 1.0f);
+	pMap->CalcMapWall(transform_.position_, 0.3f);
 
 	pStateManager_->Update();
 
@@ -90,7 +90,7 @@ void Feet::Draw()
 {
 	pEnemyUi_->Draw();
 
-	XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, "hand.R");
+	XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, "attack_Hand.R");
 	center = XMFLOAT3(center.x - transform_.position_.x, center.y - transform_.position_.y, center.z - transform_.position_.z);
 	pHandCollider_->SetCenter(center);
 
@@ -105,7 +105,7 @@ void Feet::Draw()
 		std::vector<XMFLOAT3> targetList = pMoveAction_->GetTarget();
 		if (targetList.empty()) return;
 		for (auto pos : targetList) {
-			target.position_ = XMFLOAT3(pos.x * floarSize + floarSize / 2.0f, pos.y, pos.z * floarSize + floarSize / 2.0f);
+			target.position_ = XMFLOAT3(pos.x + 0.5f, pos.y, pos.z + 0.5f);
 			target.position_.y += 1.0f;
 			Model::SetTransform(hModel_, target);
 			Model::Draw(hModel_);
@@ -120,6 +120,7 @@ void Feet::Release()
 	SAFE_DELETE(pMoveAction_);
 
 	EnemyBase::Release();
+	Model::Release(hModel_);
 
 }
 

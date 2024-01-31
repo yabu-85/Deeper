@@ -9,8 +9,6 @@ namespace {
 	const int DIRY[] = { -1,  0, +1,  0 };
 }
 
-void PathSmoothing(std::vector<XMFLOAT3>& path);
-
 NavigationAI::NavigationAI()
 	: pCreateStage_(nullptr)
 {
@@ -25,24 +23,12 @@ void NavigationAI::SetMapData()
 	stageHeight = (int)mapData_.size();
 }
 
-int NavigationAI::GetMinCostNodeIndex(std::vector<Node>& openList)
-{
-	// 最小のノードを探す
-	int minIndex = 0;
-	for (int i = 1; i < openList.size(); ++i) {
-		if (openList[i].cost < openList[minIndex].cost) {
-			minIndex = i;
-		}
-	}
-	return minIndex;
-}
-
 std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 {
-	int startX = static_cast<int>(pos.x / floarSize);
-	int startZ = static_cast<int>(pos.z / floarSize);
-	int targetX = static_cast<int>(target.x / floarSize);
-	int targetZ = static_cast<int>(target.z / floarSize);
+	int startX = static_cast<int>(pos.x);
+	int startZ = static_cast<int>(pos.z);
+	int targetX = static_cast<int>(target.x);
+	int targetZ = static_cast<int>(target.z);
 
 	//targetが範囲外・壁の場合
 	if (targetX < 0 || targetX >= stageWidth || targetZ < 0 || targetZ >= stageHeight ||
@@ -140,10 +126,10 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 
 std::vector<XMFLOAT3> NavigationAI::NaviDiagonal(XMFLOAT3 target, XMFLOAT3 pos)
 {
-	int startX = static_cast<int>(pos.x / floarSize);
-	int startZ = static_cast<int>(pos.z / floarSize);
-	int targetX = static_cast<int>(target.x / floarSize);
-	int targetZ = static_cast<int>(target.z / floarSize);
+	int startX = static_cast<int>(pos.x);
+	int startZ = static_cast<int>(pos.z);
+	int targetX = static_cast<int>(target.x);
+	int targetZ = static_cast<int>(target.z);
 
 	//壁に埋まってしまったねぇ
 	//startが範囲外・壁の場合
@@ -259,11 +245,25 @@ std::vector<XMFLOAT3> NavigationAI::NaviDiagonal(XMFLOAT3 target, XMFLOAT3 pos)
 	return none;
 }
 
-void PathSmoothing(std::vector<XMFLOAT3>& path) {
+//--------------------------------------------------------------------------------------------
+
+int NavigationAI::GetMinCostNodeIndex(std::vector<Node>& openList)
+{
+	// 最小のノードを探す
+	int minIndex = 0;
+	for (int i = 1; i < openList.size(); ++i) {
+		if (openList[i].cost < openList[minIndex].cost) {
+			minIndex = i;
+		}
+	}
+	return minIndex;
+}
+
+void NavigationAI::PathSmoothing(std::vector<XMFLOAT3>& path) {
 	const std::vector<XMFLOAT3> prePath = path;
-	const float alpha = 0.4f;			// 大きいほど、元のPathに似ているPathができる。　　　　 大きいほど処理が速い
-	const float beta = 0.2f;			// 大きいほど、隣接する点間での滑らかさが向上する。　   大きいほど処理が遅い
-	const float tolerance = 0.2f;		// 変化量がこの値以下の時平滑化を終了。　　　　　　　　 大きいほど処理が速い
+	const float alpha = 0.7f;			// 大きいほど、元のPathに似ているPathができる。　　　　 大きいほど処理が速い
+	const float beta = 0.3f;			// 大きいほど、隣接する点間での滑らかさが向上する。　   大きいほど処理が遅い
+	const float tolerance = 0.3f;		// 変化量がこの値以下の時平滑化を終了。　　　　　　　　 大きいほど処理が速い
 	float change = tolerance;			// パスの位置の変化量
 
 	while (change >= tolerance) {

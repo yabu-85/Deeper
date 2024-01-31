@@ -58,10 +58,11 @@ void Player::Initialize()
     transform_.rotate_.y += 180.0f;
 
     SetPosition(GameManager::GetCreateStage()->GetPlayerStartPos());
-    moveSpeed_ = 0.15f;
+    moveSpeed_ = 0.08f;
     rotateRatio_ = 0.2f;
     bodyWeight_ = 5.1f;
     enterTime = 60;
+    transform_.scale_ = { 0.5f, 0.5f, 0.5f };
 
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
@@ -81,7 +82,7 @@ void Player::Initialize()
 
     //BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), XMFLOAT3(0.5f, 2.6f, 0.5f));
     //AddCollider(collider);
-    collid = new SphereCollider(XMFLOAT3(0.0f, 2.3f, 0.0f), 0.5f);
+    collid = new SphereCollider(XMFLOAT3(0.0f, 1.2f, 0.0f), 0.25f);
     AddCollider(collid);
 
     enterPos = transform_.position_;
@@ -122,7 +123,7 @@ void Player::Update()
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
     if (Input::IsKeyDown(DIK_RIGHTARROW)) transform_.position_.y += 10.0f;
 
-    if (Input::IsKeyDown(DIK_Y)) isCollider = !isCollider;
+    if (Input::IsKeyDown(DIK_T)) isCollider = !isCollider;
     if (isCollider) {
         CollisionMap* map = static_cast<CollisionMap*>(FindObject("CollisionMap"));
         map->CalcMapWall(transform_.position_, moveSpeed_);

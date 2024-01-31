@@ -11,6 +11,7 @@
 //デバッグ用
 #include "WeaponObjectManager.h"
 #include "PlayerWeapon.h"
+#include "Engine/Model.h"
 
 namespace {
 	static const SCENE_ID WARP_STAGE[2] = { SCENE_ID_PLAY1 };
@@ -26,8 +27,10 @@ PlayScene::PlayScene(GameObject* parent)
 
 void PlayScene::Initialize()
 {
-	AudioManager::Initialize();
+	Model::Load("DebugCollision/SphereCollider.fbx"); 
+	Model::Load("Model/stoneGolem.fbx");
 
+	AudioManager::Initialize();
 	GameManager::SetStage(this);
 	GameManager::GetCreateStage()->CreateStageData("Csv/Map1.csv");
 	GameManager::SetPlayer(Instantiate<Player>(this));

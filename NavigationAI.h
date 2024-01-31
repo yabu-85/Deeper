@@ -18,6 +18,8 @@ class NavigationAI
     // openListからコストが最小のノードを取得
     int GetMinCostNodeIndex(std::vector<Node>& openList);
 
+	void PathSmoothing(std::vector<XMFLOAT3>& path);
+
 public:
 	NavigationAI();
 

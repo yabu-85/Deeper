@@ -116,7 +116,7 @@ bool AstarMoveAction::IsOutTarget(float range)
 
 void AstarMoveAction::UpdatePath(XMFLOAT3 target)
 {
-	targetList_ = GameManager::GetNavigationAI()->NaviDiagonal(target, pCharacter_->GetPosition());
+	targetList_ = GameManager::GetNavigationAI()->Navi(target, pCharacter_->GetPosition());
 	if(!targetList_.empty()) targetPos_ = targetList_.front();
 
 }

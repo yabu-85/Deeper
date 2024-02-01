@@ -13,10 +13,8 @@ class NavigationAI
 	struct Node {
 		int x, z;
 		int cost;
+		Node(int x, int z, int cost) : x(x), z(z), cost(cost) {}
 	};
-
-    // openListからコストが最小のノードを取得
-    int GetMinCostNodeIndex(std::vector<Node>& openList);
 
 	void PathSmoothing(std::vector<XMFLOAT3>& path);
 
@@ -25,11 +23,8 @@ public:
 
 	void SetMapData();
 
-	//AStarの縦横移動のみ
+	//AStar
 	std::vector<XMFLOAT3> Navi(XMFLOAT3 target, XMFLOAT3 pos);
 	
-	//AStarの斜め移動あり
-	std::vector<XMFLOAT3> NaviDiagonal(XMFLOAT3 target, XMFLOAT3 pos);
-
 };
 

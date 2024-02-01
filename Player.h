@@ -12,15 +12,19 @@ class Player : public Character
         APPER = 0,
         HEAR,
         DEAD,
+        UPDATE,
     }state_;
     void ApperUpdate();
     void HearUpdate();
     void DeadUpdate();
 
     int hModel_[2];
+    int time_;
     float moveSpeed_;           //移動スピード
+    float gradually_;           //移動スピードの加減の値
     float rotateRatio_;         //回転の比率
     XMFLOAT3 playerMovement_;   //Normalizeの移動量を保存する用
+    XMFLOAT3 apperPos_;
 
     Aim* pAim_;
     StateManager* pStateManager_;

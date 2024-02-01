@@ -191,7 +191,7 @@ void CreateStage::CreateStageData(std::string name)
             {
                 mapData_[z][x] = WALL;
                 intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3((float)x, 0.0f, (float)z) });
-                intersectDatas_.push_back({ hModel_[WALL], hModel_[R_WALL], XMFLOAT3((float)x, 0.0f, (float)z) });
+                intersectDatas_.push_back({ hModel_[WALL], hModel_[R_WALL], XMFLOAT3((float)x, 0.0f, (float)z), XMFLOAT3(1.0f, 0.1f, 1.0f) });
             }
 
             //PlayerStartPoint

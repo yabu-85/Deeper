@@ -8,9 +8,10 @@ struct IntersectData {
     XMFLOAT3 position;
     XMFLOAT3 scale;
 
-    IntersectData() : hModelNum(-1), hRayModelNum(-1), position{ 0.0f, 0.0f, 0.0f }, scale{ 1.0f, 1.0f, 1.0f } { }
-    IntersectData(int num, XMFLOAT3 pos) : hModelNum(num), hRayModelNum(-1), position(pos), scale{1.0f, 1.0f, 1.0f} { }
-    IntersectData(int num, int ray, XMFLOAT3 pos) : hModelNum(num), hRayModelNum(ray), position(pos), scale{1.0f, 1.0f, 1.0f} { }
+    IntersectData() : hModelNum(-1), hRayModelNum(-1), position{ 0.0f, 0.0f, 0.0f }, scale{ 1.0f, 1.0f, 1.0f } {}
+    IntersectData(int num, XMFLOAT3 pos) : hModelNum(num), hRayModelNum(-1), position(pos), scale{1.0f, 1.0f, 1.0f} {}
+    IntersectData(int num, int ray, XMFLOAT3 pos) : hModelNum(num), hRayModelNum(ray), position(pos), scale{1.0f, 1.0f, 1.0f} {}
+    IntersectData(int num, int ray, XMFLOAT3 pos, XMFLOAT3 sca) : hModelNum(num), hRayModelNum(ray), position(pos), scale(sca) {}
 };
 
 class CreateStage {

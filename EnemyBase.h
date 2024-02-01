@@ -3,7 +3,6 @@
 #include "EnemyManager.h"
 
 class EnemyUi;
-class DropTable;
 class StateManager;
 
 class EnemyBase : public Character

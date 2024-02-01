@@ -5,7 +5,6 @@
 #include "CreateStage.h"
 #include "CollisionMap.h"
 #include "WeaponObjectManager.h"
-#include "DropTable.h"
 #include "Engine/GameObject.h"
 #include "Engine/Global.h"
 #include "LifeManager.h"
@@ -20,7 +19,6 @@ namespace GameManager {
 	EnemyManager* pEnemyManager_ = nullptr;
 	NavigationAI* pNavigationAI_ = nullptr;
 	WeaponObjectManager* pWeaponObjectManager_ = nullptr;
-	DropTable* pDropTable_ = nullptr;
 	CollisionMap* pCollisionMap_ = nullptr;
 	Player* pPlayer_ = nullptr;
 	GameObject* pNowStage_ = nullptr;
@@ -30,7 +28,6 @@ namespace GameManager {
 	{
 		pEnemyManager_ = new EnemyManager();
 		pWeaponObjectManager_ = new WeaponObjectManager();
-		pDropTable_ = new DropTable();
 		pNavigationAI_ = new NavigationAI();
 		pCreateStage_ = new CreateStage();
 		LifeManager::Initialize();
@@ -64,7 +61,6 @@ namespace GameManager {
 
 	void GameManager::Release() {
 		SAFE_DELETE(pEnemyManager_);
-		SAFE_DELETE(pDropTable_);
 		SAFE_DELETE(pNavigationAI_);
 		SAFE_DELETE(pWeaponObjectManager_);
 	}
@@ -91,14 +87,12 @@ namespace GameManager {
 	EnemyManager* GetEnemyManager() { return pEnemyManager_; }
 	NavigationAI* GetNavigationAI() { return pNavigationAI_; }
 	WeaponObjectManager* GetWeaponObjectManager() { return pWeaponObjectManager_; }
-	DropTable* GetDropTable() { return pDropTable_; }
 	CreateStage* GetCreateStage() { return pCreateStage_; }
 
 	CollisionMap* GetCollisionMap() { return pCollisionMap_; }
 	void SetCollisionMap(CollisionMap* map) { pCollisionMap_ = map; }
 	Player* GetPlayer() { return pPlayer_; }
 	void SetPlayer(Player* player) { pPlayer_ = player; }
-
 	GameObject* GetStage() { return pNowStage_; }
 	void SetStage(GameObject* stage) { pNowStage_ = stage; pEnemyManager_->SetParent(stage); }
 

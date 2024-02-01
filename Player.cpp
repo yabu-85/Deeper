@@ -34,6 +34,28 @@ namespace {
     XMFLOAT3 enterPos = XMFLOAT3();
 }
 
+void Player::ApperUpdate()
+{
+    enterTime--;
+    transform_.position_.y -= 0.5f;
+
+    XMFLOAT3 cPos = XMFLOAT3(enterPos.x, enterPos.y + 5.0f, enterPos.z + 13.0f);
+    pAim_->SetCompulsion(cPos, enterPos);
+
+    if (enterTime == 0) {
+        XMFLOAT3 pos = { transform_.position_.x, transform_.position_.y + 0.7f, transform_.position_.z };
+        VFXManager::CreatVfxExplode1(pos);
+    }
+}
+
+void Player::HearUpdate()
+{
+}
+
+void Player::DeadUpdate()
+{
+}
+
 Player::Player(GameObject* parent)
     : Character(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
     moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0)
@@ -63,6 +85,7 @@ void Player::Initialize()
     bodyWeight_ = 5.1f;
     enterTime = 60;
     transform_.scale_ = { 0.5f, 0.5f, 0.5f };
+    state_ = MAIN_STATE::APPER;
 
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
@@ -76,7 +99,6 @@ void Player::Initialize()
     pStateManager_->AddState(new PlayerAvo(pStateManager_));
     pStateManager_->AddState(new PlayerAtk(pStateManager_));
     pStateManager_->AddState(new PlayerSubAtk(pStateManager_));
-    pStateManager_->AddState(new PlayerDead(pStateManager_));
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 
@@ -95,24 +117,14 @@ void Player::Initialize()
 
 void Player::Update()
 {
-    //CaseŽi—Y
-    if (enterTime > 0) {
-        enterTime--;
-        transform_.position_.y -= 0.5f;
-        
-        XMFLOAT3 cPos = XMFLOAT3(enterPos.x, enterPos.y + 5.0f, enterPos.z + 13.0f);
-        pAim_->SetCompulsion(cPos, enterPos);
+    if (state_ == MAIN_STATE::APPER) ApperUpdate();
+    else if (state_ == MAIN_STATE::HEAR) HearUpdate();
+    else if (state_ == MAIN_STATE::DEAD) DeadUpdate();
+    else {
+        pCommand_->Update();
+        pStateManager_->Update();
 
-        if (enterTime == 0) {
-            XMFLOAT3 pos = { transform_.position_.x, transform_.position_.y + 0.7f, transform_.position_.z };
-            VFXManager::CreatVfxExplode1(pos);
-        }
-
-        return;
     }
-
-    pCommand_->Update();
-    pStateManager_->Update();
 
     //ƒGƒCƒ€ƒ^[ƒQƒbƒg
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();

@@ -304,21 +304,3 @@ void PlayerSubAtk::OnExit()
 	pPlayer_->GetPlayerWeapon()->GetSubWeapon()->ResetState();
 
 }
-
-//--------------------------------------------------------------------------------
-
-PlayerDead::PlayerDead(StateManager* owner) : StateBase(owner)
-{
-	pPlayer_ = static_cast<Player*>(owner_->GetGameObject());
-}
-
-void PlayerDead::Update()
-{
-	pPlayer_->CalcNoMove();
-}
-
-void PlayerDead::OnEnter()
-{
-	pPlayer_->GetAim()->SetAimMove(false);
-
-}

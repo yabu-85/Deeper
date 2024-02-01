@@ -8,6 +8,15 @@ class PlayerWeapon;
 
 class Player : public Character
 {
+    enum MAIN_STATE {
+        APPER = 0,
+        HEAR,
+        DEAD,
+    }state_;
+    void ApperUpdate();
+    void HearUpdate();
+    void DeadUpdate();
+
     int hModel_[2];
     float moveSpeed_;           //移動スピード
     float rotateRatio_;         //回転の比率

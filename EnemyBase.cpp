@@ -37,7 +37,7 @@ void EnemyBase::ApplyDamage(int da)
 	if(pEnemyUi_) pEnemyUi_->SetParcent((float)(hp_) / (float)(maxHp_));
 	
 	if (hp_ <= 0) {
-		GameManager::GetDropTable()->DropItem(0, transform_.position_);
+		DropTable::DropItem(0, transform_.position_);
 		GameManager::GetEnemyManager()->KillEnemy(this);
 	}
 }

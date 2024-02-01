@@ -3,7 +3,6 @@
 class EnemyManager;
 class NavigationAI;
 class WeaponObjectManager;
-class DropTable;
 class CollisionMap;
 class GameObject;
 class Player;
@@ -20,7 +19,6 @@ namespace GameManager
 	EnemyManager* GetEnemyManager();
 	NavigationAI* GetNavigationAI();
 	WeaponObjectManager* GetWeaponObjectManager();
-	DropTable* GetDropTable();
 	CreateStage* GetCreateStage();
 
 	void SetCollisionMap(CollisionMap* map);

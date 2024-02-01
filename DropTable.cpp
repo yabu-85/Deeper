@@ -4,19 +4,24 @@
 #include "WeaponObjectManager.h"
 #include "PlayerData.h"
 
-DropTable::DropTable()
-{
-	//Monew, weapon, health
-	table_[ENEMY_TYPE::ENEMY_FEET] = { 30, 50, 50 };
-}
+namespace DropTable {
+	struct Table {
+		unsigned money_;
+		unsigned weaponParcent_;	//0Å`100
+		unsigned healingItemParcent_;	//0Å`100
+		Table(unsigned m, unsigned w, unsigned h) : money_(m), weaponParcent_(w), healingItemParcent_(h) {}
+	} table_[ENEMY_MAX]{
+		{ 30, 50, 50 }	//FEET
+	};
 
-void DropTable::DropItem(int type, XMFLOAT3 pos)
-{
-	PlayerData::AddMoney(table_[type].money_);
+	void DropItem(int type, XMFLOAT3 pos)
+	{
+		PlayerData::AddMoney(table_[type].money_);
+		if (rand() % 100 < (int)table_[type].weaponParcent_) {
+			WeaponObjectManager* ma = GameManager::GetWeaponObjectManager();
+			ma->AddWeaponObject((WeaponObjectManager::WEAPON_TYPE)type, pos);
+		}
 
-	if (rand() % 100 < (int)table_[type].weaponParcent_) {
-		WeaponObjectManager* ma = GameManager::GetWeaponObjectManager();
-		ma->AddWeaponObject((WeaponObjectManager::WEAPON_TYPE)type, pos);
 	}
 
 }

@@ -81,7 +81,11 @@ void EnemyUi::Draw()
 	}
 
 	//HPÅ‘å‚Ìê‡EŒã‚ë‚É•\Ž¦‚³‚ê‚Ä‚¢‚éê‡ˆ—I‚í‚è
-	if (parcent >= 1.0f || XMVectorGetZ(v2) > 1.0f) return;
+	if (parcent >= 1.0f)
+		return;
+
+	if (XMVectorGetZ(v2) > 1.0f)
+		return;
 
 	//‰æŠp§ŒÀ‚·‚é
 	if (x >= drawSize || y >= drawSize || x <= -drawSize || y <= -drawSize) {

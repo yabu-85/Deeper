@@ -1,40 +1,34 @@
 #include "LifeManager.h"
 #include "GameManager.h"
 #include "Engine/Transform.h"
-#include "Engine/Global.h"
-#include "Engine/Sprite.h"
+#include "Engine/Image.h"
 #include "Engine/Text.h"
 
 namespace
 {
 	static const int DEFAULT_LIFE = 100; //普通のPlayerのライフの数
-	static const int INVINCIBLE = 60; //普通のPlayerのライフの数
+	static const int INVINCIBLE = 60; //無敵時間
 
 }
 
 namespace LifeManager
 {
+	int hPict_[2];				//ダメージの画像
 	int playerLife_;
-	int invincibleTime_;
-	float damageImageAlpha_;
-	bool  isDrawDamageImage_;
 
-	Sprite* damageImage_;
-	Text* pLifeText_;
-	XMFLOAT2 textPositiom_;
+	int invincibleTime_;		//ダメージ表示時間の計算用
+	int damageImageAlpha_;		//ダメージ画像の透明度
 
 	void LifeManager::Initialize()
 	{
-		damageImage_ = new Sprite;
-		damageImage_->Load("Image/damage.png");
-
-		pLifeText_ = new Text;
-		pLifeText_->Initialize();
-		textPositiom_ = XMFLOAT2(30.0f, 200.0f);
-
+		std::string fileName[] = { "damage", "damage" };
+		for (int i = 0; i < 2; i++) {
+			hPict_[0] = Image::Load("Image/" + fileName[i] + ".png");
+			assert(hPict_[0] >= 0);
+		}
+		
 		playerLife_ = DEFAULT_LIFE;
-		damageImageAlpha_ = 1;
-		isDrawDamageImage_ = false;
+		damageImageAlpha_ = 0;
 	}
 
 	void Update()
@@ -45,38 +39,23 @@ namespace LifeManager
 
 	void LifeManager::Draw()
 	{
-		//切り抜き範囲をリセット（画像全体を表示する）
-		XMFLOAT3 size = damageImage_->GetTextureSize();
-		RECT rect;
-		rect.left = 0;
-		rect.top = 0;
-		rect.right = (long)size.x;
-		rect.bottom = (long)size.y;
-		Transform t;
-		damageImage_->Draw(t, rect, 0.1f, 1);
+		//ここでライフの表示
+		Transform t = Transform();
+		Image::SetTransform(hPict_[0], t);
+		Image::Draw(hPict_[0]);
 
-		pLifeText_->Draw((int)textPositiom_.x, (int)textPositiom_.y, (int)playerLife_);
-
-		if (isDrawDamageImage_) DamageEffectDraw();
+		if (damageImageAlpha_ > 0) DamageEffectDraw();
 	}
 
 	void DamageEffectDraw()
 	{
 		//透明度徐々に下げる
-		damageImageAlpha_ -= 0.05f;
-
-		//切り抜き範囲をリセット（画像全体を表示する）
-		XMFLOAT3 size = damageImage_->GetTextureSize();
-		RECT rect;
-		rect.left = 0;
-		rect.top = 0;
-		rect.right = (long)size.x;
-		rect.bottom = (long)size.y;
+		damageImageAlpha_--;
 
 		Transform t;
-		damageImage_->Draw(t, rect, damageImageAlpha_, 1);
-
-		if (damageImageAlpha_ < 0) isDrawDamageImage_ = false;
+		Image::SetAlpha(hPict_[0], damageImageAlpha_);
+		Image::SetTransform(hPict_[0], t);
+		Image::Draw(hPict_[0]);
 	}
 
 	void LifeManager::SceneTransitionInitialize()
@@ -92,8 +71,7 @@ namespace LifeManager
 
 		if (!IsDie())
 		{
-			damageImageAlpha_ = 1;
-			isDrawDamageImage_ = true;
+			damageImageAlpha_ = 255;
 		}
 	}
 

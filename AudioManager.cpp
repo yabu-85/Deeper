@@ -1,7 +1,7 @@
 #include "AudioManager.h"
 #include "Engine/Audio.h"
 #include "GameManager.h"
-#include "EnemyManager.h"
+#include "Enemy/EnemyManager.h"
 #include <cassert>
 #include <vector>
 

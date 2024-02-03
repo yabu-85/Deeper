@@ -111,8 +111,11 @@
     <Filter Include="03Scene\Stage\Stage3">
       <UniqueIdentifier>{c8f62308-17d4-4d83-af48-fb7a7bc2ad71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="09Weapon\Object\Weapon">
-      <UniqueIdentifier>{4c9605a3-36b8-48d2-915e-a1299ca77da3}</UniqueIdentifier>
+    <Filter Include="09Weapon\Weapons">
+      <UniqueIdentifier>{45555a1b-c656-4b82-90db-50aabcc9dbc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06State\Manager">
+      <UniqueIdentifier>{837039e6-d860-43e3-82a8-b3dde0b1a591}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -186,164 +189,158 @@
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
     <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="MasterHand.cpp">
-      <Filter>08Enemy\Enemies</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>07Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Feet.cpp">
-      <Filter>08Enemy\Enemies</Filter>
-    </ClCompile>
-    <ClCompile Include="UIBase.cpp">
-      <Filter>04UI\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="StateManager.cpp">
-      <Filter>06State</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerCommand.cpp">
-      <Filter>07Player</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyUi.cpp">
-      <Filter>08Enemy\EnemyBase</Filter>
-    </ClCompile>
-    <ClCompile Include="TitleScene.cpp">
-      <Filter>03Scene</Filter>
-    </ClCompile>
     <ClCompile Include="AudioManager.cpp" />
-    <ClCompile Include="Aim.cpp">
-      <Filter>07Player</Filter>
-    </ClCompile>
-    <ClCompile Include="UIManager.cpp">
-      <Filter>04UI\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="TitleUIManager.cpp">
-      <Filter>04UI</Filter>
-    </ClCompile>
-    <ClCompile Include="ExitUIManager.cpp">
-      <Filter>04UI</Filter>
-    </ClCompile>
-    <ClCompile Include="TestBullet.cpp">
-      <Filter>09Weapon\Bullet</Filter>
-    </ClCompile>
-    <ClCompile Include="TestWeaponMain.cpp">
-      <Filter>09Weapon\Object\Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="TestWeaponSub.cpp">
-      <Filter>09Weapon\Object\Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="WeaponBase.cpp">
-      <Filter>09Weapon\Base</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\SegmentCollider.cpp">
       <Filter>01Engine\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="WeaponObjectManager.cpp">
-      <Filter>09Weapon\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="WeaponObject.cpp">
-      <Filter>09Weapon\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="BulletBase.cpp">
-      <Filter>09Weapon\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyBase.cpp">
-      <Filter>08Enemy\EnemyBase</Filter>
-    </ClCompile>
-    <ClCompile Include="BehaviourNode.cpp">
-      <Filter>05BehaviorTree\01Base</Filter>
-    </ClCompile>
-    <ClCompile Include="ChangeStateNode.cpp">
-      <Filter>05BehaviorTree\02ActionNode</Filter>
-    </ClCompile>
-    <ClCompile Include="DropTable.cpp">
-      <Filter>08Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseAction.cpp">
-      <Filter>10Action\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="FeetState.cpp">
-      <Filter>06State\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerState.cpp">
-      <Filter>06State\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="RotateAction.cpp">
-      <Filter>10Action\Actions</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerConditionNode.cpp">
-      <Filter>05BehaviorTree\03ConditionNode</Filter>
-    </ClCompile>
-    <ClCompile Include="StateCountNode.cpp">
-      <Filter>05BehaviorTree\03ConditionNode</Filter>
-    </ClCompile>
-    <ClCompile Include="IsEnemyStateNode.cpp">
-      <Filter>05BehaviorTree\03ConditionNode</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveAction.cpp">
-      <Filter>10Action\Actions</Filter>
     </ClCompile>
     <ClCompile Include="AnimationController.cpp">
       <Filter>11Animation</Filter>
     </ClCompile>
-    <ClCompile Include="Cell.cpp">
-      <Filter>12Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionMap.cpp">
-      <Filter>12Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="CreateStage.cpp">
-      <Filter>12Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Triangle.cpp">
-      <Filter>12Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="AStarMan.cpp">
-      <Filter>08Enemy\Enemies</Filter>
-    </ClCompile>
-    <ClCompile Include="NavigationAI.cpp">
-      <Filter>12Stage</Filter>
-    </ClCompile>
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="VFXManager.cpp" />
-    <ClCompile Include="SearchAction.cpp">
-      <Filter>10Action\Actions</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyManager.cpp">
-      <Filter>08Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="IsEnemyActionReady.cpp">
-      <Filter>05BehaviorTree\03ConditionNode</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\PolyLine.cpp">
       <Filter>01Engine\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerWeapon.cpp">
-      <Filter>07Player</Filter>
-    </ClCompile>
-    <ClCompile Include="LifeManager.cpp">
-      <Filter>07Player</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerData.cpp">
-      <Filter>07Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Warp.cpp">
+    <ClCompile Include="Stage\Cell.cpp">
       <Filter>12Stage</Filter>
     </ClCompile>
-    <ClCompile Include="StageBase.cpp">
+    <ClCompile Include="Stage\CollisionMap.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\CreateStage.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\NavigationAI.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\Triangle.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\Warp.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Action\MoveAction.cpp">
+      <Filter>10Action\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="Action\RotateAction.cpp">
+      <Filter>10Action\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="Action\SearchAction.cpp">
+      <Filter>10Action\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="Action\BaseAction.cpp">
+      <Filter>10Action\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\BulletBase.cpp">
+      <Filter>09Weapon\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\WeaponBase.cpp">
+      <Filter>09Weapon\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\TestBullet.cpp">
+      <Filter>09Weapon\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\EnemyBase.cpp">
+      <Filter>08Enemy\EnemyBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\EnemyUi.cpp">
+      <Filter>08Enemy\EnemyBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\TestWeaponMain.cpp">
+      <Filter>09Weapon\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\TestWeaponSub.cpp">
+      <Filter>09Weapon\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\WeaponObject.cpp">
+      <Filter>09Weapon\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\WeaponObjectManager.cpp">
+      <Filter>09Weapon\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\Feet.cpp">
+      <Filter>08Enemy\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\DropTable.cpp">
+      <Filter>08Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\EnemyManager.cpp">
+      <Filter>08Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\Aim.cpp">
+      <Filter>07Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\LifeManager.cpp">
+      <Filter>07Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\Player.cpp">
+      <Filter>07Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\PlayerCommand.cpp">
+      <Filter>07Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\PlayerData.cpp">
+      <Filter>07Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\PlayerWeapon.cpp">
+      <Filter>07Player</Filter>
+    </ClCompile>
+    <ClCompile Include="State\FeetState.cpp">
+      <Filter>06State\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="State\PlayerState.cpp">
+      <Filter>06State\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="State\StateManager.cpp">
+      <Filter>06State\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\BehaviourNode.cpp">
+      <Filter>05BehaviorTree\01Base</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\ChangeStateNode.cpp">
+      <Filter>05BehaviorTree\02ActionNode</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\IsEnemyActionReadyNode.cpp">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\IsEnemyStateNode.cpp">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\PlayerConditionNode.cpp">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\StateCountNode.cpp">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\UIBase.cpp">
+      <Filter>04UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\UIManager.cpp">
+      <Filter>04UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ExitUIManager.cpp">
+      <Filter>04UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Interaction.cpp">
+      <Filter>04UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\TitleUIManager.cpp">
+      <Filter>04UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\TitleScene.cpp">
+      <Filter>03Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\StageBase.cpp">
       <Filter>03Scene\Stage\Base</Filter>
     </ClCompile>
-    <ClCompile Include="PlayScene.cpp">
+    <ClCompile Include="Scene\Stage1.cpp">
       <Filter>03Scene\Stage\Stage1</Filter>
     </ClCompile>
-    <ClCompile Include="SubPlayScene.cpp">
+    <ClCompile Include="Scene\Stage2.cpp">
       <Filter>03Scene\Stage\Stage2</Filter>
     </ClCompile>
-    <ClCompile Include="Stage3.cpp">
+    <ClCompile Include="Scene\Stage3.cpp">
       <Filter>03Scene\Stage\Stage3</Filter>
-    </ClCompile>
-    <ClCompile Include="Interaction.cpp">
-      <Filter>04UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -417,167 +414,161 @@
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
     <ClInclude Include="GameManager.h" />
-    <ClInclude Include="EnemyBase.h">
-      <Filter>08Enemy\EnemyBase</Filter>
-    </ClInclude>
-    <ClInclude Include="MasterHand.h">
-      <Filter>08Enemy\Enemies</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>07Player</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyManager.h">
-      <Filter>08Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Feet.h">
-      <Filter>08Enemy\Enemies</Filter>
-    </ClInclude>
-    <ClInclude Include="UIBase.h">
-      <Filter>04UI\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="StateBase.h">
-      <Filter>06State\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="StateManager.h">
-      <Filter>06State</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerCommand.h">
-      <Filter>07Player</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyUi.h">
-      <Filter>08Enemy\EnemyBase</Filter>
-    </ClInclude>
-    <ClInclude Include="TitleScene.h">
-      <Filter>03Scene</Filter>
-    </ClInclude>
     <ClInclude Include="AudioManager.h" />
-    <ClInclude Include="Aim.h">
-      <Filter>07Player</Filter>
-    </ClInclude>
-    <ClInclude Include="UIManager.h">
-      <Filter>04UI\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="TitleUIManager.h">
-      <Filter>04UI</Filter>
-    </ClInclude>
-    <ClInclude Include="ExitUIManager.h">
-      <Filter>04UI</Filter>
-    </ClInclude>
-    <ClInclude Include="TestBullet.h">
-      <Filter>09Weapon\Bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="TestWeaponMain.h">
-      <Filter>09Weapon\Object\Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="TestWeaponSub.h">
-      <Filter>09Weapon\Object\Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponBase.h">
-      <Filter>09Weapon\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\SegmentCollider.h">
       <Filter>01Engine\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponObject.h">
-      <Filter>09Weapon\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponObjectManager.h">
-      <Filter>09Weapon\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="BulletBase.h">
-      <Filter>09Weapon\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="BehaviourNode.h">
-      <Filter>05BehaviorTree\01Base</Filter>
-    </ClInclude>
-    <ClInclude Include="ChangeStateNode.h">
-      <Filter>05BehaviorTree\02ActionNode</Filter>
-    </ClInclude>
-    <ClInclude Include="DropTable.h">
-      <Filter>08Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseAction.h">
-      <Filter>10Action\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="FeetState.h">
-      <Filter>06State\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerState.h">
-      <Filter>06State\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="RotateAction.h">
-      <Filter>10Action\Actions</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerConditionNode.h">
-      <Filter>05BehaviorTree\03ConditionNode</Filter>
-    </ClInclude>
-    <ClInclude Include="StateCountNode.h">
-      <Filter>05BehaviorTree\03ConditionNode</Filter>
-    </ClInclude>
-    <ClInclude Include="IsEnemyStateNode.h">
-      <Filter>05BehaviorTree\03ConditionNode</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveAction.h">
-      <Filter>10Action\Actions</Filter>
     </ClInclude>
     <ClInclude Include="AnimationController.h">
       <Filter>11Animation</Filter>
     </ClInclude>
-    <ClInclude Include="Cell.h">
-      <Filter>12Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionMap.h">
-      <Filter>12Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Triangle.h">
-      <Filter>12Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="AStarMan.h">
-      <Filter>08Enemy\Enemies</Filter>
-    </ClInclude>
-    <ClInclude Include="NavigationAI.h">
-      <Filter>12Stage</Filter>
-    </ClInclude>
     <ClInclude Include="Character.h" />
     <ClInclude Include="VFXManager.h" />
-    <ClInclude Include="SearchAction.h">
-      <Filter>10Action\Actions</Filter>
-    </ClInclude>
-    <ClInclude Include="IsEnemyActionReady.h">
-      <Filter>05BehaviorTree\03ConditionNode</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\PolyLine.h">
       <Filter>01Engine\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerWeapon.h">
-      <Filter>07Player</Filter>
-    </ClInclude>
-    <ClInclude Include="LifeManager.h">
-      <Filter>07Player</Filter>
-    </ClInclude>
-    <ClInclude Include="CreateStage.h">
+    <ClInclude Include="Stage\Cell.h">
       <Filter>12Stage</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerData.h">
-      <Filter>07Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Warp.h">
+    <ClInclude Include="Stage\CollisionMap.h">
       <Filter>12Stage</Filter>
     </ClInclude>
-    <ClInclude Include="StageBase.h">
+    <ClInclude Include="Stage\CreateStage.h">
+      <Filter>12Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\NavigationAI.h">
+      <Filter>12Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\Triangle.h">
+      <Filter>12Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\Warp.h">
+      <Filter>12Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Action\MoveAction.h">
+      <Filter>10Action\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Action\RotateAction.h">
+      <Filter>10Action\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Action\SearchAction.h">
+      <Filter>10Action\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Action\BaseAction.h">
+      <Filter>10Action\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\BulletBase.h">
+      <Filter>09Weapon\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\WeaponBase.h">
+      <Filter>09Weapon\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\TestBullet.h">
+      <Filter>09Weapon\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\EnemyBase.h">
+      <Filter>08Enemy\EnemyBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\EnemyUi.h">
+      <Filter>08Enemy\EnemyBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\TestWeaponMain.h">
+      <Filter>09Weapon\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\TestWeaponSub.h">
+      <Filter>09Weapon\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\WeaponObject.h">
+      <Filter>09Weapon\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\WeaponObjectManager.h">
+      <Filter>09Weapon\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\Feet.h">
+      <Filter>08Enemy\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\DropTable.h">
+      <Filter>08Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\EnemyManager.h">
+      <Filter>08Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\Aim.h">
+      <Filter>07Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\LifeManager.h">
+      <Filter>07Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\Player.h">
+      <Filter>07Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\PlayerCommand.h">
+      <Filter>07Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\PlayerData.h">
+      <Filter>07Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\PlayerWeapon.h">
+      <Filter>07Player</Filter>
+    </ClInclude>
+    <ClInclude Include="State\StateBase.h">
+      <Filter>06State\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="State\FeetState.h">
+      <Filter>06State\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="State\PlayerState.h">
+      <Filter>06State\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="State\StateManager.h">
+      <Filter>06State\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\BehaviourNode.h">
+      <Filter>05BehaviorTree\01Base</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\ChangeStateNode.h">
+      <Filter>05BehaviorTree\02ActionNode</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\IsEnemyActionReadyNode.h">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\IsEnemyStateNode.h">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\PlayerConditionNode.h">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\StateCountNode.h">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\UIBase.h">
+      <Filter>04UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\UIManager.h">
+      <Filter>04UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ExitUIManager.h">
+      <Filter>04UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Interaction.h">
+      <Filter>04UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\TitleUIManager.h">
+      <Filter>04UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\TitleScene.h">
+      <Filter>03Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\StageBase.h">
       <Filter>03Scene\Stage\Base</Filter>
     </ClInclude>
-    <ClInclude Include="PlayScene.h">
+    <ClInclude Include="Scene\Stage1.h">
       <Filter>03Scene\Stage\Stage1</Filter>
     </ClInclude>
-    <ClInclude Include="SubPlayScene.h">
+    <ClInclude Include="Scene\Stage2.h">
       <Filter>03Scene\Stage\Stage2</Filter>
     </ClInclude>
-    <ClInclude Include="Stage3.h">
+    <ClInclude Include="Scene\Stage3.h">
       <Filter>03Scene\Stage\Stage3</Filter>
-    </ClInclude>
-    <ClInclude Include="Interaction.h">
-      <Filter>04UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

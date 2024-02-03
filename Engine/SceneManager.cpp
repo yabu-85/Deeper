@@ -2,12 +2,12 @@
 #include "Model.h"
 #include "Image.h"
 #include "Audio.h"
-#include "../TitleScene.h"
-#include "../PlayScene.h"
-#include "../SubPlayScene.h"
+#include "../Scene/Stage1.h"
+#include "../Scene/Stage2.h"
+#include "../Scene/Stage3.h"
 #include "../GameManager.h"
-#include "../PlayerData.h"
-#include "../Stage3.h"
+#include "../Player/PlayerData.h"
+#include "../Scene/TitleScene.h"
 
 //コンストラクタ
 SceneManager::SceneManager(GameObject * parent)
@@ -19,9 +19,9 @@ SceneManager::SceneManager(GameObject * parent)
 void SceneManager::Initialize()
 {
 	//最初のシーンを準備
-	currentSceneID_ = SCENE_ID_PLAY0;
+	currentSceneID_ = SCENE_ID_STAGE1;
 	nextSceneID_ = currentSceneID_;
-	Instantiate<PlayScene>(this);
+	Instantiate<Stage1>(this);
 }
 
 //更新
@@ -51,9 +51,9 @@ void SceneManager::Update()
 		switch (nextSceneID_)
 		{
 			case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
-			case SCENE_ID_PLAY0: Instantiate<PlayScene>(this); break;
-			case SCENE_ID_PLAY1: Instantiate<SubPlayScene>(this); break;
-			case SCENE_ID_PLAY2: Instantiate<Stage3>(this); break;
+			case SCENE_ID_STAGE1: Instantiate<Stage1>(this); break;
+			case SCENE_ID_STAGE2: Instantiate<Stage2>(this); break;
+			case SCENE_ID_STAGE3: Instantiate<Stage3>(this); break;
 		}
 
 		Audio::Initialize();

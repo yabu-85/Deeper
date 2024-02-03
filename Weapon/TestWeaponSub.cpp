@@ -91,20 +91,19 @@ void TestWeaponSub::ShotBullet()
 
 TestWeaponSubWait::TestWeaponSubWait(StateManager* owner) : StateBase(owner)
 {
-    pTestWeaponSub_ = static_cast<TestWeaponSub*>(owner_->GetGameObject());
 }
 
 void TestWeaponSubWait::Update()
 {
-    if (!pTestWeaponSub_->IsAtkEnd()) owner_->ChangeState("Combo1");
+    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
+    if (!s->IsAtkEnd()) owner_->ChangeState("Combo1");
 }
 
 //---------------------------------------------------------------
 
 TestWeaponSubCombo1::TestWeaponSubCombo1(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
-    pTestWeaponSub_ = static_cast<TestWeaponSub*>(owner_->GetGameObject());
-    pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
 }
 
 void TestWeaponSubCombo1::Update()
@@ -115,11 +114,12 @@ void TestWeaponSubCombo1::Update()
     time_--;
     if (pPlayer_->GetCommand()->CmdSubAtk()) next_ = true;
 
+    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     if (time_ <= 0) {
         if (next_ == true) owner_->ChangeState("Combo2");
         else {
             owner_->ChangeState("Wait");
-            pTestWeaponSub_->SetAtkEnd(true);
+            s->SetAtkEnd(true);
         }
         return;
     }
@@ -130,19 +130,20 @@ void TestWeaponSubCombo1::OnEnter()
 {
     time_ = 20;
     next_ = false;
-    if (pTestWeaponSub_ == nullptr) owner_->ChangeState("Wait");
-    pTestWeaponSub_->SetScale(XMFLOAT3(0.3f, 0.3f, 0.3f));
-    
-    pTestWeaponSub_->ShotBullet();
+    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
+    if (s == nullptr) owner_->ChangeState("Wait");
+    s->SetScale(XMFLOAT3(0.3f, 0.3f, 0.3f));
+    s->ShotBullet();
 
 }
 
 void TestWeaponSubCombo1::OnExit()
 {
-    pTestWeaponSub_->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
-    pTestWeaponSub_->Endurance();
-    if (pTestWeaponSub_->IsBlockend()) {
-        pTestWeaponSub_->SetAtkEnd(true);
+    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
+    s->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
+    s->Endurance();
+    if (s->IsBlockend()) {
+        s->SetAtkEnd(true);
     }
 }
 
@@ -150,8 +151,7 @@ void TestWeaponSubCombo1::OnExit()
 
 TestWeaponSubCombo2::TestWeaponSubCombo2(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
-    pTestWeaponSub_ = static_cast<TestWeaponSub*>(owner_->GetGameObject());
-    pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
 }
 
 void TestWeaponSubCombo2::Update()
@@ -162,31 +162,34 @@ void TestWeaponSubCombo2::Update()
     time_--;
     if (pPlayer_->GetCommand()->CmdSubAtk()) next_ = true;
 
+    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     if (time_ <= 0) {
         if (next_ == true) owner_->ChangeState("Combo1");
         else {
             owner_->ChangeState("Wait");
-            pTestWeaponSub_->SetAtkEnd(true);
+            s->SetAtkEnd(true);
         }
         return;
     }
 
-    pTestWeaponSub_->ShotBullet();
+    s->ShotBullet();
 }
 
 void TestWeaponSubCombo2::OnEnter()
 {
     time_ = 20;
     next_ = false;
-    if (pTestWeaponSub_ == nullptr) owner_->ChangeState("Wait");
-    pTestWeaponSub_->SetScale(XMFLOAT3(0.4f, 0.4f, 0.4f));
+    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
+    if (s == nullptr) owner_->ChangeState("Wait");
+    s->SetScale(XMFLOAT3(0.4f, 0.4f, 0.4f));
 }
 
 void TestWeaponSubCombo2::OnExit()
 {
-    pTestWeaponSub_->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
-    pTestWeaponSub_->Endurance();
-    if (pTestWeaponSub_->IsBlockend()) {
-        pTestWeaponSub_->SetAtkEnd(true);
+    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
+    s->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
+    s->Endurance();
+    if (s->IsBlockend()) {
+        s->SetAtkEnd(true);
     }
 }

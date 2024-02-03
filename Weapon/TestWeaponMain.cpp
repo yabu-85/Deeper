@@ -132,33 +132,33 @@ void TestWeaponMain::CalcDamage()
 
 TestWeaponWait::TestWeaponWait(StateManager* owner) : StateBase(owner)
 {
-    pTestWeaponMain_ = static_cast<TestWeaponMain*>(owner_->GetGameObject());
 }
 
 void TestWeaponWait::Update()
 {
-    if (!pTestWeaponMain_->IsAtkEnd()) owner_->ChangeState("Combo1");
+    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    if (!m->IsAtkEnd()) owner_->ChangeState("Combo1");
 }
 
 //---------------------------------------------
 
 TestWeaponCombo1::TestWeaponCombo1(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
-    pTestWeaponMain_ = static_cast<TestWeaponMain*>(owner_->GetGameObject());
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     comboTime_ = 40;
 }
 
 void TestWeaponCombo1::Update()
 {
-    if (pTestWeaponMain_->IsAtkEnd()) return;
+    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    if (m->IsAtkEnd()) return;
 
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
 
-    pTestWeaponMain_->GetSegmentCollider()->SetValid(false);
+    m->GetSegmentCollider()->SetValid(false);
     if(time_ > 14 && time_ < 24)
-    pTestWeaponMain_->CalcDamage();
+    m->CalcDamage();
 
     if (time_ < 5) {
         if (pPlayer_->GetAim()->IsTarget()) pPlayer_->AimTargetRotate(0.3f);
@@ -174,7 +174,7 @@ void TestWeaponCombo1::Update()
         if(next_ == true) owner_->ChangeState("Combo2");
         else {
             owner_->ChangeState("Wait");
-            pTestWeaponMain_->SetAtkEnd(true);
+            m->SetAtkEnd(true);
         }
         return;
     }
@@ -190,7 +190,8 @@ void TestWeaponCombo1::OnEnter()
 void TestWeaponCombo1::OnExit()
 {
     Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 0, 1.0f);
-    pTestWeaponMain_->GetPolyLine()->ResetPosition();
+    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    m->GetPolyLine()->ResetPosition();
 
 }
 
@@ -198,7 +199,6 @@ void TestWeaponCombo1::OnExit()
 
 TestWeaponCombo2::TestWeaponCombo2(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
-    pTestWeaponMain_ = static_cast<TestWeaponMain*>(owner_->GetGameObject());
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     comboTime_ = 40;
 }
@@ -208,9 +208,10 @@ void TestWeaponCombo2::Update()
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
     
-    pTestWeaponMain_->GetSegmentCollider()->SetValid(false);
+    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    m->GetSegmentCollider()->SetValid(false);
     if (time_ > 10 && time_ < 40 - 15)
-    pTestWeaponMain_->CalcDamage();
+    m->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
         if (pPlayer_->GetAim()->IsTarget()) pPlayer_->AimTargetRotate(0.3f);
@@ -227,7 +228,7 @@ void TestWeaponCombo2::Update()
         if (next_ == true) owner_->ChangeState("Combo3");
         else {
             owner_->ChangeState("Wait");
-            pTestWeaponMain_->SetAtkEnd(true);
+            m->SetAtkEnd(true);
         }
         return;
     }
@@ -243,7 +244,8 @@ void TestWeaponCombo2::OnEnter()
 void TestWeaponCombo2::OnExit()
 {
     Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 0, 1.0f);
-    pTestWeaponMain_->GetPolyLine()->ResetPosition();
+    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    m->GetPolyLine()->ResetPosition();
 
 }
 
@@ -251,7 +253,6 @@ void TestWeaponCombo2::OnExit()
 
 TestWeaponCombo3::TestWeaponCombo3(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
-    pTestWeaponMain_ = static_cast<TestWeaponMain*>(owner_->GetGameObject());
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     comboTime_ = 70;
 }
@@ -261,9 +262,10 @@ void TestWeaponCombo3::Update()
     pPlayer_->CalcNoMove();
     pPlayer_->Move();
     
-    pTestWeaponMain_->GetSegmentCollider()->SetValid(false);
+    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    m->GetSegmentCollider()->SetValid(false);
     if (time_ > 35 && time_ < 70 - 25)
-    pTestWeaponMain_->CalcDamage();
+    m->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
         if (pPlayer_->GetAim()->IsTarget()) pPlayer_->AimTargetRotate(0.3f);
@@ -280,7 +282,7 @@ void TestWeaponCombo3::Update()
         if (next_ == true) owner_->ChangeState("Combo1");
         else {
             owner_->ChangeState("Wait");
-            pTestWeaponMain_->SetAtkEnd(true);
+            m->SetAtkEnd(true);
         }
         return;
     }
@@ -296,6 +298,7 @@ void TestWeaponCombo3::OnEnter()
 void TestWeaponCombo3::OnExit()
 {
     Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 0, 1.0f);
-    pTestWeaponMain_->GetPolyLine()->ResetPosition();
+    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    m->GetPolyLine()->ResetPosition();
 
 }

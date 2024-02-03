@@ -22,7 +22,6 @@ public:
 
 class TestWeaponSubWait : public StateBase
 {
-    TestWeaponSub* pTestWeaponSub_;
 public:
     TestWeaponSubWait(StateManager* owner);
     const char* GetName() const override { return "Wait"; }
@@ -33,7 +32,6 @@ class TestWeaponSubCombo1 : public StateBase
 {
     bool next_;
     int time_;
-    TestWeaponSub* pTestWeaponSub_;
     Player* pPlayer_;
 public:
     TestWeaponSubCombo1(StateManager* owner);
@@ -47,7 +45,6 @@ class TestWeaponSubCombo2 : public StateBase
 {
     bool next_;
     int time_;
-    TestWeaponSub* pTestWeaponSub_;
     Player* pPlayer_;
 public:
     TestWeaponSubCombo2(StateManager* owner);

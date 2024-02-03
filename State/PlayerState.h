@@ -1,10 +1,8 @@
 #pragma once
 #include "StateBase.h"
-class Player;
 
 class PlayerWait : public StateBase
 {
-	Player* pPlayer_;
 public:
 	PlayerWait(StateManager* owner);
 	const char* GetName() const override { return "Wait"; }
@@ -14,7 +12,6 @@ public:
 
 class PlayerWalk : public StateBase
 {
-	Player* pPlayer_;
 public:
 	PlayerWalk(StateManager* owner);
 	const char* GetName() const override { return "Walk"; }
@@ -25,7 +22,6 @@ public:
 class PlayerWeaponChange : public StateBase
 {
 	int time_;
-	Player* pPlayer_;
 public:
 	PlayerWeaponChange(StateManager* owner);
 	const char* GetName() const override { return "Change"; }
@@ -37,7 +33,6 @@ class PlayerAvo : public StateBase
 {
 	int avoTime_;
 	int nextCmd_;
-	Player* pPlayer_;
 public:
 	PlayerAvo(StateManager* owner);
 	const char* GetName() const override { return "Avo"; }
@@ -50,7 +45,6 @@ class PlayerAtk : public StateBase
 {
 	int time_;
 	int nextCmd_;
-	Player* pPlayer_;
 public:
 	PlayerAtk(StateManager* owner);
 	const char* GetName() const override { return "Atk"; }
@@ -62,7 +56,6 @@ public:
 class PlayerSubAtk : public StateBase
 {
 	int nextCmd_;
-	Player* pPlayer_;
 public:
 	PlayerSubAtk(StateManager* owner);
 	const char* GetName() const override { return "SubAtk"; }

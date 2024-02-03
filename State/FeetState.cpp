@@ -28,7 +28,6 @@ namespace {
 
 FeetAppear::FeetAppear(StateManager* owner) : StateBase(owner), time_(0)
 {
-	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
 void FeetAppear::Update()
@@ -37,20 +36,23 @@ void FeetAppear::Update()
 	if (time_ > APPER_TIME) owner_->ChangeState("Idle");
 
 	float tsize = (float)time_ / (float)APPER_TIME;
-	pFeet_->SetScale(XMFLOAT3(tsize, tsize, tsize));
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	f->SetScale(XMFLOAT3(tsize, tsize, tsize));
 
 }
 
 void FeetAppear::OnEnter()
 {
-	XMFLOAT3 pos = pFeet_->GetPosition();
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	XMFLOAT3 pos = f->GetPosition();
 	VFXManager::CreatVfxEnemySpawn(pos, APPER_TIME);
 
 }
 
 void FeetAppear::OnExit()
 {
-	pFeet_->SetScale(XMFLOAT3(1, 1, 1));
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	f->SetScale(XMFLOAT3(1, 1, 1));
 
 }
 
@@ -58,7 +60,6 @@ void FeetAppear::OnExit()
 
 FeetIdle::FeetIdle(StateManager* owner) : StateBase(owner)
 {
-	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
 void FeetIdle::Update()
@@ -70,29 +71,29 @@ void FeetIdle::Update()
 
 FeetPatrol::FeetPatrol(StateManager* owner) : StateBase(owner), foundSearchTime_(0)
 {
-	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
 void FeetPatrol::Update()
 {
 	//Astar移動が終わったなら更新・待ち時間適当にrandamで デバッグ用
-	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 60 == 0) {
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	if (f->GetMoveAction()->IsInRange() && rand() % 60 == 0) {
 		CreateStage* pCreateStage = GameManager::GetCreateStage();
-		pFeet_->GetMoveAction()->UpdatePath(pCreateStage->GetRandomFloarPosition());
+		f->GetMoveAction()->UpdatePath(pCreateStage->GetRandomFloarPosition());
 	}
 
 	//Astar移動・回転
-	pFeet_->GetMoveAction()->Update();
-	pFeet_->GetRotateAction()->Update();
+	f->GetMoveAction()->Update();
+	f->GetRotateAction()->Update();
 
 	//FoundSearchの実行待ち時間がfoundSearch
 	foundSearchTime_++;
 	if (foundSearchTime_ > FOUND_SEARCH) {
 		foundSearchTime_ = 0;
-		pFeet_->GetVisionSearchAction()->Update();
+		f->GetVisionSearchAction()->Update();
 
 		//見つかったらCombatStateへ推移
-		if (pFeet_->GetVisionSearchAction()->IsFoundTarget()) {
+		if (f->GetVisionSearchAction()->IsFoundTarget()) {
 			owner_->ChangeState("Combat");
 		}
 	}
@@ -100,22 +101,24 @@ void FeetPatrol::Update()
 
 void FeetPatrol::OnEnter()
 {
-	pFeet_->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
-	pFeet_->GetRotateAction()->SetTarget(nullptr);
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	f->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
+	f->GetRotateAction()->SetTarget(nullptr);
 }
 
 void FeetPatrol::OnExit()
 {
-	pFeet_->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
-	pFeet_->GetMoveAction()->StopMove();
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	f->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
+	f->GetMoveAction()->StopMove();
 }
 
 //--------------------------------------------------------------------------------
 
 FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 {
-	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
-
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	
 	//-----------------------------ビヘイビアツリーの設定--------------------------------------
 	root_ = new Root();
 	Selector* selector1 = new Selector();
@@ -123,22 +126,22 @@ FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 
 	//---------------------------------------攻撃StateのSelectorの登録----------------------------
 	Selector* selector2 = new Selector();
-	IsNotEnemyCombatState* condition1 = new IsNotEnemyCombatState(selector2, "Attack", pFeet_);
+	IsNotEnemyCombatState* condition1 = new IsNotEnemyCombatState(selector2, "Attack", f);
 	selector1->AddChildren(condition1);
 
 	//--------------------Moveへ移行する------------------------------------
-	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(pFeet_, "Move");
-	IsEnemyAttackReady* condition2 = new IsEnemyAttackReady(action1, pFeet_);
+	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(f, "Move");
+	IsEnemyAttackReady* condition2 = new IsEnemyAttackReady(action1, f);
 
 	//制御AIのConditionNode（攻撃可能最大数範囲内かTest
 	CombatStateCountNode* conditionA = new CombatStateCountNode(condition2, 2, { "Move", "Attack" });
-	IsEnemyCombatState* condition3 = new IsEnemyCombatState(conditionA, "Wait", pFeet_);
+	IsEnemyCombatState* condition3 = new IsEnemyCombatState(conditionA, "Wait", f);
 	selector2->AddChildren(condition3);
 
 	//--------------------Attackへ移行する-----------------------
-	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(pFeet_, "Attack");
-	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 2.0f, pFeet_, GameManager::GetPlayer());
-	IsEnemyCombatState* condition5 = new IsEnemyCombatState(condition4, "Move", pFeet_);
+	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(f, "Attack");
+	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 2.0f, f, GameManager::GetPlayer());
+	IsEnemyCombatState* condition5 = new IsEnemyCombatState(condition4, "Move", f);
 	selector2->AddChildren(condition5);
 
 }
@@ -146,15 +149,17 @@ FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 void FeetCombat::Update()
 {
 	root_->Update();
-	pFeet_->GetCombatStateManager()->Update();
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	f->GetCombatStateManager()->Update();
 
 }
 
 void FeetCombat::OnEnter()
 {
-	pFeet_->GetEnemyUi()->InitTargetFoundUi();
-	pFeet_->GetRotateAction()->Initialize();
-	pFeet_->GetRotateAction()->SetTarget(GameManager::GetPlayer());
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	f->GetEnemyUi()->InitTargetFoundUi();
+	f->GetRotateAction()->Initialize();
+	f->GetRotateAction()->SetTarget(GameManager::GetPlayer());
 
 }
 
@@ -167,7 +172,6 @@ FeetCombat::~FeetCombat()
 
 FeetDead::FeetDead(StateManager* owner) : StateBase(owner)
 {
-	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
 void FeetDead::Update()
@@ -178,20 +182,20 @@ void FeetDead::Update()
 
 FeetWait::FeetWait(StateManager* owner) : StateBase(owner)
 {
-	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
 void FeetWait::Update()
 {
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
 	if (rand() % 100 == 0) {
-		if (pFeet_->GetMoveAction()->IsInRange() || pFeet_->GetMoveAction()->IsOutTarget(3.0f)) {
+		if (f->GetMoveAction()->IsInRange() || f->GetMoveAction()->IsOutTarget(3.0f)) {
 			CreateStage* pCreateStage = GameManager::GetCreateStage();
-			pFeet_->GetMoveAction()->UpdatePath(pCreateStage->GetFloarPosition(pFeet_->GetPosition(), 10.0f));
+			f->GetMoveAction()->UpdatePath(pCreateStage->GetFloarPosition(f->GetPosition(), 10.0f));
 		}
 	}
 
-	pFeet_->GetMoveAction()->Update();
-	pFeet_->GetRotateAction()->Update();
+	f->GetMoveAction()->Update();
+	f->GetRotateAction()->Update();
 
 }
 
@@ -199,65 +203,68 @@ void FeetWait::OnEnter()
 {
 	OutputDebugString("WaitState\n");
 
-	pFeet_->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	f->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
 }
 
 //--------------------------------------------------------------------------------
 
 FeetMove::FeetMove(StateManager* owner) : StateBase(owner)
 {
-	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
 void FeetMove::Update()
 {
 	//らんｄやめよう
-	pFeet_->GetMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
-	if (pFeet_->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
-		pFeet_->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	f->GetMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
+	if (f->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
+		f->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
 	}
 
-	if (pFeet_->GetMoveAction()->IsOutTarget(3.0f)) {
-		pFeet_->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
+	if (f->GetMoveAction()->IsOutTarget(3.0f)) {
+		f->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
 	}
 
-	pFeet_->GetMoveAction()->Update();
-	pFeet_->GetRotateAction()->Update();
+	f->GetMoveAction()->Update();
+	f->GetRotateAction()->Update();
 }
 
 void FeetMove::OnEnter()
 {
 	OutputDebugString("MoveState\n");
 
-	pFeet_->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	f->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
 
 }
 
 void FeetMove::OnExit()
 {
-	pFeet_->GetMoveAction()->StopMove();
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	f->GetMoveAction()->StopMove();
 }
 
 //--------------------------------------------------------------------------------
 
 FeetAttack::FeetAttack(StateManager* owner) : StateBase(owner), time_(0)
 {
-	pFeet_ = static_cast<Feet*>(owner_->GetGameObject());
 }
 
 void FeetAttack::Update()
 {
 	time_++;
 
-	if (time_ < 30) pFeet_->GetRotateAction()->Update();
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	if (time_ < 30) f->GetRotateAction()->Update();
 
 	//AttackFrame=65 ～ 90
 	//FeetのOnAttackCollisionの方でPlayerに当たったらfalseにする処理を書いてある
-	if (time_ == 65) pFeet_->GetSphereCollider()->SetValid(true);
-	if (time_ == 90) pFeet_->GetSphereCollider()->SetValid(false);
+	if (time_ == 65) f->GetSphereCollider()->SetValid(true);
+	if (time_ == 90) f->GetSphereCollider()->SetValid(false);
 
 	if (time_ >= 200) {
-		Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 0, 1.0f);
+		Model::SetAnimFrame(f->GetModelHandle(), 0, 0, 1.0f);
 		owner_->ChangeState("Wait");
 		return;
 	}
@@ -268,7 +275,8 @@ void FeetAttack::OnEnter()
 	OutputDebugString("AttackState\n");
 
 	time_ = 0;
-	Model::SetAnimFrame(pFeet_->GetModelHandle(), 0, 200, 1.0f);
+	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	Model::SetAnimFrame(f->GetModelHandle(), 0, 200, 1.0f);
 }
 
 //--------------------------------------------------------------------------------

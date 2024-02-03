@@ -1,14 +1,12 @@
 #pragma once
 #include "StateBase.h"
 
-class Feet;
 class StateManager;
 class Root;
 
 class FeetAppear : public StateBase
 {
 	int time_;
-	Feet* pFeet_;
 public:
 	FeetAppear(StateManager* owner);
 	const char* GetName() const override { return "Appear"; }
@@ -19,7 +17,6 @@ public:
 
 class FeetIdle : public StateBase
 {
-	Feet* pFeet_;
 public:
 	FeetIdle(StateManager* owner);
 	const char* GetName() const override { return "Idle"; }
@@ -28,7 +25,6 @@ public:
 
 class FeetPatrol : public StateBase
 {
-	Feet* pFeet_;
 	int foundSearchTime_;
 public:
 	FeetPatrol(StateManager* owner);
@@ -40,7 +36,6 @@ public:
 
 class FeetCombat : public StateBase
 {
-	Feet* pFeet_;
 	Root* root_;
 public:
 	FeetCombat(StateManager* owner);
@@ -52,7 +47,6 @@ public:
 
 class FeetDead : public StateBase
 {
-	Feet* pFeet_;
 public:
 	FeetDead(StateManager* owner);
 	const char* GetName() const override { return "Dead"; }
@@ -63,7 +57,6 @@ public:
 
 class FeetWait : public StateBase
 {
-	Feet* pFeet_;
 public:
 	FeetWait(StateManager* owner);
 	const char* GetName() const override { return "Wait"; }
@@ -73,7 +66,6 @@ public:
 
 class FeetMove : public StateBase
 {
-	Feet* pFeet_;
 public:
 	FeetMove(StateManager* owner);
 	const char* GetName() const override { return "Move"; }
@@ -85,7 +77,6 @@ public:
 class FeetAttack : public StateBase
 {
 	int time_;
-	Feet* pFeet_;
 public:
 	FeetAttack(StateManager* owner);
 	const char* GetName() const override { return "Attack"; }

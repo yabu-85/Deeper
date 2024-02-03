@@ -3,19 +3,20 @@
 #include "../Weapon/WeaponObjectManager.h"
 #include "../Weapon/WeaponObject.h"
 
+#include "../Engine/SceneManager.h"
 #include "../Engine/Transform.h"
 #include "../Engine/Global.h"
-#include "../Engine/Image.h"
+#include "../Engine/Sprite.h"
 #include "../Engine/Camera.h"
 
 namespace Interaction {
 	float alpha_;
 	bool  isDraw_;
-	int hPict_ = -1;
+	Sprite* interactImage_;
 
 	void Initialize() {
-		hPict_ = Image::Load("Image/KeyImage/E.jpg");
-		assert(hPict_ >= 0);
+		interactImage_ = new Sprite();
+		interactImage_->Load("Image/KeyImage/E.jpg");
 
 	}
 
@@ -24,6 +25,8 @@ namespace Interaction {
 	}
 
 	void Draw() {
+		//タイトルシーンだったら表示しない&表示する対象がなければ表示しない
+		if (GameManager::GetSceneManager()->GetSceneID() == SCENE_ID_TITLE) return;
 		WeaponObject* w = GameManager::GetWeaponObjectManager()->GetNearestWeapon();
 		if (!w) return;
 
@@ -34,11 +37,19 @@ namespace Interaction {
 		float x = XMVectorGetX(v2);
 		float y = XMVectorGetY(v2);
 
+		XMFLOAT3 size = interactImage_->GetTextureSize();
+		RECT rect;
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = (long)size.x;
+		rect.bottom = (long)size.y;
+
 		Transform t;
 		t.position_ = { x, y, 1.0f };
 		t.scale_ = { 2.0f, 2.0f, 2.0f };
-		Image::SetTransform(hPict_, t);
-		Image::Draw(hPict_, 0);
+		t.Calclation();
+		interactImage_->Draw(t, rect, 1.0f, 1);
+
 	}
 
 }

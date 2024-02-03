@@ -1,9 +1,14 @@
 #include "TitleUIManager.h"
 #include "../Engine/Image.h"
 #include "../Engine/Direct3D.h"
+#include "../Engine/SceneManager.h"
+#include "ExitUIManager.h"
+#include "../GameManager.h"
+#include "../AudioManager.h"
+#include "../Scene/TitleScene.h"
 
-TitleUIManager::TitleUIManager()
-	:UIManager(), hPict_{ -1, -1 }
+TitleUIManager::TitleUIManager(SceneBase* parent)
+	: UIManager(parent), hPict_{ -1, -1 }
 {
 	const char* fileName[] = { "Image/Title.png", "Image/TitleBG.png" };
 	const int png = sizeof(fileName) / sizeof(fileName[0]);
@@ -11,12 +16,14 @@ TitleUIManager::TitleUIManager()
 		hPict_[i] = Image::Load(fileName[i]);
 		assert(hPict_[i] >= 0);
 	}
+
+	AddUi("Play", XMFLOAT2(0.0f, 0.0f), [this]() { GameManager::GetSceneManager()->ChangeScene(SCENE_ID_STAGE1); });
+	AddUi("Option", XMFLOAT2(0.0f, -0.35f), [this]() { AudioManager::Play(); });
+	AddUi("Exit", XMFLOAT2(0.0f, -0.7f), [this]() { pParent_->AddUIManager(new ExitUIManager(pParent_)); });
 }
 
 TitleUIManager::~TitleUIManager()
 {
-	UIManager::~UIManager();
-
 }
 
 void TitleUIManager::Draw()
@@ -36,5 +43,4 @@ void TitleUIManager::Draw()
 	Image::Draw(hPict_[1]);
 
 	UIManager::Draw();
-
 }

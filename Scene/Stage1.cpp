@@ -50,7 +50,7 @@ void Stage1::Update()
 {
 	//デバッグ用
 	if (Input::IsKeyDown(DIK_C)) {
-		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
+		SceneManager* pSceneManager = GameManager::GetSceneManager();
 		pSceneManager->ChangeScene(SCENE_ID_TITLE);
 	}
 

@@ -30,6 +30,13 @@ namespace PlayerData {
 
     }
 
+    void SceneTransitionInitialize()
+    {
+        pText = new Text();
+        pText->Initialize();
+
+    }
+
     void SavePlayerData()
     {
         Player* player = GameManager::GetPlayer();
@@ -52,7 +59,11 @@ namespace PlayerData {
     void SetWeaponData(int index, const WeaponData& data) { data_.subWeapon_[index] = data; }
     WeaponData& GetWeaponData(int index) { return data_.subWeapon_[index]; }
     
-    void AddClearStageCount(SCENE_ID id) { if (id != SCENE_ID_TITLE) data_.clearStageCount_++; }
+    //ステージクリア数を増やす：今のところTitle以外だったら増やす
+    void AddClearStageCount(SCENE_ID id) { 
+        if (id != SCENE_ID_TITLE) data_.clearStageCount_++; 
+    }
+
     void AddMoney(int i) { data_.money_ += i; }
 
 }

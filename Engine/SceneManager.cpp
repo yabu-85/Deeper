@@ -11,7 +11,7 @@
 
 //コンストラクタ
 SceneManager::SceneManager(GameObject * parent)
-	: GameObject(parent, "SceneManager")
+	: GameObject(parent, "SceneManager"), currentSceneID_(SCENE_ID_TITLE), nextSceneID_(currentSceneID_)
 {
 }
 
@@ -22,6 +22,9 @@ void SceneManager::Initialize()
 	currentSceneID_ = SCENE_ID_STAGE1;
 	nextSceneID_ = currentSceneID_;
 	Instantiate<Stage1>(this);
+
+	GameManager::SetSceneManager(this);
+
 }
 
 //更新

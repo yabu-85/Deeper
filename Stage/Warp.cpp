@@ -74,8 +74,7 @@ void Warp::OnCollision(GameObject* pTarget)
 	GameManager::GetPlayer()->GetAim()->SetCompulsion(cPos, transform_.position_);
 
 	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction()) {
-		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
-		pSceneManager->ChangeScene(warpScene_);
+		GameManager::GetSceneManager()->ChangeScene(warpScene_);
 	}
 	
 }

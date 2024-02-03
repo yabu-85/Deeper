@@ -49,8 +49,7 @@ void Stage2::Update()
 {
 	//デバッグ用
 	if (Input::IsKeyDown(DIK_C)) {
-		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
-		pSceneManager->ChangeScene(SCENE_ID_TITLE);
+		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE);
 	}
 
 	if (!isCleared_ && GameManager::GetEnemyManager()->IsEnemyListEmpty()) {

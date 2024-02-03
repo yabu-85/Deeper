@@ -117,6 +117,12 @@
     <Filter Include="06State\Manager">
       <UniqueIdentifier>{837039e6-d860-43e3-82a8-b3dde0b1a591}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04UI\Manager">
+      <UniqueIdentifier>{2d9d2699-ca70-41f6-bb69-82fe3c79a800}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03Scene\Base">
+      <UniqueIdentifier>{ca23a4cb-66f8-49a0-8901-bff618760a67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -318,13 +324,7 @@
     <ClCompile Include="UI\UIManager.cpp">
       <Filter>04UI\Base</Filter>
     </ClCompile>
-    <ClCompile Include="UI\ExitUIManager.cpp">
-      <Filter>04UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\Interaction.cpp">
-      <Filter>04UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\TitleUIManager.cpp">
       <Filter>04UI</Filter>
     </ClCompile>
     <ClCompile Include="Scene\TitleScene.cpp">
@@ -341,6 +341,15 @@
     </ClCompile>
     <ClCompile Include="Scene\Stage3.cpp">
       <Filter>03Scene\Stage\Stage3</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ExitUIManager.cpp">
+      <Filter>04UI\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\TitleUIManager.cpp">
+      <Filter>04UI\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneBase.cpp">
+      <Filter>03Scene\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -546,13 +555,7 @@
     <ClInclude Include="UI\UIManager.h">
       <Filter>04UI\Base</Filter>
     </ClInclude>
-    <ClInclude Include="UI\ExitUIManager.h">
-      <Filter>04UI</Filter>
-    </ClInclude>
     <ClInclude Include="UI\Interaction.h">
-      <Filter>04UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\TitleUIManager.h">
       <Filter>04UI</Filter>
     </ClInclude>
     <ClInclude Include="Scene\TitleScene.h">
@@ -569,6 +572,15 @@
     </ClInclude>
     <ClInclude Include="Scene\Stage3.h">
       <Filter>03Scene\Stage\Stage3</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ExitUIManager.h">
+      <Filter>04UI\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\TitleUIManager.h">
+      <Filter>04UI\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneBase.h">
+      <Filter>03Scene\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

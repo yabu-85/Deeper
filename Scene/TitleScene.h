@@ -1,13 +1,8 @@
 #pragma once
-#include "../Engine/GameObject.h"
-#include <vector>
+#include "SceneBase.h"
 
-class UIManager;
-
-class TitleScene : public GameObject
+class TitleScene : public SceneBase
 {
-	std::vector<UIManager*> pUIManagerList_;
-
 public:
 	TitleScene(GameObject* parent);
 	void Initialize() override;

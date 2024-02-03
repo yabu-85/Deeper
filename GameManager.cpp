@@ -11,6 +11,7 @@
 #include "Player/PlayerData.h"
 #include "UI/Interaction.h"
 #include "VFXManager.h"
+#include "Engine/SceneManager.h"
 
 //デバッグ用
 #include "Engine/Input.h"
@@ -23,6 +24,7 @@ namespace GameManager {
 	Player* pPlayer_ = nullptr;
 	GameObject* pNowStage_ = nullptr;
 	CreateStage* pCreateStage_ = nullptr;
+	SceneManager* pSceneManager_ = nullptr;
 
 	void GameManager::Initialize()
 	{
@@ -79,6 +81,7 @@ namespace GameManager {
 		pPlayer_ = nullptr;
 		pNowStage_ = nullptr;
 
+		PlayerData::SceneTransitionInitialize();
 		pEnemyManager_->SceneTransitionInitialize();
 		pWeaponObjectManager_->SceneTransitionInitialize();
 
@@ -89,6 +92,8 @@ namespace GameManager {
 	WeaponObjectManager* GetWeaponObjectManager() { return pWeaponObjectManager_; }
 	CreateStage* GetCreateStage() { return pCreateStage_; }
 
+	SceneManager* GetSceneManager() { return pSceneManager_; }
+	void SetSceneManager(SceneManager* ma) { pSceneManager_ = ma; }
 	CollisionMap* GetCollisionMap() { return pCollisionMap_; }
 	void SetCollisionMap(CollisionMap* map) { pCollisionMap_ = map; }
 	Player* GetPlayer() { return pPlayer_; }

@@ -5,8 +5,8 @@
 #include<functional>
 
 using namespace DirectX;
-
 class UIBase;
+class SceneBase;
 
 class UIManager
 {
@@ -19,9 +19,10 @@ public:
 protected:
 	std::vector<UIBase*> uiList_;
 	UI_STATE state_;
+	SceneBase* pParent_;
 
 public:
-	UIManager();
+	UIManager(SceneBase* parent);
 	virtual ~UIManager();
 	virtual void Update();
 	virtual void Draw();

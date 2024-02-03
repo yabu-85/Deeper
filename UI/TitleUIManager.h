@@ -6,7 +6,7 @@ class TitleUIManager : public UIManager
 	int hPict_[2];
 
 public:
-	TitleUIManager();
+	TitleUIManager(SceneBase* parent);
 	~TitleUIManager() override;
  	void Draw() override;
 

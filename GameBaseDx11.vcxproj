@@ -185,6 +185,7 @@
     <ClCompile Include="Player\PlayerCommand.cpp" />
     <ClCompile Include="Player\PlayerData.cpp" />
     <ClCompile Include="Player\PlayerWeapon.cpp" />
+    <ClCompile Include="Scene\SceneBase.cpp" />
     <ClCompile Include="Scene\Stage1.cpp" />
     <ClCompile Include="Scene\Stage2.cpp" />
     <ClCompile Include="Scene\Stage3.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="Player\PlayerCommand.h" />
     <ClInclude Include="Player\PlayerData.h" />
     <ClInclude Include="Player\PlayerWeapon.h" />
+    <ClInclude Include="Scene\SceneBase.h" />
     <ClInclude Include="Scene\Stage1.h" />
     <ClInclude Include="Scene\Stage2.h" />
     <ClInclude Include="Scene\Stage3.h" />

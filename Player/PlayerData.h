@@ -17,6 +17,7 @@ namespace PlayerData
 
 	void Initialize();
 	void Draw();
+	void SceneTransitionInitialize();
 
 	void SavePlayerData();
 	void SetWeaponData(int index, const WeaponData& data);

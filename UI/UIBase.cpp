@@ -13,6 +13,10 @@ UIBase::UIBase()
 {
 }
 
+UIBase::~UIBase()
+{
+}
+
 void UIBase::Initialize(std::string name, XMFLOAT2 pos, std::function<void()> onClick)
 {
 	const std::string fileName[] = { "Image/ButtonFrame1.png", "Image/ButtonFrame2.png", "Image/" + name + ".png" };

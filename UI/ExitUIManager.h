@@ -6,7 +6,7 @@ class ExitUIManager : public UIManager
 	int hPict_;
 
 public:
-	ExitUIManager();
+	ExitUIManager(SceneBase* parent);
 	~ExitUIManager() override;
 	void Draw() override;
 

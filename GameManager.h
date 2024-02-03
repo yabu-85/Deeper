@@ -7,6 +7,7 @@ class CollisionMap;
 class GameObject;
 class Player;
 class CreateStage;
+class SceneManager;
 
 namespace GameManager
 {
@@ -21,13 +22,16 @@ namespace GameManager
 	WeaponObjectManager* GetWeaponObjectManager();
 	CreateStage* GetCreateStage();
 
-	void SetCollisionMap(CollisionMap* map);
+	SceneManager* GetSceneManager();
+	void SetSceneManager(SceneManager* ma);
+
 	CollisionMap* GetCollisionMap();
+	void SetCollisionMap(CollisionMap* map);
 
-	void SetPlayer(Player* player);
 	Player* GetPlayer();
+	void SetPlayer(Player* player);
 
-	void SetStage(GameObject* stage);
 	GameObject* GetStage();
+	void SetStage(GameObject* stage);
 
 };

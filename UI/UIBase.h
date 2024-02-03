@@ -6,7 +6,6 @@
 
 using namespace DirectX;
 
-//基底クラスだけど、ボタンクラスとしても使う
 class UIBase
 {
 	int hPict_[3];
@@ -25,6 +24,7 @@ class UIBase
 
 public:
 	UIBase();
+	~UIBase();
 	void Initialize(std::string name, XMFLOAT2 pos, std::function<void()> onClick);
 	void Draw();
 	bool IsWithinBound();

@@ -31,7 +31,7 @@ public:
 	//引数：next	次のシーンのID
 	void ChangeScene(SCENE_ID next);
 
-	SCENE_ID GetSceneID() { return nextSceneID_; }
+	SCENE_ID GetSceneID() { return currentSceneID_; }
 
 private:
 	SCENE_ID currentSceneID_;	//現在のシーン

@@ -1,7 +1,7 @@
 #include "LifeManager.h"
 #include "../GameManager.h"
 #include "../Engine/Transform.h"
-#include "../Engine/Image.h"
+#include "../Engine/Sprite.h"
 #include "../Engine/Text.h"
 
 namespace
@@ -14,21 +14,18 @@ namespace
 
 namespace LifeManager
 {
-	int hPict_[2];				//ダメージの画像
-	int playerLife_;			//プレイヤーのライフ量
+	Sprite* damageImage_;
 	float invincibleTime_;		//ダメージ表示時間の計算用
+
+	int playerLife_;			//プレイヤーのライフ量
 
 	void LifeManager::Initialize()
 	{
-		std::string fileName[] = { "damage", "damage" };
-		for (int i = 0; i < 2; i++) {
-			hPict_[0] = Image::Load("Image/" + fileName[i] + ".png");
-			assert(hPict_[0] >= 0);
-		}
+		damageImage_ = new Sprite;
+		damageImage_->Load("Image/damage.png"); 
 		
 		playerLife_ = DEFAULT_LIFE;
 		invincibleTime_ = 0.0f;
-
 	}
 
 	void Update()
@@ -39,20 +36,23 @@ namespace LifeManager
 
 	void LifeManager::Draw()
 	{
-		//ここでライフの表示
-		Transform t = Transform();
-		//Image::SetTransform(hPict_[0], t);
-		//Image::Draw(hPict_[0]);
+		//ライフの表示
 
 		if (invincibleTime_ > 0.0f) DamageEffectDraw();
 	}
 
 	void DamageEffectDraw()
 	{
+		//切り抜き範囲をリセット（画像全体を表示する）
+		XMFLOAT3 size = damageImage_->GetTextureSize();
+		RECT rect;
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = (long)size.x;
+		rect.bottom = (long)size.y;
 		Transform t;
-		Image::SetAlpha(hPict_[0], (int)((float)(DEFAULT_ALPHA) * invincibleTime_));
-		Image::SetTransform(hPict_[0], t);
-		Image::Draw(hPict_[0]);
+		damageImage_->Draw(t, rect, 0.1f, 1);
+
 	}
 
 	void LifeManager::SceneTransitionInitialize()

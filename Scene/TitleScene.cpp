@@ -5,36 +5,24 @@
 #include "../UI/UIManager.h"
 #include "../UI/TitleUIManager.h"
 #include "../UI/ExitUIManager.h"
+#include "../GameManager.h"
 
 TitleScene::TitleScene(GameObject* parent)
-	: GameObject(parent, "TitleScene")
+	: SceneBase(parent, "TitleScene")
 {
 }
 
 void TitleScene::Initialize()
 {
 	AudioManager::Initialize();
-
-	TitleUIManager* title = new TitleUIManager();
-	//ƒV[ƒ“„ˆÚ‚ðŠŠ‚ç‚©‚É‚µ‚½‚¢‚æ‚Ë
-	title->AddUi("Play", XMFLOAT2(0.0f, 0.0f), [this]() {
-		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
-		pSceneManager->ChangeScene(SCENE_ID_STAGE1); }
-	);
-	title->AddUi("Option", XMFLOAT2(0.0f, -0.35f), [this]() { AudioManager::Play(); });
-	title->AddUi("Exit", XMFLOAT2(0.0f, -0.7f), [this]() {
-		ExitUIManager* exit = new ExitUIManager();
-		pUIManagerList_.push_back(exit); }
-	);
-	pUIManagerList_.push_back(title);
+	AddUIManager(new TitleUIManager(this));
 
 }
 
 void TitleScene::Update()
 {
 	if (Input::IsKeyDown(DIK_X)) {
-		SceneManager* pSceneManager = static_cast<SceneManager*>(FindObject("SceneManager"));
-		pSceneManager->ChangeScene(SCENE_ID_STAGE1);
+		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_STAGE1);
 		return;
 	}
 

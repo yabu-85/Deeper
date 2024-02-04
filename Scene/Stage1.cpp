@@ -27,8 +27,8 @@ void Stage1::Initialize()
 {
 	Model::Load("DebugCollision/SphereCollider.fbx"); 
 	Model::Load("Model/stoneGolem.fbx");
-
 	AudioManager::Initialize();
+
 	GameManager::SetStage(this);
 	GameManager::GetCreateStage()->CreateStageData("Csv/Map1.csv");
 	GameManager::SetPlayer(Instantiate<Player>(this));

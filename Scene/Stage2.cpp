@@ -12,6 +12,7 @@
 //デバッグ用
 #include "../Weapon/WeaponObjectManager.h"
 #include "../Player/PlayerWeapon.h"
+#include "../Engine/Model.h"
 
 namespace {
 	static const SCENE_ID WARP_STAGE[] = { SCENE_ID_STAGE3, SCENE_ID_STAGE1 };
@@ -25,6 +26,8 @@ Stage2::Stage2(GameObject* parent)
 
 void Stage2::Initialize()
 {
+	Model::Load("DebugCollision/SphereCollider.fbx");
+	Model::Load("Model/stoneGolem.fbx");
 	AudioManager::Initialize();
 
 	GameManager::SetStage(this);

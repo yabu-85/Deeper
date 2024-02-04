@@ -207,7 +207,7 @@
     <ClCompile Include="UI\UIManager.cpp" />
     <ClCompile Include="VFXManager.cpp" />
     <ClCompile Include="Weapon\BulletBase.cpp" />
-    <ClCompile Include="Weapon\SwordMainWeapon.cpp" />
+    <ClCompile Include="Weapon\SwordWeapon.cpp" />
     <ClCompile Include="Weapon\TestBullet.cpp" />
     <ClCompile Include="Weapon\TestWeaponMain.cpp" />
     <ClCompile Include="Weapon\TestWeaponSub.cpp" />
@@ -289,7 +289,7 @@
     <ClInclude Include="UI\UIManager.h" />
     <ClInclude Include="VFXManager.h" />
     <ClInclude Include="Weapon\BulletBase.h" />
-    <ClInclude Include="Weapon\SwordMainWeapon.h" />
+    <ClInclude Include="Weapon\SwordWeapon.h" />
     <ClInclude Include="Weapon\TestBullet.h" />
     <ClInclude Include="Weapon\TestWeaponMain.h" />
     <ClInclude Include="Weapon\TestWeaponSub.h" />

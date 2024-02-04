@@ -8,6 +8,7 @@
 #include "../Engine/Input.h"
 #include "../Stage/Warp.h"
 #include "../Enemy/EnemyManager.h"
+#include "../Engine/Model.h"
 
 namespace {
 	static const SCENE_ID WARP_STAGE[] = { SCENE_ID_STAGE1 };
@@ -21,6 +22,8 @@ Stage3::Stage3(GameObject* parent)
 
 void Stage3::Initialize()
 {
+	Model::Load("DebugCollision/SphereCollider.fbx");
+	Model::Load("Model/stoneGolem.fbx");
 	AudioManager::Initialize();
 
 	GameManager::SetStage(this);

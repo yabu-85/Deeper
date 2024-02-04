@@ -26,7 +26,7 @@ namespace {
     const int APPER_TIME = 60;
     const int HEAR_TIME = 30;
 
-    bool isCollider = true; //当たり判定するかどうか、浮けるようにするための
+    bool isCollider = true; //当たり判定するかどうか
     Text* pText = new Text;
 }
 
@@ -73,21 +73,26 @@ Player::~Player()
 
 void Player::Initialize()
 {
-    //モデルデータのロード
+#if 0
     hModel_[0] = Model::Load("Model/FiterTestUp.fbx");
     assert(hModel_[0] >= 0);
-
     hModel_[1] = Model::Load("Model/FiterTestDown.fbx");
     assert(hModel_[1] >= 0);
-    transform_.rotate_.y += 180.0f;
+#else
+    hModel_[0] = Model::Load("Model/Fiter2.fbx");
+    assert(hModel_[0] >= 0);
+    //hModel_[1] = Model::Load("DebugCollision/SphereCollider.fbx");
+    //assert(hModel_[1] >= 0);
+#endif
 
+    transform_.rotate_.y += 180.0f;
+    transform_.scale_ = { 0.5f, 0.5f, 0.5f };
     SetPosition(GameManager::GetCreateStage()->GetPlayerStartPos());
     moveSpeed_ = 0.08f;
     rotateRatio_ = 0.2f;
     bodyWeight_ = 5.1f;
     bodyRange_ = 0.3f;
     time_ = APPER_TIME;             
-    transform_.scale_ = { 0.5f, 0.5f, 0.5f };
 
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();

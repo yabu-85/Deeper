@@ -8,6 +8,7 @@
 #include "../Player/Aim.h"
 #include "../Player/PlayerWeapon.h"
 #include "../Engine/Model.h"
+#include "../AnimationController.h"
 
 namespace {
 	const int defAvoTime = 30;
@@ -56,7 +57,7 @@ void PlayerWait::Update()
 void PlayerWait::OnEnter()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	Model::SetAnimFrame(p->GetModelHandle(), 0, 120, 1.0f);
+	p->GetAnimationController()->SetNextAnime(0, Model::GetAnimFrame(p->GetModelHandle()), 1.0f, 0.1f);
 
 }
 
@@ -102,15 +103,8 @@ void PlayerWalk::Update()
 void PlayerWalk::OnEnter()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	Model::SetAnimFrame(p->GetModelHandle(), 301, 343, 1.0f);
-
-}
-
-void PlayerWalk::OnExit()
-{
-	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	Model::SetAnimFrame(p->GetModelHandle(), 0, 120, 1.0f);
-
+	p->GetAnimationController()->SetNextAnime(1, 0, 1.0f, 0.1f);
+	
 }
 
 //--------------------------------------------------------------------------------
@@ -212,7 +206,6 @@ void PlayerAvo::OnExit()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
 	p->ResetKeyMovement();
-	Model::SetAnimFrame(p->GetModelHandle(), 0, 120, 1.0f);
 
 }
 

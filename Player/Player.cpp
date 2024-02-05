@@ -29,7 +29,6 @@ namespace {
 
     bool isCollider = true; //“–‚½‚è”»’è‚·‚é‚©‚Ç‚¤‚©
     Text* pText = new Text;
-    AnimationController* pAnimCntrl = nullptr;
 
 }
 
@@ -74,6 +73,7 @@ void Player::DeadUpdate()
 
 Player::Player(GameObject* parent)
     : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
+    pAnimationController_(nullptr),
     moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), state_(MAIN_STATE::APPER), apperPos_(0,0,0), time_(0), gradually_(0.0f)
 {
 }
@@ -99,6 +99,10 @@ void Player::Initialize()
     bodyRange_ = 0.3f;
     time_ = APPER_TIME;             
 
+    pAnimationController_ = new AnimationController(hModel_);
+    pAnimationController_->AddAnime(0, 120);
+    pAnimationController_->AddAnime(301, 343);
+
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
     pPlayerWeapon_ = new PlayerWeapon(this);
@@ -121,20 +125,15 @@ void Player::Initialize()
     transform_.position_.y += (time_ * 0.5f);
 
     pText->Initialize();
-    
-    pAnimCntrl = new AnimationController(hModel_);
-    pAnimCntrl->AddAnime(301, 343);
 
 }
 
 void Player::Update()
 {
-    if(Input::IsKeyDown(DIK_3))
-        pAnimCntrl->SetNextAnime(0, 0, 1.0f, 1.5f);
-    pAnimCntrl->Update();
-
     pCommand_->Update();
-    
+    pAnimationController_->Update();
+
+    //MainState
     if (state_ == MAIN_STATE::APPER) ApperUpdate();
     else if (state_ == MAIN_STATE::HEAR) HearUpdate();
     else if (state_ == MAIN_STATE::DEAD) DeadUpdate();

@@ -17,7 +17,6 @@ public:
 	const char* GetName() const override { return "Walk"; }
 	void Update() override;
 	void OnEnter() override;
-	void OnExit() override;
 };
 
 class PlayerWeaponChange : public StateBase

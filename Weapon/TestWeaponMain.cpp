@@ -7,7 +7,6 @@
 #include "../Engine/SegmentCollider.h"
 #include "../VFXManager.h"
 #include "../Player/Aim.h"
-
 #include "../Engine/PolyLine.h"
 #include "../Engine/Global.h"
 
@@ -47,7 +46,7 @@ void TestWeaponMain::Initialize()
     AddAttackCollider(seg_);
 
     damage_ = 20; 
-    transform_.scale_.z = 2.0f;
+    transform_.scale_.z = 1.0f;
     
     pPolyLine_ = new PolyLine;
     pPolyLine_->Load("tex.png");
@@ -61,8 +60,8 @@ void TestWeaponMain::Update()
 
 void TestWeaponMain::Draw()
 {
-    wandPos_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Sword");
-    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Sword");
+    wandPos_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Weapon");
+    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Weapon");
     
     if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
         transform_.rotate_.y *= -1.0f;

@@ -44,8 +44,8 @@ void TestWeaponSub::Draw()
 {
     if (!IsVisibled()) return;
 
-    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Sword");
-    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Sword");
+    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Weapon");
+    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Weapon");
     if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
         transform_.rotate_.y *= -1.0f;
         transform_.rotate_.z *= -1.0f;

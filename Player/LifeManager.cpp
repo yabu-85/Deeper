@@ -8,14 +8,13 @@ namespace
 {
 	static const int DEFAULT_ALPHA = 255;	//無敵時間を減らす量
 	static const int DEFAULT_LIFE = 100;	//普通のPlayerのライフの数
-	static const float INVINCIBLE = 0.07f;	//無敵時間を減らす量
 	 
 }
 
 namespace LifeManager
 {
 	Sprite* damageImage_;
-	float invincibleTime_;		//ダメージ表示時間の計算用
+	int invincibleTime_;		//ダメージ表示時間の計算用
 
 	int playerLife_;			//プレイヤーのライフ量
 
@@ -25,12 +24,12 @@ namespace LifeManager
 		damageImage_->Load("Image/damage.png"); 
 		
 		playerLife_ = DEFAULT_LIFE;
-		invincibleTime_ = 0.0f;
+		invincibleTime_ = 0;
 	}
 
 	void Update()
 	{
-		invincibleTime_ -= INVINCIBLE;
+		invincibleTime_--;
 
 	}
 
@@ -38,7 +37,7 @@ namespace LifeManager
 	{
 		//ライフの表示
 
-		if (invincibleTime_ > 0.0f) DamageEffectDraw();
+		if (invincibleTime_ > 0) DamageEffectDraw();
 	}
 
 	void DamageEffectDraw()
@@ -61,13 +60,14 @@ namespace LifeManager
 
 	void LifeManager::Damage(int i)
 	{
-		if (invincibleTime_ > 0.0f) return;
+		if (IsInvincible()) return;
 
-		invincibleTime_ = 1.0f;
+		invincibleTime_ = INVINCIBLE;
 		playerLife_ -= i;
 	}
 
 	void LifeManager::ResetLife() { playerLife_ = DEFAULT_LIFE; }
+	bool IsInvincible() { return (invincibleTime_ > 0.0f); }
 	bool LifeManager::IsDie() { return playerLife_ <= 0; }
 
 }

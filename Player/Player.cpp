@@ -11,20 +11,20 @@
 #include "../Stage/CreateStage.h"
 #include "LifeManager.h"
 #include "../VFXManager.h"
-
-#include "../Engine/BoxCollider.h"
 #include "../Engine/SphereCollider.h"
 #include "../Stage/CollisionMap.h"
+
 #include "../Engine/Text.h"
+#include "../Engine/BoxCollider.h"
 
 namespace {
     const float stopGradually = 0.25f;      //移動スピードの加減の値止まるとき
     const float moveGradually = 0.15f;      //移動スピードの加減の値移動時
     const float maxMoveSpeed = 1.0f;        //最大移動スピード
-    const float avoRotateRatio = 0.92f;     //回避時のRotateRatio
+    const float avoRotateRatio = 1.0f;      //回避時のRotateRatio
 
     const int APPER_TIME = 60;
-    const int HEAR_TIME = 30;
+    const int HEAR_TIME = LifeManager::INVINCIBLE;
 
     bool isCollider = true; //当たり判定するかどうか
     Text* pText = new Text;
@@ -47,8 +47,19 @@ void Player::ApperUpdate()
 
 void Player::HearUpdate()
 {
+    //ダメージもらった時の処理
+    if (time_ == HEAR_TIME) {
+        pStateManager_->ChangeState("Wait");
+        ResetMovement();
+        Model::SetAnimFrame(hModel_, 210, 260, 1.0f);
+    }
+
+    float speed = (float)time_ / (float)HEAR_TIME;
+    BackMove(speed);
+
     time_--;
     if (time_ <= 0) {
+        Model::SetAnimFrame(hModel_, 0, 120, 1.0f);
         state_ = MAIN_STATE::UPDATE;
     }
 
@@ -59,7 +70,7 @@ void Player::DeadUpdate()
 }
 
 Player::Player(GameObject* parent)
-    : Character(parent, "Player"), hModel_{-1, -1}, pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
+    : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
     moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), state_(MAIN_STATE::APPER), apperPos_(0,0,0), time_(0), gradually_(0.0f)
 {
 }
@@ -73,17 +84,8 @@ Player::~Player()
 
 void Player::Initialize()
 {
-#if 0
-    hModel_[0] = Model::Load("Model/FiterTestUp.fbx");
-    assert(hModel_[0] >= 0);
-    hModel_[1] = Model::Load("Model/FiterTestDown.fbx");
-    assert(hModel_[1] >= 0);
-#else
-    hModel_[0] = Model::Load("Model/Fiter2.fbx");
-    assert(hModel_[0] >= 0);
-    //hModel_[1] = Model::Load("DebugCollision/SphereCollider.fbx");
-    //assert(hModel_[1] >= 0);
-#endif
+    hModel_ = Model::Load("Model/Fiter2.fbx");
+    assert(hModel_ >= 0);
 
     transform_.rotate_.y += 180.0f;
     transform_.scale_ = { 0.5f, 0.5f, 0.5f };
@@ -124,11 +126,12 @@ void Player::Initialize()
 
 void Player::Update()
 {
+    pCommand_->Update();
+    
     if (state_ == MAIN_STATE::APPER) ApperUpdate();
     else if (state_ == MAIN_STATE::HEAR) HearUpdate();
     else if (state_ == MAIN_STATE::DEAD) DeadUpdate();
     else {
-        pCommand_->Update();
         pStateManager_->Update();
         if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
     }
@@ -148,10 +151,8 @@ void Player::Update()
 
 void Player::Draw()
 {
-    Model::SetTransform(hModel_[0], transform_);
-    Model::Draw(hModel_[0]);
-    Model::SetTransform(hModel_[1], transform_);
-    Model::Draw(hModel_[1]);
+    Model::SetTransform(hModel_, transform_);
+    Model::Draw(hModel_);
     pPlayerWeapon_->DrawWeapon();
 
     //デバッグ用
@@ -178,9 +179,13 @@ void Player::OnCollision(GameObject* pTarget)
 
 void Player::OnAttackCollision(GameObject* pTarget)
 {
+    //無敵時間中なら抜ける
+    if (LifeManager::IsInvincible()) return;
+
     std::string name = pTarget->GetObjectName();
     if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         EnemyBase* enemy = static_cast<EnemyBase*>(pTarget);
+        TargetRotate(enemy->GetPosition());
         LifeManager::Damage(enemy->GetAttackDamage());
         state_ = MAIN_STATE::HEAR;
         time_ = HEAR_TIME;
@@ -188,22 +193,20 @@ void Player::OnAttackCollision(GameObject* pTarget)
 
 }
 
-void Player::Rotate()
+void Player::TargetRotate(XMFLOAT3 pos)
 {
-    XMFLOAT3 move = GetInputMove();
-
     XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(transform_.rotate_.y)), cosf(XMConvertToRadians(transform_.rotate_.y)));
     XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
-    XMFLOAT2 b = XMFLOAT2(move.x, move.z);
+    XMFLOAT2 b = XMFLOAT2(pos.x - transform_.position_.x, pos.z - transform_.position_.z);
     XMVECTOR vB = XMVector2Normalize(XMLoadFloat2(&b));
     XMStoreFloat2(&a, vA);
     XMStoreFloat2(&b, vB);
-
     float cross = a.x * b.y - a.y * b.x;
     float dot = a.x * b.x + a.y * b.y;
-    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * rotateRatio_);
+    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * 1.0f);
 }
 
+void Player::Rotate() { Rotate(rotateRatio_); }
 void Player::Rotate(float ratio)
 {
     XMFLOAT3 move = GetInputMove();
@@ -220,22 +223,7 @@ void Player::Rotate(float ratio)
     transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * ratio);
 }
 
-void Player::AimTargetRotate()
-{
-    XMFLOAT3 tar = pAim_->GetTargetPos();
-    float rotateY = transform_.rotate_.y;
-
-    XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(rotateY)), cosf(XMConvertToRadians(rotateY)));
-    XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
-    XMFLOAT2 b(transform_.position_.x - tar.x, transform_.position_.z - tar.z);
-    XMVECTOR vB = XMVector2Normalize(XMLoadFloat2(&b)) * -1.0f;
-    XMStoreFloat2(&a, vA);
-    XMStoreFloat2(&b, vB);
-    float cross = a.x * b.y - a.y * b.x;
-    float dot = a.x * b.x + a.y * b.y;
-    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * rotateRatio_);
-}
-
+void Player::AimTargetRotate() { AimTargetRotate(rotateRatio_); }
 void Player::AimTargetRotate(float ratio)
 {
     XMFLOAT3 tar = pAim_->GetTargetPos();
@@ -299,6 +287,21 @@ void Player::FrontMove(float f)
     SetMovement((XMLoadFloat3(&move) * moveSpeed_) * f);
 }
 
+void Player::BackMove(float f)
+{
+    XMVECTOR vMove = { 0.0, 0.0, -1.0, 0.0 };
+    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+    vMove = XMVector3TransformCoord(vMove, mRotY);
+    vMove = XMVector3Normalize(vMove);
+    vMove = XMVector3Normalize(vMove + XMLoadFloat3(&playerMovement_));
+    XMFLOAT3 move{};
+    XMStoreFloat3(&move, vMove);
+
+    transform_.position_.x += ((move.x * moveSpeed_) * f);
+    transform_.position_.z += ((move.z * moveSpeed_) * f);
+    SetMovement((XMLoadFloat3(&move) * moveSpeed_) * f);
+}
+
 void Player::Move(float f)
 {
     transform_.position_.x += ((playerMovement_.x * moveSpeed_) * f);
@@ -350,19 +353,23 @@ void Player::CalcNoMove()
 
 void Player::InitAvo()
 {
-    //動いている場合は大体その方向
+    //動いている場合：その方向にローリング
     if (pCommand_->CmdWalk()) {
         CalcMove();
         Rotate(avoRotateRatio);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
+        Model::SetAnimFrame(hModel_, 120, 175, 1.0f);
     }
-    //動いていなくて、ターゲット状態の時は向いている方向の逆に
+    //動いていない、ターゲット状態：ターゲットの逆方向にバック
     else if(pAim_->IsTarget()) {
-        XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0);
+        AimTargetRotate(1.0f);
+        XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0f);
+        Model::SetAnimFrame(hModel_, 260, 300, 1.0f);
     }
-    //動いていなくて、かつターゲットもしていない時は向いている方向に
+    //動いてい、ターゲットもしていない：向いている方向にローリング
     else {
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
+        Model::SetAnimFrame(hModel_, 120, 175, 1.0f);
     }
 
 }

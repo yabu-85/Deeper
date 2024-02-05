@@ -55,8 +55,6 @@ void PlayerWait::Update()
 
 void PlayerWait::OnEnter()
 {
-	OutputDebugString("WaitState\n");
-	
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
 	Model::SetAnimFrame(p->GetModelHandle(), 0, 120, 1.0f);
 
@@ -105,8 +103,6 @@ void PlayerWalk::Update()
 
 void PlayerWalk::OnEnter()
 {
-	OutputDebugString("WalkState\n");
-
 }
 
 //--------------------------------------------------------------------------------
@@ -197,13 +193,10 @@ void PlayerAvo::Update()
 
 void PlayerAvo::OnEnter()
 {
-	OutputDebugString("AvoState\n");
-	
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
 	p->InitAvo();
 	nextCmd_ = 0;
 	avoTime_ = defAvoTime;
-	Model::SetAnimFrame(p->GetModelHandle(), 120, 160, 1.0f);
 
 }
 
@@ -257,8 +250,6 @@ void PlayerAtk::Update()
 
 void PlayerAtk::OnEnter()
 {
-	OutputDebugString("AttackState\n");
-	
 	time_ = 0;
 	nextCmd_ = 0;
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
@@ -310,8 +301,6 @@ void PlayerSubAtk::Update()
 
 void PlayerSubAtk::OnEnter()
 {
-	OutputDebugString("SubAttackState\n");
-	
 	nextCmd_ = 0;
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
 	p->GetPlayerWeapon()->GetSubWeapon()->SetAtkEnd(false);

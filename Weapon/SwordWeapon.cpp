@@ -59,8 +59,8 @@ void SwordWeapon::Update()
 
 void SwordWeapon::Draw()
 {
-    wandPos_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Sword");
-    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Sword");
+    wandPos_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Weapon");
+    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Weapon");
 
     if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
         transform_.rotate_.y *= -1.0f;

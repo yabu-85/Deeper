@@ -201,8 +201,6 @@ void FeetWait::Update()
 
 void FeetWait::OnEnter()
 {
-	OutputDebugString("WaitState\n");
-
 	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
 	f->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
 }
@@ -232,8 +230,6 @@ void FeetMove::Update()
 
 void FeetMove::OnEnter()
 {
-	OutputDebugString("MoveState\n");
-
 	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
 	f->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
 
@@ -272,8 +268,6 @@ void FeetAttack::Update()
 
 void FeetAttack::OnEnter()
 {
-	OutputDebugString("AttackState\n");
-
 	time_ = 0;
 	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
 	Model::SetAnimFrame(f->GetModelHandle(), 0, 200, 1.0f);

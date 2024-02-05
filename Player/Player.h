@@ -18,7 +18,7 @@ class Player : public Character
     void HearUpdate();
     void DeadUpdate();
 
-    int hModel_[2];
+    int hModel_;
     int time_;
     float moveSpeed_;           //移動スピード
     float gradually_;           //移動スピードの加減の値
@@ -41,6 +41,7 @@ public:
     void OnCollision(GameObject* pTarget) override;
     void OnAttackCollision(GameObject* pTarget) override;
 
+    void TargetRotate(XMFLOAT3 pos);
     void Rotate();
     void Rotate(float ratio);
     void AimTargetRotate();
@@ -48,6 +49,7 @@ public:
 
     XMFLOAT3 GetInputMove();        //Inputの移動量取得
     void FrontMove(float f = 1.0f); //前への移動
+    void BackMove(float f = 1.0f); //前への移動
     void Move(float f = 1.0f);      //移動
     void CalcMove();                //Inputを考慮したやつ
     void CalcNoMove();              //Input考慮してない、滑るやつとかの計算用
@@ -58,7 +60,7 @@ public:
 
     void InitAvo();
 
-    int GetModelHandle() { return hModel_[0]; }
+    int GetModelHandle() { return hModel_; }
     Aim* GetAim() { return pAim_; }
     PlayerCommand* GetCommand() { return pCommand_; }
     PlayerWeapon* GetPlayerWeapon() { return pPlayerWeapon_; }

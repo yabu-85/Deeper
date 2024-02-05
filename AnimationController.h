@@ -19,7 +19,7 @@ public:
 	void AddAnime(int s, int e);
 
 	//redはblendFactorを１フレームごとに下げる値（整数で
-	void SetNextAnime(int id, int blendFrame, float blendFactor, float red, int startFrame = 0 );
+	void SetNextAnime(int id, int blendFrame, float blendFactor, float red);
 
 	void Update();
 

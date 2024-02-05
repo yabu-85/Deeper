@@ -95,14 +95,22 @@ void PlayerWalk::Update()
 	p->GetPlayerWeapon()->WeaponChangeIndex();
 	p->CalcMove();
 	p->Move(); 
-
-	if (p->GetAim()->IsTarget()) p->AimTargetRotate();
-	else p->Rotate();
+	p->Rotate();
 
 }
 
 void PlayerWalk::OnEnter()
 {
+	Player* p = static_cast<Player*>(owner_->GetGameObject());
+	Model::SetAnimFrame(p->GetModelHandle(), 301, 343, 1.0f);
+
+}
+
+void PlayerWalk::OnExit()
+{
+	Player* p = static_cast<Player*>(owner_->GetGameObject());
+	Model::SetAnimFrame(p->GetModelHandle(), 0, 120, 1.0f);
+
 }
 
 //--------------------------------------------------------------------------------

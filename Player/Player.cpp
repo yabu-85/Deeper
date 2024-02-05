@@ -13,6 +13,7 @@
 #include "../VFXManager.h"
 #include "../Engine/SphereCollider.h"
 #include "../Stage/CollisionMap.h"
+#include "../AnimationController.h"
 
 #include "../Engine/Text.h"
 #include "../Engine/BoxCollider.h"
@@ -28,6 +29,8 @@ namespace {
 
     bool isCollider = true; //“–‚½‚è”»’è‚·‚é‚©‚Ç‚¤‚©
     Text* pText = new Text;
+    AnimationController* pAnimCntrl = nullptr;
+
 }
 
 void Player::ApperUpdate()
@@ -111,8 +114,6 @@ void Player::Initialize()
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 
-    //BoxCollider* collider = new BoxCollider(XMFLOAT3(0.0f, 1.3f, 0.0f), XMFLOAT3(0.5f, 2.6f, 0.5f));
-    //AddCollider(collider);
     SphereCollider* collid = new SphereCollider(XMFLOAT3(0.0f, 1.2f, 0.0f), 0.25f);
     AddCollider(collid);
 
@@ -120,12 +121,18 @@ void Player::Initialize()
     transform_.position_.y += (time_ * 0.5f);
 
     pText->Initialize();
-
+    
+    pAnimCntrl = new AnimationController(hModel_);
+    pAnimCntrl->AddAnime(301, 343);
 
 }
 
 void Player::Update()
 {
+    if(Input::IsKeyDown(DIK_3))
+        pAnimCntrl->SetNextAnime(0, 0, 1.0f, 1.5f);
+    pAnimCntrl->Update();
+
     pCommand_->Update();
     
     if (state_ == MAIN_STATE::APPER) ApperUpdate();

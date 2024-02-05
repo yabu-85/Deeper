@@ -14,18 +14,21 @@ void AnimationController::AddAnime(int s, int e)
 	animeDatas_.push_back(data);
 }
 
-void AnimationController::SetNextAnime(int id, int blendFrame, float blendFactor, float red, int startFrame)
+void AnimationController::SetNextAnime(int id, int blendFrame, float blendFactor, float red)
 {
 	currentAnime_ = id;
 	currentBlend_ = blendFactor;
 	blendRed_ = red;
 
+	//アニメーションのフレーム数をセット
+	Model::SetBlendingAnimFrame(modelNum_, animeDatas_.at(id).startFrame, animeDatas_.at(id).endFrame, blendFrame, 1.0f, blendFactor);
+	
 }
 
 void AnimationController::Update()
 {
 	currentBlend_ -= blendRed_;
-	if (currentBlend_ < 0) currentBlend_ = 0.0f;
+	if (currentBlend_ < 0.0f) currentBlend_ = 0.0f;
 	
 	Model::SetBlendFactor(modelNum_, currentBlend_);
 

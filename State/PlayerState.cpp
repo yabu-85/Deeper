@@ -57,7 +57,8 @@ void PlayerWait::Update()
 void PlayerWait::OnEnter()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->GetAnimationController()->SetNextAnime(0, Model::GetAnimFrame(p->GetModelHandle()), 1.0f, 0.1f);
+	float weight = 1.0f - Model::GetBlendFactor(p->GetModelHandle());
+	p->GetAnimationController()->SetNextAnime(0, Model::GetAnimFrame(p->GetModelHandle()), weight, 0.1f);
 
 }
 
@@ -103,7 +104,7 @@ void PlayerWalk::Update()
 void PlayerWalk::OnEnter()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->GetAnimationController()->SetNextAnime(1, 0, 1.0f, 0.1f);
+	p->GetAnimationController()->SetNextAnime(1, 0, 1.0f, 0.05f);
 	
 }
 

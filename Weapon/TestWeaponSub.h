@@ -6,7 +6,6 @@ class Player;
 
 class TestWeaponSub : public WeaponBase
 {
-    Player* pPlayer_;
 public:
     TestWeaponSub(GameObject* parent);
     ~TestWeaponSub() override;

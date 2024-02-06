@@ -9,7 +9,7 @@
 #include "../Enemy/EnemyBase.h"
 
 TestWeaponSub::TestWeaponSub(GameObject* parent)
-    : WeaponBase(parent, "TestWeaponSub"), pPlayer_(nullptr)
+    : WeaponBase(parent, "TestWeaponSub")
 {
 }
 
@@ -33,8 +33,8 @@ void TestWeaponSub::Initialize()
     transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
     durance_ = 50;
 
-    pPlayer_ = static_cast<Player*>(GetParent());
-    Model::GetBoneIndex(pPlayer_->GetModelHandle(), "Weapon", &boneIndex_, &partIndex_);
+    Player* p = static_cast<Player*>(GetParent());
+    Model::GetBoneIndex(p->GetModelHandle(), "Weapon", &boneIndex_, &partIndex_);
     assert(boneIndex_ >= 0);
 
 }
@@ -47,14 +47,15 @@ void TestWeaponSub::Draw()
 {
     if (!IsVisibled()) return;
 
-    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
-    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
+    Player* p = static_cast<Player*>(GetParent());
+    transform_.position_ = Model::GetBoneAnimPosition(p->GetModelHandle(), boneIndex_, partIndex_);
+    transform_.rotate_ = Model::GetBoneAnimRotate(p->GetModelHandle(), boneIndex_, partIndex_);
 
     if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
         transform_.rotate_.y *= -1.0f;
         transform_.rotate_.z *= -1.0f;
     }
-    transform_.rotate_.y += pPlayer_->GetRotate().y;
+    transform_.rotate_.y += p->GetRotate().y;
 
     Transform t = transform_;
     CalcOffset(t);
@@ -75,7 +76,8 @@ void TestWeaponSub::ResetState()
 
 void TestWeaponSub::ShotBullet()
 {
-    Aim* pAim = pPlayer_->GetAim();
+    Player* p = static_cast<Player*>(GetParent());
+    Aim* pAim = p->GetAim();
     XMFLOAT3 tar;
     if (pAim->IsTarget()) {
         tar = pAim->GetTargetPos();
@@ -87,7 +89,7 @@ void TestWeaponSub::ShotBullet()
         XMFLOAT3 vec = pAim->GetAimDirection();
         tar = XMFLOAT3(pos.x + vec.x, pos.y + vec.y, pos.z + vec.z);
     }
-    TestBullet* b = Instantiate<TestBullet>(pPlayer_->GetParent());
+    TestBullet* b = Instantiate<TestBullet>(p->GetParent());
     b->Shot(transform_.position_, tar);
 }
 
@@ -107,16 +109,17 @@ void TestWeaponSubWait::Update()
 
 TestWeaponSubCombo1::TestWeaponSubCombo1(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
-     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
 }
 
 void TestWeaponSubCombo1::Update()
 {
-    pPlayer_->CalcMove();
-    pPlayer_->Move();
+    Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+    p->CalcMove();
+    p->Move();
 
     time_--;
-    if (pPlayer_->GetCommand()->CmdSubAtk()) next_ = true;
+    PlayerCommand* cmd = p->GetCommand();
+    if (cmd && p->GetCommand()->CmdSubAtk()) next_ = true;
 
     TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     if (time_ <= 0) {
@@ -155,16 +158,16 @@ void TestWeaponSubCombo1::OnExit()
 
 TestWeaponSubCombo2::TestWeaponSubCombo2(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
-     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
 }
 
 void TestWeaponSubCombo2::Update()
 {
-    pPlayer_->CalcMove();
-    pPlayer_->Move();
+    Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+    p->CalcMove();
+    p->Move();
 
     time_--;
-    if (pPlayer_->GetCommand()->CmdSubAtk()) next_ = true;
+    if (p->GetCommand()->CmdSubAtk()) next_ = true;
 
     TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     if (time_ <= 0) {

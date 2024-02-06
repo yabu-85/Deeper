@@ -20,7 +20,7 @@
 
 namespace {
     const float stopGradually = 0.25f;      //移動スピードの加減の値止まるとき
-    const float moveGradually = 0.15f;      //移動スピードの加減の値移動時
+    const float moveGradually = 0.20f;      //移動スピードの加減の値移動時
     const float maxMoveSpeed = 1.0f;        //最大移動スピード
     const float avoRotateRatio = 1.0f;      //回避時のRotateRatio
 

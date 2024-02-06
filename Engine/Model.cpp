@@ -164,6 +164,11 @@ namespace Model
 		_datas[handle]->blendWeight = weight;
 	}
 
+	float GetBlendFactor(int handle)
+	{
+		return _datas[handle]->blendWeight;
+	}
+
 	void SetAnimeStop(int handle, bool b)
 	{
 		_datas[handle]->isAimeStop = b;

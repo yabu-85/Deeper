@@ -111,6 +111,9 @@ namespace Model
 	//ブレンドモードのWeight設定
 	void SetBlendFactor(int handle, float weight);
 
+	//今のBlendWeightを取得
+	float GetBlendFactor(int handle);
+
 	//アニメーション停止
 	void SetAnimeStop(int handle, bool b);
 

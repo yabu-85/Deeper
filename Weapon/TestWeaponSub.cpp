@@ -34,6 +34,9 @@ void TestWeaponSub::Initialize()
     durance_ = 50;
 
     pPlayer_ = static_cast<Player*>(GetParent());
+    Model::GetBoneIndex(pPlayer_->GetModelHandle(), "Weapon", &boneIndex_, &partIndex_);
+    assert(boneIndex_ >= 0);
+
 }
 
 void TestWeaponSub::Update()
@@ -44,8 +47,9 @@ void TestWeaponSub::Draw()
 {
     if (!IsVisibled()) return;
 
-    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Weapon");
-    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Weapon");
+    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
+    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
+
     if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
         transform_.rotate_.y *= -1.0f;
         transform_.rotate_.z *= -1.0f;

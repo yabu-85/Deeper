@@ -7,6 +7,8 @@ class WeaponBase : public GameObject
 {
 protected:
 	int hModel_;
+	int boneIndex_;
+	int partIndex_;
 	unsigned durance_;				//耐久値
 	bool atkEnd_;					//攻撃が終わったかどうかのフラグ
 	Transform offsetTrans_;			//移動量

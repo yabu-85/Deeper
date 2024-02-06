@@ -120,17 +120,19 @@ namespace Model
 	//現在のアニメーションのフレームを取得
 	int GetAnimFrame(int handle);
 
+	bool GetBoneIndex(int handle, std::string boneName, int* index, int* partIndex);
+
 	//任意のボーンの位置を取得
 	//引数：handle		調べたいモデルの番号
 	//引数：boneName	調べたいボーンの名前
 	//戻値：ボーンの位置（ワールド座標）
-	XMFLOAT3 GetBonePosition(int handle, std::string boneName);
+	XMFLOAT3 GetBonePosition(int handle, int boneIndex, int partIndex);
 
 	//アニメーション時のボーンの位置を取得
-	XMFLOAT3 GetBoneAnimPosition(int handle, std::string boneName);
+	XMFLOAT3 GetBoneAnimPosition(int handle, int boneIndex, int partIndex);
 	
 	//アニメーション時のボーンの回転を取得
-	XMFLOAT3 GetBoneAnimRotate(int handle, std::string boneName);
+	XMFLOAT3 GetBoneAnimRotate(int handle, int boneIndex, int partIndex);
 
 	//ワールド行列を設定
 	//引数：handle	設定したいモデルの番号

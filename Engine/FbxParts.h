@@ -146,23 +146,25 @@ public:
 	//引数：scene		Fbxファイルから読み込んだシーン情報
 	void DrawMeshAnime(Transform& transform, FbxTime time, FbxScene* scene);
 
+	bool GetBoneIndex(std::string boneName, int* index);
+
 	//任意のボーンの位置を取得
 	//引数：boneName	取得したいボーンの位置
 	//引数：position	ワールド座標での位置【out】
 	//戻値：見つかればtrue
-	bool GetBonePosition(std::string boneName, XMFLOAT3	* position);
+	XMFLOAT3 GetBonePosition(int index);
 
 	//任意のボーンの位置を取得
-	bool GetBonePosition(std::string boneName, FbxTime time, XMFLOAT3* position);
+	XMFLOAT3 GetBonePosition(int index, FbxTime time);
 
 	//任意のボーンの位置を取得BlendMode
-	bool GetBonePosition(std::string boneName, FbxTime time1, FbxTime time2, float blendFactor, XMFLOAT3* position);
+	XMFLOAT3 GetBonePosition(int index, FbxTime time1, FbxTime time2, float blendFactor);
 
 	//任意のボーンの回転を取得
-	bool GetBoneRotate(std::string boneName, FbxTime time, XMFLOAT3* rotate);
+	XMFLOAT3 GetBoneRotate(int index, FbxTime time);
 
 	//任意のボーンの回転を取得BlendMode
-	bool GetBoneRotate(std::string boneName, FbxTime frame1, FbxTime frame2, float blendFactor, XMFLOAT3* rotate);
+	XMFLOAT3 GetBoneRotate(int index, FbxTime frame1, FbxTime frame2, float blendFactor);
 
 	//スキンメッシュ情報を取得
 	//戻値：スキンメッシュ情報

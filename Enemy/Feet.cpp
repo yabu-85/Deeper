@@ -15,7 +15,8 @@
 #include "../Engine/Input.h"
 
 Feet::Feet(GameObject* parent)
-	:EnemyBase(parent, "FeetEnemy"), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr), pVisionSearchAction_(nullptr)
+	:EnemyBase(parent, "FeetEnemy"), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr),
+	pVisionSearchAction_(nullptr), boneIndex_(-1), partIndex_(-1)
 {
 }
 
@@ -75,6 +76,9 @@ void Feet::Initialize()
 	pCombatStateManager_->ChangeState("Wait");
 	pCombatStateManager_->Initialize();
 	
+	Model::GetBoneIndex(hModel_, "attack_Hand.R", &boneIndex_, &partIndex_);
+	assert(boneIndex_ >= 0);
+
 }
 
 void Feet::Update()
@@ -90,7 +94,7 @@ void Feet::Draw()
 {
 	pEnemyUi_->Draw();
 
-	XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, "attack_Hand.R");
+	XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, boneIndex_, partIndex_);
 	center = XMFLOAT3(center.x - transform_.position_.x, center.y - transform_.position_.y, center.z - transform_.position_.z);
 	pHandCollider_->SetCenter(center);
 

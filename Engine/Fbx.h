@@ -87,22 +87,24 @@ public:
 	//解放
 	void    Release();
 
+	bool GetBoneIndex(std::string boneName, int* index, int* partIndex);
+
 	//任意のボーンの位置を取得
 	//引数：boneName	取得したいボーンの位置
 	//戻値：ボーンの位置
-	XMFLOAT3 GetBonePosition(std::string boneName);
+	XMFLOAT3 GetBonePosition(int index, int partIndex);
 
 	//任意のアニメーション時のボーンの位置を取得
-	XMFLOAT3 GetBoneAnimBlendPosition(std::string boneName, int frame1, int frame2, float blendFactor);
+	XMFLOAT3 GetBoneAnimBlendPosition(int index, int partIndex, int frame1, int frame2, float blendFactor);
 
 	//任意のアニメーション時のボーンの位置を取得
-	XMFLOAT3 GetBoneAnimPosition(std::string boneName, int frame);
+	XMFLOAT3 GetBoneAnimPosition(int index, int partIndex, int frame);
 
 	//任意のアニメーション時のボーンの回転を取得
-	XMFLOAT3 GetBoneAnimRotate(std::string boneName, int frame);
+	XMFLOAT3 GetBoneAnimRotate(int index, int partIndex, int frame);
 
 	//任意のアニメーション時のボーンの回転Matrixを取得
-	XMFLOAT3 GetBoneAniBlendRotate(std::string boneName, int frame1, int frame2, float blendFactor);
+	XMFLOAT3 GetBoneAniBlendRotate(int index, int partIndex, int frame1, int frame2, float blendFactor);
 
 	//レイキャスト（レイを飛ばして当たり判定）
 	//引数：data	必要なものをまとめたデータ

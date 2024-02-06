@@ -38,7 +38,7 @@ void SwordWeapon::Initialize()
     hModel_ = Model::Load("Model/BlueBox.fbx");
     assert(hModel_ >= 0);
 
-    pPlayer_ = (Player*)GetParent();
+    pPlayer_ = static_cast<Player*>(GetParent());
 
     seg_ = new SegmentCollider(XMFLOAT3(), XMVECTOR());
     seg_->SetValid(false);
@@ -59,8 +59,8 @@ void SwordWeapon::Update()
 
 void SwordWeapon::Draw()
 {
-    wandPos_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Weapon");
-    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Weapon");
+//    wandPos_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Weapon");
+//    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Weapon");
 
     if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
         transform_.rotate_.y *= -1.0f;

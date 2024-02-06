@@ -103,84 +103,57 @@ void Fbx::CheckNode(FbxNode * pNode, std::vector<FbxParts*>* pPartsList)
 
 void Fbx::Release()
 {
-
 }
 
-XMFLOAT3 Fbx::GetBonePosition(std::string boneName)
+bool Fbx::GetBoneIndex(std::string boneName, int* index, int* partIndex)
 {
-	XMFLOAT3 position = XMFLOAT3(0, 0, 0);
+	*index = -1;
+	*partIndex = -1;
+	
 	for (int i = 0; i < parts_.size(); i++)
 	{
-		if (parts_[i]->GetBonePosition(boneName, &position))
-			break;
+		if (parts_[i]->GetBoneIndex(boneName, index)) {
+			*partIndex = i;
+			return true;
+		}
 	}
-
-
-	return position;
+	return false;
 }
 
-XMFLOAT3 Fbx::GetBoneAnimBlendPosition(std::string boneName, int frame1, int frame2, float blendFactor)
+XMFLOAT3 Fbx::GetBonePosition(int index, int partIndex)
 {
-	XMFLOAT3 position = XMFLOAT3(0, 0, 0);
+	return parts_[partIndex]->GetBonePosition(index);
+}
 
+XMFLOAT3 Fbx::GetBoneAnimBlendPosition(int index, int partIndex, int frame1, int frame2, float blendFactor)
+{
 	FbxTime time1, time2;
 	time1.SetTime(0, 0, 0, frame1, 0, 0, _frameRate);
 	time2.SetTime(0, 0, 0, frame2, 0, 0, _frameRate);
 
-	for (int i = 0; i < parts_.size(); i++)
-	{
-		if (parts_[i]->GetBonePosition(boneName, time1, time2, blendFactor, &position))
-			break;
-	}
-
-	return position;
+	return parts_[partIndex]->GetBonePosition(index, time1, time2, blendFactor);
 }
 
-XMFLOAT3 Fbx::GetBoneAnimPosition(std::string boneName, int frame)
+XMFLOAT3 Fbx::GetBoneAnimPosition(int index, int partIndex, int frame)
 {
-	XMFLOAT3 position = XMFLOAT3(0, 0, 0);
-
 	FbxTime time;
 	time.SetTime(0, 0, 0, frame, 0, 0, _frameRate);
-
-	for (int i = 0; i < parts_.size(); i++)
-	{
-		if (parts_[i]->GetBonePosition(boneName, time, &position))
-			break;
-	}
-
-	return position;
+	return parts_[partIndex]->GetBonePosition(index, time);
 }
 
-XMFLOAT3 Fbx::GetBoneAnimRotate(std::string boneName, int frame)
+XMFLOAT3 Fbx::GetBoneAnimRotate(int index, int partIndex, int frame)
 {
-	XMFLOAT3 rotate;
 	FbxTime time;
 	time.SetTime(0, 0, 0, frame, 0, 0, _frameRate);
-
-	for (int i = 0; i < parts_.size(); i++)
-	{
-		if (parts_[i]->GetBoneRotate(boneName, time, &rotate))
-			break;
-	}
-
-	return rotate;
+	return parts_[partIndex]->GetBoneRotate(index, time);
 }
 
-XMFLOAT3 Fbx::GetBoneAniBlendRotate(std::string boneName, int frame1, int frame2, float blendFactor)
+XMFLOAT3 Fbx::GetBoneAniBlendRotate(int index, int partIndex, int frame1, int frame2, float blendFactor)
 {
-	XMFLOAT3 rotate;
 	FbxTime time1, time2;
 	time1.SetTime(0, 0, 0, frame1, 0, 0, _frameRate);
 	time2.SetTime(0, 0, 0, frame2, 0, 0, _frameRate);
-
-	for (int i = 0; i < parts_.size(); i++)
-	{
-		if (parts_[i]->GetBoneRotate(boneName, time1, time2, blendFactor, &rotate))
-			break;
-	}
-
-	return rotate;
+	return parts_[partIndex]->GetBoneRotate(index, time1, time2, blendFactor);
 }
 
 void Fbx::Draw(Transform& transform, int type, int frame1, int frame2, float blendFactor)

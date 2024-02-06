@@ -52,6 +52,9 @@ void TestWeaponMain::Initialize()
     pPolyLine_->Load("tex.png");
     pPolyLine_->AddPosition(transform_.position_);
 
+    Model::GetBoneIndex(pPlayer_->GetModelHandle(), "Weapon", &boneIndex_, &partIndex_);
+    assert(boneIndex_ >= 0);
+
 }
 
 void TestWeaponMain::Update()
@@ -60,8 +63,8 @@ void TestWeaponMain::Update()
 
 void TestWeaponMain::Draw()
 {
-    wandPos_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), "Weapon");
-    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), "Weapon");
+    wandPos_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
+    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     
     if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
         transform_.rotate_.y *= -1.0f;

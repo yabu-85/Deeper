@@ -10,6 +10,8 @@ class VisionSearchAction;
 class Feet : public EnemyBase
 {
     int hModel_;
+    int boneIndex_;
+    int partIndex_;
     SphereCollider* pHandCollider_;
 
     //Action

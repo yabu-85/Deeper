@@ -180,26 +180,30 @@ namespace Model
 		return (int)_datas[handle]->nowFrame;
 	}
 
+	bool GetBoneIndex(int handle, std::string boneName, int* index, int* partIndex)
+	{
+		return _datas[handle]->pFbx->GetBoneIndex(boneName, index, partIndex);
+	}
 
 	//任意のボーンの位置を取得
-	XMFLOAT3 GetBonePosition(int handle, std::string boneName)
+	XMFLOAT3 GetBonePosition(int handle, int boneIndex, int partIndex)
 	{
-		XMFLOAT3 pos = _datas[handle]->pFbx->GetBonePosition(boneName);
+		XMFLOAT3 pos = _datas[handle]->pFbx->GetBonePosition(boneIndex, partIndex);
 		XMVECTOR vec = XMVector3TransformCoord(XMLoadFloat3(&pos), _datas[handle]->transform.GetWorldMatrix());
 		XMStoreFloat3(&pos, vec);
 		return pos;
 	}
 
-	XMFLOAT3 GetBoneAnimPosition(int handle, std::string boneName)
+	XMFLOAT3 GetBoneAnimPosition(int handle, int boneIndex, int partIndex)
 	{
 		//相対座標（ボーンの中心からの位置）
 		//ブレンディング中だったらそれ用の
 		XMFLOAT3 pos = XMFLOAT3();
 		if (_datas[handle]->isBlending) {
-			pos = _datas[handle]->pFbx->GetBoneAnimBlendPosition(boneName, (int)_datas[handle]->nowFrame, (int)_datas[handle]->blendFrame, _datas[handle]->blendWeight);
+			pos = _datas[handle]->pFbx->GetBoneAnimBlendPosition(boneIndex, partIndex, (int)_datas[handle]->nowFrame, (int)_datas[handle]->blendFrame, _datas[handle]->blendWeight);
 		}
 		else {
-			pos = _datas[handle]->pFbx->GetBoneAnimPosition(boneName, (int)_datas[handle]->nowFrame);
+			pos = _datas[handle]->pFbx->GetBoneAnimPosition(boneIndex, partIndex, (int)_datas[handle]->nowFrame);
 		}
 
 		XMVECTOR vec = XMVector3TransformCoord(XMLoadFloat3(&pos), _datas[handle]->transform.GetWorldMatrix()); //posをワールドマトリックスで計算する
@@ -207,14 +211,14 @@ namespace Model
 		return pos;
 	}
 
-	XMFLOAT3 GetBoneAnimRotate(int handle, std::string boneName)
+	XMFLOAT3 GetBoneAnimRotate(int handle, int boneIndex, int partIndex)
 	{
 		//相対座標（ボーンの中心からの位置）
 		//ブレンド中ならそれ用の
 		if(_datas[handle]->isBlending) 
-			return _datas[handle]->pFbx->GetBoneAniBlendRotate(boneName, (int)_datas[handle]->nowFrame, (int)_datas[handle]->blendFrame, _datas[handle]->blendWeight);
+			return _datas[handle]->pFbx->GetBoneAniBlendRotate(boneIndex, partIndex, (int)_datas[handle]->nowFrame, (int)_datas[handle]->blendFrame, _datas[handle]->blendWeight);
 		
-		return _datas[handle]->pFbx->GetBoneAnimRotate(boneName, (int)_datas[handle]->nowFrame);
+		return _datas[handle]->pFbx->GetBoneAnimRotate(boneIndex, partIndex, (int)_datas[handle]->nowFrame);
 	}
 
 	//ワールド行列を設定

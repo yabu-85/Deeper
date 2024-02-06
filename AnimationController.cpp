@@ -28,8 +28,14 @@ void AnimationController::SetNextAnime(int id, int blendFrame, float blendFactor
 void AnimationController::Update()
 {
 	currentBlend_ -= blendRed_;
-	if (currentBlend_ < 0.0f) currentBlend_ = 0.0f;
-	
+
+	//0ˆÈ‰º‚É‚È‚Á‚½‚çƒuƒŒƒ“ƒhI‚í‚è‚É‚·‚é
+	if (currentBlend_ < 0.0f) {
+		Model::SetBlend(modelNum_, false);
+		currentBlend_ = 0.0f;
+		return;
+	}
+
 	Model::SetBlendFactor(modelNum_, currentBlend_);
 
 }

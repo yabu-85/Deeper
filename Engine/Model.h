@@ -105,10 +105,16 @@ namespace Model
 	//引数：animSpeed	アニメーション速度
 	void SetAnimFrame(int handle, int startFrame, int endFrame, float animSpeed);
 
+	//ブレンドモード化設定する
+	void SetBlend(int handle, bool b);
+
+	//ブレンドモードのWeight設定
 	void SetBlendFactor(int handle, float weight);
 
 	//アニメーション停止
 	void SetAnimeStop(int handle, bool b);
+
+	//アニメーション止まっているか調べる
 	bool IsAnimeStop(int handle);
 
 	//現在のアニメーションのフレームを取得
@@ -125,9 +131,6 @@ namespace Model
 	
 	//アニメーション時のボーンの回転を取得
 	XMFLOAT3 GetBoneAnimRotate(int handle, std::string boneName);
-
-	//アニメーション時のボーンの回転Matrixを取得
-	XMMATRIX GetBoneAnimRotateMatrix(int handle, std::string boneName);
 
 	//ワールド行列を設定
 	//引数：handle	設定したいモデルの番号

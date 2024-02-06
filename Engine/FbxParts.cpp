@@ -668,7 +668,33 @@ bool FbxParts::GetBonePosition(std::string boneName, FbxTime time, XMFLOAT3* pos
 	return false;
 }
 
-bool FbxParts::GetBoneRotate(std::string boneName, FbxTime time, XMFLOAT3* rotationAxis)
+bool FbxParts::GetBonePosition(std::string boneName, FbxTime time1, FbxTime time2, float blendFactor, XMFLOAT3* position)
+{
+	for (int i = 0; i < numBone_; i++)
+	{
+		if (boneName == ppCluster_[i]->GetLink()->GetName())
+		{
+			FbxAnimEvaluator* evaluator = ppCluster_[i]->GetLink()->GetScene()->GetAnimationEvaluator();
+			FbxMatrix mCurrentOrentation1 = evaluator->GetNodeGlobalTransform(ppCluster_[i]->GetLink(), time1);
+			FbxMatrix mCurrentOrentation2 = evaluator->GetNodeGlobalTransform(ppCluster_[i]->GetLink(), time2);
+
+			float w1 = 1 - blendFactor;
+			position->x = (float)mCurrentOrentation1[3][0] * w1;
+			position->y = (float)mCurrentOrentation1[3][1] * w1;
+			position->z = (float)mCurrentOrentation1[3][2] * w1;
+
+			position->x += (float)mCurrentOrentation2[3][0] * blendFactor;
+			position->y += (float)mCurrentOrentation2[3][1] * blendFactor;
+			position->z += (float)mCurrentOrentation2[3][2] * blendFactor;
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool FbxParts::GetBoneRotate(std::string boneName, FbxTime time, XMFLOAT3* rotate)
 {
 	for (int i = 0; i < numBone_; i++)
 	{
@@ -687,9 +713,9 @@ bool FbxParts::GetBoneRotate(std::string boneName, FbxTime time, XMFLOAT3* rotat
 			float yaw = static_cast<float>(asin(-rotationRow2[0]));
 			float roll = static_cast<float>(atan2(rotationRow1[0], rotationRow0[0]));
 
-			rotationAxis->x = -XMConvertToDegrees(pitch);
-			rotationAxis->y = -XMConvertToDegrees(yaw);
-			rotationAxis->z = XMConvertToDegrees(roll);
+			rotate->x = -XMConvertToDegrees(pitch);
+			rotate->y = -XMConvertToDegrees(yaw);
+			rotate->z = XMConvertToDegrees(roll);
 
 			return true;
 		}
@@ -697,36 +723,45 @@ bool FbxParts::GetBoneRotate(std::string boneName, FbxTime time, XMFLOAT3* rotat
 	return false;
 }
 
-
-bool FbxParts::GetBoneRotateMatrix(std::string boneName, FbxTime time, XMMATRIX* rotate)
+bool FbxParts::GetBoneRotate(std::string boneName, FbxTime frame1, FbxTime frame2, float blendFactor, XMFLOAT3* rotate)
 {
 	for (int i = 0; i < numBone_; i++)
 	{
 		if (boneName == ppCluster_[i]->GetLink()->GetName())
 		{
 			FbxAnimEvaluator* evaluator = ppCluster_[i]->GetLink()->GetScene()->GetAnimationEvaluator();
-			FbxMatrix mCurrentOrentation = evaluator->GetNodeGlobalTransform(ppCluster_[i]->GetLink(), time);
+			FbxMatrix mCurrentOrentation1 = evaluator->GetNodeGlobalTransform(ppCluster_[i]->GetLink(), frame1);
+			FbxMatrix mCurrentOrentation2 = evaluator->GetNodeGlobalTransform(ppCluster_[i]->GetLink(), frame2);
 
-			// 行列コピー（Fbx形式からDirectXへの変換）
-			XMFLOAT4X4 pose;
-			for (DWORD x = 0; x < 4; x++)
-			{
-				for (DWORD y = 0; y < 4; y++)
-				{
-					pose(x, y) = (float)mCurrentOrentation.Get(x, y);
-				}
-			}
+			// Extract rotation axis from the rotation matrix
+			FbxVector4 rotationRow0 = mCurrentOrentation1.GetRow(0);
+			FbxVector4 rotationRow1 = mCurrentOrentation1.GetRow(1);
+			FbxVector4 rotationRow2 = mCurrentOrentation1.GetRow(2);
 
-			// オフセット時のポーズの差分を計算する
-			XMMATRIX pos = XMLoadFloat4x4(&pose);
-			XMMATRIX newPos = XMMatrixInverse(nullptr, pBoneArray_[i].bindPose);
-			newPos *= pos;
-			
-			*rotate = newPos;
+			// Calculate the rotation angles in degrees
+			float pitch = static_cast<float>(atan2(rotationRow2[1], rotationRow2[2]));
+			float yaw = static_cast<float>(asin(-rotationRow2[0]));
+			float roll = static_cast<float>(atan2(rotationRow1[0], rotationRow0[0]));
+
+			float w1 = 1 - blendFactor;
+			rotate->x = -(XMConvertToDegrees(pitch) * w1);
+			rotate->y = -(XMConvertToDegrees(yaw) * w1);
+			rotate->z = (XMConvertToDegrees(roll) * w1);
+
+			//ブレンドの値足す
+			rotationRow0 = mCurrentOrentation2.GetRow(0);
+			rotationRow1 = mCurrentOrentation2.GetRow(1);
+			rotationRow2 = mCurrentOrentation2.GetRow(2);
+			pitch = static_cast<float>(atan2(rotationRow2[1], rotationRow2[2]));
+			yaw = static_cast<float>(asin(-rotationRow2[0]));
+			roll = static_cast<float>(atan2(rotationRow1[0], rotationRow0[0]));
+			rotate->x += -(XMConvertToDegrees(pitch) * blendFactor);
+			rotate->y += -(XMConvertToDegrees(yaw) * blendFactor);
+			rotate->z += (XMConvertToDegrees(roll) * blendFactor);
+
 			return true;
 		}
 	}
-
 	return false;
 }
 

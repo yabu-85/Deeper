@@ -154,6 +154,11 @@ namespace Model
 		_datas[handle]->SetAnimFrame(startFrame, endFrame, animSpeed);
 	}
 
+	void SetBlend(int handle, bool b)
+	{
+		_datas[handle]->isBlending = b;
+	}
+
 	void SetBlendFactor(int handle, float weight)
 	{
 		_datas[handle]->blendWeight = weight;
@@ -187,7 +192,16 @@ namespace Model
 
 	XMFLOAT3 GetBoneAnimPosition(int handle, std::string boneName)
 	{
-		XMFLOAT3 pos = _datas[handle]->pFbx->GetBoneAnimPosition(boneName, (int)_datas[handle]->nowFrame); //相対座標（ボーンの中心からの位置）
+		//相対座標（ボーンの中心からの位置）
+		//ブレンディング中だったらそれ用の
+		XMFLOAT3 pos = XMFLOAT3();
+		if (_datas[handle]->isBlending) {
+			pos = _datas[handle]->pFbx->GetBoneAnimBlendPosition(boneName, (int)_datas[handle]->nowFrame, (int)_datas[handle]->blendFrame, _datas[handle]->blendWeight);
+		}
+		else {
+			pos = _datas[handle]->pFbx->GetBoneAnimPosition(boneName, (int)_datas[handle]->nowFrame);
+		}
+
 		XMVECTOR vec = XMVector3TransformCoord(XMLoadFloat3(&pos), _datas[handle]->transform.GetWorldMatrix()); //posをワールドマトリックスで計算する
 		XMStoreFloat3(&pos, vec);
 		return pos;
@@ -195,14 +209,13 @@ namespace Model
 
 	XMFLOAT3 GetBoneAnimRotate(int handle, std::string boneName)
 	{
-		return _datas[handle]->pFbx->GetBoneAnimRotate(boneName, (int)_datas[handle]->nowFrame); //相対座標（ボーンの中心からの位置）
+		//相対座標（ボーンの中心からの位置）
+		//ブレンド中ならそれ用の
+		if(_datas[handle]->isBlending) 
+			return _datas[handle]->pFbx->GetBoneAniBlendRotate(boneName, (int)_datas[handle]->nowFrame, (int)_datas[handle]->blendFrame, _datas[handle]->blendWeight);
+		
+		return _datas[handle]->pFbx->GetBoneAnimRotate(boneName, (int)_datas[handle]->nowFrame);
 	}
-
-	XMMATRIX GetBoneAnimRotateMatrix(int handle, std::string boneName)
-	{
-		return _datas[handle]->pFbx->GetBoneAnimRotateMatrix(boneName, (int)_datas[handle]->nowFrame); //相対座標（ボーンの中心からの位置）
-	}
-
 
 	//ワールド行列を設定
 	void SetTransform(int handle, Transform & transform)

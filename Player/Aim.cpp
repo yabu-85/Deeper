@@ -366,11 +366,6 @@ void Aim::CalcCameraOffset(float _aimMove)
 
 void Aim::RayCastStage()
 {
-    //’n–Ê‚Ì”»’è
-    if (cameraPosition_.y < 0.0f) {
-
-    }
-    
     pCollisionMap_ = GameManager::GetCollisionMap();
     if (pCollisionMap_ == nullptr) return;
     
@@ -383,7 +378,7 @@ void Aim::RayCastStage()
     data.start = start;
     data.dir = dir;
     float min = 0.0f;
-    pCollisionMap_->GetRayCastMinDist(cameraPosition_, pPlayer_->GetPosition(), &data, min);
+    pCollisionMap_->GetRayCastMinDist(cameraPosition_, cameraTarget_, &data, min);
 
     //ƒŒƒC“–‚½‚Á‚½E”»’è‹——£“à‚¾‚Á‚½‚ç
     if (min <= (defPerspectDistance_)) {

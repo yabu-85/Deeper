@@ -39,6 +39,7 @@ void Feet::Initialize()
 	hp_ = maxHp_;
 	aimTargetPos_ = 1.0f;
 	bodyWeight_ = 10.0f;
+	attackDamage_ = 50;
 
 	//ColliderÇÃê›íË
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5, 0), 0.75f);

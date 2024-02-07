@@ -9,6 +9,7 @@
 #include "../Player/PlayerCommand.h"
 #include "../Engine/Direct3D.h"
 #include "../Engine/Model.h"
+#include "../Player/LifeManager.h"
 
 Warp::Warp(GameObject* parent)
 	: GameObject(parent, "Warp"), warpScene_(SCENE_ID::SCENE_ID_TITLE), isPlayerHit_(false), isValid_(false), hModel_(-1)
@@ -73,7 +74,7 @@ void Warp::OnCollision(GameObject* pTarget)
 	XMFLOAT3 cPos = XMFLOAT3(transform_.position_.x, transform_.position_.y + 3.0f, transform_.position_.z + 10.0f);
 	GameManager::GetPlayer()->GetAim()->SetCompulsion(cPos, transform_.position_);
 
-	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction()) {
+	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction() && !LifeManager::IsDie()) {
 		GameManager::GetSceneManager()->ChangeScene(warpScene_);
 	}
 	

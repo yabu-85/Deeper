@@ -69,6 +69,17 @@ void Player::HearUpdate()
 
 void Player::DeadUpdate()
 {
+    if (time_ == 0) {
+        Model::SetAnimFrame(hModel_, 260, 495, 1.0f);
+        pAim_->SetAimMove(false);
+    }
+    time_--;
+
+    if (time_ <= -(495 - 260)) {
+        Model::SetAnimeStop(hModel_, true);
+
+    }
+
 }
 
 Player::Player(GameObject* parent)
@@ -101,7 +112,7 @@ void Player::Initialize()
 
     pAnimationController_ = new AnimationController(hModel_);
     pAnimationController_->AddAnime(0, 120);
-    pAnimationController_->AddAnime(301, 343);
+    pAnimationController_->AddAnime(548, 590);
 
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
@@ -138,6 +149,7 @@ void Player::Update()
     else if (state_ == MAIN_STATE::HEAR) HearUpdate();
     else if (state_ == MAIN_STATE::DEAD) DeadUpdate();
     else {
+        GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, moveSpeed_);
         pStateManager_->Update();
         if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
     }
@@ -148,10 +160,6 @@ void Player::Update()
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
     if (Input::IsKeyDown(DIK_RIGHTARROW)) transform_.position_.y += 10.0f;
     if (Input::IsKeyDown(DIK_T)) isCollider = !isCollider;
-    if (isCollider) {
-        CollisionMap* map = static_cast<CollisionMap*>(FindObject("CollisionMap"));
-        map->CalcMapWall(transform_.position_, moveSpeed_);
-    }
 
 }
 
@@ -185,16 +193,20 @@ void Player::OnCollision(GameObject* pTarget)
 
 void Player::OnAttackCollision(GameObject* pTarget)
 {
-    //無敵時間中なら抜ける
-    if (LifeManager::IsInvincible()) return;
-
     std::string name = pTarget->GetObjectName();
-    if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
+    if (pTarget->GetObjectName().find("Enemy") != std::string::npos && !LifeManager::IsInvincible() && !LifeManager::IsDie()) {
+        time_ = HEAR_TIME;
         EnemyBase* enemy = static_cast<EnemyBase*>(pTarget);
         TargetRotate(enemy->GetPosition());
+    
+        //ダメージ与えて死亡ならDeadState
         LifeManager::Damage(enemy->GetAttackDamage());
-        state_ = MAIN_STATE::HEAR;
-        time_ = HEAR_TIME;
+        if (LifeManager::IsDie()) {
+            state_ = MAIN_STATE::DEAD;
+            time_ = 0;
+        }
+        else state_ = MAIN_STATE::HEAR;
+    
     }
 
 }
@@ -370,7 +382,7 @@ void Player::InitAvo()
     else if(pAim_->IsTarget()) {
         AimTargetRotate(1.0f);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0f);
-        Model::SetAnimFrame(hModel_, 260, 300, 1.0f);
+        Model::SetAnimFrame(hModel_, 5000, 546, 1.0f);
     }
     //動いてい、ターゲットもしていない：向いている方向にローリング
     else {

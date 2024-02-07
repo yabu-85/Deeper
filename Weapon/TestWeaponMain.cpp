@@ -186,12 +186,12 @@ void TestWeaponCombo1::OnEnter()
 {
     time_ = 0;
     next_ = false;
-    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 40, 1.0f);
+    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 595, 775, 1.0f);
 }
 
 void TestWeaponCombo1::OnExit()
 {
-    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 0, 1.0f);
+    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 0, 120, 1.0f);
     TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
     m->GetPolyLine()->ResetPosition();
 

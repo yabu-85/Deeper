@@ -4,9 +4,13 @@
 #include "Direct3D.h"
 #include <vector>
 
+namespace {
+	bool first = true;
+}
+
 PolyLine::PolyLine() :
-	WIDTH_(3.0f),	   //太さ
-	LENGTH_(200),	   //長さ（あくまで位置を記憶する数で、実際の長さは移動速度によって変わる）
+	WIDTH_(0.3f),	   //太さ
+	LENGTH_(60),	   //長さ（あくまで位置を記憶する数で、実際の長さは移動速度によって変わる）
 	alpha_(1.0f),      //透明度 (最初は透明にしないでおく)
 	moveAlpha_(false), //徐々に透明にしてく
 
@@ -18,7 +22,12 @@ void PolyLine::ResetPosition()
 {
 	//リストの先頭に現在位置を追加
 	positions_.clear();
+	polyList_.clear();
 	positions_.push_front(XMFLOAT3(0,0,0));
+	polyList_.push_front({ XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0 )});
+	
+	alpha_ = 1.0f;
+	first = true;
 
 	//頂点バッファをクリア（今から作るから）
 	SAFE_RELEASE(pVertexBuffer_);
@@ -41,6 +50,71 @@ void PolyLine::ResetPosition()
 	delete vertices;
 }
 
+void PolyLine::AddPosition(XMFLOAT3 pos1, XMFLOAT3 pos2)
+{
+	if (first) {
+		positions_.clear();
+		polyList_.clear();
+		first = false;
+	}
+
+	positions_.push_front(pos1);
+	polyList_.push_front({ pos1, pos2 });
+
+	//指定の長さを超えてたら終端のデータを削除
+	if (positions_.size() > LENGTH_)
+	{
+		positions_.pop_back();
+		polyList_.pop_back();
+	}
+
+	//頂点バッファをクリア（今から作るから）
+	SAFE_RELEASE(pVertexBuffer_);
+
+	//頂点データを作るための配列を準備
+	VERTEX* vertices = new VERTEX[LENGTH_ * 2];
+
+	//頂点データを作る
+	int index = 0;
+	auto itr = polyList_.begin();
+	for (int i = 0; i < LENGTH_; i++)
+	{
+		itr++;
+		if (itr == polyList_.end())	break;
+
+		//記憶してた位置
+		XMVECTOR vPos1 = XMLoadFloat3(&(*itr).position1);
+		XMVECTOR vPos2 = XMLoadFloat3(&(*itr).position2);
+
+		//頂点情報を入れていく
+		XMFLOAT3 pos;
+		XMStoreFloat3(&pos, vPos1);
+		VERTEX vertex1 = { pos, XMFLOAT3((float)i / LENGTH_, 1, 0) };
+
+		XMStoreFloat3(&pos, vPos2);
+		VERTEX vertex2 = { pos, XMFLOAT3((float)i / LENGTH_, 0, 0) };
+
+		vertices[index] = vertex1;
+		index++;
+		vertices[index] = vertex2;
+		index++;
+	}
+
+	// 頂点データ用バッファの設定
+	D3D11_BUFFER_DESC bd_vertex;
+	bd_vertex.ByteWidth = sizeof(VERTEX) * LENGTH_ * 2;
+	bd_vertex.Usage = D3D11_USAGE_DEFAULT;
+	bd_vertex.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd_vertex.CPUAccessFlags = 0;
+	bd_vertex.MiscFlags = 0;
+	bd_vertex.StructureByteStride = 0;
+	D3D11_SUBRESOURCE_DATA data_vertex;
+	data_vertex.pSysMem = vertices;
+	Direct3D::pDevice_->CreateBuffer(&bd_vertex, &data_vertex, &pVertexBuffer_);
+
+	delete[] vertices;
+}
+
 void PolyLine::AddPosition(XMFLOAT3 pos)
 {
 	//リストの先頭に現在位置を追加
@@ -55,11 +129,17 @@ void PolyLine::AddPosition(XMFLOAT3 pos)
 	//頂点バッファをクリア（今から作るから）
 	SAFE_RELEASE(pVertexBuffer_);
 
-	//現在のカメラの位置をベクトルとして取得
-	XMFLOAT3 camPos = Camera::GetPosition();
-	camPos = XMFLOAT3(0, 1, 0);
+	//ベクトルを求める
+	//XMFLOAT3 camPos = Camera::GetPosition();
+	XMVECTOR vPVec = XMLoadFloat3(&positions_.back());
+	XMVECTOR vPre = XMLoadFloat3(&pos);
+	vPVec = XMVector3NormalizeEst(vPVec - vPre);
+	//90度回転
+	//XMMATRIX rotate = XMMatrixRotationY(XMConvertToRadians(90.0f));
+	//vPVec = XMVector3Transform(vPVec, rotate);
 
-	XMVECTOR vCamPos = XMLoadFloat3(&camPos);
+	XMFLOAT3 camPos = XMFLOAT3(0, 1, 0);
+	vPVec = XMLoadFloat3(&camPos);
 
 	//頂点データを作るための配列を準備
 	VERTEX* vertices = new VERTEX[LENGTH_ * 2];
@@ -79,7 +159,7 @@ void PolyLine::AddPosition(XMFLOAT3 pos)
 		XMVECTOR vLine = XMLoadFloat3(&(*itr)) - vPos;
 
 		//視線とラインに垂直なベクトル
-		XMVECTOR vArm = XMVector3Cross(vLine, vCamPos);
+		XMVECTOR vArm = XMVector3Cross(vLine, vPVec);
 		vArm = XMVector3Normalize(vArm) * WIDTH_;
 
 

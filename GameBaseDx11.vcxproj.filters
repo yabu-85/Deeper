@@ -33,9 +33,6 @@
     <Filter Include="04UI\Base">
       <UniqueIdentifier>{d7ded092-3bdb-499f-b158-284045e8ad77}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07Player">
-      <UniqueIdentifier>{e04af741-50b7-426b-8ed5-0d84c1ba486c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="08Enemy">
       <UniqueIdentifier>{41ef1b12-3dc4-44d5-8224-49a169e131f1}</UniqueIdentifier>
     </Filter>
@@ -122,6 +119,9 @@
     </Filter>
     <Filter Include="03Scene\Base">
       <UniqueIdentifier>{ca23a4cb-66f8-49a0-8901-bff618760a67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08Enemy\07Player">
+      <UniqueIdentifier>{e04af741-50b7-426b-8ed5-0d84c1ba486c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -274,22 +274,22 @@
       <Filter>08Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Player\Aim.cpp">
-      <Filter>07Player</Filter>
+      <Filter>08Enemy\07Player</Filter>
     </ClCompile>
     <ClCompile Include="Player\LifeManager.cpp">
-      <Filter>07Player</Filter>
+      <Filter>08Enemy\07Player</Filter>
     </ClCompile>
     <ClCompile Include="Player\Player.cpp">
-      <Filter>07Player</Filter>
+      <Filter>08Enemy\07Player</Filter>
     </ClCompile>
     <ClCompile Include="Player\PlayerCommand.cpp">
-      <Filter>07Player</Filter>
+      <Filter>08Enemy\07Player</Filter>
     </ClCompile>
     <ClCompile Include="Player\PlayerData.cpp">
-      <Filter>07Player</Filter>
+      <Filter>08Enemy\07Player</Filter>
     </ClCompile>
     <ClCompile Include="Player\PlayerWeapon.cpp">
-      <Filter>07Player</Filter>
+      <Filter>08Enemy\07Player</Filter>
     </ClCompile>
     <ClCompile Include="State\FeetState.cpp">
       <Filter>06State\Enemy</Filter>
@@ -350,9 +350,6 @@
     </ClCompile>
     <ClCompile Include="Scene\SceneBase.cpp">
       <Filter>03Scene\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Weapon\SwordWeapon.cpp">
-      <Filter>09Weapon\Weapons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -505,22 +502,22 @@
       <Filter>08Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Player\Aim.h">
-      <Filter>07Player</Filter>
+      <Filter>08Enemy\07Player</Filter>
     </ClInclude>
     <ClInclude Include="Player\LifeManager.h">
-      <Filter>07Player</Filter>
+      <Filter>08Enemy\07Player</Filter>
     </ClInclude>
     <ClInclude Include="Player\Player.h">
-      <Filter>07Player</Filter>
+      <Filter>08Enemy\07Player</Filter>
     </ClInclude>
     <ClInclude Include="Player\PlayerCommand.h">
-      <Filter>07Player</Filter>
+      <Filter>08Enemy\07Player</Filter>
     </ClInclude>
     <ClInclude Include="Player\PlayerData.h">
-      <Filter>07Player</Filter>
+      <Filter>08Enemy\07Player</Filter>
     </ClInclude>
     <ClInclude Include="Player\PlayerWeapon.h">
-      <Filter>07Player</Filter>
+      <Filter>08Enemy\07Player</Filter>
     </ClInclude>
     <ClInclude Include="State\StateBase.h">
       <Filter>06State\Base</Filter>
@@ -584,9 +581,6 @@
     </ClInclude>
     <ClInclude Include="Scene\SceneBase.h">
       <Filter>03Scene\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Weapon\SwordWeapon.h">
-      <Filter>09Weapon\Weapons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

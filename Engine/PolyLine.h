@@ -18,7 +18,11 @@ class PolyLine
 	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ
 	Texture* pTexture_;	            //画像
 
-
+	struct PolyList {
+		XMFLOAT3 position1;
+		XMFLOAT3 position2;
+	};
+	list<PolyList> polyList_;
 	list<XMFLOAT3> positions_;	    //過去length_回分の位置
 
 	float alpha_;                   //透明度
@@ -29,6 +33,10 @@ public:
 	PolyLine();
 
 	void ResetPosition();
+
+	//現在の位置を記憶させる
+	//引数：pos1, pos2 記憶させる位置
+	void AddPosition(XMFLOAT3 pos1, XMFLOAT3 pos2);
 
 	//現在の位置を記憶させる
 	//引数：pos	現在の位置

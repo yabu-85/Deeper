@@ -11,7 +11,7 @@
 #include "../Engine/Global.h"
 
 namespace {
-    float weaponSize = 5.0f;
+    float weaponSize = 1.0f;
 
 }
 
@@ -49,9 +49,8 @@ void TestWeaponMain::Initialize()
     transform_.scale_.z = 1.0f;
     
     pPolyLine_ = new PolyLine;
-    pPolyLine_->Load("tex.png");
-    pPolyLine_->AddPosition(transform_.position_);
-
+    pPolyLine_->Load("tex2.png");
+    
     Model::GetBoneIndex(pPlayer_->GetModelHandle(), "Weapon", &boneIndex_, &partIndex_);
     assert(boneIndex_ >= 0);
 
@@ -59,6 +58,8 @@ void TestWeaponMain::Initialize()
 
 void TestWeaponMain::Update()
 {
+    CalcDamage();
+
 }
 
 void TestWeaponMain::Draw()
@@ -124,9 +125,9 @@ void TestWeaponMain::CalcDamage()
     seg_->SetVector(vVec);
     seg_->SetValid(true);
 
-    XMStoreFloat3(&vec, vVec * 0.5f);
+    XMStoreFloat3(&vec, vVec);
     vec = XMFLOAT3(wandPos_.x + vec.x, wandPos_.y + vec.y, wandPos_.z + vec.z);
-    pPolyLine_->AddPosition(vec);
+    pPolyLine_->AddPosition(wandPos_, vec);
 
 }
 
@@ -147,7 +148,7 @@ void TestWeaponWait::Update()
 TestWeaponCombo1::TestWeaponCombo1(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    comboTime_ = 40;
+    comboTime_ = 670 - 595;
 }
 
 void TestWeaponCombo1::Update()
@@ -159,7 +160,7 @@ void TestWeaponCombo1::Update()
     pPlayer_->Move();
 
     m->GetSegmentCollider()->SetValid(false);
-    if(time_ > 14 && time_ < 24)
+    if(time_ >= 35 && time_ <= comboTime_ - 15)
     m->CalcDamage();
 
     if (time_ < 5) {
@@ -186,7 +187,7 @@ void TestWeaponCombo1::OnEnter()
 {
     time_ = 0;
     next_ = false;
-    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 595, 775, 1.0f);
+    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 595, 670, 1.0f);
 }
 
 void TestWeaponCombo1::OnExit()
@@ -202,7 +203,7 @@ void TestWeaponCombo1::OnExit()
 TestWeaponCombo2::TestWeaponCombo2(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    comboTime_ = 40;
+    comboTime_ = 690 - 645;
 }
 
 void TestWeaponCombo2::Update()
@@ -212,7 +213,7 @@ void TestWeaponCombo2::Update()
     
     TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
     m->GetSegmentCollider()->SetValid(false);
-    if (time_ > 10 && time_ < 40 - 15)
+    if (comboTime_ >= 15 && comboTime_ <= 35)
     m->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
@@ -240,7 +241,7 @@ void TestWeaponCombo2::OnEnter()
 {
     time_ = comboTime_;
     next_ = false;
-    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 40, 80, 1.0f);
+    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 670, 700, 1.0f);
 }
 
 void TestWeaponCombo2::OnExit()
@@ -256,7 +257,7 @@ void TestWeaponCombo2::OnExit()
 TestWeaponCombo3::TestWeaponCombo3(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
     pPlayer_ = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    comboTime_ = 70;
+    comboTime_ = 740 - 690;
 }
 
 void TestWeaponCombo3::Update()
@@ -266,7 +267,6 @@ void TestWeaponCombo3::Update()
     
     TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
     m->GetSegmentCollider()->SetValid(false);
-    if (time_ > 35 && time_ < 70 - 25)
     m->CalcDamage();
 
     if (time_ > (comboTime_ - 10)) {
@@ -294,7 +294,7 @@ void TestWeaponCombo3::OnEnter()
 {
     time_ = comboTime_;
     next_ = false;
-    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 80, 150, 1.0f);
+    Model::SetAnimFrame(pPlayer_->GetModelHandle(), 690, 740, 1.0f);
 }
 
 void TestWeaponCombo3::OnExit()

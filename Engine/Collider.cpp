@@ -142,7 +142,7 @@ bool Collider::IsHitCircleVsSegment(SphereCollider* circle, SegmentCollider* seg
 	//線分の始点と終点座標
 	f = seg->pGameObject_->GetWorldPosition();
 	XMVECTOR sStart = XMLoadFloat3(&f) + XMLoadFloat3(&seg->center_);
-	XMVECTOR sEnd = sStart + seg->vec_ * seg->size_.x;
+	XMVECTOR sEnd = sStart + seg->vec_;// *seg->size_.x;
 	
 	//線分の終点と球の距離が円の範囲内なら当たってる
 	XMVECTOR vP = cCenter - sEnd;

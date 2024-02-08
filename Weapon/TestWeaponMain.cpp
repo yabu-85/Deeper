@@ -18,6 +18,8 @@ namespace {
 TestWeaponMain::TestWeaponMain(GameObject* parent)
 	: WeaponBase(parent, "TestWeaponMain"), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0), pPolyLine_(nullptr)
 {
+    //À•WŒvZ—Ê‘½‚­‚È‚é‚©‚ç‚arenntŠO‚µ‚Æ‚­
+    transform_.pParent_ = nullptr;
 }
 
 TestWeaponMain::~TestWeaponMain()

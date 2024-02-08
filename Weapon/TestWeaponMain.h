@@ -22,6 +22,7 @@ public:
     void Draw() override;
     void Release() override;
     void OnAttackCollision(GameObject* pTarget) override;
+    void ChangeAttackState() override;
 
     void ResetState() override;
     void CalcDamage();

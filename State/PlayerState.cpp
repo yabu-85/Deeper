@@ -255,7 +255,7 @@ void PlayerAtk::OnEnter()
 	time_ = 0;
 	nextCmd_ = 0;
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->GetPlayerWeapon()->GetMainWeapon()->SetAtkEnd(false);
+	p->GetPlayerWeapon()->GetMainWeapon()->ChangeAttackState();
 
 }
 
@@ -269,8 +269,6 @@ void PlayerAtk::OnExit()
 
 PlayerSubAtk::PlayerSubAtk(StateManager* owner) : StateBase(owner), nextCmd_(0)
 {
-	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p = static_cast<Player*>(owner_->GetGameObject());
 }
 
 void PlayerSubAtk::Update()
@@ -305,7 +303,7 @@ void PlayerSubAtk::OnEnter()
 {
 	nextCmd_ = 0;
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->GetPlayerWeapon()->GetSubWeapon()->SetAtkEnd(false);
+	p->GetPlayerWeapon()->GetSubWeapon()->ChangeAttackState();
 
 }
 

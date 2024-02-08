@@ -101,6 +101,12 @@ void TestWeaponMain::OnAttackCollision(GameObject* pTarget)
 
 }
 
+void TestWeaponMain::ChangeAttackState()
+{
+    atkEnd_ = false;
+    pStateManager_->ChangeState("Combo1");
+}
+
 void TestWeaponMain::ResetState()
 {
     atkEnd_ = true;

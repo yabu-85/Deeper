@@ -6,6 +6,7 @@ class Player;
 
 class TestWeaponSub : public WeaponBase
 {
+    Player* pPlayer_;
 public:
     TestWeaponSub(GameObject* parent);
     ~TestWeaponSub() override;
@@ -14,6 +15,8 @@ public:
     void Draw() override;
     void Release() override;
     void ResetState() override;
+    void ChangeAttackState() override;
+
     void ShotBullet();
 };
 

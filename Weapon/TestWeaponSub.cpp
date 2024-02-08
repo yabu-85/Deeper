@@ -9,7 +9,7 @@
 #include "../Enemy/EnemyBase.h"
 
 TestWeaponSub::TestWeaponSub(GameObject* parent)
-    : WeaponBase(parent, "TestWeaponSub")
+    : WeaponBase(parent, "TestWeaponSub"), pPlayer_(nullptr)
 {
 }
 
@@ -33,8 +33,8 @@ void TestWeaponSub::Initialize()
     transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
     durance_ = 50;
 
-    Player* p = static_cast<Player*>(GetParent());
-    Model::GetBoneIndex(p->GetModelHandle(), "Weapon", &boneIndex_, &partIndex_);
+    pPlayer_ = static_cast<Player*>(GetParent());
+    Model::GetBoneIndex(pPlayer_->GetModelHandle(), "Weapon", &boneIndex_, &partIndex_);
     assert(boneIndex_ >= 0);
 
 }
@@ -47,15 +47,14 @@ void TestWeaponSub::Draw()
 {
     if (!IsVisibled()) return;
 
-    Player* p = static_cast<Player*>(GetParent());
-    transform_.position_ = Model::GetBoneAnimPosition(p->GetModelHandle(), boneIndex_, partIndex_);
-    transform_.rotate_ = Model::GetBoneAnimRotate(p->GetModelHandle(), boneIndex_, partIndex_);
+    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
+    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
 
     if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
         transform_.rotate_.y *= -1.0f;
         transform_.rotate_.z *= -1.0f;
     }
-    transform_.rotate_.y += p->GetRotate().y;
+    transform_.rotate_.y += pPlayer_->GetRotate().y;
 
     Transform t = transform_;
     CalcOffset(t);
@@ -74,14 +73,19 @@ void TestWeaponSub::ResetState()
     pStateManager_->ChangeState("Wait");
 }
 
+void TestWeaponSub::ChangeAttackState()
+{
+    pStateManager_->ChangeState("Combo1");
+    atkEnd_ = false;
+}
+
 void TestWeaponSub::ShotBullet()
 {
-    Player* p = static_cast<Player*>(GetParent());
-    Aim* pAim = p->GetAim();
+    Aim* pAim = pPlayer_->GetAim();
     XMFLOAT3 tar;
     if (pAim->IsTarget()) {
         tar = pAim->GetTargetPos();
-        float aimTarPos =  pAim->GetTargetEnemy()->GetAimTargetPos();
+        float aimTarPos = pAim->GetTargetEnemy()->GetAimTargetPos();
         tar = XMFLOAT3(tar.x, tar.y + aimTarPos, tar.z);
     }
     else {
@@ -89,7 +93,7 @@ void TestWeaponSub::ShotBullet()
         XMFLOAT3 vec = pAim->GetAimDirection();
         tar = XMFLOAT3(pos.x + vec.x, pos.y + vec.y, pos.z + vec.z);
     }
-    TestBullet* b = Instantiate<TestBullet>(p->GetParent());
+    TestBullet* b = Instantiate<TestBullet>(pPlayer_->GetParent());
     b->Shot(transform_.position_, tar);
 }
 
@@ -101,8 +105,6 @@ TestWeaponSubWait::TestWeaponSubWait(StateManager* owner) : StateBase(owner)
 
 void TestWeaponSubWait::Update()
 {
-    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
-    if (!s->IsAtkEnd()) owner_->ChangeState("Combo1");
 }
 
 //---------------------------------------------------------------
@@ -118,19 +120,13 @@ void TestWeaponSubCombo1::Update()
     p->Move();
 
     time_--;
-    PlayerCommand* cmd = p->GetCommand();
-    if (cmd && p->GetCommand()->CmdSubAtk()) next_ = true;
+    if (p->GetCommand()->CmdSubAtk()) next_ = true;
 
-    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     if (time_ <= 0) {
+        TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
         if (next_ == true) owner_->ChangeState("Combo2");
-        else {
-            owner_->ChangeState("Wait");
-            s->SetAtkEnd(true);
-        }
-        return;
+        else s->ResetState();
     }
-
 }
 
 void TestWeaponSubCombo1::OnEnter()
@@ -163,23 +159,18 @@ TestWeaponSubCombo2::TestWeaponSubCombo2(StateManager* owner) : StateBase(owner)
 void TestWeaponSubCombo2::Update()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     p->CalcMove();
     p->Move();
+    s->ShotBullet();
 
     time_--;
     if (p->GetCommand()->CmdSubAtk()) next_ = true;
 
-    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     if (time_ <= 0) {
         if (next_ == true) owner_->ChangeState("Combo1");
-        else {
-            owner_->ChangeState("Wait");
-            s->SetAtkEnd(true);
-        }
-        return;
+        else s->ResetState();
     }
-
-    s->ShotBullet();
 }
 
 void TestWeaponSubCombo2::OnEnter()

@@ -8,9 +8,17 @@
 #include "../Player/Aim.h"
 #include "../Enemy/EnemyBase.h"
 
+namespace {
+    static const int COMBO_TIME1 = 20;
+    static const int COMBO_TIME2 = 20;
+
+}
+
 TestWeaponSub::TestWeaponSub(GameObject* parent)
     : WeaponBase(parent, "TestWeaponSub"), pPlayer_(nullptr)
 {
+    transform_.pParent_ = nullptr;
+
 }
 
 TestWeaponSub::~TestWeaponSub()
@@ -22,20 +30,18 @@ void TestWeaponSub::Initialize()
     hModel_ = Model::Load("Model/RedBox.fbx");
     assert(hModel_ >= 0);
 
-    pStateManager_ = new StateManager(this);
-    pStateManager_->AddState(new TestWeaponSubWait(pStateManager_));
-    pStateManager_->AddState(new TestWeaponSubCombo1(pStateManager_));
-    pStateManager_->AddState(new TestWeaponSubCombo2(pStateManager_));
-    pStateManager_->ChangeState("Wait");
-    pStateManager_->Initialize();
-
-    offsetTrans_.position_.y += (float)(rand() % 10) * 0.1f;
-    transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
-    durance_ = 50;
-
     pPlayer_ = static_cast<Player*>(GetParent());
+    transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
+    durance_ = 5;
+    
     Model::GetBoneIndex(pPlayer_->GetModelHandle(), "Weapon", &boneIndex_, &partIndex_);
     assert(boneIndex_ >= 0);
+
+    pStateManager_ = new StateManager(this);
+    pStateManager_->AddState(new TestWeaponSubCombo1(pStateManager_));
+    pStateManager_->AddState(new TestWeaponSubCombo2(pStateManager_));
+    pStateManager_->ChangeState("");
+    pStateManager_->Initialize();
 
 }
 
@@ -56,9 +62,7 @@ void TestWeaponSub::Draw()
     }
     transform_.rotate_.y += pPlayer_->GetRotate().y;
 
-    Transform t = transform_;
-    CalcOffset(t);
-    Model::SetTransform(hModel_, t);
+    Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_);
 
 }
@@ -70,7 +74,7 @@ void TestWeaponSub::Release()
 void TestWeaponSub::ResetState()
 {
     atkEnd_ = true;
-    pStateManager_->ChangeState("Wait");
+    pStateManager_->ChangeState("");
 }
 
 void TestWeaponSub::ChangeAttackState()
@@ -99,16 +103,6 @@ void TestWeaponSub::ShotBullet()
 
 //--------------------------state-----------------------------------
 
-TestWeaponSubWait::TestWeaponSubWait(StateManager* owner) : StateBase(owner)
-{
-}
-
-void TestWeaponSubWait::Update()
-{
-}
-
-//---------------------------------------------------------------
-
 TestWeaponSubCombo1::TestWeaponSubCombo1(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
 }
@@ -118,11 +112,10 @@ void TestWeaponSubCombo1::Update()
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     p->CalcMove();
     p->Move();
-
-    time_--;
     if (p->GetCommand()->CmdSubAtk()) next_ = true;
 
-    if (time_ <= 0) {
+    time_++;
+    if (time_ <= COMBO_TIME1) {
         TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
         if (next_ == true) owner_->ChangeState("Combo2");
         else s->ResetState();
@@ -131,10 +124,9 @@ void TestWeaponSubCombo1::Update()
 
 void TestWeaponSubCombo1::OnEnter()
 {
-    time_ = 20;
+    time_ = 0;
     next_ = false;
     TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
-    if (s == nullptr) owner_->ChangeState("Wait");
     s->SetScale(XMFLOAT3(0.3f, 0.3f, 0.3f));
     s->ShotBullet();
 
@@ -159,15 +151,15 @@ TestWeaponSubCombo2::TestWeaponSubCombo2(StateManager* owner) : StateBase(owner)
 void TestWeaponSubCombo2::Update()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     p->CalcMove();
     p->Move();
+    if (p->GetCommand()->CmdSubAtk()) next_ = true;
+    
+    TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
     s->ShotBullet();
 
-    time_--;
-    if (p->GetCommand()->CmdSubAtk()) next_ = true;
-
-    if (time_ <= 0) {
+    time_++;
+    if (time_ <= COMBO_TIME2) {
         if (next_ == true) owner_->ChangeState("Combo1");
         else s->ResetState();
     }
@@ -175,10 +167,9 @@ void TestWeaponSubCombo2::Update()
 
 void TestWeaponSubCombo2::OnEnter()
 {
-    time_ = 20;
+    time_ = 0;
     next_ = false;
     TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
-    if (s == nullptr) owner_->ChangeState("Wait");
     s->SetScale(XMFLOAT3(0.4f, 0.4f, 0.4f));
 }
 

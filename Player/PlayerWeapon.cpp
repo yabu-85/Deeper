@@ -48,7 +48,6 @@ void PlayerWeapon::DrawWeapon()
 void PlayerWeapon::SetPlayerDataWeapon()
 {
     pMainWeapon_ = Instantiate<TestWeaponMain>(pPlayer_);
-    pMainWeapon_->SetOffsetScale(XMFLOAT3(0.1f, 1.0f, 0.1f));
 
     int type[2] = { 0,0 };
     type[0] = PlayerData::GetWeaponData(0).type_;

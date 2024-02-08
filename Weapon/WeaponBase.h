@@ -11,7 +11,6 @@ protected:
 	int partIndex_;
 	unsigned durance_;				//耐久値
 	bool atkEnd_;					//攻撃が終わったかどうかのフラグ
-	Transform offsetTrans_;			//移動量
 	StateManager* pStateManager_;
 
 public:
@@ -23,10 +22,6 @@ public:
 	virtual void Release() override = 0 {};
 	virtual void ResetState() = 0;
 
-	void CalcOffset(Transform& trans);
-	void SetOffsetPosition(XMFLOAT3 pos) { offsetTrans_.position_ = pos; }
-	void SetOffsetRotate(XMFLOAT3 rot) { offsetTrans_.rotate_ = rot; }
-	void SetOffsetScale(XMFLOAT3 sca) { offsetTrans_.scale_ = sca; }
 	void UpdateState();
 	void SetAtkEnd(bool b) { atkEnd_ = b; }
 	bool IsAtkEnd() { return atkEnd_; }

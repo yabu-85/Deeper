@@ -16,6 +16,8 @@ PolyLine::PolyLine() :
 
 	pVertexBuffer_(nullptr), pConstantBuffer_(nullptr), pTexture_(nullptr)
 {
+	ResetPosition();
+
 }
 
 void PolyLine::ResetPosition()

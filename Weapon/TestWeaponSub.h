@@ -22,14 +22,6 @@ public:
 
 //-------------------State----------------------
 
-class TestWeaponSubWait : public StateBase
-{
-public:
-    TestWeaponSubWait(StateManager* owner);
-    const char* GetName() const override { return "Wait"; }
-    void Update() override;
-};
-
 class TestWeaponSubCombo1 : public StateBase
 {
     bool next_;

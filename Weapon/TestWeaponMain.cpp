@@ -29,6 +29,8 @@ TestWeaponMain::~TestWeaponMain()
 
 void TestWeaponMain::Initialize()
 {
+    pPlayer_ = static_cast<Player*>(GetParent());
+    
     pStateManager_ = new StateManager(this);
     pStateManager_->AddState(new TestWeaponWait(pStateManager_));
     pStateManager_->AddState(new TestWeaponCombo1(pStateManager_));
@@ -41,8 +43,6 @@ void TestWeaponMain::Initialize()
     hModel_ = Model::Load("Model/BlueBox.fbx");
     assert(hModel_ >= 0);
 
-    pPlayer_ = (Player*)GetParent();
-    
     seg_ = new SegmentCollider(XMFLOAT3(), XMVECTOR());
     seg_->SetValid(false);
     AddAttackCollider(seg_);

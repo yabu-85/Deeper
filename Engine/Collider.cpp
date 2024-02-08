@@ -66,46 +66,8 @@ bool Collider::IsHitBoxVsCircle(BoxCollider* box, SphereCollider* sphere)
 //戻値：接触していればtrue
 bool Collider::IsHitBoxVsSegment(BoxCollider* box, SegmentCollider* seg)
 {
-	//なんかよくわからんけど直線と箱型作ってた
-	return true;
-
-	//ボックスの四つ角の位置を求める
-	float s = box->size_.x / 2.0f;
-	XMVECTOR c[4] = {
-		{ -s, 0.0f, -s},
-		{ s, 0.0f, -s },
-		{ s, 0.0f, s },
-		{ -s, 0.0f, s }
-	};
-
-	XMFLOAT3 f = Transform::Float3Add(seg->pGameObject_->GetWorldPosition(), seg->center_);
-	XMVECTOR lineBase = XMLoadFloat3(&f);
-
-	f = Transform::Float3Add(box->pGameObject_->GetWorldPosition(), box->center_);
-	XMVECTOR boxPos = XMLoadFloat3(&f);
-
-	float leng = XMVectorGetX(XMVector3Length(lineBase - boxPos));
-	if (seg->size_.x + (seg->size_.x / 2.0f) < leng)
-		return false;
-
-	//lineベクトルに垂直なベクトルを計算
-	XMVECTOR upVector = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // もし他のベクトルが必要なら変更
-	XMVECTOR lineNormal = XMVector3Normalize(XMVector3Cross((seg->vec_ * -1), upVector));
-
-	float dp[4] = {};
-	for (int i = 0; i < 4; i++) {
-		//四つ角からstartまでの方向を計算
-		c[i] = { c[i] + boxPos - lineBase};
-
-		//内積により線の方向を求める
-		dp[i] = XMVectorGetY(XMVector3Dot(lineNormal, c[i]));
-	}
-
-	//全部同じ方向にあれば、線と四角形が当たっていることはない
-	return (dp[0] * dp[1] <= 0) || (dp[1] * dp[2] <= 0) || (dp[2] * dp[3] <= 0);
-
+	return false;
 }
-
 
 //球体同士の衝突判定
 //引数：circleA	１つ目の球体判定

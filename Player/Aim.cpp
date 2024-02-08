@@ -1,16 +1,17 @@
 #include "Aim.h"
-#include "../Engine/Camera.h"
 #include "Player.h"
+#include "PlayerCommand.h"
+#include "../Engine/Camera.h"
 #include "../Stage/CollisionMap.h"
-#include <vector>
 #include "../Enemy/EnemyBase.h"
 #include "../Enemy/Enemymanager.h"
 #include "../GameManager.h"
-#include "PlayerCommand.h"
+#include <vector>
 
 //デバッグ用
 #include "../Engine/Input.h"
 #include "../Engine/Image.h"
+#include "../Engine/Text.h"
 
 namespace {
     static const float UP_MOUSE_LIMIT = -60.0f;
@@ -28,7 +29,7 @@ namespace {
     static const float FOV_RADIAN = XMConvertToRadians(60) / 2.0f;  //ターゲットの有効範囲
     static const float TARGET_RATIO = 0.2f;                         //ターゲット時の回転率
 
-    XMFLOAT2 imagePos;
+    Text* pText_ = nullptr;
 }
 
 Aim::Aim(GameObject* parent)
@@ -58,6 +59,9 @@ void Aim::Initialize()
     Image::SetAlpha(hPict_, 255);
     Image::SetTransform(hPict_, foundTrans);
 
+    pText_ = new Text();
+    pText_->Initialize();
+
 }
 
 void Aim::Update()
@@ -66,6 +70,7 @@ void Aim::Update()
     if (Input::IsKeyDown(DIK_R)) isMove_ = !isMove_;
     if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
     if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
+    if (Input::IsKeyDown(DIK_4)) sign_ *= -1.0f;
 
     if (compulsionTime_ > 0) {
         //強制移動
@@ -131,6 +136,8 @@ void Aim::Update()
 void Aim::Draw()
 {
     Image::Draw(hPict_);
+
+    pText_->Draw(30, 500, iterations);
 
 }
 
@@ -203,6 +210,10 @@ void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar)
 
 }
 
+void Aim::CameraShake()
+{
+}
+
 //------------------------------------private--------------------------------------------
 
 void Aim::DefaultAim()
@@ -213,6 +224,44 @@ void Aim::DefaultAim()
     //プレイヤーの位置をカメラの焦点とする        
     XMFLOAT3 plaPos = pPlayer_->GetPosition();
     cameraTarget_ = { plaPos.x + cameraOffset_.x, plaPos.y + HEIGHT_DISTANCE, plaPos.z + cameraOffset_.z };
+
+    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+    XMVECTOR upDirection = XMVectorSet(0.0f, sign_, 0.0f, 0.0f);
+    XMVECTOR shakeDirection = XMVector3Normalize(XMVector3TransformNormal(upDirection, mRotY));
+
+    // 移動先を計算
+    XMVECTOR nextPosition = center + shakeDirection;
+
+    // 中心から移動先までのベクトルを求め、距離を減少させて移動距離を更新
+    XMVECTOR directionVector = nextPosition - center;
+    directionVector = XMVector3NormalizeEst(directionVector);
+
+    // Centerから移動先までの距離が移動距離より短い場合は、移動距離を距離に合わせる
+    float dist = XMVectorGetX(XMVector3Length(directionVector)) * range;
+    if (dist < moveDistance) {
+        moveDistance = dist;
+    }
+
+    // Centerから移動
+    directionVector *= moveDistance * 0.1f;
+    center += directionVector;
+
+    dist = XMVectorGetX(XMVector3Length(center));
+    if (dist > range) {
+        center -= directionVector;
+        sign_ *= -1.0f;
+        moveDistance *= distanceDecreaseFactor;
+        
+        iterations--;
+        if (iterations <= 0) {
+            iterations = Def_iterations;
+            moveDistance = range;
+        }
+    }
+
+    cameraTarget_.x += center.m128_f32[0];
+    cameraTarget_.y += center.m128_f32[1];
+    cameraTarget_.z += center.m128_f32[2];
 
     //RayCastの前に情報を入れる
     perspectiveDistance_ = perspectiveDistance_ + ((defPerspectDistance_ - perspectiveDistance_) * 0.1f);

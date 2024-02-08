@@ -64,4 +64,21 @@ public:
     void SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar);
     bool IsCompulsion() { return isCompulsion_; }
 
+public:
+    float sign_ = 1.0f;
+    XMVECTOR center = { 0, 0, 0 }; // ’†SˆÊ’u
+    float range = 1.0f; // ”ÍˆÍ
+
+    // ”½•œ‰ñ”
+    int iterations = 10;
+    int Def_iterations = iterations;
+
+    // ”½•œ‚²‚Æ‚ÌˆÚ“®‹——£‚Ì‰Šú’l
+    float moveDistance = range;
+
+    // ”½•œ‚²‚Æ‚ÉˆÚ“®‹——£‚ğŒ¸­‚³‚¹‚éŒW”
+    float distanceDecreaseFactor = 0.8f;
+
+    void CameraShake();
+
 };

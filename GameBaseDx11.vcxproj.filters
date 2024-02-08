@@ -120,7 +120,7 @@
     <Filter Include="03Scene\Base">
       <UniqueIdentifier>{ca23a4cb-66f8-49a0-8901-bff618760a67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="08Enemy\07Player">
+    <Filter Include="07Player">
       <UniqueIdentifier>{e04af741-50b7-426b-8ed5-0d84c1ba486c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -274,22 +274,22 @@
       <Filter>08Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Player\Aim.cpp">
-      <Filter>08Enemy\07Player</Filter>
+      <Filter>07Player</Filter>
     </ClCompile>
     <ClCompile Include="Player\LifeManager.cpp">
-      <Filter>08Enemy\07Player</Filter>
+      <Filter>07Player</Filter>
     </ClCompile>
     <ClCompile Include="Player\Player.cpp">
-      <Filter>08Enemy\07Player</Filter>
+      <Filter>07Player</Filter>
     </ClCompile>
     <ClCompile Include="Player\PlayerCommand.cpp">
-      <Filter>08Enemy\07Player</Filter>
+      <Filter>07Player</Filter>
     </ClCompile>
     <ClCompile Include="Player\PlayerData.cpp">
-      <Filter>08Enemy\07Player</Filter>
+      <Filter>07Player</Filter>
     </ClCompile>
     <ClCompile Include="Player\PlayerWeapon.cpp">
-      <Filter>08Enemy\07Player</Filter>
+      <Filter>07Player</Filter>
     </ClCompile>
     <ClCompile Include="State\FeetState.cpp">
       <Filter>06State\Enemy</Filter>
@@ -502,22 +502,22 @@
       <Filter>08Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Player\Aim.h">
-      <Filter>08Enemy\07Player</Filter>
+      <Filter>07Player</Filter>
     </ClInclude>
     <ClInclude Include="Player\LifeManager.h">
-      <Filter>08Enemy\07Player</Filter>
+      <Filter>07Player</Filter>
     </ClInclude>
     <ClInclude Include="Player\Player.h">
-      <Filter>08Enemy\07Player</Filter>
+      <Filter>07Player</Filter>
     </ClInclude>
     <ClInclude Include="Player\PlayerCommand.h">
-      <Filter>08Enemy\07Player</Filter>
+      <Filter>07Player</Filter>
     </ClInclude>
     <ClInclude Include="Player\PlayerData.h">
-      <Filter>08Enemy\07Player</Filter>
+      <Filter>07Player</Filter>
     </ClInclude>
     <ClInclude Include="Player\PlayerWeapon.h">
-      <Filter>08Enemy\07Player</Filter>
+      <Filter>07Player</Filter>
     </ClInclude>
     <ClInclude Include="State\StateBase.h">
       <Filter>06State\Base</Filter>

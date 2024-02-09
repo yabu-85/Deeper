@@ -18,7 +18,8 @@ class Aim : public GameObject
     float shakeSpeed_;          //Shakeする速さ
     float range_;               //Shakeする強さ（長さ）
     float moveDistance_;        //計算用rangeの値を入れる
-    float distanceDecrease_;    //反復ごとの減衰地
+    float distanceDecrease_;    //反復ごとのspeed減衰地
+    float rangeDecrease_;       //反復ごとのrange減衰地
     XMVECTOR center_;
 
     float perspectiveDistance_;     //どのくらい後ろから映すか
@@ -74,6 +75,7 @@ public:
     void SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar);
     bool IsCompulsion() { return isCompulsion_; }
 
-    void SetCameraShake(int iterat, float range, float decrease, float speed);
+    //反復回数、反復する距離、スピードの減衰地、スピード
+    void SetCameraShake(int iterat, float range, float range_decrease, float speed, float speed_decrease);
 
 };

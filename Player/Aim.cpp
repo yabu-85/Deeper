@@ -11,7 +11,6 @@
 //デバッグ用
 #include "../Engine/Input.h"
 #include "../Engine/Image.h"
-#include "../Engine/Text.h"
 
 namespace {
     static const float UP_MOUSE_LIMIT = -60.0f;
@@ -28,15 +27,13 @@ namespace {
     static const float TARGET_RANGE = 50.0f;                        //ターゲットの有効範囲
     static const float FOV_RADIAN = XMConvertToRadians(60) / 2.0f;  //ターゲットの有効範囲
     static const float TARGET_RATIO = 0.2f;                         //ターゲット時の回転率
-
-    Text* pText_ = nullptr;
 }
 
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPosition_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 }, cameraOffset_{ 0,0,0 },
     compulsionTarget_{ 0,0,0 }, compulsionPosisiton_{ 0,0,0 }, pPlayer_(nullptr), pEnemyBase_(nullptr), pCollisionMap_(nullptr),
     isMove_(true), isCompulsion_(false), isTarget_(false), compulsionTime_(0), iterations_(-1), sign_(1), range_(0), moveDistance_(0), 
-    distanceDecrease_(0), center_{0,0,0,0}, shakeSpeed_(0)
+    distanceDecrease_(0), center_{0,0,0,0}, shakeSpeed_(0), rangeDecrease_(0)
 {
     mouseSensitivity = 2.0f;
     defPerspectDistance_ = 5.0f;
@@ -60,9 +57,6 @@ void Aim::Initialize()
     Image::SetAlpha(hPict_, 255);
     Image::SetTransform(hPict_, foundTrans);
 
-    pText_ = new Text();
-    pText_->Initialize();
-
 }
 
 void Aim::Update()
@@ -71,7 +65,7 @@ void Aim::Update()
     if (Input::IsKeyDown(DIK_R)) isMove_ = !isMove_;
     if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
     if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
-    if (Input::IsKeyDown(DIK_4)) SetCameraShake(5, 1.0f, 0.9f, 0.1f);
+    if (Input::IsKeyDown(DIK_4)) SetCameraShake(3, 0.2f, 0.7f, 0.35f, 0.8f);
 
     if (compulsionTime_ > 0) {
         //強制移動
@@ -98,21 +92,19 @@ void Aim::Update()
             //ターゲットが生きてるならそいつにAim合わせる
             if (!pEnemyBase_->IsDead()) {
                 FacingTarget();
-                {
-                    //ちょっとAimTarget時の描画してみる
-                    XMFLOAT3 tarPos = pEnemyBase_->GetPosition();
-                    tarPos.y += pEnemyBase_->GetAimTargetPos();
-                    XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&tarPos), Camera::GetViewMatrix());
-                    v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
-                    float x = XMVectorGetX(v2);
-                    float y = XMVectorGetY(v2);
-                    Transform foundTrans;
-                    foundTrans.position_ = XMFLOAT3(x, y, 0.0f);
-                    foundTrans.scale_ = XMFLOAT3(0.2f, 0.2f, 0.0f);
-                    Image::SetAlpha(hPict_, 255);
-                    Image::SetTransform(hPict_, foundTrans);
 
-                }
+                //ちょっとAimTarget時の描画してみる
+                XMFLOAT3 tarPos = pEnemyBase_->GetPosition();
+                tarPos.y += pEnemyBase_->GetAimTargetPos();
+                XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&tarPos), Camera::GetViewMatrix());
+                v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
+                float x = XMVectorGetX(v2);
+                float y = XMVectorGetY(v2);
+                Transform foundTrans;
+                foundTrans.position_ = XMFLOAT3(x, y, 0.0f);
+                foundTrans.scale_ = XMFLOAT3(0.2f, 0.2f, 0.0f);
+                Image::SetAlpha(hPict_, 255);
+                Image::SetTransform(hPict_, foundTrans);
             }
             else {
                 //死んでたら今向いている方向にターゲットできるEnemyがいるならそいつをターゲットにする
@@ -137,8 +129,6 @@ void Aim::Update()
 void Aim::Draw()
 {
     Image::Draw(hPict_);
-
-    pText_->Draw(30, 500, iterations_);
 
 }
 
@@ -202,15 +192,16 @@ void Aim::SetTargetEnemy()
 
 }
 
-void Aim::SetCameraShake(int iteration, float range, float decrease, float speed)
+void Aim::SetCameraShake(int iterat, float range, float range_decrease, float speed, float speed_decrease)
 {
-    iterations_ = iteration;
+    iterations_ = iterat;
     sign_ = 1.0f;
     range_ = range;
     moveDistance_ = range_;
-    distanceDecrease_ = decrease;
+    distanceDecrease_ = speed_decrease;
     center_ = XMVectorZero();
     shakeSpeed_ = speed;
+    rangeDecrease_ = range_decrease;
 }
 
 void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar)
@@ -224,9 +215,6 @@ void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar)
 
 void Aim::CameraShake()
 {
-    OutputDebugStringA(std::to_string(moveDistance_).c_str());
-    OutputDebugString("\n");
-
     if (iterations_ < 0) return;
 
     //カメラシェイク終了戻る処理
@@ -235,9 +223,10 @@ void Aim::CameraShake()
         XMVECTOR vec = -XMVector3Normalize(center_);
 
         //目標地点につくよ
-        if (dist < moveDistance_) {
+        if (dist < moveDistance_ * shakeSpeed_) {
             moveDistance_ = dist;
             iterations_--;
+            center_ = XMVectorZero();
         }
 
         vec *= moveDistance_ * shakeSpeed_;
@@ -251,35 +240,31 @@ void Aim::CameraShake()
 
     //移動方向・移動目標場所を計算
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-    XMVECTOR upDirection = XMVectorSet(0.0f, sign_, 0.0f, 0.0f);
-    XMVECTOR shakeDirection = XMVector3Normalize(XMVector3TransformNormal(upDirection, mRotY));
+    XMVECTOR direction = XMVectorSet(sign_, 0.0f, 0.0f, 0.0f);
+    XMVECTOR shakeDirection = XMVector3Normalize(XMVector3TransformNormal(direction, mRotY));
     XMVECTOR nextPosition = center_ + shakeDirection;
 
-    // 中心から移動先までのベクトルを求め、距離を減少させて移動距離を更新
+    //方向調べて移動させる
     XMVECTOR directionVector = nextPosition - center_;
-    directionVector = XMVector3NormalizeEst(directionVector);
-
-    // Centerから移動先までの距離が移動距離より短い場合は、移動距離を距離に合わせる
-    float dist = XMVectorGetX(XMVector3Length(directionVector)) * range_;
-    if (dist < moveDistance_) {
-        moveDistance_ = dist;
-    }
-
-    // Centerから移動
-    directionVector *= moveDistance_ * shakeSpeed_;
+    directionVector = XMVector3NormalizeEst(directionVector) * moveDistance_ * shakeSpeed_;
     center_ += directionVector;
 
-    if (XMVectorGetX(XMVector3Length(center_)) > range_) {
+    //同じ方向か調べる
+    bool sign2 = (center_.m128_f32[0] + center_.m128_f32[1] + center_.m128_f32[2] / 3) > 0.0f;
+    bool sign3 = (directionVector.m128_f32[0] + directionVector.m128_f32[1] + directionVector.m128_f32[2] / 3) > 0;
+
+    //目標地点を超えたか調べる
+    if (sign2 == sign3 && XMVectorGetX(XMVector3Length(center_)) > range_) {
         iterations_--;
         sign_ *= -1.0f;
         moveDistance_ *= distanceDecrease_;
-        if(iterations_ > 0) center_ -= directionVector;
+        center_ = XMVector3Normalize(center_) * range_;
+        range_ *= rangeDecrease_;
     }
 
     cameraTarget_.x += center_.m128_f32[0];
     cameraTarget_.y += center_.m128_f32[1];
     cameraTarget_.z += center_.m128_f32[2];
-
 }
 
 //------------------------------------private--------------------------------------------

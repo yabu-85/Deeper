@@ -152,6 +152,7 @@
     <ClCompile Include="Enemy\Feet.cpp" />
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Enemy\ThrowEnemy.cpp" />
     <ClCompile Include="Engine\PolyLine.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Engine\Audio.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="Enemy\Feet.h" />
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Enemy\ThrowEnemy.h" />
     <ClInclude Include="Engine\PolyLine.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Engine\Audio.h" />

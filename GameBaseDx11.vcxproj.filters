@@ -351,6 +351,9 @@
     <ClCompile Include="Scene\SceneBase.cpp">
       <Filter>03Scene\Base</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy\ThrowEnemy.cpp">
+      <Filter>08Enemy\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -581,6 +584,9 @@
     </ClInclude>
     <ClInclude Include="Scene\SceneBase.h">
       <Filter>03Scene\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\ThrowEnemy.h">
+      <Filter>08Enemy\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

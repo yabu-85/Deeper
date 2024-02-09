@@ -13,6 +13,14 @@ class Aim : public GameObject
     int compulsionTime_;            //強制から戻るのに掛かる時間
     int hPict_;
 
+    int iterations_;            //反復回数
+    float sign_;                //計算用CameraShake
+    float shakeSpeed_;          //Shakeする速さ
+    float range_;               //Shakeする強さ（長さ）
+    float moveDistance_;        //計算用rangeの値を入れる
+    float distanceDecrease_;    //反復ごとの減衰地
+    XMVECTOR center_;
+
     float perspectiveDistance_;     //どのくらい後ろから映すか
     float defPerspectDistance_;     //デフォルトの視点の距離
     float mouseSensitivity;         //マウス感度
@@ -37,6 +45,8 @@ class Aim : public GameObject
     void RayCastStage();
     void CalcMouseMove();
     XMVECTOR CalcDirection(float x, float y);
+
+    void CameraShake();
 
 public:
     Aim(GameObject* parent);
@@ -64,21 +74,6 @@ public:
     void SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar);
     bool IsCompulsion() { return isCompulsion_; }
 
-public:
-    float sign_ = 1.0f;
-    XMVECTOR center = { 0, 0, 0 }; // 中心位置
-    float range = 1.0f; // 範囲
-
-    // 反復回数
-    int iterations = 10;
-    int Def_iterations = iterations;
-
-    // 反復ごとの移動距離の初期値
-    float moveDistance = range;
-
-    // 反復ごとに移動距離を減少させる係数
-    float distanceDecreaseFactor = 0.8f;
-
-    void CameraShake();
+    void SetCameraShake(int iterat, float range, float decrease, float speed);
 
 };

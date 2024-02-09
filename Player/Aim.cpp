@@ -35,7 +35,8 @@ namespace {
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPosition_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 }, cameraOffset_{ 0,0,0 },
     compulsionTarget_{ 0,0,0 }, compulsionPosisiton_{ 0,0,0 }, pPlayer_(nullptr), pEnemyBase_(nullptr), pCollisionMap_(nullptr),
-    isMove_(true), isCompulsion_(false), isTarget_(false), compulsionTime_(0)
+    isMove_(true), isCompulsion_(false), isTarget_(false), compulsionTime_(0), iterations_(-1), sign_(1), range_(0), moveDistance_(0), 
+    distanceDecrease_(0), center_{0,0,0,0}, shakeSpeed_(0)
 {
     mouseSensitivity = 2.0f;
     defPerspectDistance_ = 5.0f;
@@ -70,7 +71,7 @@ void Aim::Update()
     if (Input::IsKeyDown(DIK_R)) isMove_ = !isMove_;
     if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
     if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
-    if (Input::IsKeyDown(DIK_4)) sign_ *= -1.0f;
+    if (Input::IsKeyDown(DIK_4)) SetCameraShake(5, 1.0f, 0.9f, 0.1f);
 
     if (compulsionTime_ > 0) {
         //強制移動
@@ -137,7 +138,7 @@ void Aim::Draw()
 {
     Image::Draw(hPict_);
 
-    pText_->Draw(30, 500, iterations);
+    pText_->Draw(30, 500, iterations_);
 
 }
 
@@ -201,6 +202,17 @@ void Aim::SetTargetEnemy()
 
 }
 
+void Aim::SetCameraShake(int iteration, float range, float decrease, float speed)
+{
+    iterations_ = iteration;
+    sign_ = 1.0f;
+    range_ = range;
+    moveDistance_ = range_;
+    distanceDecrease_ = decrease;
+    center_ = XMVectorZero();
+    shakeSpeed_ = speed;
+}
+
 void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar)
 {
     compulsionPosisiton_ = pos;
@@ -212,6 +224,62 @@ void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar)
 
 void Aim::CameraShake()
 {
+    OutputDebugStringA(std::to_string(moveDistance_).c_str());
+    OutputDebugString("\n");
+
+    if (iterations_ < 0) return;
+
+    //カメラシェイク終了戻る処理
+    if (iterations_ == 0) {
+        float dist = XMVectorGetX(XMVector3Length(center_));
+        XMVECTOR vec = -XMVector3Normalize(center_);
+
+        //目標地点につくよ
+        if (dist < moveDistance_) {
+            moveDistance_ = dist;
+            iterations_--;
+        }
+
+        vec *= moveDistance_ * shakeSpeed_;
+        center_ += vec;
+
+        cameraTarget_.x += center_.m128_f32[0];
+        cameraTarget_.y += center_.m128_f32[1];
+        cameraTarget_.z += center_.m128_f32[2];
+        return;
+    }
+
+    //移動方向・移動目標場所を計算
+    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+    XMVECTOR upDirection = XMVectorSet(0.0f, sign_, 0.0f, 0.0f);
+    XMVECTOR shakeDirection = XMVector3Normalize(XMVector3TransformNormal(upDirection, mRotY));
+    XMVECTOR nextPosition = center_ + shakeDirection;
+
+    // 中心から移動先までのベクトルを求め、距離を減少させて移動距離を更新
+    XMVECTOR directionVector = nextPosition - center_;
+    directionVector = XMVector3NormalizeEst(directionVector);
+
+    // Centerから移動先までの距離が移動距離より短い場合は、移動距離を距離に合わせる
+    float dist = XMVectorGetX(XMVector3Length(directionVector)) * range_;
+    if (dist < moveDistance_) {
+        moveDistance_ = dist;
+    }
+
+    // Centerから移動
+    directionVector *= moveDistance_ * shakeSpeed_;
+    center_ += directionVector;
+
+    if (XMVectorGetX(XMVector3Length(center_)) > range_) {
+        iterations_--;
+        sign_ *= -1.0f;
+        moveDistance_ *= distanceDecrease_;
+        if(iterations_ > 0) center_ -= directionVector;
+    }
+
+    cameraTarget_.x += center_.m128_f32[0];
+    cameraTarget_.y += center_.m128_f32[1];
+    cameraTarget_.z += center_.m128_f32[2];
+
 }
 
 //------------------------------------private--------------------------------------------
@@ -225,43 +293,7 @@ void Aim::DefaultAim()
     XMFLOAT3 plaPos = pPlayer_->GetPosition();
     cameraTarget_ = { plaPos.x + cameraOffset_.x, plaPos.y + HEIGHT_DISTANCE, plaPos.z + cameraOffset_.z };
 
-    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-    XMVECTOR upDirection = XMVectorSet(0.0f, sign_, 0.0f, 0.0f);
-    XMVECTOR shakeDirection = XMVector3Normalize(XMVector3TransformNormal(upDirection, mRotY));
-
-    // 移動先を計算
-    XMVECTOR nextPosition = center + shakeDirection;
-
-    // 中心から移動先までのベクトルを求め、距離を減少させて移動距離を更新
-    XMVECTOR directionVector = nextPosition - center;
-    directionVector = XMVector3NormalizeEst(directionVector);
-
-    // Centerから移動先までの距離が移動距離より短い場合は、移動距離を距離に合わせる
-    float dist = XMVectorGetX(XMVector3Length(directionVector)) * range;
-    if (dist < moveDistance) {
-        moveDistance = dist;
-    }
-
-    // Centerから移動
-    directionVector *= moveDistance * 0.1f;
-    center += directionVector;
-
-    dist = XMVectorGetX(XMVector3Length(center));
-    if (dist > range) {
-        center -= directionVector;
-        sign_ *= -1.0f;
-        moveDistance *= distanceDecreaseFactor;
-        
-        iterations--;
-        if (iterations <= 0) {
-            iterations = Def_iterations;
-            moveDistance = range;
-        }
-    }
-
-    cameraTarget_.x += center.m128_f32[0];
-    cameraTarget_.y += center.m128_f32[1];
-    cameraTarget_.z += center.m128_f32[2];
+    CameraShake();
 
     //RayCastの前に情報を入れる
     perspectiveDistance_ = perspectiveDistance_ + ((defPerspectDistance_ - perspectiveDistance_) * 0.1f);

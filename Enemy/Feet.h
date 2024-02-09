@@ -29,6 +29,7 @@ public:
     void ApplyDamage(int da) override;
     void OnCollision(GameObject* pTarget) override;
 
+    int GetModelHandle() { return hModel_; }
     SphereCollider* GetSphereCollider() { return pHandCollider_; }
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }

@@ -22,5 +22,8 @@ public:
 	virtual void LifeTime();							//¶‘¶ŠÔ‚ÌŒvZ
 	virtual void LifeDead();							//¶‘¶ŠÔ‚ªI‚í‚Á‚½‚çŒÄ‚ÔŠÖ”
 
+	void SetLifeTime(int i) { lifeTime_ = i; }
+	void SetVelocity(float f) { velocity_ = f; }
+
 };
 

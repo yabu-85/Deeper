@@ -201,6 +201,7 @@
     <ClCompile Include="State\FeetState.cpp" />
     <ClCompile Include="State\PlayerState.cpp" />
     <ClCompile Include="State\StateManager.cpp" />
+    <ClCompile Include="State\ThrowState.cpp" />
     <ClCompile Include="UI\ExitUIManager.cpp" />
     <ClCompile Include="UI\Interaction.cpp" />
     <ClCompile Include="UI\TitleUIManager.cpp" />
@@ -211,6 +212,7 @@
     <ClCompile Include="Weapon\TestBullet.cpp" />
     <ClCompile Include="Weapon\TestWeaponMain.cpp" />
     <ClCompile Include="Weapon\TestWeaponSub.cpp" />
+    <ClCompile Include="Weapon\ThrowBullet.cpp" />
     <ClCompile Include="Weapon\WeaponBase.cpp" />
     <ClCompile Include="Weapon\WeaponObject.cpp" />
     <ClCompile Include="Weapon\WeaponObjectManager.cpp" />
@@ -283,6 +285,7 @@
     <ClInclude Include="State\PlayerState.h" />
     <ClInclude Include="State\StateBase.h" />
     <ClInclude Include="State\StateManager.h" />
+    <ClInclude Include="State\ThrowState.h" />
     <ClInclude Include="UI\ExitUIManager.h" />
     <ClInclude Include="UI\Interaction.h" />
     <ClInclude Include="UI\TitleUIManager.h" />
@@ -293,6 +296,7 @@
     <ClInclude Include="Weapon\TestBullet.h" />
     <ClInclude Include="Weapon\TestWeaponMain.h" />
     <ClInclude Include="Weapon\TestWeaponSub.h" />
+    <ClInclude Include="Weapon\ThrowBullet.h" />
     <ClInclude Include="Weapon\WeaponBase.h" />
     <ClInclude Include="Weapon\WeaponObject.h" />
     <ClInclude Include="Weapon\WeaponObjectManager.h" />

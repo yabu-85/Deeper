@@ -354,6 +354,12 @@
     <ClCompile Include="Enemy\ThrowEnemy.cpp">
       <Filter>08Enemy\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="State\ThrowState.cpp">
+      <Filter>06State\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\ThrowBullet.cpp">
+      <Filter>09Weapon\Bullet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -587,6 +593,12 @@
     </ClInclude>
     <ClInclude Include="Enemy\ThrowEnemy.h">
       <Filter>08Enemy\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="State\ThrowState.h">
+      <Filter>06State\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\ThrowBullet.h">
+      <Filter>09Weapon\Bullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

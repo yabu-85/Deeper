@@ -9,9 +9,13 @@ class VisionSearchAction;
 class ThrowEnemy : public EnemyBase
 {
     int hModel_;
+    int hItemModel_;
     int boneIndex_;
     int partIndex_;
-    
+    Transform itemTransform_;
+
+    bool isHasItem_;        //ç°ÉAÉCÉeÉÄÇéùÇ¡ÇƒÇ¢ÇÈÇ©
+
     //Action
     AstarMoveAction* pMoveAction_;
     RotateAction* pRotateAction_;
@@ -27,6 +31,9 @@ public:
     void ApplyDamage(int da) override;
     void OnCollision(GameObject* pTarget) override;
 
+    void ThrowItem();
+
+    int GetModelHandle() { return hModel_; }
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }
     VisionSearchAction* GetVisionSearchAction() { return pVisionSearchAction_; }

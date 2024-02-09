@@ -213,60 +213,6 @@ void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar)
 
 }
 
-void Aim::CameraShake()
-{
-    if (iterations_ < 0) return;
-
-    //カメラシェイク終了戻る処理
-    if (iterations_ == 0) {
-        float dist = XMVectorGetX(XMVector3Length(center_));
-        XMVECTOR vec = -XMVector3Normalize(center_);
-
-        //目標地点につくよ
-        if (dist < moveDistance_ * shakeSpeed_) {
-            moveDistance_ = dist;
-            iterations_--;
-            center_ = XMVectorZero();
-        }
-
-        vec *= moveDistance_ * shakeSpeed_;
-        center_ += vec;
-
-        cameraTarget_.x += center_.m128_f32[0];
-        cameraTarget_.y += center_.m128_f32[1];
-        cameraTarget_.z += center_.m128_f32[2];
-        return;
-    }
-
-    //移動方向・移動目標場所を計算
-    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-    XMVECTOR direction = XMVectorSet(sign_, 0.0f, 0.0f, 0.0f);
-    XMVECTOR shakeDirection = XMVector3Normalize(XMVector3TransformNormal(direction, mRotY));
-    XMVECTOR nextPosition = center_ + shakeDirection;
-
-    //方向調べて移動させる
-    XMVECTOR directionVector = nextPosition - center_;
-    directionVector = XMVector3NormalizeEst(directionVector) * moveDistance_ * shakeSpeed_;
-    center_ += directionVector;
-
-    //同じ方向か調べる
-    bool sign2 = (center_.m128_f32[0] + center_.m128_f32[1] + center_.m128_f32[2] / 3) > 0.0f;
-    bool sign3 = (directionVector.m128_f32[0] + directionVector.m128_f32[1] + directionVector.m128_f32[2] / 3) > 0;
-
-    //目標地点を超えたか調べる
-    if (sign2 == sign3 && XMVectorGetX(XMVector3Length(center_)) > range_) {
-        iterations_--;
-        sign_ *= -1.0f;
-        moveDistance_ *= distanceDecrease_;
-        center_ = XMVector3Normalize(center_) * range_;
-        range_ *= rangeDecrease_;
-    }
-
-    cameraTarget_.x += center_.m128_f32[0];
-    cameraTarget_.y += center_.m128_f32[1];
-    cameraTarget_.z += center_.m128_f32[2];
-}
-
 //------------------------------------private--------------------------------------------
 
 void Aim::DefaultAim()
@@ -474,4 +420,58 @@ XMVECTOR Aim::CalcDirection(float x, float y)
     const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
     XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView); //XMVector3TransformNormalを使用することで回転のみを適用します
     return XMVector3Normalize(direction);
+}
+
+void Aim::CameraShake()
+{
+    if (iterations_ < 0) return;
+
+    //カメラシェイク終了戻る処理
+    if (iterations_ == 0) {
+        float dist = XMVectorGetX(XMVector3Length(center_));
+        XMVECTOR vec = -XMVector3Normalize(center_);
+
+        //目標地点につくよ
+        if (dist < moveDistance_ * shakeSpeed_) {
+            moveDistance_ = dist;
+            iterations_--;
+            center_ = XMVectorZero();
+        }
+
+        vec *= moveDistance_ * shakeSpeed_;
+        center_ += vec;
+
+        cameraTarget_.x += center_.m128_f32[0];
+        cameraTarget_.y += center_.m128_f32[1];
+        cameraTarget_.z += center_.m128_f32[2];
+        return;
+    }
+
+    //移動方向・移動目標場所を計算
+    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+    XMVECTOR direction = XMVectorSet(sign_, 0.0f, 0.0f, 0.0f);
+    XMVECTOR shakeDirection = XMVector3Normalize(XMVector3TransformNormal(direction, mRotY));
+    XMVECTOR nextPosition = center_ + shakeDirection;
+
+    //方向調べて移動させる
+    XMVECTOR directionVector = nextPosition - center_;
+    directionVector = XMVector3NormalizeEst(directionVector) * moveDistance_ * shakeSpeed_;
+    center_ += directionVector;
+
+    //同じ方向か調べる
+    bool sign2 = (center_.m128_f32[0] + center_.m128_f32[1] + center_.m128_f32[2] / 3) > 0.0f;
+    bool sign3 = (directionVector.m128_f32[0] + directionVector.m128_f32[1] + directionVector.m128_f32[2] / 3) > 0;
+
+    //目標地点を超えたか調べる
+    if (sign2 == sign3 && XMVectorGetX(XMVector3Length(center_)) > range_) {
+        iterations_--;
+        sign_ *= -1.0f;
+        moveDistance_ *= distanceDecrease_;
+        center_ = XMVector3Normalize(center_) * range_;
+        range_ *= rangeDecrease_;
+    }
+
+    cameraTarget_.x += center_.m128_f32[0];
+    cameraTarget_.y += center_.m128_f32[1];
+    cameraTarget_.z += center_.m128_f32[2];
 }

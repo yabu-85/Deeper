@@ -6,7 +6,7 @@ using namespace DirectX;
 
 namespace DropTable
 {
-	void DropItem(int type, XMFLOAT3 pos);
+	void DropItem(ENEMY_TYPE type, XMFLOAT3 pos);
 
 };
 

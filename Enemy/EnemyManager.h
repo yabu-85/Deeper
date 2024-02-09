@@ -8,6 +8,7 @@ class GameObject;
 
 enum ENEMY_TYPE {
 	ENEMY_FEET,
+	ENEMY_THROW,
 	ENEMY_MAX,
 };
 

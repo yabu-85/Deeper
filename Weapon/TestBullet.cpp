@@ -13,12 +13,10 @@ TestBullet::TestBullet(GameObject* parent)
 
 TestBullet::~TestBullet()
 {
-	Release();
 }
 
 void TestBullet::Initialize()
 {
-	//モデルデータのロード
 	hModel_ = Model::Load("DebugCollision/SphereCollider.fbx");
 	assert(hModel_ >= 0);
 

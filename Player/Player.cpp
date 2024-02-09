@@ -129,8 +129,10 @@ void Player::Initialize()
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 
-    SphereCollider* collid = new SphereCollider(XMFLOAT3(0.0f, 1.2f, 0.0f), 0.25f);
-    AddCollider(collid);
+    SphereCollider* collid1 = new SphereCollider(XMFLOAT3(0.0f, 1.2f, 0.0f), 0.25f);
+    SphereCollider* collid2 = new SphereCollider(XMFLOAT3(0.0f, 0.6f, 0.0f), 0.3f);
+    AddCollider(collid1);
+    AddCollider(collid2);
 
     apperPos_ = transform_.position_;
     transform_.position_.y += (time_ * 0.5f);

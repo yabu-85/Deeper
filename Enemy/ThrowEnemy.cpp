@@ -42,6 +42,7 @@ void ThrowEnemy::Initialize()
 	hp_ = maxHp_;
 	aimTargetPos_ = 1.0f;
 	bodyWeight_ = 10.0f;
+	bodyRange_ = 0.2f;
 	attackDamage_ = 50;
 
 	//Collider‚Ìİ’è

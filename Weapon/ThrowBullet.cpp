@@ -6,19 +6,26 @@
 #include "../VFXManager.h"
 #include "../Enemy/EnemyBase.h"
 
+namespace {
+	const float damping = 0.1f;											//空気抵抗
+	const float speed = 0.05f;											//移動スピード
+	const float curvatureRadius = 2.5f;									//半径何メートルの円で曲がれるのかみたいな
+	const float maxCentripetalAccel = speed * speed / curvatureRadius;	//最大向心加速度
+	const float propulsion = speed * damping;							//推進体
+
+}
+
 ThrowBullet::ThrowBullet(GameObject* parent)
-	: BulletBase(parent, "ThrowBullet"), damage_(0)
+	: BulletBase(parent, "ThrowBullet"), damage_(0), vVelocity_(XMVectorZero())
 {
 }
 
 ThrowBullet::~ThrowBullet()
 {
-	Release();
 }
 
 void ThrowBullet::Initialize()
 {
-	//モデルデータのロード
 	hModel_ = Model::Load("DebugCollision/SphereCollider.fbx");
 	assert(hModel_ >= 0);
 
@@ -26,8 +33,9 @@ void ThrowBullet::Initialize()
 	velocity_ = 0.7f;
 	lifeTime_ = 30;
 	damage_ = rand() % 11;
+	vVelocity_ = { 0, 0.2f, 0, 0 };
 
-	SphereCollider* collision = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
+	SphereCollider* collision = new SphereCollider(XMFLOAT3(0, 0, 0), 0.2f);
 	AddAttackCollider(collision);
 
 }
@@ -50,6 +58,7 @@ void ThrowBullet::Draw()
 {
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
+	CollisionDraw();
 }
 
 void ThrowBullet::Release()
@@ -78,12 +87,6 @@ void ThrowBullet::Shot(XMFLOAT3 pos, XMFLOAT3 target)
 
 void ThrowBullet::Move()
 {
-	const float damping = 0.9f;				//空気抵抗
-	const float propulsion = 0.9f;			//推進体
-	const float speed = 0.1f;				//移動スピード
-	const float curvatureRadius = 0.5f;		//半径何メートルの円で曲がれるのかみたいな
-	const float maxCentripetalAccel = speed * speed / curvatureRadius;	//最大向心加速度
-	
 	XMVECTOR toTarget = XMLoadFloat3(&moveVec_) - XMLoadFloat3(&transform_.position_);
 	XMVECTOR vn = XMVector3Normalize(vVelocity_);
 

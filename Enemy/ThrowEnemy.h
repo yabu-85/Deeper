@@ -32,6 +32,7 @@ public:
     void OnCollision(GameObject* pTarget) override;
 
     void ThrowItem();
+    void SetItem();
 
     int GetModelHandle() { return hModel_; }
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }

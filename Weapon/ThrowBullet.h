@@ -2,16 +2,18 @@
 #include "BulletBase.h"
 
 class PolyLine;
+class SphereCollider;
 
 class ThrowBullet : public BulletBase
 {
     int time_;                  //計算用
     float maxHeight_;           //最大高度
     float maxDistance_;         //最大距離
-
-    bool isDeath_;              //死亡フラグ
+    bool isDeath_;              //死亡用フラグ
     XMFLOAT3 deathPosition_;    //Poly用の死亡場所記憶
+    
     PolyLine* pPolyLine_;
+    SphereCollider* pSphereCollider_;
 
 public:
     ThrowBullet(GameObject* parent);

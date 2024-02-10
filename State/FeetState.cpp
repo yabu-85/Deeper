@@ -33,7 +33,7 @@ FeetAppear::FeetAppear(StateManager* owner) : StateBase(owner), time_(0)
 void FeetAppear::Update()
 {
 	time_++;
-	if (time_ > APPER_TIME) owner_->ChangeState("Idle");
+	if (time_ > APPER_TIME) owner_->ChangeState("Patrol");
 
 	float tsize = (float)time_ / (float)APPER_TIME;
 	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
@@ -54,17 +54,6 @@ void FeetAppear::OnExit()
 	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
 	f->SetScale(XMFLOAT3(1, 1, 1));
 
-}
-
-//--------------------------------------------------------------------------------
-
-FeetIdle::FeetIdle(StateManager* owner) : StateBase(owner)
-{
-}
-
-void FeetIdle::Update()
-{
-	owner_->ChangeState("Patrol");
 }
 
 //--------------------------------------------------------------------------------
@@ -134,7 +123,7 @@ FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 	IsEnemyAttackReady* condition2 = new IsEnemyAttackReady(action1, f);
 
 	//§ŒäAI‚ÌConditionNodeiUŒ‚‰Â”\Å‘å””ÍˆÍ“à‚©Test
-	CombatStateCountNode* conditionA = new CombatStateCountNode(condition2, 2, { "Move", "Attack" });
+	CombatStateCountNode* conditionA = new CombatStateCountNode(condition2, 3, { "Move", "Attack" });
 	IsEnemyCombatState* condition3 = new IsEnemyCombatState(conditionA, "Wait", f);
 	selector2->AddChildren(condition3);
 
@@ -187,14 +176,6 @@ FeetWait::FeetWait(StateManager* owner) : StateBase(owner)
 void FeetWait::Update()
 {
 	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
-	if (rand() % 100 == 0) {
-		if (f->GetMoveAction()->IsInRange() || f->GetMoveAction()->IsOutTarget(3.0f)) {
-			CreateStage* pCreateStage = GameManager::GetCreateStage();
-			f->GetMoveAction()->UpdatePath(pCreateStage->GetFloarPosition(f->GetPosition(), 10.0f));
-		}
-	}
-
-	f->GetMoveAction()->Update();
 	f->GetRotateAction()->Update();
 
 }

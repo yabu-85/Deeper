@@ -33,7 +33,7 @@ ThrowAppear::ThrowAppear(StateManager* owner) : StateBase(owner), time_(0)
 void ThrowAppear::Update()
 {
 	time_++;
-	if (time_ > APPER_TIME) owner_->ChangeState("Idle");
+	if (time_ > APPER_TIME) owner_->ChangeState("Patrol");
 
 	float tsize = (float)time_ / (float)APPER_TIME * 0.5f;
 	ThrowEnemy* f = static_cast<ThrowEnemy*>(owner_->GetGameObject());
@@ -54,17 +54,6 @@ void ThrowAppear::OnExit()
 	ThrowEnemy* f = static_cast<ThrowEnemy*>(owner_->GetGameObject());
 	f->SetScale(XMFLOAT3(0.5f, 0.5f, 0.5f));
 
-}
-
-//--------------------------------------------------------------------------------
-
-ThrowIdle::ThrowIdle(StateManager* owner) : StateBase(owner)
-{
-}
-
-void ThrowIdle::Update()
-{
-	owner_->ChangeState("Patrol");
 }
 
 //--------------------------------------------------------------------------------
@@ -134,13 +123,13 @@ ThrowCombat::ThrowCombat(StateManager* owner) : StateBase(owner)
 	IsEnemyAttackReady* condition2 = new IsEnemyAttackReady(action1, f);
 
 	//制御AIのConditionNode（攻撃可能最大数範囲内かTest
-	CombatStateCountNode* conditionA = new CombatStateCountNode(condition2, 2, { "Move", "Attack" });
+	CombatStateCountNode* conditionA = new CombatStateCountNode(condition2, 3, { "Move", "Attack" });
 	IsEnemyCombatState* condition3 = new IsEnemyCombatState(conditionA, "Wait", f);
 	selector2->AddChildren(condition3);
 
 	//--------------------Attackへ移行する-----------------------
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(f, "Attack");
-	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 2.0f, f, GameManager::GetPlayer());
+	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 6.0f, f, GameManager::GetPlayer());
 	IsEnemyCombatState* condition5 = new IsEnemyCombatState(condition4, "Move", f);
 	selector2->AddChildren(condition5);
 
@@ -187,22 +176,26 @@ ThrowWait::ThrowWait(StateManager* owner) : StateBase(owner)
 void ThrowWait::Update()
 {
 	ThrowEnemy* f = static_cast<ThrowEnemy*>(owner_->GetGameObject());
-	if (rand() % 100 == 0) {
-		if (f->GetMoveAction()->IsInRange() || f->GetMoveAction()->IsOutTarget(3.0f)) {
+
+	//Playerが特定の距離移動したら
+	if (rand() % 30 == 0) {
+		f->GetMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
+		if (f->GetMoveAction()->IsOutTarget(5.0f)) {
 			CreateStage* pCreateStage = GameManager::GetCreateStage();
-			f->GetMoveAction()->UpdatePath(pCreateStage->GetFloarPosition(f->GetPosition(), 10.0f));
+			f->GetMoveAction()->UpdatePath(pCreateStage->GetFloarPosition(f->GetPosition(), 7.0f));
 		}
 	}
 
 	f->GetMoveAction()->Update();
 	f->GetRotateAction()->Update();
-
 }
 
 void ThrowWait::OnEnter()
 {
 	ThrowEnemy* f = static_cast<ThrowEnemy*>(owner_->GetGameObject());
 	f->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
+	f->SetItem();
+
 }
 
 //--------------------------------------------------------------------------------
@@ -213,13 +206,9 @@ ThrowMove::ThrowMove(StateManager* owner) : StateBase(owner)
 
 void ThrowMove::Update()
 {
-	//らんｄやめよう
+	//プレイヤーの場所に移動
 	ThrowEnemy* f = static_cast<ThrowEnemy*>(owner_->GetGameObject());
 	f->GetMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
-	if (f->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
-		f->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
-	}
-
 	if (f->GetMoveAction()->IsOutTarget(3.0f)) {
 		f->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
 	}
@@ -252,10 +241,9 @@ void ThrowAttack::Update()
 	time_++;
 
 	ThrowEnemy* f = static_cast<ThrowEnemy*>(owner_->GetGameObject());
-	if (time_ < 30) f->GetRotateAction()->Update();
-
-	//攻撃するー
-	//if (time_ == 65) f->GetSphereCollider()->SetValid(true);
+	f->GetRotateAction()->Update();
+	
+	if(time_ == 65) f->ThrowItem();
 
 	if (time_ >= 200) {
 		Model::SetAnimFrame(f->GetModelHandle(), 0, 0, 1.0f);
@@ -269,6 +257,7 @@ void ThrowAttack::OnEnter()
 	time_ = 0;
 	ThrowEnemy* f = static_cast<ThrowEnemy*>(owner_->GetGameObject());
 	Model::SetAnimFrame(f->GetModelHandle(), 0, 200, 1.0f);
+
 }
 
 //--------------------------------------------------------------------------------

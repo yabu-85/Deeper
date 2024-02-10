@@ -15,14 +15,6 @@ public:
 	void OnExit() override;
 };
 
-class FeetIdle : public StateBase
-{
-public:
-	FeetIdle(StateManager* owner);
-	const char* GetName() const override { return "Idle"; }
-	void Update() override;
-};
-
 class FeetPatrol : public StateBase
 {
 	int foundSearchTime_;

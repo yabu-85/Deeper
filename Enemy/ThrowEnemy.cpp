@@ -64,7 +64,6 @@ void ThrowEnemy::Initialize()
 	//ステートの設定
 	pStateManager_ = new StateManager(this);
 	pStateManager_->AddState(new ThrowAppear(pStateManager_));
-	pStateManager_->AddState(new ThrowIdle(pStateManager_));
 	pStateManager_->AddState(new ThrowPatrol(pStateManager_));
 	pStateManager_->AddState(new ThrowCombat(pStateManager_));
 	pStateManager_->AddState(new ThrowDead(pStateManager_));
@@ -85,12 +84,8 @@ void ThrowEnemy::Initialize()
 
 void ThrowEnemy::Update()
 {
-	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.3f);
-	
+	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.3f);	
 	pStateManager_->Update();
-
-	if (isHasItem_ && rand() % 60 == 0) ThrowItem();
-	if (!isHasItem_ && rand() % 60 == 0) isHasItem_ = true;
 
 }
 
@@ -153,4 +148,9 @@ void ThrowEnemy::ThrowItem()
 	ThrowBullet* bullet = Instantiate<ThrowBullet>(GetParent());
 	bullet->Shot(itemTransform_.position_, plaPos);
 
+}
+
+void ThrowEnemy::SetItem()
+{
+	isHasItem_ = true;
 }

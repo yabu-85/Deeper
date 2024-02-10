@@ -15,7 +15,7 @@ namespace {
 }
 
 ThrowBullet::ThrowBullet(GameObject* parent)
-	: BulletBase(parent, "ThrowBullet"), maxDistance_(0), maxHeight_(0), time_(0), pPolyLine_(nullptr), 
+	: BulletBase(parent, "ThrowBullet"), maxDistance_(0), maxHeight_(0), time_(0), pPolyLine_(nullptr), pSphereCollider_(nullptr),
 	deathPosition_(XMFLOAT3()), isDeath_(false)
 {
 }
@@ -34,8 +34,9 @@ void ThrowBullet::Initialize()
 	lifeTime_ = 120;
 	time_ = (int)DEF_TIME;
 
-	SphereCollider* collision = new SphereCollider(XMFLOAT3(0, 0, 0), 0.2f);
-	AddAttackCollider(collision);
+	pSphereCollider_ = new SphereCollider(XMFLOAT3(0, 0, 0), 0.2f);
+	AddAttackCollider(pSphereCollider_);
+	pSphereCollider_->SetValid(false);
 
 	pPolyLine_ = new PolyLine;
 	pPolyLine_->Load("tex3.png");
@@ -52,6 +53,8 @@ void ThrowBullet::Update()
 		time_--;
 		return;
 	}
+
+	if(time_ > ((int)DEF_TIME / 2)) pSphereCollider_->SetValid(true);
 
 	Move();
 	pPolyLine_->AddPosition(transform_.position_);

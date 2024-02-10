@@ -60,7 +60,6 @@ void Feet::Initialize()
 	//ステートの設定
 	pStateManager_ = new StateManager(this);
 	pStateManager_->AddState(new FeetAppear(pStateManager_));
-	pStateManager_->AddState(new FeetIdle(pStateManager_));
 	pStateManager_->AddState(new FeetPatrol(pStateManager_));
 	pStateManager_->AddState(new FeetCombat(pStateManager_));
 	pStateManager_->AddState(new FeetDead(pStateManager_));

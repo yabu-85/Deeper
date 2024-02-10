@@ -15,14 +15,6 @@ public:
 	void OnExit() override;
 };
 
-class ThrowIdle : public StateBase
-{
-public:
-	ThrowIdle(StateManager* owner);
-	const char* GetName() const override { return "Idle"; }
-	void Update() override;
-};
-
 class ThrowPatrol : public StateBase
 {
 	int foundSearchTime_;

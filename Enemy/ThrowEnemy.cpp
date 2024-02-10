@@ -88,8 +88,8 @@ void ThrowEnemy::Update()
 	
 	pStateManager_->Update();
 
-	if (isHasItem_ && rand() % 200 == 0) ThrowItem();
-	if (!isHasItem_ && rand() % 200 == 0) isHasItem_ = true;
+	if (isHasItem_ && rand() % 60 == 0) ThrowItem();
+	if (!isHasItem_ && rand() % 60 == 0) isHasItem_ = true;
 
 }
 
@@ -153,7 +153,6 @@ void ThrowEnemy::ThrowItem()
 
 	ThrowBullet* bullet = Instantiate<ThrowBullet>(GetParent());
 	bullet->SetVelocity(0.1f);
-	bullet->SetLifeTime(600);
 	bullet->Shot(itemTransform_.position_, plaPos);
 
 }

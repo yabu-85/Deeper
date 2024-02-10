@@ -7,16 +7,12 @@
 #include "../Enemy/EnemyBase.h"
 
 namespace {
-	const float damping = 0.1f;											//空気抵抗
-	const float speed = 0.05f;											//移動スピード
-	const float curvatureRadius = 2.5f;									//半径何メートルの円で曲がれるのかみたいな
-	const float maxCentripetalAccel = speed * speed / curvatureRadius;	//最大向心加速度
-	const float propulsion = speed * damping;							//推進体
+	static const float DEF_TIME = 60.0f;
 
 }
 
 ThrowBullet::ThrowBullet(GameObject* parent)
-	: BulletBase(parent, "ThrowBullet"), damage_(0), vVelocity_(XMVectorZero())
+	: BulletBase(parent, "ThrowBullet"), damage_(0), maxDistance_(0), maxHeight_(0), time_(0)
 {
 }
 
@@ -31,9 +27,10 @@ void ThrowBullet::Initialize()
 
 	transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	velocity_ = 0.7f;
-	lifeTime_ = 30;
-	damage_ = rand() % 11;
-	vVelocity_ = { 0, 0.2f, 0, 0 };
+	damage_ = 0;
+	lifeTime_ = 120;
+
+	time_ = (int)DEF_TIME;
 
 	SphereCollider* collision = new SphereCollider(XMFLOAT3(0, 0, 0), 0.2f);
 	AddAttackCollider(collision);
@@ -42,7 +39,6 @@ void ThrowBullet::Initialize()
 
 void ThrowBullet::Update()
 {
-	LifeTime();
 	Move();
 
 	//CollisionMapとの判定（今はy<=0だけ）
@@ -51,6 +47,9 @@ void ThrowBullet::Update()
 		AudioManager::Play(transform_.position_, 10.0f);
 		KillMe();
 	}
+
+	LifeTime();
+	time_--;
 
 }
 
@@ -70,43 +69,54 @@ void ThrowBullet::OnAttackCollision(GameObject* pTarget)
 {
 	if (pTarget->GetObjectName() == "Player") {
 		VFXManager::CreatVfxExplode1(transform_.position_);
-		AudioManager::Play(transform_.position_, 10.0f);
 		KillMe();
-
 	}
 
 }
 
-//moveVec_をTargetの位置として使う
+void ThrowBullet::SetThrowData(float maxHeight, float maxDist)
+{
+	maxHeight_ = maxHeight;
+	maxDistance_ = maxDist;
+
+}
+
 void ThrowBullet::Shot(XMFLOAT3 pos, XMFLOAT3 target)
 {
+	maxHeight_ = 10.0f;
+	maxDistance_ = 10.0f; 
 	transform_.position_ = pos;
-	moveVec_ = target;
+	
+	float distX = target.x - pos.x;
+	float distZ = target.z - pos.z;
+	float dist = sqrtf(distX * distX + distZ * distZ);
+
+	//最大距離抑制
+	if (dist > maxDistance_) {
+		float supp = maxDistance_ / dist;
+		distX *= supp;
+		distZ *= supp;
+		dist = maxDistance_;
+	}
+	moveVec_.x = distX / DEF_TIME;
+	moveVec_.z = distZ / DEF_TIME;
+
+	//最大高度
+	float timeToReachPeak = dist / (DEF_TIME * 0.5f);
+	float maxHeightAdjusted = maxHeight_;
+	if (timeToReachPeak < 1.0f) maxHeightAdjusted *= timeToReachPeak;
+	moveVec_.y = maxHeightAdjusted / timeToReachPeak / DEF_TIME;
 
 }
 
 void ThrowBullet::Move()
 {
-	XMVECTOR toTarget = XMLoadFloat3(&moveVec_) - XMLoadFloat3(&transform_.position_);
-	XMVECTOR vn = XMVector3Normalize(vVelocity_);
+	//-1～1の間に変換してheightを計算
+	float time = (time_ / DEF_TIME) * 2.0f - 1.0f;
+	float height = moveVec_.y * time;
 
-	XMFLOAT3 vec1, vec2;
-	XMStoreFloat3(&vec1, toTarget);
-	XMStoreFloat3(&vec2, vn); 
-	float dot = vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
-	
-	XMVECTOR centripetalAccel = toTarget - (vn * dot);
-	float centripetalAccelMagnitude = XMVectorGetX(XMVector3Length(centripetalAccel));
-	if (centripetalAccelMagnitude > 1.0f)
-	{
-		centripetalAccel /= centripetalAccelMagnitude;
-	}
-
-	XMVECTOR force = centripetalAccel * maxCentripetalAccel;
-	force += vn * propulsion;
-	force -= vVelocity_ * damping;
-	vVelocity_ += force;
-	force = XMLoadFloat3(&transform_.position_) + vVelocity_;
-	XMStoreFloat3(&transform_.position_, force);
+	transform_.position_.x += moveVec_.x;
+	transform_.position_.y += height;
+	transform_.position_.z += moveVec_.z;
 
 }

@@ -11,7 +11,6 @@ class Aim : public GameObject
     bool isCompulsion_;             //強制的に移動させる状態か
     bool isTarget_;                 //ターゲット状態か
     int compulsionTime_;            //強制から戻るのに掛かる時間
-    int hPict_;
 
     int iterations_;            //反復回数
     float sign_;                //計算用CameraShake
@@ -65,10 +64,13 @@ public:
     //進行方向ベクトルのAim情報を取得
     XMFLOAT3 GetAimDirection() { return aimDirection_; }
 
-    //Targetを見つける
+    //死んだ敵のポインタを渡してTargetだったらの関数
+    void TargetIsDead(EnemyBase* target);       
+    //Targetを更新する
     void SetTargetEnemy();
-    bool IsTarget() { return isTarget_; };
+
     EnemyBase* GetTargetEnemy() { return pEnemyBase_; }
+    bool IsTarget() { return isTarget_; };
     XMFLOAT3 GetTargetPos() { return isTarget_ ? pEnemyBase_->GetPosition() : XMFLOAT3(); }
 
     //座標を指定してポジションと焦点を設定する

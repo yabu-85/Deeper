@@ -5,14 +5,18 @@
 #include "../AudioManager.h"
 #include "../VFXManager.h"
 #include "../Enemy/EnemyBase.h"
+#include "../Engine/PolyLine.h"
+#include "../Engine/Global.h"
+#include "../Player/LifeManager.h"
 
 namespace {
 	static const float DEF_TIME = 60.0f;
-
+	static const int DEATH_TIME = 30;
 }
 
 ThrowBullet::ThrowBullet(GameObject* parent)
-	: BulletBase(parent, "ThrowBullet"), damage_(0), maxDistance_(0), maxHeight_(0), time_(0)
+	: BulletBase(parent, "ThrowBullet"), maxDistance_(0), maxHeight_(0), time_(0), pPolyLine_(nullptr), 
+	deathPosition_(XMFLOAT3()), isDeath_(false)
 {
 }
 
@@ -26,35 +30,43 @@ void ThrowBullet::Initialize()
 	assert(hModel_ >= 0);
 
 	transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
-	velocity_ = 0.7f;
-	damage_ = 0;
+	damage_ = 10;
 	lifeTime_ = 120;
-
 	time_ = (int)DEF_TIME;
 
 	SphereCollider* collision = new SphereCollider(XMFLOAT3(0, 0, 0), 0.2f);
 	AddAttackCollider(collision);
 
+	pPolyLine_ = new PolyLine;
+	pPolyLine_->Load("tex3.png");
+	pPolyLine_->SetLength(30);
+
 }
 
 void ThrowBullet::Update()
 {
+	if (isDeath_) {
+		pPolyLine_->AddPosition(deathPosition_);
+
+		if (time_ <= 0) KillMe();
+		time_--;
+		return;
+	}
+
 	Move();
+	pPolyLine_->AddPosition(transform_.position_);
 
 	//CollisionMapとの判定（今はy<=0だけ）
-	if (transform_.position_.y <= 0.0f) {
-		VFXManager::CreatVfxExplode1(transform_.position_);
-		AudioManager::Play(transform_.position_, 10.0f);
-		KillMe();
-	}
+	if (transform_.position_.y <= 0.0f) Hit();
 
 	LifeTime();
 	time_--;
-
 }
 
 void ThrowBullet::Draw()
 {
+	pPolyLine_->Draw();
+
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 	CollisionDraw();
@@ -63,13 +75,15 @@ void ThrowBullet::Draw()
 void ThrowBullet::Release()
 {
 	Model::Release(hModel_);
+	SAFE_RELEASE(pPolyLine_);
+	SAFE_DELETE(pPolyLine_);
+
 }
 
 void ThrowBullet::OnAttackCollision(GameObject* pTarget)
 {
 	if (pTarget->GetObjectName() == "Player") {
-		VFXManager::CreatVfxExplode1(transform_.position_);
-		KillMe();
+		Hit();
 	}
 
 }
@@ -101,7 +115,7 @@ void ThrowBullet::Shot(XMFLOAT3 pos, XMFLOAT3 target)
 	moveVec_.x = distX / DEF_TIME;
 	moveVec_.z = distZ / DEF_TIME;
 
-	//最大高度
+	//最大高度抑制
 	float timeToReachPeak = dist / (DEF_TIME * 0.5f);
 	float maxHeightAdjusted = maxHeight_;
 	if (timeToReachPeak < 1.0f) maxHeightAdjusted *= timeToReachPeak;
@@ -118,5 +132,19 @@ void ThrowBullet::Move()
 	transform_.position_.x += moveVec_.x;
 	transform_.position_.y += height;
 	transform_.position_.z += moveVec_.z;
+
+}
+
+void ThrowBullet::Hit()
+{
+	//当たったように見せるために一回進める
+	Move();
+
+	VFXManager::CreatVfxExplode1(transform_.position_);
+	AudioManager::Play(transform_.position_, 10.0f);
+	deathPosition_ = transform_.position_;
+	time_ = DEATH_TIME;
+	isDeath_ = true;
+	transform_.position_.y = 10000.0f;
 
 }

@@ -43,12 +43,14 @@ public:
     void OnCollision(GameObject* pTarget) override;
     void OnAttackCollision(GameObject* pTarget) override;
 
+    //Aim
     void TargetRotate(XMFLOAT3 pos);
     void Rotate();
     void Rotate(float ratio);
     void AimTargetRotate();
     void AimTargetRotate(float ratio);
 
+    //移動
     XMFLOAT3 GetInputMove();        //Inputの移動量取得
     void FrontMove(float f = 1.0f); //前への移動
     void BackMove(float f = 1.0f); //前への移動
@@ -60,8 +62,13 @@ public:
     void ResetKeyMovement() { movement_ = XMFLOAT3(0.0f, 0.0f, 0.0f); }
     void ResetMovement() override;
 
+    //回避
     void InitAvo();
 
+    //ダメージ
+    void ReceivedDamage();
+
+    //ポインタ
     int GetModelHandle() { return hModel_; }
     Aim* GetAim() { return pAim_; }
     PlayerCommand* GetCommand() { return pCommand_; }

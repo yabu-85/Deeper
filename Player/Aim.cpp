@@ -49,13 +49,9 @@ void Aim::Initialize()
     pPlayer_ = static_cast<Player*>(FindObject("Player"));
     DefaultAim();
 
-    hPict_ = Image::Load("Image/TargetFound.png");
-    assert(hPict_ >= 0);
     Transform foundTrans;
     foundTrans.position_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
     foundTrans.scale_ = XMFLOAT3(0.2f, 0.2f, 0.0f);
-    Image::SetAlpha(hPict_, 255);
-    Image::SetTransform(hPict_, foundTrans);
 
 }
 
@@ -84,35 +80,12 @@ void Aim::Update()
     }
 
     if (isMove_) {
+        //Target状態の移動・強制から戻る状態だったらTarget状態に移動
         if (isTarget_) {
             CalcCameraOffset(0.0f);
-
             compulsionTime_ = 0;
-
-            //ターゲットが生きてるならそいつにAim合わせる
-            if (!pEnemyBase_->IsDead()) {
-                FacingTarget();
-
-                //ちょっとAimTarget時の描画してみる
-                XMFLOAT3 tarPos = pEnemyBase_->GetPosition();
-                tarPos.y += pEnemyBase_->GetAimTargetPos();
-                XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&tarPos), Camera::GetViewMatrix());
-                v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
-                float x = XMVectorGetX(v2);
-                float y = XMVectorGetY(v2);
-                Transform foundTrans;
-                foundTrans.position_ = XMFLOAT3(x, y, 0.0f);
-                foundTrans.scale_ = XMFLOAT3(0.2f, 0.2f, 0.0f);
-                Image::SetAlpha(hPict_, 255);
-                Image::SetTransform(hPict_, foundTrans);
-            }
-            else {
-                //死んでたら今向いている方向にターゲットできるEnemyがいるならそいつをターゲットにする
-                isTarget_ = false;
-                SetTargetEnemy();
-            }
+            FacingTarget();
         }
-
         //マウスで視点移動
         else {
             CalcMouseMove();
@@ -122,18 +95,25 @@ void Aim::Update()
     else {
         CalcCameraOffset(0.0f);
     }
-
     DefaultAim();
+
 }
 
 void Aim::Draw()
 {
-    Image::Draw(hPict_);
-
 }
 
 void Aim::Release()
 {
+}
+
+void Aim::TargetIsDead(EnemyBase* target)
+{
+    //死んでたら今向いている方向にターゲットできるEnemyがいるならそいつをターゲットにする
+    if (pEnemyBase_ == target) {
+        isTarget_ = false;
+        SetTargetEnemy();
+    }
 }
 
 void Aim::SetTargetEnemy()
@@ -141,6 +121,7 @@ void Aim::SetTargetEnemy()
     //すでにターゲット状態の場合はターゲット解除してreturn
     if (isTarget_) {
         isTarget_ = false;
+        pEnemyBase_ = nullptr;
         return;
     }
 

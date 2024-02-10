@@ -11,8 +11,8 @@ using namespace std;
 
 class PolyLine
 {
-	const float WIDTH_;		//太さ
-	const int LENGTH_;		//長さ
+	float WIDTH_;		//太さ
+	int LENGTH_;		//長さ
 
 	ID3D11Buffer* pVertexBuffer_;	//頂点バッファ
 	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ
@@ -52,6 +52,8 @@ public:
 
 	//徐々に透明になるように設定
 	void SetMoveAlphaFlag() { moveAlpha_ = true; }
+	void SetLength(int leng) { LENGTH_ = leng; }
+	void SetLength(float width) { WIDTH_ = width; }
 
 	//解放
 	void Release();

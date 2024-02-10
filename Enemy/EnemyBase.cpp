@@ -3,6 +3,7 @@
 #include "../GameManager.h"
 #include "DropTable.h"
 #include "../Player/Player.h"
+#include "../Player/Aim.h"
 #include "../State/StateManager.h"
 #include "../GameManager.h"
 #include "../Engine/Global.h"
@@ -24,6 +25,9 @@ void EnemyBase::Update()
 
 void EnemyBase::Release()
 {
+	//Aim‚ÌTarget‚ðXV‚·‚éŠÖ”
+	GameManager::GetPlayer()->GetAim()->TargetIsDead(this);
+
 	SAFE_DELETE(pStateManager_);
 	SAFE_DELETE(pCombatStateManager_);
 	SAFE_DELETE(pEnemyUi_);

@@ -3,8 +3,6 @@
 
 class TestBullet : public BulletBase
 {
-    int damage_;
-
 public:
     TestBullet(GameObject* parent);
     ~TestBullet() override;

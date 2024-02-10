@@ -7,7 +7,7 @@
 #include "../Enemy/EnemyBase.h"
 
 TestBullet::TestBullet(GameObject* parent)
-	: BulletBase(parent, "TestBullet"), damage_(0)
+	: BulletBase(parent, "TestBullet")
 {
 }
 
@@ -23,7 +23,7 @@ void TestBullet::Initialize()
 	transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	velocity_ = 0.7f;
 	lifeTime_ = 30;
-	damage_ = rand() % 11;
+	damage_ = 10;
 
 	SphereCollider* collision = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
 	AddAttackCollider(collision);

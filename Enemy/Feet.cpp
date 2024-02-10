@@ -127,7 +127,7 @@ void Feet::ApplyDamage(int da)
 void Feet::OnCollision(GameObject* pTarget)
 {
 	std::string name = pTarget->GetObjectName();
-	if (pTarget->GetObjectName().find("Enemy") != std::string::npos || name == "Player") {
+	if (name.find("Enemy") != std::string::npos || name == "Player") {
 		Character* c = static_cast<Character*>(pTarget);
 		ReflectCharacter(c);
 	}

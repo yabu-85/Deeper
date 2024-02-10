@@ -9,6 +9,7 @@
 #include "../GameManager.h"
 #include "../Stage/CollisionMap.h"
 #include "../Player/Player.h"
+#include "../Weapon/ThrowBullet.h"
 
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
@@ -142,17 +143,14 @@ void ThrowEnemy::OnCollision(GameObject* pTarget)
 
 }
 
-#include "../Weapon/ThrowBullet.h"
-
 void ThrowEnemy::ThrowItem()
 {
 	isHasItem_ = false;
 	
 	XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
-	plaPos.y += 0.5f;
+	plaPos.y += 0.75f;
 
 	ThrowBullet* bullet = Instantiate<ThrowBullet>(GetParent());
-	bullet->SetVelocity(0.1f);
 	bullet->Shot(itemTransform_.position_, plaPos);
 
 }

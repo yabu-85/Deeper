@@ -1,19 +1,20 @@
 #include "Player.h"
+#include "Aim.h"
+#include "PlayerCommand.h"
+#include "PlayerWeapon.h"
+#include "LifeManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
-#include "Aim.h"
 #include "../State/StateManager.h"
 #include "../State/PlayerState.h"
-#include "PlayerCommand.h"
-#include "PlayerWeapon.h"
 #include "../GameManager.h"
 #include "../Stage/CreateStage.h"
-#include "LifeManager.h"
 #include "../VFXManager.h"
 #include "../Engine/SphereCollider.h"
 #include "../Stage/CollisionMap.h"
 #include "../AnimationController.h"
+#include "../Weapon/BulletBase.h"
 
 #include "../Engine/Text.h"
 #include "../Engine/BoxCollider.h"
@@ -49,13 +50,6 @@ void Player::ApperUpdate()
 
 void Player::HearUpdate()
 {
-    //ƒ_ƒ[ƒW‚à‚ç‚Á‚½Žž‚Ìˆ—
-    if (time_ == HEAR_TIME) {
-        pStateManager_->ChangeState("Wait");
-        ResetMovement();
-        Model::SetAnimFrame(hModel_, 210, 260, 1.0f);
-    }
-
     float speed = (float)time_ / (float)HEAR_TIME;
     BackMove(speed);
 
@@ -69,12 +63,7 @@ void Player::HearUpdate()
 
 void Player::DeadUpdate()
 {
-    if (time_ == 0) {
-        Model::SetAnimFrame(hModel_, 260, 495, 1.0f);
-        pAim_->SetAimMove(false);
-    }
     time_--;
-
     if (time_ <= -(495 - 260)) {
         Model::SetAnimeStop(hModel_, true);
 
@@ -195,21 +184,23 @@ void Player::OnCollision(GameObject* pTarget)
 
 void Player::OnAttackCollision(GameObject* pTarget)
 {
+    if (LifeManager::IsInvincible() || LifeManager::IsDie()) return;
+
     std::string name = pTarget->GetObjectName();
-    if (pTarget->GetObjectName().find("Enemy") != std::string::npos && !LifeManager::IsInvincible() && !LifeManager::IsDie()) {
-        time_ = HEAR_TIME;
+    if (name.find("Enemy") != std::string::npos) {
         EnemyBase* enemy = static_cast<EnemyBase*>(pTarget);
         TargetRotate(enemy->GetPosition());
-    
-        //ƒ_ƒ[ƒW—^‚¦‚ÄŽ€–S‚È‚çDeadState
         LifeManager::Damage(enemy->GetAttackDamage());
-        if (LifeManager::IsDie()) {
-            state_ = MAIN_STATE::DEAD;
-            time_ = 0;
-        }
-        else state_ = MAIN_STATE::HEAR;
-    
+        ReceivedDamage();
+
     }
+    else if (name.find("Bullet") != std::string::npos) {
+        BulletBase* bullet = static_cast<BulletBase*>(pTarget);
+        TargetRotate(bullet->GetPosition());
+        LifeManager::Damage(bullet->GetDamage());
+        ReceivedDamage();
+    }
+
 
 }
 
@@ -391,5 +382,24 @@ void Player::InitAvo()
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
         Model::SetAnimFrame(hModel_, 120, 175, 1.0f);
     }
+
+}
+
+void Player::ReceivedDamage()
+{
+    //Ž€–S‚È‚çDeadState
+    if (LifeManager::IsDie()) {
+        state_ = MAIN_STATE::DEAD;
+        Model::SetAnimFrame(hModel_, 260, 495, 1.0f);
+        pAim_->SetAimMove(false);
+        time_ = 0;
+        return;
+    }
+    
+    time_ = HEAR_TIME;
+    state_ = MAIN_STATE::HEAR;
+    pStateManager_->ChangeState("Wait");
+    ResetMovement();
+    Model::SetAnimFrame(hModel_, 210, 260, 1.0f);
 
 }

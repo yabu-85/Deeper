@@ -20,8 +20,8 @@
 #include "../Engine/BoxCollider.h"
 
 namespace {
-    const float stopGradually = 0.25f;      //移動スピードの加減の値止まるとき
-    const float moveGradually = 0.20f;      //移動スピードの加減の値移動時
+    const float stopGradually = 0.21f;      //移動スピードの加減の値止まるとき
+    const float moveGradually = 0.09f;      //移動スピードの加減の値移動時
     const float maxMoveSpeed = 1.0f;        //最大移動スピード
     const float avoRotateRatio = 1.0f;      //回避時のRotateRatio
 
@@ -100,8 +100,10 @@ void Player::Initialize()
     time_ = APPER_TIME;             
 
     pAnimationController_ = new AnimationController(hModel_);
-    pAnimationController_->AddAnime(0, 120);
-    pAnimationController_->AddAnime(548, 590);
+    pAnimationController_->AddAnime(0, 120);    //待機
+    pAnimationController_->AddAnime(548, 590);  //走り
+    pAnimationController_->AddAnime(120, 175);  //ローリング
+    pAnimationController_->AddAnime(500, 546);  //バックステップ
 
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
@@ -134,6 +136,13 @@ void Player::Update()
 {
     pCommand_->Update();
     pAnimationController_->Update();
+
+    float weight = 1.0f - Model::GetBlendFactor(GetModelHandle());
+    if (Input::IsKeyDown(DIK_F)) {
+        GetAnimationController()->SetNextAnime(0, weight, 0.01f);
+    }
+    OutputDebugStringA(std::to_string(weight).c_str());
+    OutputDebugString("\n");
 
     //MainState
     if (state_ == MAIN_STATE::APPER) ApperUpdate();
@@ -194,7 +203,7 @@ void Player::OnAttackCollision(GameObject* pTarget)
         ReceivedDamage();
 
     }
-    else if (name.find("Bullet") != std::string::npos) {
+    else if (name.find("EBullet") != std::string::npos) {
         BulletBase* bullet = static_cast<BulletBase*>(pTarget);
         TargetRotate(bullet->GetPosition());
         LifeManager::Damage(bullet->GetDamage());
@@ -308,8 +317,8 @@ void Player::BackMove(float f)
     XMFLOAT3 move{};
     XMStoreFloat3(&move, vMove);
 
-    transform_.position_.x += ((move.x * moveSpeed_) * f);
-    transform_.position_.z += ((move.z * moveSpeed_) * f);
+    transform_.position_.x -= ((move.x * moveSpeed_) * f);
+    transform_.position_.z -= ((move.z * moveSpeed_) * f);
     SetMovement((XMLoadFloat3(&move) * moveSpeed_) * f);
 }
 
@@ -362,6 +371,11 @@ void Player::CalcNoMove()
     playerMovement_ = { playerMovement_.x + move.x , 0.0f , playerMovement_.z + move.z };
 }
 
+void Player::ReverseMove(XMFLOAT3 move)
+{
+
+}
+
 void Player::InitAvo()
 {
     //動いている場合：その方向にローリング
@@ -369,18 +383,25 @@ void Player::InitAvo()
         CalcMove();
         Rotate(avoRotateRatio);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
-        Model::SetAnimFrame(hModel_, 120, 175, 1.0f);
+        
+        float weight = 1.0f - Model::GetBlendFactor(GetModelHandle());
+        GetAnimationController()->SetNextAnime(2, weight, 0.2f);
+
     }
     //動いていない、ターゲット状態：ターゲットの逆方向にバック
     else if(pAim_->IsTarget()) {
         AimTargetRotate(1.0f);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0f);
-        Model::SetAnimFrame(hModel_, 5000, 546, 1.0f);
+
+        float weight = 1.0f - Model::GetBlendFactor(GetModelHandle());
+        GetAnimationController()->SetNextAnime(3, weight, 0.2f);
     }
     //動いてい、ターゲットもしていない：向いている方向にローリング
     else {
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
-        Model::SetAnimFrame(hModel_, 120, 175, 1.0f);
+
+        float weight = 1.0f - Model::GetBlendFactor(GetModelHandle());
+        GetAnimationController()->SetNextAnime(2, weight, 0.2f);
     }
 
 }

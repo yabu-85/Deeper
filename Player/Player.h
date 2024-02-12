@@ -57,6 +57,7 @@ public:
     void Move(float f = 1.0f);      //移動
     void CalcMove();                //Inputを考慮したやつ
     void CalcNoMove();              //Input考慮してない、滑るやつとかの計算用
+    void ReverseMove(XMFLOAT3 move);
 
     XMVECTOR GetDirectionVec();     //向いている方向（正規化済み
     void ResetKeyMovement() { movement_ = XMFLOAT3(0.0f, 0.0f, 0.0f); }

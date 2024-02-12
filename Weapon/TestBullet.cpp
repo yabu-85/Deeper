@@ -7,7 +7,7 @@
 #include "../Enemy/EnemyBase.h"
 
 TestBullet::TestBullet(GameObject* parent)
-	: BulletBase(parent, "TestBullet")
+	: BulletBase(parent, "TesteBullet")
 {
 }
 

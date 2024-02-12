@@ -126,6 +126,7 @@ void Aim::SetTargetEnemy()
     }
 
     EnemyManager* pEnemyManager = GameManager::GetEnemyManager();
+    if (!pEnemyManager) return;
     std::vector<EnemyBase*> eList = pEnemyManager->GetAllEnemy();
 
     // プレイヤーの視線方向を計算

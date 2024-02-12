@@ -15,7 +15,7 @@ namespace {
 }
 
 ThrowBullet::ThrowBullet(GameObject* parent)
-	: BulletBase(parent, "ThrowBullet"), maxDistance_(0), maxHeight_(0), time_(0), pPolyLine_(nullptr), pSphereCollider_(nullptr),
+	: BulletBase(parent, "ThrowEBullet"), maxDistance_(0), maxHeight_(0), time_(0), pPolyLine_(nullptr), pSphereCollider_(nullptr),
 	deathPosition_(XMFLOAT3()), isDeath_(false)
 {
 }

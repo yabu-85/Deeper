@@ -5,7 +5,6 @@ PlayerCommand::PlayerCommand()
 	: walk_(false)
 {
 	SetDefaultKeyConfig();
-
 }
 
 void PlayerCommand::Update()
@@ -22,10 +21,15 @@ void PlayerCommand::Update()
 	for (const auto& pair : downMouseCommand_)
 	commandFlags[pair.second] = Input::IsMouseButtonDown(pair.first);
 	
-	//Scroll : Walk
+	//Scroll
 	commandFlags[CENTER_UP] = Input::IsUpScroll();
 	commandFlags[CENTER_DOWN] = Input::IsDownScroll();
+
+	//移動キー押しているか、逆方向・全方向の場合の条件
 	walk_ = commandFlags[LEFT] || commandFlags[RIGHT] || commandFlags[UP] || commandFlags[DOWN];
+	if (commandFlags[LEFT] && commandFlags[RIGHT] && (!commandFlags[UP] && !commandFlags[DOWN])) walk_ = false;
+	else if (commandFlags[UP] && commandFlags[DOWN] && (!commandFlags[LEFT] && !commandFlags[RIGHT])) walk_ = false;
+	else if(commandFlags[LEFT] && commandFlags[RIGHT] && commandFlags[UP] && commandFlags[DOWN]) walk_ = false;
 
 }
 

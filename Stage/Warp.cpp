@@ -74,7 +74,7 @@ void Warp::OnCollision(GameObject* pTarget)
 	XMFLOAT3 cPos = XMFLOAT3(transform_.position_.x, transform_.position_.y + 3.0f, transform_.position_.z + 10.0f);
 	GameManager::GetPlayer()->GetAim()->SetCompulsion(cPos, transform_.position_);
 
-	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction() && !LifeManager::IsDie()) {
+	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction() && !GameManager::GetPlayer()->GetLifeManager()->IsDie()) {
 		GameManager::GetSceneManager()->ChangeScene(warpScene_);
 	}
 	

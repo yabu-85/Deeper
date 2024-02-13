@@ -25,8 +25,11 @@ namespace {
     const float maxMoveSpeed = 1.0f;        //最大移動スピード
     const float avoRotateRatio = 1.0f;      //回避時のRotateRatio
 
+    const int lifeMax = 50;
+    const int invincible = 60;
+
     const int APPER_TIME = 60;
-    const int HEAR_TIME = LifeManager::INVINCIBLE;
+    const int HEAR_TIME = 50;
 
     bool isCollider = true; //当たり判定するかどうか
     Text* pText = new Text;
@@ -73,7 +76,7 @@ void Player::DeadUpdate()
 
 Player::Player(GameObject* parent)
     : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
-    pAnimationController_(nullptr),
+    pAnimationController_(nullptr), pLifeManager_(nullptr),
     moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), state_(MAIN_STATE::APPER), apperPos_(0,0,0), time_(0), gradually_(0.0f)
 {
 }
@@ -109,6 +112,9 @@ void Player::Initialize()
     pCommand_ = new PlayerCommand();
     pPlayerWeapon_ = new PlayerWeapon(this);
     pPlayerWeapon_->SetPlayerDataWeapon();
+    pLifeManager_ = Instantiate<LifeManager>(this);
+    pLifeManager_->SetLife(lifeMax);
+    pLifeManager_->SetInvincible(invincible);
 
     pStateManager_ = new StateManager(this);
     pStateManager_->AddState(new PlayerWait(pStateManager_));
@@ -138,9 +144,6 @@ void Player::Update()
     pAnimationController_->Update();
 
     float weight = 1.0f - Model::GetBlendFactor(GetModelHandle());
-    if (Input::IsKeyDown(DIK_F)) {
-        GetAnimationController()->SetNextAnime(0, weight, 0.01f);
-    }
     OutputDebugStringA(std::to_string(weight).c_str());
     OutputDebugString("\n");
 
@@ -174,7 +177,6 @@ void Player::Draw()
     pText->Draw(30, 70, (int)transform_.position_.y);
     pText->Draw(30, 110, (int)transform_.position_.z);
     CollisionDraw();
-
 }
 
 void Player::Release()
@@ -193,22 +195,20 @@ void Player::OnCollision(GameObject* pTarget)
 
 void Player::OnAttackCollision(GameObject* pTarget)
 {
-    if (LifeManager::IsInvincible() || LifeManager::IsDie()) return;
-
-    return;
+    if (pLifeManager_->IsInvincible() || pLifeManager_->IsDie()) return;
 
     std::string name = pTarget->GetObjectName();
     if (name.find("Enemy") != std::string::npos) {
         EnemyBase* enemy = static_cast<EnemyBase*>(pTarget);
         TargetRotate(enemy->GetPosition());
-        LifeManager::Damage(enemy->GetAttackDamage());
+        pLifeManager_->Damage(enemy->GetAttackDamage());
         ReceivedDamage();
 
     }
     else if (name.find("EBullet") != std::string::npos) {
         BulletBase* bullet = static_cast<BulletBase*>(pTarget);
         TargetRotate(bullet->GetPosition());
-        LifeManager::Damage(bullet->GetDamage());
+        pLifeManager_->Damage(bullet->GetDamage());
         ReceivedDamage();
     }
 
@@ -411,7 +411,7 @@ void Player::InitAvo()
 void Player::ReceivedDamage()
 {
     //死亡ならDeadState
-    if (LifeManager::IsDie()) {
+    if (pLifeManager_->IsDie()) {
         state_ = MAIN_STATE::DEAD;
         Model::SetAnimFrame(hModel_, 260, 495, 1.0f);
         pAim_->SetAimMove(false);

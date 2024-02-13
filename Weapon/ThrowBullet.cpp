@@ -7,7 +7,6 @@
 #include "../Enemy/EnemyBase.h"
 #include "../Engine/PolyLine.h"
 #include "../Engine/Global.h"
-#include "../Player/LifeManager.h"
 
 namespace {
 	static const float DEF_TIME = 60.0f;
@@ -30,7 +29,7 @@ void ThrowBullet::Initialize()
 	assert(hModel_ >= 0);
 
 	transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
-	damage_ = 10;
+	damage_ = 1;
 	lifeTime_ = 120;
 	time_ = (int)DEF_TIME;
 

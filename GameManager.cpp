@@ -32,7 +32,6 @@ namespace GameManager {
 		pWeaponObjectManager_ = new WeaponObjectManager();
 		pNavigationAI_ = new NavigationAI();
 		pCreateStage_ = new CreateStage();
-		LifeManager::Initialize();
 		PlayerData::Initialize();
 		Interaction::Initialize();
 		VFXManager::Initialize();
@@ -42,7 +41,6 @@ namespace GameManager {
 	void GameManager::Update()
 	{
 		pCreateStage_->Update();
-		LifeManager::Update();
 
 		if (Input::IsKeyDown(DIK_TAB)) {
 			OutputDebugString("entity : ");
@@ -72,7 +70,6 @@ namespace GameManager {
 	void Draw()
 	{
 		PlayerData::Draw();
-		LifeManager::Draw();
 		Interaction::Draw();
 
 	}

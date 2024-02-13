@@ -6,6 +6,7 @@ class StateManager;
 class PlayerCommand;
 class PlayerWeapon;
 class AnimationController;
+class LifeManager;
 
 class Player : public Character
 {
@@ -32,6 +33,7 @@ class Player : public Character
     PlayerCommand* pCommand_;
     PlayerWeapon* pPlayerWeapon_;
     AnimationController* pAnimationController_;
+    LifeManager* pLifeManager_;
 
 public:
     Player(GameObject* parent);
@@ -75,6 +77,7 @@ public:
     PlayerCommand* GetCommand() { return pCommand_; }
     PlayerWeapon* GetPlayerWeapon() { return pPlayerWeapon_; }
     AnimationController* GetAnimationController() { return pAnimationController_; }
+    LifeManager* GetLifeManager() { return pLifeManager_; }
 
 };
 

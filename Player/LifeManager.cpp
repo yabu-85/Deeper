@@ -4,70 +4,77 @@
 #include "../Engine/Sprite.h"
 #include "../Engine/Text.h"
 
-namespace
+LifeManager::LifeManager(GameObject* parent)
+	: GameObject(parent, "LifeManager"), hPict_{-1, -1, -1}, playerLife_(0), defPlayerLife_(0), defInvincibleTime_(0), invincibleTime_(0)
 {
-	static const int DEFAULT_ALPHA = 255;	//無敵時間を減らす量
-	static const int DEFAULT_LIFE = 100;	//普通のPlayerのライフの数
-	 
 }
 
-namespace LifeManager
+LifeManager::~LifeManager()
 {
-	Sprite* damageImage_;
-	int invincibleTime_;		//ダメージ表示時間の計算用
+}
 
-	int playerLife_;			//プレイヤーのライフ量
-
-	void LifeManager::Initialize()
-	{
-		damageImage_ = new Sprite;
-		damageImage_->Load("Image/damage.png"); 
-		
-		playerLife_ = DEFAULT_LIFE;
-		invincibleTime_ = 0;
+void LifeManager::Initialize()
+{
+	const char* fileName[] = { "Image/hpGaugeA0.png","Image/hpGaugeA1.png", "Image/damage.png" };
+	for (int i = 0; i < 3; i++) { //壁と床のロード
+		hPict_[i] = Image::Load(fileName[i]);
+		assert(hPict_[i] >= 0);
 	}
+	pic0Pos.scale_.y = 0.6f;
+	pic0Pos.position_.x = -0.95f;
+	pic0Pos.position_.y = -0.8f;
+	pic1Pos = pic0Pos;
+}
 
-	void Update()
-	{
-		invincibleTime_--;
-
-	}
-
-	void LifeManager::Draw()
-	{
-		//ライフの表示
-
-		if (invincibleTime_ > 0) DamageEffectDraw();
-	}
-
-	void DamageEffectDraw()
-	{
-		//切り抜き範囲をリセット（画像全体を表示する）
-		XMFLOAT3 size = damageImage_->GetTextureSize();
-		RECT rect;
-		rect.left = 0;
-		rect.top = 0;
-		rect.right = (long)size.x;
-		rect.bottom = (long)size.y;
-		Transform t;
-		damageImage_->Draw(t, rect, 0.1f, 1);
-
-	}
-
-	void LifeManager::SceneTransitionInitialize()
-	{
-	}
-
-	void LifeManager::Damage(int i)
-	{
-		if (IsInvincible()) return;
-
-		invincibleTime_ = INVINCIBLE;
-		playerLife_ -= i;
-	}
-
-	void LifeManager::ResetLife() { playerLife_ = DEFAULT_LIFE; }
-	bool IsInvincible() { return (invincibleTime_ > 0.0f); }
-	bool LifeManager::IsDie() { return playerLife_ <= 0; }
+void LifeManager::Update()
+{
+	invincibleTime_--;
 
 }
+
+void LifeManager::Draw()
+{
+	//ライフの表示
+	float hpGauge = (float)((playerLife_ * 100) / defPlayerLife_) * 0.01f;
+	pic0Pos.scale_.x = hpGauge;
+	Image::SetTransform(hPict_[0], pic0Pos);
+	Image::Draw(hPict_[0], 0);
+	Image::SetTransform(hPict_[1], pic1Pos);
+	Image::Draw(hPict_[1], 0);
+
+	//ダメージ画像の表示
+	if (invincibleTime_ > 0) DamageEffectDraw();
+}
+
+void LifeManager::Release()
+{
+}
+
+void LifeManager::SetLife(int i)
+{
+	defPlayerLife_ = i;
+	playerLife_ = i;
+}
+
+void LifeManager::SetInvincible(int i)
+{
+	defInvincibleTime_ = i;
+}
+
+void LifeManager::DamageEffectDraw()
+{
+	Image::SetTransform(hPict_[2], pic1Pos);
+	Image::Draw(hPict_[2]);
+
+}
+
+void LifeManager::Damage(int i)
+{
+	if (IsInvincible()) return;
+
+	invincibleTime_ = invincibleTime_;
+	playerLife_ -= i;
+}
+
+bool LifeManager::IsInvincible() { return (invincibleTime_ > 0.0f); }
+bool LifeManager::IsDie() { return playerLife_ <= 0; }

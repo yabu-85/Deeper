@@ -57,7 +57,7 @@ void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos)
 {
 	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "Feet", "RedBox" };
 
-	WeaponObject* weapon = Instantiate<WeaponObject>(GameManager::GetStage());
+	WeaponObject* weapon = InstantiateFront<WeaponObject>(GameManager::GetStage());
 
 	//デバッグ用
 	if ((int)type == 0) weapon->SetScale(0.2f, 0.2f, 0.2f);

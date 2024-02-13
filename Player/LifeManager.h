@@ -19,10 +19,12 @@ public:
 	void Draw() override;
 	void Release() override;
 
-	void SetLife(int i);
+	void SetLife(int current, int max);
 	void SetInvincible(int i);
 	void Damage(int i);
 	void DamageEffectDraw();
+	
+	int GetReceiveDamage();
 	bool IsInvincible();
 	bool IsDie();
 

@@ -360,6 +360,12 @@
     <ClCompile Include="Weapon\ThrowBullet.cpp">
       <Filter>09Weapon\Bullet</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\ResultScene.cpp">
+      <Filter>03Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ResultUIManager.cpp">
+      <Filter>04UI\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -599,6 +605,12 @@
     </ClInclude>
     <ClInclude Include="Weapon\ThrowBullet.h">
       <Filter>09Weapon\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\ResultScene.h">
+      <Filter>03Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ResultUIManager.h">
+      <Filter>04UI\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

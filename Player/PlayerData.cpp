@@ -1,9 +1,10 @@
 #include "PlayerData.h"
 #include "PlayerWeapon.h"
-#include "../GameManager.h"
 #include "Player.h"
+#include "LifeManager.h"
 #include "../Weapon/WeaponBase.h"
 #include "../Engine/Text.h"
+#include "../GameManager.h"
 
 namespace PlayerData {
     PlayerStats data_;
@@ -11,13 +12,7 @@ namespace PlayerData {
 
     void Initialize()
     {
-        data_.clearStageCount_ = 0;
-        data_.money_ = 0;
-
-        for (int i = 0; i < 2; i++) {
-            data_.subWeapon_[i].durability_ = 0;
-            data_.subWeapon_[i].type_ = 0;
-        }
+        ResetData();
 
         pText = new Text();
         pText->Initialize();
@@ -37,6 +32,16 @@ namespace PlayerData {
 
     }
 
+    void ResetData()
+    {
+        data_.clearStageCount_ = 0;
+        data_.receiveDamage_ = 0;
+        for (int i = 0; i < 2; i++) {
+            data_.subWeapon_[i].durability_ = 0;
+            data_.subWeapon_[i].type_ = 0;
+        }
+    }
+
     void SavePlayerData()
     {
         Player* player = GameManager::GetPlayer();
@@ -45,6 +50,10 @@ namespace PlayerData {
         PlayerWeapon* plaWeapon = player->GetPlayerWeapon();
         if (plaWeapon == nullptr) return;
 
+        //HP
+        data_.receiveDamage_ = player->GetLifeManager()->GetReceiveDamage();
+
+        //Weapon
         WeaponBase* weapon[2] = { nullptr, nullptr };
         for (int i = 0; i < 2; i++) {
             weapon[i] = plaWeapon->GetSubWeapon(i);
@@ -61,10 +70,13 @@ namespace PlayerData {
     
     //ステージクリア数を増やす：今のところTitle以外だったら増やす
     void AddClearStageCount(SCENE_ID id) { 
-        if (id != SCENE_ID_TITLE) data_.clearStageCount_++; 
+        if (id == SCENE_ID_STAGE1 || id == SCENE_ID_STAGE2 || id == SCENE_ID_STAGE3) data_.clearStageCount_++;
     }
 
-    void AddMoney(int i) { data_.money_ += i; }
+    int GetReceiveDamage()
+    {
+        return data_.receiveDamage_;
+    }
 
 }
 

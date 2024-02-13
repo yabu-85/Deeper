@@ -16,7 +16,7 @@ LifeManager::~LifeManager()
 void LifeManager::Initialize()
 {
 	const char* fileName[] = { "Image/hpGaugeA0.png","Image/hpGaugeA1.png", "Image/damage.png" };
-	for (int i = 0; i < 3; i++) { //•Ç‚Æ°‚Ìƒ[ƒh
+	for (int i = 0; i < 3; i++) {
 		hPict_[i] = Image::Load(fileName[i]);
 		assert(hPict_[i] >= 0);
 	}
@@ -50,10 +50,10 @@ void LifeManager::Release()
 {
 }
 
-void LifeManager::SetLife(int i)
+void LifeManager::SetLife(int current, int max)
 {
-	defPlayerLife_ = i;
-	playerLife_ = i;
+	defPlayerLife_ = max;
+	playerLife_ = current;
 }
 
 void LifeManager::SetInvincible(int i)
@@ -74,6 +74,11 @@ void LifeManager::Damage(int i)
 
 	invincibleTime_ = invincibleTime_;
 	playerLife_ -= i;
+}
+
+int LifeManager::GetReceiveDamage()
+{
+	return (defPlayerLife_ - playerLife_);
 }
 
 bool LifeManager::IsInvincible() { return (invincibleTime_ > 0.0f); }

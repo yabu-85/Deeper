@@ -26,7 +26,8 @@ namespace Interaction {
 
 	void Draw() {
 		//タイトルシーンだったら表示しない&表示する対象がなければ表示しない
-		if (GameManager::GetSceneManager()->GetSceneID() == SCENE_ID_TITLE) return;
+		SCENE_ID cs = GameManager::GetSceneManager()->GetSceneID();
+		if (cs == SCENE_ID_TITLE || cs == SCENE_ID_RESULT) return;
 		WeaponObject* w = GameManager::GetWeaponObjectManager()->GetNearestWeapon();
 		if (!w) return;
 

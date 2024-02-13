@@ -186,6 +186,7 @@
     <ClCompile Include="Player\PlayerCommand.cpp" />
     <ClCompile Include="Player\PlayerData.cpp" />
     <ClCompile Include="Player\PlayerWeapon.cpp" />
+    <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\SceneBase.cpp" />
     <ClCompile Include="Scene\Stage1.cpp" />
     <ClCompile Include="Scene\Stage2.cpp" />
@@ -204,6 +205,7 @@
     <ClCompile Include="State\ThrowState.cpp" />
     <ClCompile Include="UI\ExitUIManager.cpp" />
     <ClCompile Include="UI\Interaction.cpp" />
+    <ClCompile Include="UI\ResultUIManager.cpp" />
     <ClCompile Include="UI\TitleUIManager.cpp" />
     <ClCompile Include="UI\UIBase.cpp" />
     <ClCompile Include="UI\UIManager.cpp" />
@@ -269,6 +271,7 @@
     <ClInclude Include="Player\PlayerCommand.h" />
     <ClInclude Include="Player\PlayerData.h" />
     <ClInclude Include="Player\PlayerWeapon.h" />
+    <ClInclude Include="Scene\ResultScene.h" />
     <ClInclude Include="Scene\SceneBase.h" />
     <ClInclude Include="Scene\Stage1.h" />
     <ClInclude Include="Scene\Stage2.h" />
@@ -288,6 +291,7 @@
     <ClInclude Include="State\ThrowState.h" />
     <ClInclude Include="UI\ExitUIManager.h" />
     <ClInclude Include="UI\Interaction.h" />
+    <ClInclude Include="UI\ResultUIManager.h" />
     <ClInclude Include="UI\TitleUIManager.h" />
     <ClInclude Include="UI\UIBase.h" />
     <ClInclude Include="UI\UIManager.h" />

@@ -10,7 +10,7 @@ namespace PlayerData
 
     struct PlayerStats {
 		int clearStageCount_;
-		int money_;
+		int receiveDamage_;
 		WeaponData subWeapon_[2];
 		
 	};
@@ -18,13 +18,13 @@ namespace PlayerData
 	void Initialize();
 	void Draw();
 	void SceneTransitionInitialize();
+	void ResetData();
 
 	void SavePlayerData();
 	void SetWeaponData(int index, const WeaponData& data);
 	WeaponData& GetWeaponData(int index);
-	
 	void AddClearStageCount(SCENE_ID id);
-	void AddMoney(int i);
+	int GetReceiveDamage();
 
 };
 

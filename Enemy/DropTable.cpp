@@ -17,7 +17,6 @@ namespace DropTable {
 
 	void DropItem(ENEMY_TYPE type, XMFLOAT3 pos)
 	{
-		PlayerData::AddMoney(table_[type].money_);
 		if ((unsigned)(rand() % 100) < table_[type].weaponParcent_) {
 			WeaponObjectManager* ma = GameManager::GetWeaponObjectManager();
 			ma->AddWeaponObject((WeaponObjectManager::WEAPON_TYPE)type, pos);

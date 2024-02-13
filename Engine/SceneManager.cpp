@@ -8,6 +8,7 @@
 #include "../GameManager.h"
 #include "../Player/PlayerData.h"
 #include "../Scene/TitleScene.h"
+#include "../Scene/ResultScene.h"
 
 //コンストラクタ
 SceneManager::SceneManager(GameObject * parent)
@@ -19,14 +20,18 @@ SceneManager::SceneManager(GameObject * parent)
 void SceneManager::Initialize()
 {
 	//最初のシーンを準備
-#if 1
+#if 0
 	currentSceneID_ = SCENE_ID_STAGE1;
 	nextSceneID_ = currentSceneID_;
 	Instantiate<Stage1>(this);
 #else
-	currentSceneID_ = SCENE_ID_TITLE;
+	currentSceneID_ = SCENE_ID_RESULT;
 	nextSceneID_ = currentSceneID_;
-	Instantiate<TitleScene>(this);
+	Instantiate<ResultScene>(this);
+
+//	currentSceneID_ = SCENE_ID_TITLE;
+//	nextSceneID_ = currentSceneID_;
+//	Instantiate<TitleScene>(this);
 #endif
 
 	GameManager::SetSceneManager(this);
@@ -60,6 +65,7 @@ void SceneManager::Update()
 		switch (nextSceneID_)
 		{
 			case SCENE_ID_TITLE: Instantiate<TitleScene>(this); break;
+			case SCENE_ID_RESULT: Instantiate<ResultScene>(this); break;
 			case SCENE_ID_STAGE1: Instantiate<Stage1>(this); break;
 			case SCENE_ID_STAGE2: Instantiate<Stage2>(this); break;
 			case SCENE_ID_STAGE3: Instantiate<Stage3>(this); break;

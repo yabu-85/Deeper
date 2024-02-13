@@ -3,6 +3,7 @@
 #include "PlayerCommand.h"
 #include "PlayerWeapon.h"
 #include "LifeManager.h"
+#include "PlayerData.h"
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
@@ -18,6 +19,7 @@
 
 #include "../Engine/Text.h"
 #include "../Engine/BoxCollider.h"
+#include "../Engine/SceneManager.h"
 
 namespace {
     const float stopGradually = 0.21f;      //移動スピードの加減の値止まるとき
@@ -72,6 +74,10 @@ void Player::DeadUpdate()
 
     }
 
+    if (time_ <= -300) {
+        GameManager::GetSceneManager()->ChangeScene(SCENE_ID_RESULT);
+    }
+
 }
 
 Player::Player(GameObject* parent)
@@ -100,7 +106,7 @@ void Player::Initialize()
     rotateRatio_ = 0.2f;
     bodyWeight_ = 0.1f;
     bodyRange_ = 0.3f;
-    time_ = APPER_TIME;             
+    time_ = APPER_TIME;
 
     pAnimationController_ = new AnimationController(hModel_);
     pAnimationController_->AddAnime(0, 120);    //待機
@@ -113,7 +119,7 @@ void Player::Initialize()
     pPlayerWeapon_ = new PlayerWeapon(this);
     pPlayerWeapon_->SetPlayerDataWeapon();
     pLifeManager_ = Instantiate<LifeManager>(this);
-    pLifeManager_->SetLife(lifeMax);
+    pLifeManager_->SetLife(lifeMax - PlayerData::GetReceiveDamage(), lifeMax);
     pLifeManager_->SetInvincible(invincible);
 
     pStateManager_ = new StateManager(this);
@@ -142,6 +148,11 @@ void Player::Update()
 {
     pCommand_->Update();
     pAnimationController_->Update();
+
+    if (Input::IsKey(DIK_3)) {
+        pLifeManager_->Damage(1);
+        ReceivedDamage();
+    }
 
     float weight = 1.0f - Model::GetBlendFactor(GetModelHandle());
     OutputDebugStringA(std::to_string(weight).c_str());

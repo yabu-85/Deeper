@@ -71,7 +71,6 @@ namespace GameManager {
 	{
 		PlayerData::Draw();
 		Interaction::Draw();
-
 	}
 
 	void SceneTransitionInitialize()

@@ -154,10 +154,6 @@ void Player::Update()
         ReceivedDamage();
     }
 
-    float weight = 1.0f - Model::GetBlendFactor(GetModelHandle());
-    OutputDebugStringA(std::to_string(weight).c_str());
-    OutputDebugString("\n");
-
     //MainState
     if (state_ == MAIN_STATE::APPER) ApperUpdate();
     else if (state_ == MAIN_STATE::HEAR) HearUpdate();

@@ -16,6 +16,7 @@ namespace {
     static const float UP_MOUSE_LIMIT = -60.0f;
     static const float DOWN_MOUSE_LIMIT = 60.0f;
     
+    static const int TARGET_CHANGE_COOLTIME = 30;
     static const int COMPULSION_TIME_DEFAULT = 60;                  //強制から戻る時間
     static const float HEIGHT_DISTANCE = 1.5f;                      //Aimの高さ
     static const float MOUSE_SPEED = 0.05f;                         //感度
@@ -24,8 +25,8 @@ namespace {
     static const float SUPRESS = 0.002f;                            //Offsetの値を抑えるやつ
     static const float MOVE_SUPRESS = 0.03f;                        //動く時の抑制の値
     static const float STOP_SUPRESS = 0.06f;                        //止まる時の抑制の値
-    static const float TARGET_RANGE = 50.0f;                        //ターゲットの有効範囲
-    static const float FOV_RADIAN = XMConvertToRadians(60) / 2.0f;  //ターゲットの有効範囲
+    static const float TARGET_RANGE = 25.0f;                        //ターゲットの有効範囲
+    static const float FOV_RADIAN = XMConvertToRadians(120) / 2.0f;  //ターゲットの有効範囲
     static const float TARGET_RATIO = 0.2f;                         //ターゲット時の回転率
 }
 
@@ -33,7 +34,7 @@ Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPosition_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 }, cameraOffset_{ 0,0,0 },
     compulsionTarget_{ 0,0,0 }, compulsionPosisiton_{ 0,0,0 }, pPlayer_(nullptr), pEnemyBase_(nullptr), pCollisionMap_(nullptr),
     isMove_(true), isCompulsion_(false), isTarget_(false), compulsionTime_(0), iterations_(-1), sign_(1), range_(0), moveDistance_(0), 
-    distanceDecrease_(0), center_{0,0,0,0}, shakeSpeed_(0), rangeDecrease_(0)
+    distanceDecrease_(0), center_{0,0,0,0}, shakeSpeed_(0), rangeDecrease_(0), isTargetChange_(false), targetChangeTime_(0), hPict_(-1)
 {
     mouseSensitivity = 2.0f;
     defPerspectDistance_ = 5.0f;
@@ -49,9 +50,13 @@ void Aim::Initialize()
     pPlayer_ = static_cast<Player*>(FindObject("Player"));
     DefaultAim();
 
+    hPict_ = Image::Load("Image/TargetFound.png");
+    assert(hPict_ >= 0);
     Transform foundTrans;
     foundTrans.position_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
     foundTrans.scale_ = XMFLOAT3(0.2f, 0.2f, 0.0f);
+    Image::SetAlpha(hPict_, 255);
+    Image::SetTransform(hPict_, foundTrans);
 
 }
 
@@ -84,6 +89,30 @@ void Aim::Update()
         if (isTarget_) {
             CalcCameraOffset(0.0f);
             compulsionTime_ = 0;
+
+            //ちょっとAimTarget時の描画してみる
+            XMFLOAT3 tarPos = pEnemyBase_->GetPosition();
+            tarPos.y += pEnemyBase_->GetAimTargetPos();
+            XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&tarPos), Camera::GetViewMatrix());
+            v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
+            float x = XMVectorGetX(v2);
+            float y = XMVectorGetY(v2);
+            Transform foundTrans;
+            foundTrans.position_ = XMFLOAT3(x, y, 0.0f);
+            foundTrans.scale_ = XMFLOAT3(0.2f, 0.2f, 0.0f);
+            Image::SetAlpha(hPict_, 255);
+            Image::SetTransform(hPict_, foundTrans);
+            
+            //TargetChange
+            XMFLOAT3 mouse = Input::GetMouseMove();  
+            if (abs(mouse.x) > 20.0f) {
+                if(targetChangeTime_ <= 0 && !isTargetChange_) ChangeTarget(mouse);
+            }
+            else {
+                isTargetChange_ = false;
+            }
+            targetChangeTime_--;
+
             FacingTarget();
         }
         //マウスで視点移動
@@ -95,12 +124,15 @@ void Aim::Update()
     else {
         CalcCameraOffset(0.0f);
     }
-    DefaultAim();
 
+
+    DefaultAim();
 }
 
 void Aim::Draw()
 {
+    Image::Draw(hPict_);
+
 }
 
 void Aim::Release()
@@ -294,6 +326,15 @@ void Aim::FacingTarget()
 
     XMFLOAT3 fAimPos = XMFLOAT3(cameraPosition_.x - targetPos.x, 0.0f, cameraPosition_.z - targetPos.z);
     XMVECTOR vAimPos = XMLoadFloat3(&fAimPos);  //正規化用の変数にfloatの値を入れる
+
+    //範囲外に行った場合の処理をやる
+    XMFLOAT3 plaPos = pPlayer_->GetPosition();
+    if (XMVectorGetX(XMVector3Length(XMLoadFloat3(&targetPos) - XMLoadFloat3(&plaPos) )) > TARGET_RANGE) {
+        isTarget_ = false;
+        pEnemyBase_ = nullptr;
+        return;
+    }
+
     vAimPos = XMVector3Normalize(vAimPos);
     XMVECTOR vDot = XMVector3Dot(vFront, vAimPos);
     float dot = XMVectorGetX(vDot);
@@ -339,6 +380,73 @@ void Aim::FacingTarget()
 
     if (transform_.rotate_.x <= UP_MOUSE_LIMIT) transform_.rotate_.x = UP_MOUSE_LIMIT;
     if (transform_.rotate_.x >= DOWN_MOUSE_LIMIT) transform_.rotate_.x = DOWN_MOUSE_LIMIT;
+
+}
+
+void Aim::ChangeTarget(XMFLOAT3 mouse)
+{    
+    EnemyManager* pEnemyManager = GameManager::GetEnemyManager();
+    if (!pEnemyManager) return;
+    std::vector<EnemyBase*> eList = pEnemyManager->GetAllEnemy();
+    if (eList.empty()) return;
+
+    // プレイヤーの視線方向を計算
+    XMFLOAT3 playerForward;
+    playerForward.x = (float)sin(XMConvertToRadians(transform_.rotate_.y));
+    playerForward.y = 0.0f;
+    playerForward.z = (float)cos(XMConvertToRadians(transform_.rotate_.y));
+    XMVECTOR vPlayerForward = XMLoadFloat3(&playerForward);
+    XMFLOAT3 pPos = pPlayer_->GetPosition();
+
+    int rIndex = -1;
+    int lIndex = -1;
+    float minR = 999999.0f;
+    float minL = -999999.0f;
+    for (int i = 0; i < eList.size(); i++) {
+        if (pEnemyBase_ == eList.at(i)) continue;
+
+        XMFLOAT3 ePos = eList.at(i)->GetPosition();
+        XMVECTOR vVec = XMLoadFloat3(&pPos) - XMLoadFloat3(&ePos);
+        XMFLOAT3 vec = XMFLOAT3();
+        XMStoreFloat3(&vec, vVec);
+
+        //範囲外だったら次
+        float distance = sqrtf(vec.x * vec.x + vec.z * vec.z);
+        if (distance >= TARGET_RANGE) continue;
+
+        //視野角を計算
+        float dotProduct = XMVectorGetX(XMVector3Dot(XMVector3Normalize(vVec), vPlayerForward));
+        float angle = acosf(dotProduct);
+        if (angle > FOV_RADIAN) continue;
+
+        //視線上に合るから・右か左か計算
+        float dot = XMVectorGetY(XMVector3Cross(vPlayerForward, vVec));
+        float fovRa = FOV_RADIAN;
+        //右にある
+        if (dot > 0.0f && dot < minR) {
+            minR = dot;
+            rIndex = i;
+        }
+        //左にある（視線上の場合も
+        else if (dot < 0.0f && dot > minL) {
+            minL = dot;
+            lIndex = i;
+        }
+    }
+
+    //右を選ぶ
+    if (mouse.x > 0.0f && rIndex != -1) {
+        pEnemyBase_ = eList.at(rIndex);
+    }
+    else {
+        //左を選ぶ
+        if (lIndex != -1)pEnemyBase_ = eList.at(lIndex);
+        //左いなかったから右選ぶ
+        else if (rIndex != -1) pEnemyBase_ = eList.at(rIndex);
+    }
+
+    isTargetChange_ = true;
+    targetChangeTime_ = TARGET_CHANGE_COOLTIME;
 
 }
 

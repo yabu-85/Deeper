@@ -10,6 +10,10 @@ class Aim : public GameObject
     bool isMove_;                   //エイムを動かすかどうか
     bool isCompulsion_;             //強制的に移動させる状態か
     bool isTarget_;                 //ターゲット状態か
+    bool isTargetChange_;           //Mouseの移動でターゲットを変えるのに使うフラグ
+    
+    int hPict_;
+    int targetChangeTime_;          //Mouseの移動でターゲットを変えるクールダウン
     int compulsionTime_;            //強制から戻るのに掛かる時間
 
     int iterations_;            //反復回数
@@ -41,6 +45,7 @@ class Aim : public GameObject
     void BackCompulsion();  //強制移動から通常に移るときの計算
 
     void FacingTarget();
+    void ChangeTarget(XMFLOAT3 mouse);
     void CalcCameraOffset(float _aimMove);
     void RayCastStage();
     void CalcMouseMove();

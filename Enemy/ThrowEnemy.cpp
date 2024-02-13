@@ -43,7 +43,7 @@ void ThrowEnemy::Initialize()
 	hp_ = maxHp_;
 	aimTargetPos_ = 1.0f;
 	bodyWeight_ = 10.0f;
-	bodyRange_ = 0.2f;
+	bodyRange_ = 0.25f;
 	attackDamage_ = 50;
 
 	//Collider‚Ìİ’è
@@ -53,7 +53,7 @@ void ThrowEnemy::Initialize()
 	AddCollider(collision2);
 
 	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize(1.25f);
+	pEnemyUi_->Initialize(1.0f);
 
 	//Action‚Ìİ’è
 	pMoveAction_ = new AstarMoveAction(this, 0.0f, 0.3f);

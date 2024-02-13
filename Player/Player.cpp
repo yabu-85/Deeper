@@ -95,7 +95,7 @@ void Player::Initialize()
     SetPosition(GameManager::GetCreateStage()->GetPlayerStartPos());
     moveSpeed_ = 0.08f;
     rotateRatio_ = 0.2f;
-    bodyWeight_ = 5.1f;
+    bodyWeight_ = 0.1f;
     bodyRange_ = 0.3f;
     time_ = APPER_TIME;             
 
@@ -194,6 +194,8 @@ void Player::OnCollision(GameObject* pTarget)
 void Player::OnAttackCollision(GameObject* pTarget)
 {
     if (LifeManager::IsInvincible() || LifeManager::IsDie()) return;
+
+    return;
 
     std::string name = pTarget->GetObjectName();
     if (name.find("Enemy") != std::string::npos) {

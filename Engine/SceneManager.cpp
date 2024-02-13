@@ -20,18 +20,14 @@ SceneManager::SceneManager(GameObject * parent)
 void SceneManager::Initialize()
 {
 	//Å‰‚ÌƒV[ƒ“‚ğ€”õ
-#if 0
+#if 1
 	currentSceneID_ = SCENE_ID_STAGE1;
 	nextSceneID_ = currentSceneID_;
 	Instantiate<Stage1>(this);
 #else
-	currentSceneID_ = SCENE_ID_RESULT;
+	currentSceneID_ = SCENE_ID_TITLE;
 	nextSceneID_ = currentSceneID_;
-	Instantiate<ResultScene>(this);
-
-//	currentSceneID_ = SCENE_ID_TITLE;
-//	nextSceneID_ = currentSceneID_;
-//	Instantiate<TitleScene>(this);
+	Instantiate<TitleScene>(this);
 #endif
 
 	GameManager::SetSceneManager(this);

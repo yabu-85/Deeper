@@ -1,16 +1,15 @@
 #include "ResultUIManager.h"
+#include "ExitUIManager.h"
 #include "../Engine/Image.h"
 #include "../Engine/Direct3D.h"
 #include "../Engine/SceneManager.h"
-#include "ExitUIManager.h"
 #include "../GameManager.h"
 #include "../AudioManager.h"
-#include "../Scene/TitleScene.h"
 
 ResultUIManager::ResultUIManager(SceneBase* parent)
 	: UIManager(parent), hPict_{ -1, -1 }
 {
-	const char* fileName[] = { "Image/Title.png", "Image/TitleBG.png" };
+	const char* fileName[] = { "Image/Title.png", "Image/ResultBG.png" };
 	const int png = sizeof(fileName) / sizeof(fileName[0]);
 	for (int i = 0; i < png; i++) {
 		hPict_[i] = Image::Load(fileName[i]);

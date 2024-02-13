@@ -6,5 +6,9 @@ namespace Interaction {
 	void Update();
 	void Draw();
 
+	void SetInteract(XMFLOAT3 pos);
+	void SetInteract(XMFLOAT3 pos, float length);
+	bool IsWarp();
+
 }
 

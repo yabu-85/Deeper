@@ -5,41 +5,10 @@
 #include "TestWeaponSub.h"
 #include "../GameManager.h"
 
-//デバッグ用
-namespace {
-	Player* pPlayer = nullptr;
-}
-
-void WeaponObjectManager::CaclNearestObject()
-{
-	Player* pPlayer = GameManager::GetPlayer();
-	XMFLOAT3 plaPos = pPlayer->GetPosition();
-
-	int minRangeIndex = -1;
-	float minRange = range_;
-
-	for (int i = 0; i < objctList_.size(); i++) {
-		XMFLOAT3 objPos = objctList_.at(i)->GetPosition();
-		objPos = XMFLOAT3(plaPos.x - objPos.x, plaPos.y - objPos.y, plaPos.z - objPos.z);
-
-		float range = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
-		if (minRange > range) {
-			minRangeIndex = i;
-			minRange = range;
-		}
-	}
-	
-	nearestObject_ = nullptr;
-	if (minRangeIndex >= 0) {
-		nearestObject_ = objctList_.at(minRangeIndex);
-	}
-
-}
-
 WeaponObjectManager::WeaponObjectManager()
 	: range_(0), nearestObject_(nullptr)
 {
-	range_ = 3.0f;
+	range_ = 1.0f;
 }
 
 WeaponObjectManager::~WeaponObjectManager()
@@ -127,8 +96,7 @@ WeaponBase* WeaponObjectManager::PlayerWeaponSet()
 		RemoveWeaponObject(nearestObject_);
 		nearestObject_->KillMe();
 		nearestObject_ = nullptr;
-		pPlayer = GameManager::GetPlayer();
-		return Instantiate<TestWeaponSub>(pPlayer);
+		return Instantiate<TestWeaponSub>(GameManager::GetPlayer());
 	}
 
 	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_SUB2) {
@@ -146,21 +114,48 @@ float WeaponObjectManager::GetNearestDistance()
 	Player* pPlayer = GameManager::GetPlayer();
 	XMFLOAT3 plaPos = pPlayer->GetPosition();
 
-	float minRange = range_;
+	float min = range_;
 	bool in = false;
 
 	for (int i = 0; i < objctList_.size(); i++) {
 		XMFLOAT3 objPos = objctList_.at(i)->GetPosition();
 		objPos = XMFLOAT3(plaPos.x - objPos.x, plaPos.y - objPos.y, plaPos.z - objPos.z);
 
-		float currentSpeed = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
-		if (minRange > currentSpeed) {
-			minRange = currentSpeed;
+		float len = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
+		if (min > len) {
+			min = len;
 			in = true;
 		}
 	}
 
-	if (in) return minRange;
+	if (in) return min;
 	return FBXSDK_FLOAT_MAX;
 
 }
+
+void WeaponObjectManager::CaclNearestObject()
+{
+	Player* pPlayer = GameManager::GetPlayer();
+	XMFLOAT3 plaPos = pPlayer->GetPosition();
+
+	int minRangeIndex = -1;
+	float minRange = range_;
+
+	for (int i = 0; i < objctList_.size(); i++) {
+		XMFLOAT3 objPos = objctList_.at(i)->GetPosition();
+		objPos = XMFLOAT3(plaPos.x - objPos.x, plaPos.y - objPos.y, plaPos.z - objPos.z);
+
+		float range = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
+		if (minRange > range) {
+			minRangeIndex = i;
+			minRange = range;
+		}
+	}
+
+	nearestObject_ = nullptr;
+	if (minRangeIndex >= 0) {
+		nearestObject_ = objctList_.at(minRangeIndex);
+	}
+
+}
+

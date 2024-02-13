@@ -1,11 +1,10 @@
 #include "TitleUIManager.h"
+#include "ExitUIManager.h"
 #include "../Engine/Image.h"
 #include "../Engine/Direct3D.h"
 #include "../Engine/SceneManager.h"
-#include "ExitUIManager.h"
 #include "../GameManager.h"
 #include "../AudioManager.h"
-#include "../Scene/TitleScene.h"
 
 TitleUIManager::TitleUIManager(SceneBase* parent)
 	: UIManager(parent), hPict_{ -1, -1 }

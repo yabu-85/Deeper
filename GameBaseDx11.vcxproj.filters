@@ -27,12 +27,6 @@
     <Filter Include="03Scene">
       <UniqueIdentifier>{3c140e0d-d296-431c-a2e9-c6b1e3fae785}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04UI">
-      <UniqueIdentifier>{8b8e6f8e-5c92-4eb7-8beb-f190033fe076}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04UI\Base">
-      <UniqueIdentifier>{d7ded092-3bdb-499f-b158-284045e8ad77}</UniqueIdentifier>
-    </Filter>
     <Filter Include="08Enemy">
       <UniqueIdentifier>{41ef1b12-3dc4-44d5-8224-49a169e131f1}</UniqueIdentifier>
     </Filter>
@@ -114,14 +108,20 @@
     <Filter Include="06State\Manager">
       <UniqueIdentifier>{837039e6-d860-43e3-82a8-b3dde0b1a591}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04UI\Manager">
-      <UniqueIdentifier>{2d9d2699-ca70-41f6-bb69-82fe3c79a800}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03Scene\Base">
       <UniqueIdentifier>{ca23a4cb-66f8-49a0-8901-bff618760a67}</UniqueIdentifier>
     </Filter>
     <Filter Include="07Player">
       <UniqueIdentifier>{e04af741-50b7-426b-8ed5-0d84c1ba486c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04UI">
+      <UniqueIdentifier>{8b8e6f8e-5c92-4eb7-8beb-f190033fe076}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04UI\Base">
+      <UniqueIdentifier>{d7ded092-3bdb-499f-b158-284045e8ad77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04UI\Manager">
+      <UniqueIdentifier>{2d9d2699-ca70-41f6-bb69-82fe3c79a800}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

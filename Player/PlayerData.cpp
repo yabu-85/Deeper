@@ -27,7 +27,6 @@ namespace PlayerData {
 
     void SceneTransitionInitialize()
     {
-        pText = new Text();
         pText->Initialize();
 
     }
@@ -54,13 +53,12 @@ namespace PlayerData {
         data_.receiveDamage_ = player->GetLifeManager()->GetReceiveDamage();
 
         //Weapon
-        WeaponBase* weapon[2] = { nullptr, nullptr };
         for (int i = 0; i < 2; i++) {
-            weapon[i] = plaWeapon->GetSubWeapon(i);
-            if (weapon[i] == nullptr) continue;
-            if (weapon[i]->GetObjectName() == "TestWeaponSub") {
+            WeaponBase* weapon = plaWeapon->GetSubWeapon(i);
+            if (weapon == nullptr) continue;
+            if (weapon->GetObjectName() == "TestWeaponSub") {
                 data_.subWeapon_[i].type_ = 1;
-                data_.subWeapon_[i].durability_ = weapon[i]->GetDurability();
+                data_.subWeapon_[i].durability_ = weapon->GetDurability();
             }
         }
     }

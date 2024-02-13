@@ -35,7 +35,7 @@ void TestBullet::Update()
 	LifeTime();
 	Move();
 
-	//CollisionMapとの判定（今はy<=0だけ）
+	//CollisionMapとの判定（今はy<=0だけ）修正箇所
 	if (transform_.position_.y <= 0.0f) {
 		VFXManager::CreatVfxExplode1(transform_.position_);
 		AudioManager::Play(transform_.position_, 10.0f);

@@ -4,18 +4,16 @@
 #include "../Engine/Camera.h"
 #include "../AudioManager.h"
 #include "../UI/ResultUIManager.h"
-#include "../UI/ExitUIManager.h"
 #include "../GameManager.h"
 #include "../Stage/CreateStage.h"
 #include "../Player/PlayerData.h"
 
-namespace {
-	CreateStage* pCreateStage = nullptr;
-
-}
-
 ResultScene::ResultScene(GameObject* parent)
 	: SceneBase(parent, "ResultScene")
+{
+}
+
+ResultScene::~ResultScene()
 {
 }
 
@@ -39,40 +37,16 @@ void ResultScene::Update()
 		return;
 	}
 
-	if(!pUIManagerList_.empty())
-	pUIManagerList_.back()->Update();
-
-	// UI‚Ìdelete
-	for (auto iter = pUIManagerList_.begin(); iter != pUIManagerList_.end();) {
-		if ((*iter)->GetUIState() == UIManager::UI_STATE::ENDDRAW)
-		{
-			delete* iter;
-			iter = pUIManagerList_.erase(iter);
-		}
-		else
-		{
-			++iter;
-		}
-	}
+	UIUpdate();
 
 }
 
 void ResultScene::Draw()
 {
-	GameManager::GetCreateStage()->Draw();
-	
-	if (!pUIManagerList_.empty())
-	pUIManagerList_.back()->Draw();
+	UIDraw();
 
 }
 
 void ResultScene::Release()
 {
-	for (auto u : pUIManagerList_)
-	{
-		delete u;
-	}
-	pUIManagerList_.clear();
-	AudioManager::Release();
-
 }

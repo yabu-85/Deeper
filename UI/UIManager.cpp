@@ -1,7 +1,6 @@
 #include "UIManager.h"
 #include "UIBase.h"
 #include "../Engine/Input.h"
-#include "../Scene/SceneBase.h"
 
 UIManager::UIManager(SceneBase* parent)
 	: state_(UI_STATE::DRAW), pParent_(parent)

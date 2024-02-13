@@ -58,7 +58,6 @@ void Stage1::Update()
 
 void Stage1::Draw()
 {
-	GameManager::Draw();
 	GameManager::GetCreateStage()->Draw();
 
 }

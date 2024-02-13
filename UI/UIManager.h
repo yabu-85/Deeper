@@ -3,10 +3,10 @@
 #include <string>
 #include <DirectXMath.h>
 #include<functional>
+#include "../Scene/SceneBase.h"
 
 using namespace DirectX;
 class UIBase;
-class SceneBase;
 
 class UIManager
 {

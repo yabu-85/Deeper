@@ -46,10 +46,10 @@ void UIBase::Draw()
 
 	//‰Ÿ‚µ‚Ä‚È‚¢Žž‚Ífalse(0)‚¾‚©‚ç‚P‚ª•\Ž¦‚³‚ê‚é
 	Image::SetTransform(hPict_[isBound_], transform_);
-	Image::Draw(hPict_[isBound_]);
+	Image::Draw(hPict_[isBound_], 0);
 
 	Image::SetTransform(hPict_[2], transform_);
-	Image::Draw(hPict_[2]);
+	Image::Draw(hPict_[2], 0);
 
 }
 

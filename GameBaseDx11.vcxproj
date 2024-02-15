@@ -180,6 +180,8 @@
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Ornament\PlayerOrnament.cpp" />
+    <ClCompile Include="Ornament\WeaponMainOrnament.cpp" />
     <ClCompile Include="Player\Aim.cpp" />
     <ClCompile Include="Player\LifeManager.cpp" />
     <ClCompile Include="Player\Player.cpp" />
@@ -265,6 +267,8 @@
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Ornament\PlayerOrnament.h" />
+    <ClInclude Include="Ornament\WeaponMainOrnament.h" />
     <ClInclude Include="Player\Aim.h" />
     <ClInclude Include="Player\LifeManager.h" />
     <ClInclude Include="Player\Player.h" />

@@ -123,6 +123,9 @@
     <Filter Include="04UI\Manager">
       <UniqueIdentifier>{2d9d2699-ca70-41f6-bb69-82fe3c79a800}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03Scene\Ornament">
+      <UniqueIdentifier>{b78aad7c-1ab8-46ab-a6dc-9337e00b7fc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -365,6 +368,12 @@
     </ClCompile>
     <ClCompile Include="UI\ResultUIManager.cpp">
       <Filter>04UI\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Ornament\PlayerOrnament.cpp">
+      <Filter>03Scene\Ornament</Filter>
+    </ClCompile>
+    <ClCompile Include="Ornament\WeaponMainOrnament.cpp">
+      <Filter>03Scene\Ornament</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -611,6 +620,12 @@
     </ClInclude>
     <ClInclude Include="UI\ResultUIManager.h">
       <Filter>04UI\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Ornament\PlayerOrnament.h">
+      <Filter>03Scene\Ornament</Filter>
+    </ClInclude>
+    <ClInclude Include="Ornament\WeaponMainOrnament.h">
+      <Filter>03Scene\Ornament</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

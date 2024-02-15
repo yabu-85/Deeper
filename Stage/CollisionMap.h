@@ -8,6 +8,9 @@ class Cell;
 
 class CollisionMap : public GameObject
 {
+    //ヒープポインタのエラー出るから仕方なくここにも
+    std::vector<Triangle*> triangles_;
+   
     Cell*** cells_ = 0;
 
     //指定したCellのポインタを取得 / 範囲外ならnullptr

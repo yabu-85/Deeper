@@ -1,7 +1,6 @@
 #include "Cell.h"
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
-#include "../Engine/Global.h"
 
 namespace {
 	bool boxDraw = false;
@@ -55,10 +54,6 @@ bool Cell::SetTriangle(Triangle& t)
 
 void Cell::ResetTriangles()
 {
-	for (auto t : triangles_) {
-		//SAFE_DELETE(t);
-	}
-
 	triangles_.clear();
 }
 

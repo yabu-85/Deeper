@@ -43,6 +43,7 @@ void ResultScene::Update()
 
 void ResultScene::Draw()
 {
+	GameManager::GetCreateStage()->Draw();
 	UIDraw();
 
 }

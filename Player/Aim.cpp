@@ -105,7 +105,7 @@ void Aim::Update()
             
             //TargetChange
             XMFLOAT3 mouse = Input::GetMouseMove();  
-            if (abs(mouse.x) > 20.0f) {
+            if (abs(mouse.x) > 30.0f) {
                 if(targetChangeTime_ <= 0 && !isTargetChange_) ChangeTarget(mouse);
             }
             else {
@@ -435,19 +435,19 @@ void Aim::ChangeTarget(XMFLOAT3 mouse)
     }
 
     //右を選ぶ
-    if (mouse.x > 0.0f && rIndex != -1) {
-        pEnemyBase_ = eList.at(rIndex);
+    if (mouse.x > 0.0f) {
+        if (rIndex != -1) {
+            pEnemyBase_ = eList.at(rIndex);
+            isTargetChange_ = true;
+            targetChangeTime_ = TARGET_CHANGE_COOLTIME;
+        }
     }
-    else {
-        //左を選ぶ
-        if (lIndex != -1)pEnemyBase_ = eList.at(lIndex);
-        //左いなかったから右選ぶ
-        else if (rIndex != -1) pEnemyBase_ = eList.at(rIndex);
+    //左を選ぶ
+    else if (lIndex != -1) {
+        pEnemyBase_ = eList.at(lIndex);
+        isTargetChange_ = true;
+        targetChangeTime_ = TARGET_CHANGE_COOLTIME;
     }
-
-    isTargetChange_ = true;
-    targetChangeTime_ = TARGET_CHANGE_COOLTIME;
-
 }
 
 void Aim::CalcCameraOffset(float _aimMove)

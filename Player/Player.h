@@ -71,7 +71,7 @@ public:
     //ダメージ
     void ReceivedDamage();
 
-    //ポインタ
+    //ゲット系
     int GetModelHandle() { return hModel_; }
     Aim* GetAim() { return pAim_; }
     PlayerCommand* GetCommand() { return pCommand_; }

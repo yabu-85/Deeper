@@ -8,6 +8,7 @@
 
 //デバッグ用
 #include "../Player/Player.h"
+#include "../Engine/Global.h"
 
 namespace {
     const float boxSize = 10.0f;
@@ -38,6 +39,8 @@ CollisionMap::CollisionMap(GameObject* parent)
 
 CollisionMap::~CollisionMap()
 {
+    ResetCellTriangle();
+
     for (int y = 0; y < numY; y++) {
         for (int z = 0; z < numZ; z++) {
             delete[] cells_[y][z];
@@ -101,7 +104,6 @@ void CollisionMap::Release()
 void CollisionMap::CreatIntersectDataTriangle()
 {
     //Cellに追加する予定のTriangleをすべて計算してCreatする
-    std::vector<Triangle*> triList;
     std::vector<IntersectData> inteDatas = pCreateStage->GetIntersectDatas();
     for (int i = 0; i < inteDatas.size(); i++) {
         if (inteDatas[i].hRayModelNum <= -1) continue;
@@ -129,21 +131,21 @@ void CollisionMap::CreatIntersectDataTriangle()
 
                 Triangle* tri = new Triangle();
                 tri->CreatTriangle(vpoly[0], vpoly[1], vpoly[2]);
-                triList.push_back(tri);
+                triangles_.push_back(tri);
             }
         }
     }
 
     OutputDebugString("polygon : ");
-    OutputDebugStringA(std::to_string(triList.size()).c_str());
+    OutputDebugStringA(std::to_string(triangles_.size()).c_str());
     OutputDebugString("\n");
 
     //「各CELL」に含まれる三角ポリゴンを登録
     for (int y = 0; y < numY; y++) {
         for (int z = 0; z < numZ; z++) {
             for (int x = 0; x < numX; x++) {
-                for (int i = 0; i < (int)triList.size(); i++) {
-                    cells_[y][z][x].SetTriangle(*triList[i]);
+                for (int i = 0; i < (int)triangles_.size(); i++) {
+                    cells_[y][z][x].SetTriangle(*triangles_[i]);
                 }
             }
         }
@@ -156,9 +158,14 @@ void CollisionMap::ResetCellTriangle()
     for (int y = 0; y < numY; y++) {
         for (int z = 0; z < numZ; z++) {
             for (int x = 0; x < numX; x++) {
-                cells_[y][z][x].ResetTriangles();
+                Cell* c = &cells_[y][z][x];
+                c->ResetTriangles(); // 三角形のリストをクリア
             }
         }
+    }
+    
+    for (auto t : triangles_) {
+        SAFE_DELETE(t);
     }
 }
 

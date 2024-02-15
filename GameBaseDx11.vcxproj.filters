@@ -375,6 +375,9 @@
     <ClCompile Include="Ornament\WeaponMainOrnament.cpp">
       <Filter>03Scene\Ornament</Filter>
     </ClCompile>
+    <ClCompile Include="Stage\SkyBox.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -627,6 +630,9 @@
     <ClInclude Include="Ornament\WeaponMainOrnament.h">
       <Filter>03Scene\Ornament</Filter>
     </ClInclude>
+    <ClInclude Include="Stage\SkyBox.h">
+      <Filter>12Stage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">
@@ -648,6 +654,9 @@
       <Filter>02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\BillBoard2D.hlsl">
+      <Filter>02Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Assets\Shader\SkyBox.hlsl">
       <Filter>02Shader</Filter>
     </FxCompile>
   </ItemGroup>

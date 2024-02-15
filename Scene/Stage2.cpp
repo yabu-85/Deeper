@@ -7,6 +7,7 @@
 #include "../AudioManager.h"
 #include "../Engine/Input.h"
 #include "../Stage/Warp.h"
+#include "../Stage/SkyBox.h"
 #include "../Enemy/EnemyManager.h"
 
 //デバッグ用
@@ -35,6 +36,8 @@ void Stage2::Initialize()
 	GameManager::SetPlayer(Instantiate<Player>(this));
 	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
+	SkyBox* sky = InstantiateFront<SkyBox>(GetParent());
+	sky->LoadModel("Model/Stage/SkyBox.fbx");
 
 	for (int i = 0; i < (int)warpList_.size(); i++) {
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);

@@ -77,7 +77,7 @@ void EnemyUi::Draw()
 		foundTrans.position_ = XMFLOAT3(x, y + 0.05f, 0.0f);
 		Image::SetAlpha(hPict_[FOUND], alpha);
 		Image::SetTransform(hPict_[FOUND], foundTrans);
-		Image::Draw(hPict_[FOUND]);
+		Image::Draw(hPict_[FOUND], 0);
 	}
 
 	//HPÅ‘å‚Ìê‡EŒã‚ë‚É•\¦‚³‚ê‚Ä‚¢‚éê‡ˆ—I‚í‚è
@@ -112,7 +112,7 @@ void EnemyUi::Draw()
 		transform_[i].position_.x = x - halfSize;
 		transform_[i].position_.y = y;
 		Image::SetTransform(hPict_[i], transform_[i]);
-		Image::Draw(hPict_[i]);
+		Image::Draw(hPict_[i], 0);
 	}
 
 }

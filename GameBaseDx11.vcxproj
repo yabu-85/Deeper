@@ -199,6 +199,7 @@
     <ClCompile Include="Stage\CollisionMap.cpp" />
     <ClCompile Include="Stage\CreateStage.cpp" />
     <ClCompile Include="Stage\NavigationAI.cpp" />
+    <ClCompile Include="Stage\SkyBox.cpp" />
     <ClCompile Include="Stage\Triangle.cpp" />
     <ClCompile Include="Stage\Warp.cpp" />
     <ClCompile Include="State\FeetState.cpp" />
@@ -286,6 +287,7 @@
     <ClInclude Include="Stage\CollisionMap.h" />
     <ClInclude Include="Stage\CreateStage.h" />
     <ClInclude Include="Stage\NavigationAI.h" />
+    <ClInclude Include="Stage\SkyBox.h" />
     <ClInclude Include="Stage\Triangle.h" />
     <ClInclude Include="Stage\Warp.h" />
     <ClInclude Include="State\FeetState.h" />
@@ -338,6 +340,9 @@
     <FxCompile Include="Assets\Shader\Simple3D.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS</EntryPointName>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS</EntryPointName>
+    </FxCompile>
+    <FxCompile Include="Assets\Shader\SkyBox.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS</EntryPointName>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

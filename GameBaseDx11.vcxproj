@@ -149,9 +149,9 @@
     <ClCompile Include="Enemy\EnemyBase.cpp" />
     <ClCompile Include="Enemy\EnemyManager.cpp" />
     <ClCompile Include="Enemy\EnemyUi.cpp" />
-    <ClCompile Include="Enemy\Feet.cpp" />
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Enemy\StoneGolem.cpp" />
     <ClCompile Include="Enemy\ThrowEnemy.cpp" />
     <ClCompile Include="Engine\PolyLine.cpp" />
     <ClCompile Include="AudioManager.cpp" />
@@ -202,9 +202,9 @@
     <ClCompile Include="Stage\SkyBox.cpp" />
     <ClCompile Include="Stage\Triangle.cpp" />
     <ClCompile Include="Stage\Warp.cpp" />
-    <ClCompile Include="State\FeetState.cpp" />
     <ClCompile Include="State\PlayerState.cpp" />
     <ClCompile Include="State\StateManager.cpp" />
+    <ClCompile Include="State\StoneGolemState.cpp" />
     <ClCompile Include="State\ThrowState.cpp" />
     <ClCompile Include="UI\ExitUIManager.cpp" />
     <ClCompile Include="UI\Interaction.cpp" />
@@ -237,9 +237,9 @@
     <ClInclude Include="Enemy\EnemyBase.h" />
     <ClInclude Include="Enemy\EnemyManager.h" />
     <ClInclude Include="Enemy\EnemyUi.h" />
-    <ClInclude Include="Enemy\Feet.h" />
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Enemy\StoneGolem.h" />
     <ClInclude Include="Enemy\ThrowEnemy.h" />
     <ClInclude Include="Engine\PolyLine.h" />
     <ClInclude Include="AudioManager.h" />
@@ -290,10 +290,10 @@
     <ClInclude Include="Stage\SkyBox.h" />
     <ClInclude Include="Stage\Triangle.h" />
     <ClInclude Include="Stage\Warp.h" />
-    <ClInclude Include="State\FeetState.h" />
     <ClInclude Include="State\PlayerState.h" />
     <ClInclude Include="State\StateBase.h" />
     <ClInclude Include="State\StateManager.h" />
+    <ClInclude Include="State\StoneGolemState.h" />
     <ClInclude Include="State\ThrowState.h" />
     <ClInclude Include="UI\ExitUIManager.h" />
     <ClInclude Include="UI\Interaction.h" />
@@ -343,6 +343,7 @@
     </FxCompile>
     <FxCompile Include="Assets\Shader\SkyBox.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS</EntryPointName>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

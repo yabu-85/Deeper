@@ -1,9 +1,9 @@
-#include "Feet.h"
+#include "StoneGolem.h"
 #include "../Engine/Model.h"
 #include "EnemyUi.h"
 #include "../Engine/SphereCollider.h"
 #include "../State/StateManager.h"
-#include "../State/FeetState.h"
+#include "../State/StoneGolemState.h"
 #include "../Stage/CreateStage.h"
 #include "../Engine/Global.h"
 #include "../GameManager.h"
@@ -13,17 +13,17 @@
 #include "../Action/RotateAction.h"
 #include "../Action/SearchAction.h"
 
-Feet::Feet(GameObject* parent)
-	: EnemyBase(parent, "FeetEnemy"), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr),
-	pVisionSearchAction_(nullptr), boneIndex_(-1), partIndex_(-1)
+StoneGolem::StoneGolem(GameObject* parent)
+	: EnemyBase(parent, "StoneGolemEnemy"), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr),
+	pVisionSearchAction_(nullptr), pOrientedMoveAction_(nullptr), boneIndex_(-1), partIndex_(-1)
 {
 }
 
-Feet::~Feet()
+StoneGolem::~StoneGolem()
 {
 }
 
-void Feet::Initialize()
+void StoneGolem::Initialize()
 {
 	hModel_ = Model::Load("Model/stoneGolem.fbx");
 	assert(hModel_ >= 0);
@@ -33,10 +33,10 @@ void Feet::Initialize()
 	transform_.position_ = startPos;
 	transform_.rotate_.y = (float)(rand() % 360);
 
-	maxHp_ = 100;
+	maxHp_ = 300;
 	hp_ = maxHp_;
-	aimTargetPos_ = 1.0f;
-	bodyWeight_ = 10.0f;
+	aimTargetPos_ = 1.3f;
+	bodyWeight_ = 100.0f;
 	attackDamage_ = 1;
 
 	//Colliderの設定
@@ -49,28 +49,29 @@ void Feet::Initialize()
 	AddAttackCollider(pHandCollider_);
 
 	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize(2.5f);
+	pEnemyUi_->Initialize(3.0f);
 
 	//Actionの設定
 	pMoveAction_ = new AstarMoveAction(this, 0.0f, 0.3f);
+	pOrientedMoveAction_ = new OrientedMoveAction(this, 0.02f, 0.5f);
 	pRotateAction_ = new RotateAction(this, 0.07f);
 	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f, 90.0f);
 	pRotateAction_->Initialize();
 
 	//ステートの設定
 	pStateManager_ = new StateManager(this);
-	pStateManager_->AddState(new FeetAppear(pStateManager_));
-	pStateManager_->AddState(new FeetPatrol(pStateManager_));
-	pStateManager_->AddState(new FeetCombat(pStateManager_));
-	pStateManager_->AddState(new FeetDead(pStateManager_));
+	pStateManager_->AddState(new StoneGolemAppear(pStateManager_));
+	pStateManager_->AddState(new StoneGolemPatrol(pStateManager_));
+	pStateManager_->AddState(new StoneGolemCombat(pStateManager_));
+	pStateManager_->AddState(new StoneGolemDead(pStateManager_));
 	pStateManager_->ChangeState("Appear");
 	pStateManager_->Initialize();
 	
 	//CombatStateの設定
 	pCombatStateManager_ = new StateManager(this);
-	pCombatStateManager_->AddState(new FeetWait(pCombatStateManager_));
-	pCombatStateManager_->AddState(new FeetMove(pCombatStateManager_));
-	pCombatStateManager_->AddState(new FeetAttack(pCombatStateManager_));
+	pCombatStateManager_->AddState(new StoneGolemWait(pCombatStateManager_));
+	pCombatStateManager_->AddState(new StoneGolemMove(pCombatStateManager_));
+	pCombatStateManager_->AddState(new StoneGolemAttack(pCombatStateManager_));
 	pCombatStateManager_->ChangeState("Wait");
 	pCombatStateManager_->Initialize();
 	
@@ -79,14 +80,14 @@ void Feet::Initialize()
 
 }
 
-void Feet::Update()
+void StoneGolem::Update()
 {
-	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.3f);
 	pStateManager_->Update();
+	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
 
 }
 
-void Feet::Draw()
+void StoneGolem::Draw()
 {
 	pEnemyUi_->Draw();
 
@@ -102,7 +103,7 @@ void Feet::Draw()
 
 }
 
-void Feet::Release()
+void StoneGolem::Release()
 {
 	SAFE_DELETE(pVisionSearchAction_);
 	SAFE_DELETE(pRotateAction_);
@@ -113,7 +114,7 @@ void Feet::Release()
 
 }
 
-void Feet::ApplyDamage(int da)
+void StoneGolem::ApplyDamage(int da)
 {
 	EnemyBase::ApplyDamage(da);
 
@@ -123,7 +124,7 @@ void Feet::ApplyDamage(int da)
 
 }
 
-void Feet::OnCollision(GameObject* pTarget)
+void StoneGolem::OnCollision(GameObject* pTarget)
 {
 	std::string name = pTarget->GetObjectName();
 	if (name.find("Enemy") != std::string::npos || name == "Player") {

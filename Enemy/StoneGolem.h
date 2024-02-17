@@ -4,10 +4,11 @@
 
 class SphereCollider;
 class AstarMoveAction;
+class OrientedMoveAction;
 class RotateAction;
 class VisionSearchAction;
 
-class Feet : public EnemyBase
+class StoneGolem : public EnemyBase
 {
     int hModel_;
     int boneIndex_;
@@ -16,12 +17,13 @@ class Feet : public EnemyBase
 
     //Action
     AstarMoveAction* pMoveAction_;
+    OrientedMoveAction* pOrientedMoveAction_;
     RotateAction* pRotateAction_;
     VisionSearchAction* pVisionSearchAction_;
 
 public:
-    Feet(GameObject* parent);
-    ~Feet() override;
+    StoneGolem(GameObject* parent);
+    ~StoneGolem() override;
     void Initialize() override;
     void Update() override;
     void Draw() override;
@@ -32,6 +34,7 @@ public:
     int GetModelHandle() { return hModel_; }
     SphereCollider* GetSphereCollider() { return pHandCollider_; }
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }
+    OrientedMoveAction* GetOrientedMoveAction() { return pOrientedMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }
     VisionSearchAction* GetVisionSearchAction() { return pVisionSearchAction_; }
 

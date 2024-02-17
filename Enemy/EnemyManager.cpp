@@ -1,7 +1,7 @@
 #include "EnemyManager.h"
 #include "../GameManager.h"
 #include "../State/StateManager.h"
-#include "Feet.h"
+#include "StoneGolem.h"
 #include "ThrowEnemy.h"
 
 EnemyManager::EnemyManager() : pParent_(nullptr)
@@ -33,7 +33,7 @@ void EnemyManager::KillEnemy(EnemyBase* enemy)
 
 void EnemyManager::SpawnEnemy(ENEMY_TYPE type)
 {
-	if (type == ENEMY_FEET) AddEnemyList(InstantiateFront<Feet>(pParent_), type);
+	if (type == ENEMY_STONEGOLEM) AddEnemyList(InstantiateFront<StoneGolem>(pParent_), type);
 	else if (type == ENEMY_THROW) AddEnemyList(InstantiateFront<ThrowEnemy>(pParent_), type);
 
 }

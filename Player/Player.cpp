@@ -150,8 +150,8 @@ void Player::Update()
     pAnimationController_->Update();
 
     if (Input::IsKey(DIK_3)) {
-        pLifeManager_->Damage(1);
         ReceivedDamage();
+
     }
 
     //MainState
@@ -159,7 +159,7 @@ void Player::Update()
     else if (state_ == MAIN_STATE::HEAR) HearUpdate();
     else if (state_ == MAIN_STATE::DEAD) DeadUpdate();
     else {
-        GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, moveSpeed_);
+        GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
         pStateManager_->Update();
         if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
     }
@@ -326,8 +326,8 @@ void Player::BackMove(float f)
     XMFLOAT3 move{};
     XMStoreFloat3(&move, vMove);
 
-    transform_.position_.x -= ((move.x * moveSpeed_) * f);
-    transform_.position_.z -= ((move.z * moveSpeed_) * f);
+    transform_.position_.x += ((move.x * moveSpeed_) * f);
+    transform_.position_.z += ((move.z * moveSpeed_) * f);
     SetMovement((XMLoadFloat3(&move) * moveSpeed_) * f);
 }
 
@@ -417,6 +417,8 @@ void Player::InitAvo()
 
 void Player::ReceivedDamage()
 {
+    pAim_->SetCameraShake(4, 0.1f, 0.7f, 0.3f, 0.8f);
+    
     //Ž€–S‚È‚çDeadState
     if (pLifeManager_->IsDie()) {
         state_ = MAIN_STATE::DEAD;

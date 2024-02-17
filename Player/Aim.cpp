@@ -15,14 +15,16 @@
 namespace {
     static const float UP_MOUSE_LIMIT = -60.0f;
     static const float DOWN_MOUSE_LIMIT = 60.0f;
-    
-    static const int TARGET_CHANGE_COOLTIME = 30;
+
+    static const int TARGET_CHANGE_COOLTIME = 10;
+    static const float TARGET_CHANGE_VALUE = 30.0f;
+
     static const int COMPULSION_TIME_DEFAULT = 60;                  //強制から戻る時間
     static const float HEIGHT_DISTANCE = 1.5f;                      //Aimの高さ
     static const float MOUSE_SPEED = 0.05f;                         //感度
     static const float HEIGHT_RAY = 0.1f;                           //RayCastの値にプラスする高さ
-    static const float MAX_CAMERA_OFFSET = 2.0f;                    //cameraOffsetの最大距離
-    static const float SUPRESS = 0.002f;                            //Offsetの値を抑えるやつ
+    static const float MAX_CAMERA_OFFSET = 5.0f;                    //cameraOffsetの最大距離
+    static const float SUPRESS = 0.002f;                            //AimMove時のOffsetの値を抑制する値
     static const float MOVE_SUPRESS = 0.03f;                        //動く時の抑制の値
     static const float STOP_SUPRESS = 0.06f;                        //止まる時の抑制の値
     static const float TARGET_RANGE = 25.0f;                        //ターゲットの有効範囲
@@ -33,8 +35,9 @@ namespace {
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPosition_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 }, cameraOffset_{ 0,0,0 },
     compulsionTarget_{ 0,0,0 }, compulsionPosisiton_{ 0,0,0 }, pPlayer_(nullptr), pEnemyBase_(nullptr), pCollisionMap_(nullptr),
-    isMove_(true), isCompulsion_(false), isTarget_(false), compulsionTime_(0), iterations_(-1), sign_(1), range_(0), moveDistance_(0), 
-    distanceDecrease_(0), center_{0,0,0,0}, shakeSpeed_(0), rangeDecrease_(0), isTargetChange_(false), targetChangeTime_(0), hPict_(-1)
+    isMove_(true), isCompulsion_(false), isTarget_(false), compulsionTime_(0), iterations_(0), sign_(1), range_(0), moveDistance_(0),
+    distanceDecrease_(0), center_{ 0,0,0,0 }, shakeSpeed_(0), rangeDecrease_(0), isTargetChange_(false), targetChangeTime_(0), hPict_(-1),
+    shakeDirection_{ 1,0,0,0 }
 {
     mouseSensitivity = 2.0f;
     defPerspectDistance_ = 5.0f;
@@ -66,7 +69,6 @@ void Aim::Update()
     if (Input::IsKeyDown(DIK_R)) isMove_ = !isMove_;
     if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
     if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
-    if (Input::IsKeyDown(DIK_4)) SetCameraShake(3, 0.2f, 0.7f, 0.35f, 0.8f);
 
     if (compulsionTime_ > 0) {
         //強制移動
@@ -102,11 +104,11 @@ void Aim::Update()
             foundTrans.scale_ = XMFLOAT3(0.2f, 0.2f, 0.0f);
             Image::SetAlpha(hPict_, 255);
             Image::SetTransform(hPict_, foundTrans);
-            
+
             //TargetChange
-            XMFLOAT3 mouse = Input::GetMouseMove();  
-            if (abs(mouse.x) > 30.0f) {
-                if(targetChangeTime_ <= 0 && !isTargetChange_) ChangeTarget(mouse);
+            XMFLOAT3 mouse = Input::GetMouseMove();
+            if (abs(mouse.x) > TARGET_CHANGE_VALUE) {
+                if (targetChangeTime_ <= 0 && !isTargetChange_) ChangeTarget(mouse);
             }
             else {
                 isTargetChange_ = false;
@@ -209,13 +211,15 @@ void Aim::SetTargetEnemy()
 void Aim::SetCameraShake(int iterat, float range, float range_decrease, float speed, float speed_decrease)
 {
     iterations_ = iterat;
-    sign_ = 1.0f;
     range_ = range;
-    moveDistance_ = range_;
-    distanceDecrease_ = speed_decrease;
-    center_ = XMVectorZero();
+    moveDistance_ = range;
     shakeSpeed_ = speed;
+    distanceDecrease_ = speed_decrease;
     rangeDecrease_ = range_decrease;
+    
+    center_ = XMVectorZero();
+    sign_ = 1.0f;
+
 }
 
 void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar)
@@ -257,7 +261,7 @@ void Aim::Compulsion()
 {
     XMStoreFloat3(&cameraPosition_, (XMVectorLerp(XMLoadFloat3(&cameraPosition_), XMLoadFloat3(&compulsionPosisiton_), 0.05f)));
     XMStoreFloat3(&cameraTarget_, (XMVectorLerp(XMLoadFloat3(&cameraTarget_), XMLoadFloat3(&compulsionTarget_), 0.05f)));
-    
+
     XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
     perspectiveDistance_ = XMVectorGetX(XMVector3Length(dir));
     RayCastStage();
@@ -384,7 +388,7 @@ void Aim::FacingTarget()
 }
 
 void Aim::ChangeTarget(XMFLOAT3 mouse)
-{    
+{
     EnemyManager* pEnemyManager = GameManager::GetEnemyManager();
     if (!pEnemyManager) return;
     std::vector<EnemyBase*> eList = pEnemyManager->GetAllEnemy();
@@ -470,7 +474,7 @@ void Aim::RayCastStage()
 {
     pCollisionMap_ = GameManager::GetCollisionMap();
     if (pCollisionMap_ == nullptr) return;
-    
+
     RayCastData data;
     XMFLOAT3 start = cameraTarget_;
     XMVECTOR vDir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
@@ -514,10 +518,10 @@ XMVECTOR Aim::CalcDirection(float x, float y)
 
 void Aim::CameraShake()
 {
-    if (iterations_ < 0) return;
+    if (iterations_ <= 0) return;
 
     //カメラシェイク終了戻る処理
-    if (iterations_ == 0) {
+    if (iterations_ == 1) {
         float dist = XMVectorGetX(XMVector3Length(center_));
         XMVECTOR vec = -XMVector3Normalize(center_);
 
@@ -526,6 +530,7 @@ void Aim::CameraShake()
             moveDistance_ = dist;
             iterations_--;
             center_ = XMVectorZero();
+            sign_ = 1.0f;
         }
 
         vec *= moveDistance_ * shakeSpeed_;
@@ -539,8 +544,7 @@ void Aim::CameraShake()
 
     //移動方向・移動目標場所を計算
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-    XMVECTOR direction = XMVectorSet(sign_, 0.0f, 0.0f, 0.0f);
-    XMVECTOR shakeDirection = XMVector3Normalize(XMVector3TransformNormal(direction, mRotY));
+    XMVECTOR shakeDirection = XMVector3Normalize(XMVector3TransformNormal((shakeDirection_), mRotY));
     XMVECTOR nextPosition = center_ + shakeDirection;
 
     //方向調べて移動させる
@@ -553,11 +557,14 @@ void Aim::CameraShake()
     bool sign3 = (directionVector.m128_f32[0] + directionVector.m128_f32[1] + directionVector.m128_f32[2] / 3) > 0;
 
     //目標地点を超えたか調べる
-    if (sign2 == sign3 && XMVectorGetX(XMVector3Length(center_)) > range_) {
+    float cen = XMVectorGetX(XMVector3Length(center_));
+    if (sign2 == sign3 && cen > range_) {
         iterations_--;
         sign_ *= -1.0f;
-        moveDistance_ *= distanceDecrease_;
+        shakeDirection_ *= -1.0f;
         center_ = XMVector3Normalize(center_) * range_;
+       
+        moveDistance_ *= distanceDecrease_;
         range_ *= rangeDecrease_;
     }
 

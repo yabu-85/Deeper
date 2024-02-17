@@ -11,19 +11,20 @@
 #include "../Engine/Global.h"
 
 namespace {
-    const float boxSize = 10.0f;
+    const float boxSize = 5.0f;
     const int polySize = 3;
 
     Player* pPlayer;
     CreateStage* pCreateStage;
     Fbx* pFbx;
 
+    //AimRayCastStage補完してないからサイズ小さいと判定正しくできない
     float minX = 0;
-    float maxX = 130;
-    float minY = -10;
-    float maxY = 50; 
+    float maxX = 50;
+    float minY = -1;
+    float maxY = 10; 
     float minZ = 0;
-    float maxZ = 130;
+    float maxZ = 50;
 
     int numX = 0;
     int numY = 0;
@@ -277,43 +278,45 @@ void CollisionMap::RaySelectCellVsSegment(RayCastData& _data, XMFLOAT3 target)
 
 void CollisionMap::CalcMapWall(XMFLOAT3& _pos, float speed)
 {
-    const float radDef = 0.15f;
-    const float rad = radDef * (1 + speed);
-    const float dia = (radDef * 2.0f) * (1 + speed);
+    float sp = 1.0f + speed;
+
+    const float defrad = 0.3f;
+    const float diameter = defrad * sp;
+    const float radius = diameter * 0.5f;
 
     int checkX1, checkX2;
     int checkZ1, checkZ2;
 
-    checkX1 = (int)(_pos.x + rad); //前
-    checkZ1 = (int)(_pos.z + dia);
-    checkX2 = (int)(_pos.x - rad);
-    checkZ2 = (int)(_pos.z + dia);
+    checkX1 = (int)(_pos.x + radius); //前
+    checkZ1 = (int)(_pos.z + diameter);
+    checkX2 = (int)(_pos.x - radius);
+    checkZ2 = (int)(_pos.z + diameter);
     if (IsWall(checkX1, checkZ1) == 1 || IsWall(checkX2, checkZ2) == 1) {
-        _pos.z = _pos.z - radDef;
+        _pos.z = (float)((int)_pos.z + 1.0f - (defrad * sp));
     }
 
-    checkX1 = (int)(_pos.x + rad); //後ろ
-    checkZ1 = (int)(_pos.z - dia);
-    checkX2 = (int)(_pos.x - rad);
-    checkZ2 = (int)(_pos.z - dia);
+    checkX1 = (int)(_pos.x + radius); //後ろ
+    checkZ1 = (int)(_pos.z - diameter);
+    checkX2 = (int)(_pos.x - radius);
+    checkZ2 = (int)(_pos.z - diameter);
     if (IsWall(checkX1, checkZ1) == 1 || IsWall(checkX2, checkZ2) == 1) {
-        _pos.z = _pos.z + radDef;
+        _pos.z = (float)((int)_pos.z + (0.3f * sp));
     }
 
-    checkX1 = (int)(_pos.x + dia); //右
-    checkZ1 = (int)(_pos.z + rad);
-    checkX2 = (int)(_pos.x + dia);
-    checkZ2 = (int)(_pos.z - rad);
+    checkX1 = (int)(_pos.x + diameter); //右
+    checkZ1 = (int)(_pos.z + radius);
+    checkX2 = (int)(_pos.x + diameter);
+    checkZ2 = (int)(_pos.z - radius);
     if (IsWall(checkX1, checkZ1) == 1 || IsWall(checkX2, checkZ2) == 1) {
-        _pos.x = _pos.x - radDef;
+        _pos.x = (float)((int)_pos.x + 1 - (0.3f * sp));
     }
 
-    checkX1 = (int)(_pos.x - dia); //左
-    checkZ1 = (int)(_pos.z + rad);
-    checkX2 = (int)(_pos.x - dia);
-    checkZ2 = (int)(_pos.z - rad);
+    checkX1 = (int)(_pos.x - diameter); //左
+    checkZ1 = (int)(_pos.z + radius);
+    checkX2 = (int)(_pos.x - diameter);
+    checkZ2 = (int)(_pos.z - radius);
     if (IsWall(checkX1, checkZ1) == 1 || IsWall(checkX2, checkZ2) == 1) {
-        _pos.x = _pos.x + radDef;
+        _pos.x = (float)((int)_pos.x + (0.3f * sp));
     }
 
 }

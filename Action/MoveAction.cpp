@@ -121,3 +121,33 @@ void AstarMoveAction::UpdatePath(XMFLOAT3 target)
 	if(!targetList_.empty()) targetPos_ = targetList_.front();
 
 }
+
+//------------------------------Oriented----------------------
+
+OrientedMoveAction::OrientedMoveAction(Character* obj, float speed, float range)
+	: MoveAction(obj, speed, range), direction_ { 0, 0, -1, 0 }
+{
+}
+
+void OrientedMoveAction::Update() {
+	XMFLOAT3 position = pCharacter_->GetPosition();
+	XMVECTOR vPosition = XMLoadFloat3(&position);
+
+	//ターゲットへの方向のrotateYを計算
+	XMVECTOR vec = XMLoadFloat3(&targetPos_) - vPosition;
+	vec = XMVector3Normalize(vec);
+	float rotationY = atan2f(XMVectorGetX(vec), XMVectorGetZ(vec));
+
+	//その方句を基準に移動
+	XMMATRIX mRotY = XMMatrixRotationY(rotationY);
+	XMVECTOR vMove = XMVector3TransformCoord(direction_, mRotY);
+	vMove = XMVector3Normalize(vMove);
+	XMStoreFloat3(&position, vPosition + vMove * moveSpeed_);
+	pCharacter_->SetPosition(position);
+		
+}
+
+void OrientedMoveAction::SetDirection(XMVECTOR vec)
+{
+}
+

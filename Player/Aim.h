@@ -24,6 +24,7 @@ class Aim : public GameObject
     float distanceDecrease_;    //反復ごとのspeed減衰地
     float rangeDecrease_;       //反復ごとのrange減衰地
     XMVECTOR center_;
+    XMVECTOR shakeDirection_;
 
     float perspectiveDistance_;     //どのくらい後ろから映すか
     float defPerspectDistance_;     //デフォルトの視点の距離
@@ -84,5 +85,6 @@ public:
 
     //反復回数、反復する距離、スピードの減衰地、スピード
     void SetCameraShake(int iterat, float range, float range_decrease, float speed, float speed_decrease);
+    void SetCameraShakeDirection(XMVECTOR v) { shakeDirection_ = v; }
 
 };

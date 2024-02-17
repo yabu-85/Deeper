@@ -84,8 +84,8 @@ void ThrowEnemy::Initialize()
 
 void ThrowEnemy::Update()
 {
-	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.3f);	
 	pStateManager_->Update();
+	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.3f);
 
 }
 

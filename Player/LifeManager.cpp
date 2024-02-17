@@ -4,6 +4,11 @@
 #include "../Engine/Sprite.h"
 #include "../Engine/Text.h"
 
+namespace {
+	static const int MAX_ALPHA = 255;
+
+}
+
 LifeManager::LifeManager(GameObject* parent)
 	: GameObject(parent, "LifeManager"), hPict_{-1, -1, -1}, playerLife_(0), defPlayerLife_(0), defInvincibleTime_(0), invincibleTime_(0)
 {
@@ -63,16 +68,17 @@ void LifeManager::SetInvincible(int i)
 
 void LifeManager::DamageEffectDraw()
 {
-	Image::SetTransform(hPict_[2], pic1Pos);
+	int a = (int)((float)MAX_ALPHA * ((float)invincibleTime_ / (float)defInvincibleTime_));
+	Image::SetAlpha(hPict_[2], a);
+	Image::SetTransform(hPict_[2], transform_);
 	Image::Draw(hPict_[2]);
-
 }
 
 void LifeManager::Damage(int i)
 {
 	if (IsInvincible()) return;
 
-	invincibleTime_ = invincibleTime_;
+	invincibleTime_ = defInvincibleTime_;
 	playerLife_ -= i;
 }
 

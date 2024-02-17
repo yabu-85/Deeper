@@ -43,8 +43,8 @@ void Stage2::Initialize()
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
 	}
 
-	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_FEET);
-	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_FEET);
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_STONEGOLEM);
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_STONEGOLEM);
 
 	//デバッグ用
 	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_SUB1, GameManager::GetCreateStage()->GetPlayerStartPos());

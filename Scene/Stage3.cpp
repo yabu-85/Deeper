@@ -39,8 +39,8 @@ void Stage3::Initialize()
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
 	}
 
-	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_FEET);
-	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_FEET);
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_STONEGOLEM);
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_STONEGOLEM);
 
 }
 

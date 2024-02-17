@@ -41,17 +41,29 @@ public:
     ~AstarMoveAction() override {};
 
     void Update() override;
-    
+
     //今の移動目標リストを取得
     std::vector<XMFLOAT3> GetTarget() { return targetList_; }
-    
+
     //移動やめさせる
     void StopMove() { targetList_.clear(); }
 
-    //なにこれ今の目標の位置が遠くなりすぎたらtrue
+    //今の目標の位置が遠くなりすぎたらtrue
     bool IsOutTarget(float range);
-    
+
     //新しく経路を求める
     void UpdatePath(XMFLOAT3 target);
+
+};
+
+class OrientedMoveAction : public MoveAction {
+    XMVECTOR direction_;
+
+public:
+    OrientedMoveAction(Character* obj, float speed, float range);
+    ~OrientedMoveAction() override {};
+
+    void Update() override;
+    void SetDirection(XMVECTOR vec);
 
 };

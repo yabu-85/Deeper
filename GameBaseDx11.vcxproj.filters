@@ -267,9 +267,6 @@
     <ClCompile Include="Weapon\WeaponObjectManager.cpp">
       <Filter>09Weapon\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy\Feet.cpp">
-      <Filter>08Enemy\Enemies</Filter>
-    </ClCompile>
     <ClCompile Include="Enemy\DropTable.cpp">
       <Filter>08Enemy</Filter>
     </ClCompile>
@@ -293,9 +290,6 @@
     </ClCompile>
     <ClCompile Include="Player\PlayerWeapon.cpp">
       <Filter>07Player</Filter>
-    </ClCompile>
-    <ClCompile Include="State\FeetState.cpp">
-      <Filter>06State\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="State\PlayerState.cpp">
       <Filter>06State\Player</Filter>
@@ -377,6 +371,12 @@
     </ClCompile>
     <ClCompile Include="Stage\SkyBox.cpp">
       <Filter>12Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\StoneGolem.cpp">
+      <Filter>08Enemy\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="State\StoneGolemState.cpp">
+      <Filter>06State\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -519,9 +519,6 @@
     <ClInclude Include="Weapon\WeaponObjectManager.h">
       <Filter>09Weapon\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy\Feet.h">
-      <Filter>08Enemy\Enemies</Filter>
-    </ClInclude>
     <ClInclude Include="Enemy\DropTable.h">
       <Filter>08Enemy</Filter>
     </ClInclude>
@@ -548,9 +545,6 @@
     </ClInclude>
     <ClInclude Include="State\StateBase.h">
       <Filter>06State\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="State\FeetState.h">
-      <Filter>06State\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="State\PlayerState.h">
       <Filter>06State\Player</Filter>
@@ -632,6 +626,12 @@
     </ClInclude>
     <ClInclude Include="Stage\SkyBox.h">
       <Filter>12Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\StoneGolem.h">
+      <Filter>08Enemy\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="State\StoneGolemState.h">
+      <Filter>06State\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

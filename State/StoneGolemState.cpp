@@ -1,7 +1,7 @@
-#include "FeetState.h"
+#include "StoneGolemState.h"
 #include "StateManager.h"
 #include "../Player/Player.h"
-#include "../Enemy/Feet.h"
+#include "../Enemy/StoneGolem.h"
 #include "../Stage/CreateStage.h"
 #include "../GameManager.h"
 #include "../Enemy/EnemyUi.h"
@@ -21,51 +21,52 @@
 namespace {
 	static const int FOUND_SEARCH = 10;		//視覚探知の更新時間
 	static const int APPER_TIME = 180;
-	static const float FAST_SPEED = 0.08f;
-	static const float SLOW_SPEED = 0.06f;
+	static const float FAST_SPEED = 0.05f;
+	static const float SLOW_SPEED = 0.04f;
 
 }
 
-FeetAppear::FeetAppear(StateManager* owner) : StateBase(owner), time_(0)
+StoneGolemAppear::StoneGolemAppear(StateManager* owner) : StateBase(owner), time_(0)
 {
 }
 
-void FeetAppear::Update()
+void StoneGolemAppear::Update()
 {
 	time_++;
 	if (time_ > APPER_TIME) owner_->ChangeState("Patrol");
 
-	float tsize = (float)time_ / (float)APPER_TIME;
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	float tsize = (float)time_ / (float)APPER_TIME * 1.2f;
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->SetScale(XMFLOAT3(tsize, tsize, tsize));
 
 }
 
-void FeetAppear::OnEnter()
+void StoneGolemAppear::OnEnter()
 {
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	XMFLOAT3 pos = f->GetPosition();
 	VFXManager::CreatVfxEnemySpawn(pos, APPER_TIME);
 
 }
 
-void FeetAppear::OnExit()
+void StoneGolemAppear::OnExit()
 {
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
-	f->SetScale(XMFLOAT3(1, 1, 1));
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
+	float size = 1.2f;
+	f->SetScale(XMFLOAT3(size, size, size));
 
 }
 
 //--------------------------------------------------------------------------------
 
-FeetPatrol::FeetPatrol(StateManager* owner) : StateBase(owner), foundSearchTime_(0)
+StoneGolemPatrol::StoneGolemPatrol(StateManager* owner) : StateBase(owner), foundSearchTime_(0)
 {
 }
 
-void FeetPatrol::Update()
+void StoneGolemPatrol::Update()
 {
 	//Astar移動が終わったなら更新・待ち時間適当にrandamで デバッグ用
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	if (f->GetMoveAction()->IsInRange() && rand() % 60 == 0) {
 		CreateStage* pCreateStage = GameManager::GetCreateStage();
 		f->GetMoveAction()->UpdatePath(pCreateStage->GetRandomFloarPosition());
@@ -88,25 +89,25 @@ void FeetPatrol::Update()
 	}
 }
 
-void FeetPatrol::OnEnter()
+void StoneGolemPatrol::OnEnter()
 {
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
 	f->GetRotateAction()->SetTarget(nullptr);
 }
 
-void FeetPatrol::OnExit()
+void StoneGolemPatrol::OnExit()
 {
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
 	f->GetMoveAction()->StopMove();
 }
 
 //--------------------------------------------------------------------------------
 
-FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
+StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner)
 {
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	
 	//-----------------------------ビヘイビアツリーの設定--------------------------------------
 	root_ = new Root();
@@ -135,67 +136,72 @@ FeetCombat::FeetCombat(StateManager* owner) : StateBase(owner)
 
 }
 
-void FeetCombat::Update()
+void StoneGolemCombat::Update()
 {
 	root_->Update();
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->GetCombatStateManager()->Update();
 
 }
 
-void FeetCombat::OnEnter()
+void StoneGolemCombat::OnEnter()
 {
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->GetEnemyUi()->InitTargetFoundUi();
 	f->GetRotateAction()->Initialize();
 	f->GetRotateAction()->SetTarget(GameManager::GetPlayer());
 
 }
 
-FeetCombat::~FeetCombat()
+StoneGolemCombat::~StoneGolemCombat()
 {
 	delete root_;
 }
 
 //--------------------------------------------------------------------------------
 
-FeetDead::FeetDead(StateManager* owner) : StateBase(owner)
+StoneGolemDead::StoneGolemDead(StateManager* owner) : StateBase(owner)
 {
 }
 
-void FeetDead::Update()
+void StoneGolemDead::Update()
 {
 }
 
 //-------------------------------------CombatState-------------------------------------------
 
-FeetWait::FeetWait(StateManager* owner) : StateBase(owner)
+StoneGolemWait::StoneGolemWait(StateManager* owner) : StateBase(owner)
 {
 }
 
-void FeetWait::Update()
+void StoneGolemWait::Update()
 {
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->GetRotateAction()->Update();
 
+	f->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
+	f->GetOrientedMoveAction()->Update();
+
 }
 
-void FeetWait::OnEnter()
+void StoneGolemWait::OnEnter()
 {
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
+	f->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, -1, 0 });
+
 }
 
 //--------------------------------------------------------------------------------
 
-FeetMove::FeetMove(StateManager* owner) : StateBase(owner)
+StoneGolemMove::StoneGolemMove(StateManager* owner) : StateBase(owner)
 {
 }
 
-void FeetMove::Update()
+void StoneGolemMove::Update()
 {
 	//らんｄやめよう
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->GetMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
 	if (f->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
 		f->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
@@ -209,34 +215,34 @@ void FeetMove::Update()
 	f->GetRotateAction()->Update();
 }
 
-void FeetMove::OnEnter()
+void StoneGolemMove::OnEnter()
 {
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
 
 }
 
-void FeetMove::OnExit()
+void StoneGolemMove::OnExit()
 {
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->GetMoveAction()->StopMove();
 }
 
 //--------------------------------------------------------------------------------
 
-FeetAttack::FeetAttack(StateManager* owner) : StateBase(owner), time_(0)
+StoneGolemAttack::StoneGolemAttack(StateManager* owner) : StateBase(owner), time_(0)
 {
 }
 
-void FeetAttack::Update()
+void StoneGolemAttack::Update()
 {
 	time_++;
 
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	if (time_ < 30) f->GetRotateAction()->Update();
 
 	//AttackFrame=65 ～ 90
-	//FeetのOnAttackCollisionの方でPlayerに当たったらfalseにする処理を書いてある
+	//StoneGolemのOnAttackCollisionの方でPlayerに当たったらfalseにする処理を書いてある
 	if (time_ == 65) f->GetSphereCollider()->SetValid(true);
 	if (time_ == 90) f->GetSphereCollider()->SetValid(false);
 
@@ -247,10 +253,10 @@ void FeetAttack::Update()
 	}
 }
 
-void FeetAttack::OnEnter()
+void StoneGolemAttack::OnEnter()
 {
 	time_ = 0;
-	Feet* f = static_cast<Feet*>(owner_->GetGameObject());
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	Model::SetAnimFrame(f->GetModelHandle(), 0, 200, 1.0f);
 }
 

@@ -4,73 +4,73 @@
 class StateManager;
 class Root;
 
-class FeetAppear : public StateBase
+class StoneGolemAppear : public StateBase
 {
 	int time_;
 public:
-	FeetAppear(StateManager* owner);
+	StoneGolemAppear(StateManager* owner);
 	const char* GetName() const override { return "Appear"; }
 	void Update() override;
 	void OnEnter() override;
 	void OnExit() override;
 };
 
-class FeetPatrol : public StateBase
+class StoneGolemPatrol : public StateBase
 {
 	int foundSearchTime_;
 public:
-	FeetPatrol(StateManager* owner);
+	StoneGolemPatrol(StateManager* owner);
 	const char* GetName() const override { return "Patrol"; }
 	void Update() override;
 	void OnEnter() override;
 	void OnExit() override;
 };
 
-class FeetCombat : public StateBase
+class StoneGolemCombat : public StateBase
 {
 	Root* root_;
 public:
-	FeetCombat(StateManager* owner);
-	~FeetCombat() override;
+	StoneGolemCombat(StateManager* owner);
+	~StoneGolemCombat() override;
 	const char* GetName() const override { return "Combat"; }
 	void Update() override;
 	void OnEnter() override;
 };
 
-class FeetDead : public StateBase
+class StoneGolemDead : public StateBase
 {
 public:
-	FeetDead(StateManager* owner);
+	StoneGolemDead(StateManager* owner);
 	const char* GetName() const override { return "Dead"; }
 	void Update() override;
 };
 
 //---------------------------------------------------------------------------------
 
-class FeetWait : public StateBase
+class StoneGolemWait : public StateBase
 {
 public:
-	FeetWait(StateManager* owner);
+	StoneGolemWait(StateManager* owner);
 	const char* GetName() const override { return "Wait"; }
 	void Update() override;
 	void OnEnter() override;
 };
 
-class FeetMove : public StateBase
+class StoneGolemMove : public StateBase
 {
 public:
-	FeetMove(StateManager* owner);
+	StoneGolemMove(StateManager* owner);
 	const char* GetName() const override { return "Move"; }
 	void Update() override;
 	void OnEnter() override;
 	void OnExit() override;
 };
 
-class FeetAttack : public StateBase
+class StoneGolemAttack : public StateBase
 {
 	int time_;
 public:
-	FeetAttack(StateManager* owner);
+	StoneGolemAttack(StateManager* owner);
 	const char* GetName() const override { return "Attack"; }
 	void Update() override;
 	void OnEnter() override;

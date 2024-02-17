@@ -7,7 +7,7 @@ class EnemyBase;
 class GameObject;
 
 enum ENEMY_TYPE {
-	ENEMY_FEET,
+	ENEMY_STONEGOLEM,
 	ENEMY_THROW,
 	ENEMY_MAX,
 };

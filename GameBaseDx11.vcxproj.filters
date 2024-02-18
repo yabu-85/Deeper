@@ -378,6 +378,9 @@
     <ClCompile Include="State\StoneGolemState.cpp">
       <Filter>06State\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Weapon\StoneArmWeapon.cpp">
+      <Filter>09Weapon\Weapons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -632,6 +635,9 @@
     </ClInclude>
     <ClInclude Include="State\StoneGolemState.h">
       <Filter>06State\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\StoneArmWeapon.h">
+      <Filter>09Weapon\Weapons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

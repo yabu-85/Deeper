@@ -77,6 +77,8 @@ void TestWeaponMain::Update()
 
 void TestWeaponMain::Draw()
 {
+    if (!IsVisibled()) return;
+   
     wandPos_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     
@@ -85,7 +87,6 @@ void TestWeaponMain::Draw()
 
     if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
         transform_.rotate_.y *= -1.0f;
-        transform_.rotate_.z *= -1.0f;
     }
     transform_.rotate_.y += pPlayer_->GetRotate().y;
 

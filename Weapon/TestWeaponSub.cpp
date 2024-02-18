@@ -115,7 +115,7 @@ void TestWeaponSubCombo1::Update()
     if (p->GetCommand()->CmdSubAtk()) next_ = true;
 
     time_++;
-    if (time_ <= COMBO_TIME1) {
+    if (time_ >= COMBO_TIME1) {
         TestWeaponSub* s = static_cast<TestWeaponSub*>(owner_->GetGameObject());
         if (next_ == true) owner_->ChangeState("Combo2");
         else s->ResetState();
@@ -159,7 +159,7 @@ void TestWeaponSubCombo2::Update()
     s->ShotBullet();
 
     time_++;
-    if (time_ <= COMBO_TIME2) {
+    if (time_ >= COMBO_TIME2) {
         if (next_ == true) owner_->ChangeState("Combo1");
         else s->ResetState();
     }

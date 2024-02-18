@@ -133,6 +133,7 @@ void Aim::Update()
 void Aim::Draw()
 {
     Image::Draw(hPict_);
+    Image::SetAlpha(hPict_, 0);
 
 }
 

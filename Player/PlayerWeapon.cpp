@@ -23,16 +23,6 @@ PlayerWeapon::PlayerWeapon(Player* pPlayer)
 
 void PlayerWeapon::DrawWeapon()
 {
-    //武器の表示非表示
-    if (currentSubIndex_ == 0) {
-        if (pSubWeapon_[0]) pSubWeapon_[0]->Visible();
-        if (pSubWeapon_[1]) pSubWeapon_[1]->Invisible();
-    }
-    else {
-        if (pSubWeapon_[1]) pSubWeapon_[1]->Visible();
-        if (pSubWeapon_[0]) pSubWeapon_[0]->Invisible();
-    }
-
     pText->Draw(1000, 600, currentSubIndex_);
     if (pSubWeapon_[0]) {
         const char* cstr = pSubWeapon_[0]->GetObjectName().c_str();
@@ -85,11 +75,22 @@ void PlayerWeapon::WeaponChangeIndex()
 {
     if (pPlayer_->GetCommand()->CmdCenterUp()) {
         currentSubIndex_ = 0;
-        return;
     }
     if (pPlayer_->GetCommand()->CmdCenterDown()) {
         currentSubIndex_ = 1;
-        return;
+    }
+
+    //修正箇所
+    if (!pPlayer_->GetCommand()->CmdCenterUp() && !pPlayer_->GetCommand()->CmdCenterDown()) return;
+
+    //武器の表示非表示
+    if (currentSubIndex_ == 0) {
+        if (pSubWeapon_[0]) pSubWeapon_[0]->Visible();
+        if (pSubWeapon_[1]) pSubWeapon_[1]->Invisible();
+    }
+    else {
+        if (pSubWeapon_[1]) pSubWeapon_[1]->Visible();
+        if (pSubWeapon_[0]) pSubWeapon_[0]->Invisible();
     }
 }
 

@@ -214,6 +214,7 @@
     <ClCompile Include="UI\UIManager.cpp" />
     <ClCompile Include="VFXManager.cpp" />
     <ClCompile Include="Weapon\BulletBase.cpp" />
+    <ClCompile Include="Weapon\StoneArmWeapon.cpp" />
     <ClCompile Include="Weapon\TestBullet.cpp" />
     <ClCompile Include="Weapon\TestWeaponMain.cpp" />
     <ClCompile Include="Weapon\TestWeaponSub.cpp" />
@@ -303,6 +304,7 @@
     <ClInclude Include="UI\UIManager.h" />
     <ClInclude Include="VFXManager.h" />
     <ClInclude Include="Weapon\BulletBase.h" />
+    <ClInclude Include="Weapon\StoneArmWeapon.h" />
     <ClInclude Include="Weapon\TestBullet.h" />
     <ClInclude Include="Weapon\TestWeaponMain.h" />
     <ClInclude Include="Weapon\TestWeaponSub.h" />

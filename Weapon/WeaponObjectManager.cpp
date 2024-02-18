@@ -1,9 +1,10 @@
 #include "WeaponObjectManager.h"
-#include "WeaponObject.h"
 #include "../Engine/Model.h"
 #include "../Player/Player.h"
-#include "TestWeaponSub.h"
 #include "../GameManager.h"
+#include "WeaponObject.h"
+#include "TestWeaponSub.h"
+#include "StoneArmWeapon.h"
 
 WeaponObjectManager::WeaponObjectManager()
 	: range_(0), nearestObject_(nullptr)
@@ -24,7 +25,7 @@ void WeaponObjectManager::SceneTransitionInitialize()
 
 void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos)
 {
-	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "StoneArm", "Feet" };
+	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "StoneArmObj", "RedBox" };
 
 	WeaponObject* weapon = InstantiateFront<WeaponObject>(GameManager::GetStage());
 
@@ -92,18 +93,18 @@ WeaponBase* WeaponObjectManager::PlayerWeaponSet()
 		return nullptr;
 	}
 
-	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_SUB1) {
+	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_STONE) {
+		RemoveWeaponObject(nearestObject_);
+		nearestObject_->KillMe();
+		nearestObject_ = nullptr;
+		return Instantiate<StoneArmWeapon>(GameManager::GetPlayer());
+	}
+
+	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_SUB) {
 		RemoveWeaponObject(nearestObject_);
 		nearestObject_->KillMe();
 		nearestObject_ = nullptr;
 		return Instantiate<TestWeaponSub>(GameManager::GetPlayer());
-	}
-
-	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_SUB2) {
-		RemoveWeaponObject(nearestObject_);
-		nearestObject_->KillMe();
-		nearestObject_ = nullptr;
-		return nullptr;
 	}
 
 	return nullptr;

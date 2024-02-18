@@ -265,12 +265,16 @@ void PlayerAtk::OnEnter()
 	nextCmd_ = 0;
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
 	p->GetPlayerWeapon()->GetMainWeapon()->ChangeAttackState();
+	p->GetPlayerWeapon()->GetMainWeapon()->Visible();
+	if (p->GetPlayerWeapon()->GetSubWeapon()) p->GetPlayerWeapon()->GetSubWeapon()->Invisible();
+
 }
 
 void PlayerAtk::OnExit()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
 	p->GetPlayerWeapon()->GetMainWeapon()->ResetState();
+	
 }
  
 //--------------------------------------------------------------------------------
@@ -312,6 +316,8 @@ void PlayerSubAtk::OnEnter()
 	nextCmd_ = 0;
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
 	p->GetPlayerWeapon()->GetSubWeapon()->ChangeAttackState();
+	p->GetPlayerWeapon()->GetMainWeapon()->Invisible();
+	if(p->GetPlayerWeapon()->GetSubWeapon()) p->GetPlayerWeapon()->GetSubWeapon()->Visible();
 
 }
 

@@ -16,8 +16,8 @@ class WeaponObjectManager
 
 public:
 	enum class WEAPON_TYPE {
-		WT_SUB1 = 0,
-		WT_SUB2,
+		WT_STONE = 0,
+		WT_SUB,
 		WT_MAX,
 	};
 

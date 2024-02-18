@@ -93,7 +93,7 @@ Player::~Player()
 
 void Player::Initialize()
 {
-    hModel_ = Model::Load("Model/Fiter3.fbx");
+    hModel_ = Model::Load("Model/Fiter2.fbx");
     assert(hModel_ >= 0);
 
     GameManager::AddCharacter(this);
@@ -153,11 +153,11 @@ void Player::Update()
     else if (state_ == MAIN_STATE::HEAR) HearUpdate();
     else if (state_ == MAIN_STATE::DEAD) DeadUpdate();
     else {
-        if(isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
         pStateManager_->Update();
         if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
     }
 
+    if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
     ReflectCharacter();
     
     //デバッグ用

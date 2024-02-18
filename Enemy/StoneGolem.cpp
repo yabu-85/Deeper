@@ -14,8 +14,8 @@
 #include "../Action/SearchAction.h"
 
 StoneGolem::StoneGolem(GameObject* parent)
-	: EnemyBase(parent, "StoneGolemEnemy"), hModel_(-1), pHandCollider_(nullptr), pMoveAction_(nullptr), pRotateAction_(nullptr),
-	pVisionSearchAction_(nullptr), pOrientedMoveAction_(nullptr), boneIndex_(-1), partIndex_(-1)
+	: EnemyBase(parent, "StoneGolemEnemy"), hModel_(-1), pHandCollider_{ nullptr, nullptr }, pMoveAction_(nullptr), pRotateAction_(nullptr),
+	pVisionSearchAction_(nullptr), pOrientedMoveAction_(nullptr), boneIndex_{ -1,-1 }, partIndex_{ -1,-1 }
 {
 }
 
@@ -33,28 +33,32 @@ void StoneGolem::Initialize()
 	transform_.position_ = startPos;
 	transform_.rotate_.y = (float)(rand() % 360);
 
-	maxHp_ = 300;
+	maxHp_ = 200;
 	hp_ = maxHp_;
 	aimTargetPos_ = 1.3f;
 	bodyWeight_ = 100.0f;
+	bodyRange_ = 0.7f;
 	attackDamage_ = 1;
 
 	//Collider‚ÌÝ’è
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5, 0), 0.75f);
 	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 1.5, 0), 0.75f);
-	pHandCollider_ = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
-	pHandCollider_->SetValid(false);
+	pHandCollider_[0] = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
+	pHandCollider_[1] = new SphereCollider(XMFLOAT3(0, 0, 0), 0.3f);
+	for (int i = 0; i < 2; i++) {
+		pHandCollider_[i]->SetValid(false);
+		AddAttackCollider(pHandCollider_[i]);
+	}
 	AddCollider(collision1);
 	AddCollider(collision2);
-	AddAttackCollider(pHandCollider_);
 
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize(3.0f);
 
 	//Action‚ÌÝ’è
 	pMoveAction_ = new AstarMoveAction(this, 0.0f, 0.3f);
-	pOrientedMoveAction_ = new OrientedMoveAction(this, 0.02f, 0.5f);
-	pRotateAction_ = new RotateAction(this, 0.07f);
+	pOrientedMoveAction_ = new OrientedMoveAction(this, 0.02f);
+	pRotateAction_ = new RotateAction(this, 0.0f);
 	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f, 90.0f);
 	pRotateAction_->Initialize();
 
@@ -75,13 +79,17 @@ void StoneGolem::Initialize()
 	pCombatStateManager_->ChangeState("Wait");
 	pCombatStateManager_->Initialize();
 	
-	Model::GetBoneIndex(hModel_, "attack_Hand.R", &boneIndex_, &partIndex_);
-	assert(boneIndex_ >= 0);
+	Model::GetBoneIndex(hModel_, "attack_Hand.R", &boneIndex_[0], &partIndex_[0]);
+	assert(boneIndex_[0] >= 0);
+	Model::GetBoneIndex(hModel_, "forearm.R", &boneIndex_[1], &partIndex_[1]);
+	assert(boneIndex_[1] >= 0);
 
 }
 
 void StoneGolem::Update()
 {
+	EnemyBase::Update();
+
 	pStateManager_->Update();
 	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
 
@@ -91,9 +99,12 @@ void StoneGolem::Draw()
 {
 	pEnemyUi_->Draw();
 
-	XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, boneIndex_, partIndex_);
-	center = XMFLOAT3(center.x - transform_.position_.x, center.y - transform_.position_.y, center.z - transform_.position_.z);
-	pHandCollider_->SetCenter(center);
+	//ColliderPosition
+	for (int i = 0; i < 2; i++) {
+		XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, boneIndex_[i], partIndex_[i]);
+		center = XMFLOAT3(center.x - transform_.position_.x, center.y - transform_.position_.y, center.z - transform_.position_.z);
+		pHandCollider_[i]->SetCenter(center);
+	}	
 
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
@@ -120,16 +131,6 @@ void StoneGolem::ApplyDamage(int da)
 
 	if (pStateManager_->GetName() != "Combat") {
 		pStateManager_->ChangeState("Combat");
-	}
-
-}
-
-void StoneGolem::OnCollision(GameObject* pTarget)
-{
-	std::string name = pTarget->GetObjectName();
-	if (name.find("Enemy") != std::string::npos || name == "Player") {
-		Character* c = static_cast<Character*>(pTarget);
-		ReflectCharacter(c);
 	}
 
 }

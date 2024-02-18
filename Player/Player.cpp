@@ -4,32 +4,29 @@
 #include "PlayerWeapon.h"
 #include "LifeManager.h"
 #include "PlayerData.h"
+#include "../GameManager.h"
+#include "../VFXManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
+#include "../Engine/SphereCollider.h"
 #include "../State/StateManager.h"
 #include "../State/PlayerState.h"
-#include "../GameManager.h"
 #include "../Stage/CreateStage.h"
-#include "../VFXManager.h"
-#include "../Engine/SphereCollider.h"
 #include "../Stage/CollisionMap.h"
 #include "../AnimationController.h"
 #include "../Weapon/BulletBase.h"
+#include "../Engine/SceneManager.h"
 
 #include "../Engine/Text.h"
-#include "../Engine/BoxCollider.h"
-#include "../Engine/SceneManager.h"
 
 namespace {
     const float stopGradually = 0.21f;      //移動スピードの加減の値止まるとき
     const float moveGradually = 0.09f;      //移動スピードの加減の値移動時
-    const float maxMoveSpeed = 1.0f;        //最大移動スピード
+    const float maxMoveSpeed = 0.7f;        //最大移動スピード
     const float avoRotateRatio = 1.0f;      //回避時のRotateRatio
-
     const int lifeMax = 50;
     const int invincible = 60;
-
     const int APPER_TIME = 60;
     const int HEAR_TIME = 50;
 
@@ -82,7 +79,7 @@ void Player::DeadUpdate()
 
 Player::Player(GameObject* parent)
     : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
-    pAnimationController_(nullptr), pLifeManager_(nullptr),
+    pAnimationController_(nullptr), pLifeManager_(nullptr), pCollider_{nullptr, nullptr},
     moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), state_(MAIN_STATE::APPER), apperPos_(0,0,0), time_(0), gradually_(0.0f)
 {
 }
@@ -99,9 +96,11 @@ void Player::Initialize()
     hModel_ = Model::Load("Model/Fiter3.fbx");
     assert(hModel_ >= 0);
 
-    transform_.rotate_.y += 180.0f;
+    GameManager::AddCharacter(this);
+
+    transform_.rotate_.y = 180.0f;
     transform_.scale_ = { 0.5f, 0.5f, 0.5f };
-    SetPosition(GameManager::GetCreateStage()->GetPlayerStartPos());
+    transform_.position_ = GameManager::GetCreateStage()->GetPlayerStartPos();
     moveSpeed_ = 0.08f;
     rotateRatio_ = 0.2f;
     bodyWeight_ = 0.1f;
@@ -111,7 +110,7 @@ void Player::Initialize()
     pAnimationController_ = new AnimationController(hModel_);
     pAnimationController_->AddAnime(0, 120);    //待機
     pAnimationController_->AddAnime(548, 590);  //走り
-    pAnimationController_->AddAnime(120, 175);  //ローリング
+    pAnimationController_->AddAnime(120, 180);  //ローリング
     pAnimationController_->AddAnime(500, 546);  //バックステップ
 
     pAim_ = Instantiate<Aim>(this);
@@ -132,10 +131,10 @@ void Player::Initialize()
     pStateManager_->ChangeState("Wait");
     pStateManager_->Initialize();
 
-    SphereCollider* collid1 = new SphereCollider(XMFLOAT3(0.0f, 1.2f, 0.0f), 0.25f);
-    SphereCollider* collid2 = new SphereCollider(XMFLOAT3(0.0f, 0.6f, 0.0f), 0.3f);
-    AddCollider(collid1);
-    AddCollider(collid2);
+    pCollider_[1] = new SphereCollider(XMFLOAT3(0.0f, 0.95f, 0.0f), 0.25f);
+    pCollider_[0] = new SphereCollider(XMFLOAT3(0.0f, 0.4f, 0.0f), 0.3f);
+    AddCollider(pCollider_[0]);
+    AddCollider(pCollider_[1]);
 
     apperPos_ = transform_.position_;
     transform_.position_.y += (time_ * 0.5f);
@@ -149,20 +148,17 @@ void Player::Update()
     pCommand_->Update();
     pAnimationController_->Update();
 
-    if (Input::IsKey(DIK_3)) {
-        ReceivedDamage();
-
-    }
-
     //MainState
     if (state_ == MAIN_STATE::APPER) ApperUpdate();
     else if (state_ == MAIN_STATE::HEAR) HearUpdate();
     else if (state_ == MAIN_STATE::DEAD) DeadUpdate();
     else {
-        GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
+        if(isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
         pStateManager_->Update();
         if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
     }
+
+    ReflectCharacter();
     
     //デバッグ用
     if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;
@@ -188,16 +184,6 @@ void Player::Draw()
 
 void Player::Release()
 {
-}
-
-void Player::OnCollision(GameObject* pTarget)
-{
-    std::string name = pTarget->GetObjectName();
-    if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
-        Character* c = static_cast<Character*>(pTarget);
-        ReflectCharacter(c);
-    }
-
 }
 
 void Player::OnAttackCollision(GameObject* pTarget)
@@ -385,32 +371,34 @@ void Player::ReverseMove(XMFLOAT3 move)
 
 }
 
-void Player::InitAvo()
+void Player::Avo()
 {
-    //動いている場合：その方向にローリング
+    //動いている場合
     if (pCommand_->CmdWalk()) {
         CalcMove();
         Rotate(avoRotateRatio);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
-        
-        float weight = 1.0f - Model::GetBlendFactor(GetModelHandle());
-        GetAnimationController()->SetNextAnime(2, weight, 0.2f);
+        GetAnimationController()->SetNextAnime(2, Model::GetBlendFactor(GetModelHandle()), 0.2f);
+
+        GetSphereCollider(0)->SetValid(false);
+        GetSphereCollider(1)->SetValid(false);
 
     }
-    //動いていない、ターゲット状態：ターゲットの逆方向にバック
+    //動いていない・ターゲット状態
     else if(pAim_->IsTarget()) {
         AimTargetRotate(1.0f);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0f);
-
-        float weight = 1.0f - Model::GetBlendFactor(GetModelHandle());
-        GetAnimationController()->SetNextAnime(3, weight, 0.2f);
+        GetAnimationController()->SetNextAnime(3, Model::GetBlendFactor(GetModelHandle()), 0.2f);
+    
     }
-    //動いてい、ターゲットもしていない：向いている方向にローリング
+    //動いていない・ターゲットもしていない
     else {
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
+        GetAnimationController()->SetNextAnime(2, Model::GetBlendFactor(GetModelHandle()), 0.2f);
 
-        float weight = 1.0f - Model::GetBlendFactor(GetModelHandle());
-        GetAnimationController()->SetNextAnime(2, weight, 0.2f);
+        GetSphereCollider(0)->SetValid(false);
+        GetSphereCollider(1)->SetValid(false);
+
     }
 
 }

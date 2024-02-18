@@ -124,8 +124,8 @@ void AstarMoveAction::UpdatePath(XMFLOAT3 target)
 
 //------------------------------Oriented----------------------
 
-OrientedMoveAction::OrientedMoveAction(Character* obj, float speed, float range)
-	: MoveAction(obj, speed, range), direction_ { 0, 0, -1, 0 }
+OrientedMoveAction::OrientedMoveAction(Character* obj, float speed)
+	: MoveAction(obj, speed, 0.0f), direction_ { 0, 0, -1, 0 }
 {
 }
 
@@ -146,8 +146,3 @@ void OrientedMoveAction::Update() {
 	pCharacter_->SetPosition(position);
 		
 }
-
-void OrientedMoveAction::SetDirection(XMVECTOR vec)
-{
-}
-

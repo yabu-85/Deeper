@@ -11,9 +11,9 @@ class VisionSearchAction;
 class StoneGolem : public EnemyBase
 {
     int hModel_;
-    int boneIndex_;
-    int partIndex_;
-    SphereCollider* pHandCollider_;
+    int boneIndex_[2];
+    int partIndex_[2];
+    SphereCollider* pHandCollider_[2];
 
     //Action
     AstarMoveAction* pMoveAction_;
@@ -29,10 +29,9 @@ public:
     void Draw() override;
     void Release() override;
     void ApplyDamage(int da) override;
-    void OnCollision(GameObject* pTarget) override;
 
     int GetModelHandle() { return hModel_; }
-    SphereCollider* GetSphereCollider() { return pHandCollider_; }
+    SphereCollider* GetSphereCollider(int i) { return pHandCollider_[i]; }
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }
     OrientedMoveAction* GetOrientedMoveAction() { return pOrientedMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }

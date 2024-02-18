@@ -1,6 +1,7 @@
 #include "StoneGolemState.h"
 #include "StateManager.h"
 #include "../Player/Player.h"
+#include "../Player/Aim.h"
 #include "../Enemy/StoneGolem.h"
 #include "../Stage/CreateStage.h"
 #include "../GameManager.h"
@@ -23,6 +24,20 @@ namespace {
 	static const int APPER_TIME = 180;
 	static const float FAST_SPEED = 0.05f;
 	static const float SLOW_SPEED = 0.04f;
+	static const float ROTATE_RATIO = 0.07f;
+
+	//çUåÇStateÇÃèÓïÒ
+	static const int ATTACK_FRAME[2] = { 0, 300 };
+	static const float ATTACK_ROTATE_RATIO = 0.05f;
+	static const int CALC_FRAME1[2] = { 65, 85 };
+	static const int CALC_FRAME2[2] = { 120, 140 };
+	static const int CALC_FRAME3[2] = { 235, 247 };
+	//çUåÇÇPÇÃèÓïÒ
+	static const int ROTATE_FRAME = 30;
+	//çUåÇÇRÇÃèÓïÒ
+	static const int ROTATE_FRAME3[2] = { 140, 230 };
+	static const int ATTACK_EFFECT_TIME[2] = { 244, 247 };
+	static const float MOVESPEED_FRAME3 = 0.03f;
 
 }
 
@@ -94,6 +109,8 @@ void StoneGolemPatrol::OnEnter()
 	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
 	f->GetRotateAction()->SetTarget(nullptr);
+	f->GetRotateAction()->SetRatio(ROTATE_RATIO);
+
 }
 
 void StoneGolemPatrol::OnExit()
@@ -150,6 +167,7 @@ void StoneGolemCombat::OnEnter()
 	f->GetEnemyUi()->InitTargetFoundUi();
 	f->GetRotateAction()->Initialize();
 	f->GetRotateAction()->SetTarget(GameManager::GetPlayer());
+	f->GetRotateAction()->SetRatio(ROTATE_RATIO);
 
 }
 
@@ -178,7 +196,6 @@ void StoneGolemWait::Update()
 {
 	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->GetRotateAction()->Update();
-
 	f->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
 	f->GetOrientedMoveAction()->Update();
 
@@ -237,16 +254,47 @@ StoneGolemAttack::StoneGolemAttack(StateManager* owner) : StateBase(owner), time
 void StoneGolemAttack::Update()
 {
 	time_++;
-
 	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
-	if (time_ < 30) f->GetRotateAction()->Update();
+	
+	//âÒì]Ç‚ÇÁà⁄ìÆÇ‚ÇÁ
+	if (time_ < ROTATE_FRAME) f->GetRotateAction()->Update();
+	else if (time_ >= ROTATE_FRAME3[0] && time_ <= ROTATE_FRAME3[1]) {
+		f->GetRotateAction()->Update();
+		f->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
+		f->GetOrientedMoveAction()->Update();
+	}
 
-	//AttackFrame=65 Å` 90
+	//çUåÇÉtÉâÉOÇÃêßå‰
 	//StoneGolemÇÃOnAttackCollisionÇÃï˚Ç≈PlayerÇ…ìñÇΩÇ¡ÇΩÇÁfalseÇ…Ç∑ÇÈèàóùÇèëÇ¢ÇƒÇ†ÇÈ
-	if (time_ == 65) f->GetSphereCollider()->SetValid(true);
-	if (time_ == 90) f->GetSphereCollider()->SetValid(false);
+	if (time_ == CALC_FRAME1[0]) { f->GetSphereCollider(0)->SetValid(true); f->GetSphereCollider(1)->SetValid(true); }
+	else if (time_ == CALC_FRAME1[1]) { f->GetSphereCollider(0)->SetValid(false); f->GetSphereCollider(1)->SetValid(false); }
+	else if (time_ == CALC_FRAME2[0]) { f->GetSphereCollider(0)->SetValid(true); f->GetSphereCollider(1)->SetValid(true); }
+	else if (time_ == CALC_FRAME2[1]) { f->GetSphereCollider(0)->SetValid(false); f->GetSphereCollider(1)->SetValid(false); }
+	else if (time_ == CALC_FRAME3[0]) { f->GetSphereCollider(0)->SetValid(true); f->GetSphereCollider(1)->SetValid(true); }
+	else if (time_ == CALC_FRAME3[1]) { f->GetSphereCollider(0)->SetValid(false); f->GetSphereCollider(1)->SetValid(false); }
 
-	if (time_ >= 200) {
+	//ÉGÉtÉFÉNÉg
+	if (time_ >= ATTACK_EFFECT_TIME[0] && time_ <= ATTACK_EFFECT_TIME[1]) {
+		XMFLOAT3 pos = f->GetPosition();
+		XMFLOAT3 cP = f->GetSphereCollider(0)->GetCenter();
+		pos = { pos.x + cP.x, 0.0f , pos.z + cP.z };
+		VFXManager::CreatVfxSmoke(pos);
+
+		//ÉJÉÅÉâÉVÉFÉCÉN
+		if (time_ == ATTACK_EFFECT_TIME[0]) {
+			const float maxRange = 8.0f;
+			XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
+			pos = { pPos.x - pos.x, 0.0f, pPos.z - pos.z };
+			float range = sqrt(pos.x * pos.x + pos.z * pos.z);
+			if (range <= maxRange) {
+				range = (1.0f - (range / maxRange));
+				GameManager::GetPlayer()->GetAim()->SetCameraShakeDirection(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f });
+				GameManager::GetPlayer()->GetAim()->SetCameraShake(7, 0.3f * range, 0.7f, 0.3f, 0.8f);
+			}
+		}
+	}
+
+	if (time_ >= ATTACK_FRAME[1]) {
 		Model::SetAnimFrame(f->GetModelHandle(), 0, 0, 1.0f);
 		owner_->ChangeState("Wait");
 		return;
@@ -257,7 +305,18 @@ void StoneGolemAttack::OnEnter()
 {
 	time_ = 0;
 	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
-	Model::SetAnimFrame(f->GetModelHandle(), 0, 200, 1.0f);
+	Model::SetAnimFrame(f->GetModelHandle(), ATTACK_FRAME[0], ATTACK_FRAME[1], 1.0f);
+	f->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
+	f->GetOrientedMoveAction()->SetMoveSpeed(MOVESPEED_FRAME3);
+	f->GetRotateAction()->SetRatio(ATTACK_ROTATE_RATIO);
+}
+
+void StoneGolemAttack::OnExit()
+{
+	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
+	f->GetOrientedMoveAction()->SetMoveSpeed(MOVESPEED_FRAME3);
+	f->GetRotateAction()->SetRatio(ROTATE_RATIO);
+
 }
 
 //--------------------------------------------------------------------------------

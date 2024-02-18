@@ -29,7 +29,6 @@ public:
     void Draw() override;
     void Release() override;
     void ApplyDamage(int da) override;
-    void OnCollision(GameObject* pTarget) override;
 
     void ThrowItem();
     void SetItem();

@@ -74,4 +74,5 @@ public:
 	const char* GetName() const override { return "Attack"; }
 	void Update() override;
 	void OnEnter() override;
+	void OnExit() override;
 };

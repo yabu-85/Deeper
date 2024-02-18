@@ -39,7 +39,7 @@ void ThrowEnemy::Initialize()
 	transform_.scale_ = { 0.5f, 0.5f, 0.5f };
 	itemTransform_.scale_ = { 0.2f, 0.2f, 0.2f };
 
-	maxHp_ = 100;
+	maxHp_ = 30;
 	hp_ = maxHp_;
 	aimTargetPos_ = 1.0f;
 	bodyWeight_ = 10.0f;
@@ -124,16 +124,6 @@ void ThrowEnemy::ApplyDamage(int da)
 
 	if (pStateManager_->GetName() != "Combat") {
 		pStateManager_->ChangeState("Combat");
-	}
-
-}
-
-void ThrowEnemy::OnCollision(GameObject* pTarget)
-{
-	std::string name = pTarget->GetObjectName();
-	if (pTarget->GetObjectName().find("Enemy") != std::string::npos || name == "Player") {
-		Character* c = static_cast<Character*>(pTarget);
-		ReflectCharacter(c);
 	}
 
 }

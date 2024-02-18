@@ -133,6 +133,8 @@ bool Collider::IsHitCircleVsSegment(SphereCollider* circle, SegmentCollider* seg
 //引数：position	オブジェクトの位置
 void Collider::Draw(XMFLOAT3 position)
 {
+	if (!isValid_) return;
+
 	Transform transform;
 	transform.position_ = XMFLOAT3(position.x + center_.x, position.y + center_.y, position.z + center_.z);
 	transform.scale_ = size_;

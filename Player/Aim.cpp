@@ -127,7 +127,6 @@ void Aim::Update()
         CalcCameraOffset(0.0f);
     }
 
-
     DefaultAim();
 }
 

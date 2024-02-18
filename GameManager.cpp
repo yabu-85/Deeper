@@ -25,6 +25,7 @@ namespace GameManager {
 	GameObject* pNowStage_ = nullptr;
 	CreateStage* pCreateStage_ = nullptr;
 	SceneManager* pSceneManager_ = nullptr;
+	std::vector<Character*> characterList_;
 
 	void GameManager::Initialize()
 	{
@@ -75,6 +76,7 @@ namespace GameManager {
 
 	void SceneTransitionInitialize()
 	{
+		characterList_.clear();
 		pCollisionMap_ = nullptr;
 		pPlayer_ = nullptr;
 		pNowStage_ = nullptr;
@@ -98,6 +100,21 @@ namespace GameManager {
 	void SetPlayer(Player* player) { pPlayer_ = player; }
 	GameObject* GetStage() { return pNowStage_; }
 	void SetStage(GameObject* stage) { pNowStage_ = stage; pEnemyManager_->SetParent(stage); }
+
+	std::vector<Character*> GetCharacterList() { return characterList_; }
+	
+	void AddCharacter(Character* c) { characterList_.push_back(static_cast<Character*>(c)); }
+	void RemoveCharacter(Character* c) {
+		for (auto it = characterList_.begin(); it != characterList_.end();) {
+			if (*it == c) {
+				it = characterList_.erase(it);
+				break;
+			}
+			else {
+				++it;
+			}
+		}
+	}
 
 }
 

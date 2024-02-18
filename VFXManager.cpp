@@ -5,7 +5,9 @@ namespace VFXManager
 {
 	EmitterData sparks;
 	EmitterData explode;
+	EmitterData smoke;
 	EmitterData enemySpawn;
+
 }
 
 void VFXManager::Initialize()
@@ -46,6 +48,24 @@ void VFXManager::Initialize()
 	explode.color = XMFLOAT4(1.0f, 1.0f, 0.1f, 1.0f);
 	explode.deltaColor = XMFLOAT4(0.0f, -1.0f / 20.0f, 0.0f, -1.0f / 20.0f);
 	explode.gravity = 0.001f;
+
+	//煙を出す
+	smoke.textureFileName = "Particle/cloudA.png";
+	smoke.delay = 0;
+	smoke.number = 5;
+	smoke.lifeTime = 30;
+	smoke.position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	smoke.positionRnd = XMFLOAT3(0.2f, 0.2f, 0.2f);
+	smoke.direction = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	smoke.directionRnd = XMFLOAT3(90.0f, 90.0f, 90.0f);
+	smoke.speed = 0.05f;
+	smoke.speedRnd = 0.02f;
+	smoke.size = XMFLOAT2(1.3f, 1.3f);
+	smoke.sizeRnd = XMFLOAT2(0.3f, 0.3f);
+	smoke.scale = XMFLOAT2(1.0f, 1.0f);
+	smoke.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	smoke.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / smoke.lifeTime);
+	smoke.gravity = 0.0f;
 
 	//敵のスポーンVFX
 	enemySpawn.textureFileName = "Particle/Red.png";
@@ -90,4 +110,10 @@ void VFXManager::CreatVfxEnemySpawn(XMFLOAT3& pos, int lifeTime)
 	enemySpawn.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / enemySpawn.lifeTime);
 	VFX::Start(enemySpawn);
 	
+}
+
+void VFXManager::CreatVfxSmoke(XMFLOAT3& pos)
+{
+	smoke.position = pos;
+	VFX::Start(smoke);
 }

@@ -24,7 +24,7 @@ public:
     virtual void ResetMovement() { movement_ = { 0.0f, 0.0f, 0.0f }; };
 
     //キャラクター同士の衝突の際めり込みを避ける
-    void ReflectCharacter(Character* pCharacter);
+    void ReflectCharacter();
 
 };
 

@@ -1,14 +1,15 @@
 #include "TestWeaponMain.h"
-#include "../State/StateManager.h"
-#include "../Engine/Model.h"
 #include "../GameManager.h"
+#include "../VFXManager.h"
 #include "../Player/Player.h"
 #include "../Player/PlayerCommand.h"
-#include "../Engine/SegmentCollider.h"
-#include "../VFXManager.h"
 #include "../Player/Aim.h"
 #include "../Engine/PolyLine.h"
 #include "../Engine/Global.h"
+#include "../Engine/SegmentCollider.h"
+#include "../Engine/Model.h"
+#include "../State/StateManager.h"
+#include "../Enemy/EnemyManager.h"
 
 namespace {
     static const float WEAPON_SIZE = 1.2f;
@@ -109,21 +110,28 @@ void TestWeaponMain::OnAttackCollision(GameObject* pTarget)
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
         e->ApplyDamage(damage_);
         VFXManager::CreatVfxExplode1(wandPos_);
-        seg_->SetValid(false);
-    }
 
+        //当たったエネミーの全コライダーを無効か
+        std::list<Collider*> cList = e->GetColliderList();
+        for (auto e : cList) e->SetValid(false);
+        
+    }
 }
 
 void TestWeaponMain::ChangeAttackState()
 {
     atkEnd_ = false;
     pStateManager_->ChangeState("Combo1");
+
 }
 
 void TestWeaponMain::ResetState()
 {
     atkEnd_ = true;
     pStateManager_->ChangeState("");
+    GameManager::GetEnemyManager()->ResetAllEnemyCollider();
+    seg_->SetValid(false);
+
 }
 
 void TestWeaponMain::CalcDamage()
@@ -177,7 +185,10 @@ void TestWeaponCombo1::Update()
     
     time_++;
     if (time_ >= COMBO_TIME1) {
-        if (next_ == true) owner_->ChangeState("Combo2");
+        if (next_ == true) {
+            GameManager::GetEnemyManager()->ResetAllEnemyCollider();
+            owner_->ChangeState("Combo2");
+        }
         else m->ResetState();
     }
 }
@@ -222,7 +233,11 @@ void TestWeaponCombo2::Update()
 
     time_++;
     if (time_ >= COMBO_TIME2) {
-        if (next_ == true) owner_->ChangeState("Combo3");
+        GameManager::GetEnemyManager()->ResetAllEnemyCollider();
+        if (next_ == true) {
+            GameManager::GetEnemyManager()->ResetAllEnemyCollider();
+            owner_->ChangeState("Combo3");
+        }
         else m->ResetState();
     }
 }
@@ -267,7 +282,11 @@ void TestWeaponCombo3::Update()
 
     time_++;
     if (time_ >= COMBO_TIME3) {
-        if (next_ == true) owner_->ChangeState("Combo1");
+        GameManager::GetEnemyManager()->ResetAllEnemyCollider();
+        if (next_ == true) {
+            GameManager::GetEnemyManager()->ResetAllEnemyCollider();
+            owner_->ChangeState("Combo1");
+        }
         else m->ResetState();
     }
 }

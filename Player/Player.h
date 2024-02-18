@@ -1,6 +1,7 @@
 #pragma once
 #include "../Character.h"
 
+class SphereCollider;
 class Aim;
 class StateManager;
 class PlayerCommand;
@@ -28,6 +29,7 @@ class Player : public Character
     XMFLOAT3 playerMovement_;   //Normalizeの移動量を保存する用
     XMFLOAT3 apperPos_;
 
+    SphereCollider* pCollider_[2];
     Aim* pAim_;
     StateManager* pStateManager_;
     PlayerCommand* pCommand_;
@@ -42,7 +44,6 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
-    void OnCollision(GameObject* pTarget) override;
     void OnAttackCollision(GameObject* pTarget) override;
 
     //Aim
@@ -66,13 +67,13 @@ public:
     void ResetMovement() override;
 
     //回避
-    void InitAvo();
+    void Avo();
 
     //ダメージ
     void ReceivedDamage();
 
-    //ゲット系
     int GetModelHandle() { return hModel_; }
+    SphereCollider* GetSphereCollider(int i) { return pCollider_[i]; }
     Aim* GetAim() { return pAim_; }
     PlayerCommand* GetCommand() { return pCommand_; }
     PlayerWeapon* GetPlayerWeapon() { return pPlayerWeapon_; }

@@ -30,6 +30,9 @@ public:
 	//音の範囲内のPatrolStateのEnemyの状態を変更
 	void PlayAtPosition(XMFLOAT3 position, float range);
 	
+	//全エネミーのColliderの判定をtrueに
+	void ResetAllEnemyCollider();
+
 	void SceneTransitionInitialize();
 
 	bool IsEnemyListEmpty(){ return enemyList_.empty(); }

@@ -11,8 +11,12 @@
 #include "../AnimationController.h"
 
 namespace {
-	const int defAvoTime = 30;
-	const float defAvoSpeed = 2.0f;
+	static const int AVO_TIME = 40;
+	static const int INVINCIBLE_TIME = 15;
+	static const int UP_COLLIDER_ACTIVE = 38;
+	static const float AVO_SPEED = 2.0f;
+	static const float CHANGE_TIME = 60;
+
 }
 
 //--------------------------------------------------------------------------------
@@ -111,10 +115,6 @@ void PlayerWalk::OnEnter()
 
 //--------------------------------------------------------------------------------
 
-namespace {
-	static const float CHANGE_TIME = 60;
-}
-
 PlayerWeaponChange::PlayerWeaponChange(StateManager* owner) : StateBase(owner), time_(0)
 {
 }
@@ -164,19 +164,23 @@ PlayerAvo::PlayerAvo(StateManager* owner) : StateBase(owner), avoTime_(0), nextC
 
 void PlayerAvo::Update()
 {
-	const float endValue = 0.1f; //ÇPÅDÇOÅ`Ç±ÇÃílÉKÇ∆ÇÍÇÈÇÊÇ§Ç…Ç∑ÇÈ
-	float t = (float)avoTime_ / (float)defAvoTime;
+	const float endValue = 0.1f;
+	float t = (float)avoTime_ / (float)AVO_TIME;
+	t = 1.0f - t;
 	float value = endValue + ((1.0f - endValue) * t);
 
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->Move(value * defAvoSpeed);
+	p->Move(value * AVO_SPEED);
+
+	if (avoTime_ == INVINCIBLE_TIME) p->GetSphereCollider(0)->SetValid(true);
+	if (avoTime_ == UP_COLLIDER_ACTIVE) p->GetSphereCollider(1)->SetValid(true);
 
 	if (p->GetCommand()->CmdAvo()) nextCmd_ = 1;
 	if (p->GetCommand()->CmdAtk()) nextCmd_ = 2;
 	if (p->GetCommand()->CmdSubAtk()) nextCmd_ = 3;
 
-	avoTime_--;
-	if (avoTime_ <= 0) {
+	avoTime_++;
+	if (avoTime_ >= AVO_TIME) {
 		if (nextCmd_ == 1) {
 			owner_->ChangeState("Avo");
 			return;
@@ -201,9 +205,10 @@ void PlayerAvo::Update()
 void PlayerAvo::OnEnter()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->InitAvo();
+	p->Avo();
+
 	nextCmd_ = 0;
-	avoTime_ = defAvoTime;
+	avoTime_ = 0;
 
 }
 
@@ -260,7 +265,6 @@ void PlayerAtk::OnEnter()
 	nextCmd_ = 0;
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
 	p->GetPlayerWeapon()->GetMainWeapon()->ChangeAttackState();
-
 }
 
 void PlayerAtk::OnExit()

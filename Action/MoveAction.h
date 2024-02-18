@@ -60,10 +60,8 @@ class OrientedMoveAction : public MoveAction {
     XMVECTOR direction_;
 
 public:
-    OrientedMoveAction(Character* obj, float speed, float range);
+    OrientedMoveAction(Character* obj, float speed);
     ~OrientedMoveAction() override {};
-
     void Update() override;
-    void SetDirection(XMVECTOR vec);
-
+    void SetDirection(XMVECTOR vec) { direction_ = vec; }
 };

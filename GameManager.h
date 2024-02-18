@@ -1,10 +1,12 @@
 #pragma once
+#include <vector>
 
 class EnemyManager;
 class NavigationAI;
 class WeaponObjectManager;
 class CollisionMap;
 class GameObject;
+class Character;
 class Player;
 class CreateStage;
 class SceneManager;
@@ -34,4 +36,8 @@ namespace GameManager
 	GameObject* GetStage();
 	void SetStage(GameObject* stage);
 
+	std::vector<Character*> GetCharacterList();
+	void AddCharacter(Character* c);
+	void RemoveCharacter(Character* c);
+	
 };

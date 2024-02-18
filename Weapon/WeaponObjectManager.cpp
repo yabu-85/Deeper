@@ -24,7 +24,7 @@ void WeaponObjectManager::SceneTransitionInitialize()
 
 void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos)
 {
-	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "Feet", "RedBox" };
+	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "StoneArm", "Feet" };
 
 	WeaponObject* weapon = InstantiateFront<WeaponObject>(GameManager::GetStage());
 

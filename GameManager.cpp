@@ -81,7 +81,7 @@ namespace GameManager {
 		pPlayer_ = nullptr;
 		pNowStage_ = nullptr;
 
-		PlayerData::SceneTransitionInitialize();
+		//PlayerData::SceneTransitionInitialize();
 		pEnemyManager_->SceneTransitionInitialize();
 		pWeaponObjectManager_->SceneTransitionInitialize();
 

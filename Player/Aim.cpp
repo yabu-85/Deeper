@@ -159,8 +159,17 @@ void Aim::SetTargetEnemy()
         return;
     }
 
+    EnemyBase* t = CalcTargetEnemy();
+    if (!t) return;
+    isTarget_ = true;
+    pEnemyBase_ = t;
+
+}
+
+EnemyBase* Aim::CalcTargetEnemy()
+{
     EnemyManager* pEnemyManager = GameManager::GetEnemyManager();
-    if (!pEnemyManager) return;
+    if (!pEnemyManager) return nullptr;
     std::vector<EnemyBase*> eList = pEnemyManager->GetAllEnemy();
 
     // プレイヤーの視線方向を計算
@@ -201,10 +210,8 @@ void Aim::SetTargetEnemy()
         }
     }
 
-    if (minLengIndex >= 0) {
-        pEnemyBase_ = eList.at(minLengIndex);
-        isTarget_ = true;
-    }
+    if (minLengIndex >= 0) return eList.at(minLengIndex);
+    return nullptr;
 
 }
 

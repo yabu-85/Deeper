@@ -41,6 +41,11 @@ namespace PlayerData {
         }
     }
 
+    void SetWeaponData(int i, WeaponBase* weapon) {
+        data_.subWeapon_[i].type_ = i;
+        data_.subWeapon_[i].durability_ = weapon->GetDurability();
+    }
+
     void SavePlayerData()
     {
         Player* player = GameManager::GetPlayer();
@@ -56,10 +61,9 @@ namespace PlayerData {
         for (int i = 0; i < 2; i++) {
             WeaponBase* weapon = plaWeapon->GetSubWeapon(i);
             if (weapon == nullptr) continue;
-            if (weapon->GetObjectName() == "TestWeaponSub") {
-                data_.subWeapon_[i].type_ = 1;
-                data_.subWeapon_[i].durability_ = weapon->GetDurability();
-            }
+            std::string name = weapon->GetObjectName();
+            if (name == "StoneArmWeapon") SetWeaponData(1, weapon);
+            else if (name == "TestWeaponSub") SetWeaponData(2, weapon);
         }
     }
 

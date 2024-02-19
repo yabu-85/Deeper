@@ -29,7 +29,7 @@ void Stage3::Initialize()
 
 	GameManager::SetStage(this);
 	GameManager::GetCreateStage()->CreateStageData("Csv/Map3.csv");
-	GameManager::SetPlayer(Instantiate<Player>(this));
+	Instantiate<Player>(this);
 	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
 	SkyBox* sky = InstantiateFront<SkyBox>(GetParent());

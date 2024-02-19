@@ -13,6 +13,7 @@ namespace {
     static const int COMBO_TIME1 = 100;
     static const int ATTACK_FRAME1 = 50;   //判定フレーム
     static const float MOVE_SPEED = 0.03f;
+    static const float ROTATE_RATIO = 0.2f;
 
 }
 
@@ -103,6 +104,10 @@ void StoneArmWeapon::OnAttackCollision(GameObject* pTarget)
     if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
         e->ApplyDamage(100);
+
+        //当たったエネミーの全コライダーを無効か
+        std::list<Collider*> cList = e->GetColliderList();
+        for (auto e : cList) e->SetValid(false);
     }
 }
 
@@ -123,10 +128,17 @@ StoneArmWeaponCombo1::StoneArmWeaponCombo1(StateManager* owner) : StateBase(owne
 
 void StoneArmWeaponCombo1::Update()
 {
+    //移動やら回転やら
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     p->CalcNoMove();
     p->FrontMove(MOVE_SPEED);
+    if (time_ <= ATTACK_FRAME1) {
+        if (p->GetAim()->IsTarget()) p->AimTargetRotate(ROTATE_RATIO);
+        else if (p->GetCommand()->CmdWalk()) p->Rotate(ROTATE_RATIO);
+        p->MinTargetRotate(ROTATE_RATIO);
+    }
 
+    //判定
     StoneArmWeapon* s = static_cast<StoneArmWeapon*>(owner_->GetGameObject());
     if (time_ == ATTACK_FRAME1) {
         s->GetSphereCollider()->SetValid(true);
@@ -136,6 +148,7 @@ void StoneArmWeaponCombo1::Update()
         s->GetSphereCollider()->SetValid(false);
     }
 
+    //終了判定
     time_++;
     if (time_ >= COMBO_TIME1) {
         StoneArmWeapon* s = static_cast<StoneArmWeapon*>(owner_->GetGameObject());
@@ -148,11 +161,13 @@ void StoneArmWeaponCombo1::OnEnter()
     time_ = 0;
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     Model::SetAnimFrame(p->GetModelHandle(), 700, 800, 1.0f);
+    p->SetMinTarget();
 
 }
 
 void StoneArmWeaponCombo1::OnExit()
 {
+    GameManager::GetEnemyManager()->ResetAllEnemyCollider();
     StoneArmWeapon* s = static_cast<StoneArmWeapon*>(owner_->GetGameObject());
     s->Endurance();
     if (s->IsBlockend()) {

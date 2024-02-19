@@ -2,6 +2,7 @@
 #include "../Character.h"
 
 class SphereCollider;
+class EnemyBase;
 class Aim;
 class StateManager;
 class PlayerCommand;
@@ -30,6 +31,7 @@ class Player : public Character
     XMFLOAT3 apperPos_;
 
     SphereCollider* pCollider_[2];
+    EnemyBase* pEnemyBase_;
     Aim* pAim_;
     StateManager* pStateManager_;
     PlayerCommand* pCommand_;
@@ -49,6 +51,8 @@ public:
     void OnAttackCollision(GameObject* pTarget) override;
 
     //Aim
+    void SetMinTarget();
+    void MinTargetRotate(float ratio = 1.0f);
     void TargetRotate(XMFLOAT3 pos, float ratio = 1.0f);
     void Rotate();
     void Rotate(float ratio);

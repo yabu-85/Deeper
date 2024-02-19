@@ -1,22 +1,23 @@
 #include "PlayerWeapon.h"
-#include "../Weapon/WeaponBase.h"
 #include "Player.h"
 #include "PlayerCommand.h"
 #include "PlayerData.h"
-
+#include "../Weapon/WeaponBase.h"
 #include "../Weapon/TestWeaponMain.h"
 #include "../Weapon/TestWeaponSub.h"
+#include "../Weapon/StoneArmWeapon.h"
 
 #include "../Engine/Text.h"
 
 namespace {
-    Text* pText = new Text;
+    Text* pText;
     
 }
 
 PlayerWeapon::PlayerWeapon(Player* pPlayer)
     : pPlayer_(pPlayer), pMainWeapon_(nullptr), pSubWeapon_{nullptr, nullptr}, currentSubIndex_(0)
 {
+    pText = new Text();
     pText->Initialize();
 
 }
@@ -44,12 +45,12 @@ void PlayerWeapon::SetPlayerDataWeapon()
     type[1] = PlayerData::GetWeaponData(1).type_;
     
     if (type[0] >= 1) {
-        if(type[0] == 1) SetWeapon(Instantiate<TestWeaponSub>(pPlayer_));
-        
+        if(type[0] == 1) SetWeapon(Instantiate<StoneArmWeapon>(pPlayer_));
+        else if(type[0] == 2) SetWeapon(Instantiate<TestWeaponSub>(pPlayer_));
     }
     if (type[1] >= 1) {
-        if (type[1] == 1) SetWeapon(Instantiate<TestWeaponSub>(pPlayer_));
-
+        if (type[1] == 1) SetWeapon(Instantiate<StoneArmWeapon>(pPlayer_));
+        else if (type[1] == 2) SetWeapon(Instantiate<TestWeaponSub>(pPlayer_));
     }
 
 }

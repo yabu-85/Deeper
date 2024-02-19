@@ -74,6 +74,8 @@ public:
     void TargetIsDead(EnemyBase* target);       
     //Target‚ğXV‚·‚é
     void SetTargetEnemy();
+    //‹–ì“àE‹ß‚¢“G‚ğæ“¾‚·‚é
+    EnemyBase* CalcTargetEnemy();
 
     EnemyBase* GetTargetEnemy() { return pEnemyBase_; }
     bool IsTarget() { return isTarget_; };

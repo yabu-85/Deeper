@@ -79,7 +79,7 @@ void Player::DeadUpdate()
 
 Player::Player(GameObject* parent)
     : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
-    pAnimationController_(nullptr), pLifeManager_(nullptr), pCollider_{nullptr, nullptr},
+    pAnimationController_(nullptr), pLifeManager_(nullptr), pCollider_{nullptr, nullptr}, pEnemyBase_(nullptr),
     moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), state_(MAIN_STATE::APPER), apperPos_(0,0,0), time_(0), gradually_(0.0f)
 {
 }
@@ -97,6 +97,7 @@ void Player::Initialize()
     assert(hModel_ >= 0);
 
     GameManager::AddCharacter(this);
+    GameManager::SetPlayer(this);
 
     transform_.rotate_.y = 180.0f;
     transform_.scale_ = { 0.5f, 0.5f, 0.5f };
@@ -208,6 +209,7 @@ void Player::OnAttackCollision(GameObject* pTarget)
 
 }
 
+//privateŠÖ”FRotate‚ÌŒvŽZ‚·‚é--------------------------------
 void Player::CalcRotate(XMFLOAT3 pos, float ratio)
 {
     XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(transform_.rotate_.y)), cosf(XMConvertToRadians(transform_.rotate_.y)));
@@ -221,11 +223,23 @@ void Player::CalcRotate(XMFLOAT3 pos, float ratio)
     transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * ratio);
 }
 
+void Player::SetMinTarget() { pEnemyBase_ = pAim_->CalcTargetEnemy(); }
+void Player::MinTargetRotate(float ratio) { 
+    if (!pEnemyBase_) return;
+    XMFLOAT3 pos = pEnemyBase_->GetPosition();
+    pos = { pos.x - transform_.position_.x, 0.0f, pos.z - transform_.position_.z };
+    CalcRotate(pos, ratio); 
+}
+
 void Player::TargetRotate(XMFLOAT3 pos, float ratio) { CalcRotate(XMFLOAT3(pos.x - transform_.position_.x, 0.0f, pos.z - transform_.position_.z), ratio); }
 void Player::Rotate() { Rotate(rotateRatio_); }
 void Player::Rotate(float ratio) { CalcRotate(GetInputMove(), ratio); }
 void Player::AimTargetRotate() { AimTargetRotate(rotateRatio_); }
-void Player::AimTargetRotate(float ratio) { CalcRotate(pAim_->GetTargetPos(), ratio); }
+void Player::AimTargetRotate(float ratio) { 
+    XMFLOAT3 pos = pAim_->GetTargetPos();
+    CalcRotate(XMFLOAT3(pos.x - transform_.position_.x, 0.0f, pos.z - transform_.position_.z), ratio);
+}
+//-----------------------------------------------Rotate
 
 XMFLOAT3 Player::GetInputMove()
 {

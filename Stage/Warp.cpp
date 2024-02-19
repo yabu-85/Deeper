@@ -5,15 +5,16 @@
 #include "../Engine/BoxCollider.h"
 #include "../GameManager.h"
 #include "../Player/Player.h"
-#include "../Player/Aim.h"
 #include "../Player/PlayerCommand.h"
 #include "../Engine/Direct3D.h"
 #include "../Engine/Model.h"
 #include "../Player/LifeManager.h"
 #include "../UI/Interaction.h"
+#include "../UI/InteractionUI.h"
 
 Warp::Warp(GameObject* parent)
-	: GameObject(parent, "Warp"), warpScene_(SCENE_ID::SCENE_ID_TITLE), isPlayerHit_(false), isValid_(false), hModel_(-1)
+	: GameObject(parent, "Warp"), warpScene_(SCENE_ID::SCENE_ID_TITLE), isPlayerHit_(false), isValid_(false), hModel_(-1),
+	pInteractionUI_(nullptr)
 {
 }
 
@@ -23,15 +24,20 @@ Warp::~Warp()
 
 void Warp::Initialize()
 {
-	BoxCollider* collider = new BoxCollider(XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f));
-	AddCollider(collider);
-
 	hModel_ = Model::Load("Model/Stage/Warp.fbx");
 	assert(hModel_ >= 0);
 
 	transform_.position_.x += 0.5f;
 	transform_.position_.y += 0.5f;
 	transform_.position_.z += 0.5f;
+
+	BoxCollider* collider = new BoxCollider(XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f));
+	AddCollider(collider);
+
+	pInteractionUI_ = new InteractionUI(this);
+	pInteractionUI_->Initialize();
+	pInteractionUI_->SetOffset(XMFLOAT3{ 0.5f, 1.0f, 0.5f });
+	pInteractionUI_->SetValid(false);
 
 }
 
@@ -57,6 +63,9 @@ void Warp::Draw()
 
 void Warp::Release()
 {
+	pInteractionUI_->Release();
+	SAFE_DELETE(pInteractionUI_);
+
 }
 
 void Warp::OnCollision(GameObject* pTarget)
@@ -68,14 +77,9 @@ void Warp::OnCollision(GameObject* pTarget)
 		return;
 	}
 
-	//PlayerのAim強制移動使ってみる
-	XMFLOAT3 center = XMFLOAT3(transform_.position_.x + 0.5f, transform_.position_.y, transform_.position_.z + 0.5f);
-	XMFLOAT3 cPos = XMFLOAT3(center.x, center.y + 3.0f, center.z + 10.0f);
-	GameManager::GetPlayer()->GetAim()->SetCompulsion(cPos, center);
-
-	//インタラクトUI
-	Interaction::SetInteract(center);
-	if (!Interaction::IsWarp()) return;
+	//一番近いオブジェクトか
+	pInteractionUI_->SetValid(true);
+	if (!Interaction::IsMinDistance(this)) return;
 
 	//Playerに衝突し始めた
 	isPlayerHit_ = true;
@@ -89,5 +93,6 @@ void Warp::OnCollision(GameObject* pTarget)
 void Warp::OutCollision()
 {
 	isPlayerHit_ = false;
+	pInteractionUI_->SetValid(false);
 
 }

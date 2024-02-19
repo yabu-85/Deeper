@@ -11,7 +11,7 @@
 
 namespace {
     static const int COMBO_TIME1 = 100;
-    static const int ATTACK_FRAME1 = 50;   //判定フレーム
+    static const int ATTACK_FRAME1 = 52;   //判定フレーム
     static const float MOVE_SPEED = 0.03f;
     static const float ROTATE_RATIO = 0.2f;
 
@@ -74,8 +74,8 @@ void StoneArmWeapon::Draw()
     //多分将来直す修正箇所
     atkPosition_ = Model::GetBoneAnimPosition(hModel_, atkBoneIndex_, atkPartIndex_);
     XMFLOAT3 p = pPlayer_->GetPosition();
-    atkPosition_ = { atkPosition_.x - transform_.position_.x - p.x, atkPosition_.y - transform_.position_.y - p.y, atkPosition_.z - transform_.position_.z - p.z };
-    pHandCollider_->SetCenter(atkPosition_);
+    p = { atkPosition_.x - transform_.position_.x - p.x, atkPosition_.y - transform_.position_.y - p.y, atkPosition_.z - transform_.position_.z - p.z };
+    pHandCollider_->SetCenter(p);
     CollisionDraw();
 
     Model::SetTransform(hModel_, transform_);
@@ -113,8 +113,7 @@ void StoneArmWeapon::OnAttackCollision(GameObject* pTarget)
 
 void StoneArmWeapon::Attack()
 {
-    XMFLOAT3 pos = { -atkPosition_.x, -atkPosition_.y, -atkPosition_.z };
-    VFXManager::CreatVfxSmoke(pos);
+    VFXManager::CreatVfxSmoke(atkPosition_);
 
     GameManager::GetPlayer()->GetAim()->SetCameraShakeDirection(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f });
     GameManager::GetPlayer()->GetAim()->SetCameraShake(7, 0.28f, 0.7f, 0.3f, 0.8f);

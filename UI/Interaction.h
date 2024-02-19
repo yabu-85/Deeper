@@ -1,14 +1,19 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
+class InteractionUI;
+class GameObject;
+
 namespace Interaction {
 	void Initialize();
-	void Update();
 	void Draw();
+	void SceneTransitionInitialize();
 
-	void SetInteract(XMFLOAT3 pos);
-	void SetInteract(XMFLOAT3 pos, float length);
-	bool IsWarp();
-
+	void ResetInteractData();
+	void AddInteractData(InteractionUI* data);
+	void RemoveInteractData(InteractionUI* data);
+	
+	bool IsMinDistance(GameObject* parent);
+	
 }
 

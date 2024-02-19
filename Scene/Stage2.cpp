@@ -9,6 +9,7 @@
 #include "../Stage/Warp.h"
 #include "../Stage/SkyBox.h"
 #include "../Enemy/EnemyManager.h"
+#include "../WaveManager.h"
 
 //デバッグ用
 #include "../Weapon/WeaponObjectManager.h"
@@ -38,13 +39,11 @@ void Stage2::Initialize()
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
 	SkyBox* sky = InstantiateFront<SkyBox>(GetParent());
 	sky->LoadModel("Model/Stage/SkyBox.fbx");
+	WaveManager::SetStageData();
 
 	for (int i = 0; i < (int)warpList_.size(); i++) {
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
 	}
-
-	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_STONEGOLEM);
-	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_STONEGOLEM);
 
 	//デバッグ用
 	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_STONE, GameManager::GetCreateStage()->GetPlayerStartPos());
@@ -53,16 +52,17 @@ void Stage2::Initialize()
 
 void Stage2::Update()
 {
-	//デバッグ用
-	if (Input::IsKeyDown(DIK_C)) {
-		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE);
-	}
+	WaveManager::Update();
 
-	if (!isCleared_ && GameManager::GetEnemyManager()->IsEnemyListEmpty()) {
+	if (!isCleared_ && WaveManager::IsClearStage()) {
 		isCleared_ = true;
 		OnStageCleared();
 	}
 
+	//デバッグ用
+	if (Input::IsKeyDown(DIK_C)) {
+		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE);
+	}
 }
 
 void Stage2::Draw()

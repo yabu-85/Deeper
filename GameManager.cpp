@@ -103,6 +103,7 @@ namespace GameManager {
 		pNowStage_ = nullptr;
 
 		PlayerData::SceneTransitionInitialize();
+		Interaction::SceneTransitionInitialize();
 		pEnemyManager_->SceneTransitionInitialize();
 		pWeaponObjectManager_->SceneTransitionInitialize();
 

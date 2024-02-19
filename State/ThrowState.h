@@ -28,6 +28,7 @@ public:
 
 class ThrowCombat : public StateBase
 {
+	unsigned time_;
 	Root* root_;
 public:
 	ThrowCombat(StateManager* owner);

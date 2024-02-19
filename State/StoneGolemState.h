@@ -28,6 +28,7 @@ public:
 
 class StoneGolemCombat : public StateBase
 {
+	unsigned time_;
 	Root* root_;
 public:
 	StoneGolemCombat(StateManager* owner);

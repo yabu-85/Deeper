@@ -33,6 +33,7 @@ public:
 	void ChangeScene(SCENE_ID next);
 
 	SCENE_ID GetSceneID() { return currentSceneID_; }
+	SCENE_ID GetNextSceneID() { return nextSceneID_; }
 
 private:
 	SCENE_ID currentSceneID_;	//åªç›ÇÃÉVÅ[Éì

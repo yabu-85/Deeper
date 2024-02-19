@@ -1,12 +1,12 @@
 #pragma once
-#include "Engine/SceneManager.h"
 
 namespace WaveManager
 {
+	void Update();
+
 	void SetStageData();
-
-	void ClearWave();
-
+	void SetWaveData();
+	bool IsClearStage();
 
 };
 

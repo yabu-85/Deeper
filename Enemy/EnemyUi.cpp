@@ -1,5 +1,6 @@
 #include "EnemyUi.h"
 #include "EnemyBase.h"
+#include "../GameManager.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Image.h"
 #include "../Player/Player.h"
@@ -33,7 +34,7 @@ void EnemyUi::SetGageAlpha(int value)
 }
 
 EnemyUi::EnemyUi(EnemyBase* parent)
-	: pParent_(parent), pPlayer_(nullptr), hPict_{ -1, -1, -1 }, parcent(1.0f), height_(0.0f), gageAlpha_(0), foundParcent_(0.0f)
+	: pParent_(parent), hPict_{ -1, -1, -1 }, parcent(1.0f), height_(0.0f), gageAlpha_(0), foundParcent_(0.0f)
 {
 }
 
@@ -44,7 +45,6 @@ EnemyUi::~EnemyUi()
 void EnemyUi::Initialize(float height)
 {
     height_ = height;
-	pPlayer_ = static_cast<Player*>(pParent_->FindObject("Player"));
 
 	std::string fileName[] = { "Gauge", "GaugeFrame", "TargetFound" };
 	for (int i = 0; i < MAX; i++) {
@@ -92,7 +92,7 @@ void EnemyUi::Draw()
 		SetGageAlpha(-alphaValue);
 	}
 	else {
-		XMFLOAT3 fCamPos = pPlayer_->GetPosition();
+		XMFLOAT3 fCamPos = GameManager::GetPlayer()->GetPosition();
 		XMVECTOR vCamPos = XMLoadFloat3(&fCamPos);
 		XMVECTOR vPos = XMLoadFloat3(&pos);
 		float length = XMVectorGetX(XMVector3Length(vCamPos - vPos));

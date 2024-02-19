@@ -1,8 +1,10 @@
 #include "WeaponObject.h"
 #include "../Engine/Model.h"
+#include "../Engine/Global.h"
+#include "../UI/InteractionUI.h"
 
 WeaponObject::WeaponObject(GameObject* parent)
-	: GameObject(parent, "WeaponObject"), hModel_(-1), type_(-1)
+	: GameObject(parent, "WeaponObject"), hModel_(-1), type_(-1), pInteractionUI_(nullptr)
 {
 }
 
@@ -12,6 +14,9 @@ WeaponObject::~WeaponObject()
 
 void WeaponObject::Initialize()
 {
+	pInteractionUI_ = new InteractionUI(this);
+	pInteractionUI_->Initialize();
+
 }
 
 void WeaponObject::Update()
@@ -26,6 +31,9 @@ void WeaponObject::Draw()
 
 void WeaponObject::Release()
 {
+	pInteractionUI_->Release();
+	SAFE_DELETE(pInteractionUI_);
+
 }
 
 void WeaponObject::LoadModel(std::string _name)

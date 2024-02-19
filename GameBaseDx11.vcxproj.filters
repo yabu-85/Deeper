@@ -126,6 +126,9 @@
     <Filter Include="03Scene\Ornament">
       <UniqueIdentifier>{b78aad7c-1ab8-46ab-a6dc-9337e00b7fc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04UI\Interaction">
+      <UniqueIdentifier>{28a3e141-47b1-4ca1-973e-4a861a4cc79f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -321,9 +324,6 @@
     <ClCompile Include="UI\UIManager.cpp">
       <Filter>04UI\Base</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Interaction.cpp">
-      <Filter>04UI</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\TitleScene.cpp">
       <Filter>03Scene</Filter>
     </ClCompile>
@@ -382,6 +382,13 @@
       <Filter>09Weapon\Weapons</Filter>
     </ClCompile>
     <ClCompile Include="DifficultyManager.cpp" />
+    <ClCompile Include="WaveManager.cpp" />
+    <ClCompile Include="UI\Interaction.cpp">
+      <Filter>04UI\Interaction</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\InteractionUI.cpp">
+      <Filter>04UI\Interaction</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -580,9 +587,6 @@
     <ClInclude Include="UI\UIManager.h">
       <Filter>04UI\Base</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Interaction.h">
-      <Filter>04UI</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\TitleScene.h">
       <Filter>03Scene</Filter>
     </ClInclude>
@@ -641,6 +645,13 @@
       <Filter>09Weapon\Weapons</Filter>
     </ClInclude>
     <ClInclude Include="DifficultyManager.h" />
+    <ClInclude Include="WaveManager.h" />
+    <ClInclude Include="UI\Interaction.h">
+      <Filter>04UI\Interaction</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\InteractionUI.h">
+      <Filter>04UI\Interaction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

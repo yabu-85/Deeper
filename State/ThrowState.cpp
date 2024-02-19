@@ -104,7 +104,7 @@ void ThrowPatrol::OnExit()
 
 //--------------------------------------------------------------------------------
 
-ThrowCombat::ThrowCombat(StateManager* owner) : StateBase(owner)
+ThrowCombat::ThrowCombat(StateManager* owner) : StateBase(owner), time_(0)
 {
 	ThrowEnemy* f = static_cast<ThrowEnemy*>(owner_->GetGameObject());
 	
@@ -137,7 +137,9 @@ ThrowCombat::ThrowCombat(StateManager* owner) : StateBase(owner)
 
 void ThrowCombat::Update()
 {
-	root_->Update();
+	time_++;
+	if(time_ % 10 == 0) root_->Update();
+	
 	ThrowEnemy* f = static_cast<ThrowEnemy*>(owner_->GetGameObject());
 	f->GetCombatStateManager()->Update();
 

@@ -2,6 +2,8 @@
 #include "../Engine/GameObject.h"
 #include "../Engine/SceneManager.h"
 
+class InteractionUI;
+
 class Warp : public GameObject
 {
     bool isValid_;
@@ -9,6 +11,7 @@ class Warp : public GameObject
     int hModel_;
 
     SCENE_ID warpScene_;
+    InteractionUI* pInteractionUI_;
 
 public:
     Warp(GameObject* parent);

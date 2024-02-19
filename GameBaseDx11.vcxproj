@@ -209,11 +209,13 @@
     <ClCompile Include="State\ThrowState.cpp" />
     <ClCompile Include="UI\ExitUIManager.cpp" />
     <ClCompile Include="UI\Interaction.cpp" />
+    <ClCompile Include="UI\InteractionUI.cpp" />
     <ClCompile Include="UI\ResultUIManager.cpp" />
     <ClCompile Include="UI\TitleUIManager.cpp" />
     <ClCompile Include="UI\UIBase.cpp" />
     <ClCompile Include="UI\UIManager.cpp" />
     <ClCompile Include="VFXManager.cpp" />
+    <ClCompile Include="WaveManager.cpp" />
     <ClCompile Include="Weapon\BulletBase.cpp" />
     <ClCompile Include="Weapon\StoneArmWeapon.cpp" />
     <ClCompile Include="Weapon\TestBullet.cpp" />
@@ -300,11 +302,13 @@
     <ClInclude Include="State\ThrowState.h" />
     <ClInclude Include="UI\ExitUIManager.h" />
     <ClInclude Include="UI\Interaction.h" />
+    <ClInclude Include="UI\InteractionUI.h" />
     <ClInclude Include="UI\ResultUIManager.h" />
     <ClInclude Include="UI\TitleUIManager.h" />
     <ClInclude Include="UI\UIBase.h" />
     <ClInclude Include="UI\UIManager.h" />
     <ClInclude Include="VFXManager.h" />
+    <ClInclude Include="WaveManager.h" />
     <ClInclude Include="Weapon\BulletBase.h" />
     <ClInclude Include="Weapon\StoneArmWeapon.h" />
     <ClInclude Include="Weapon\TestBullet.h" />

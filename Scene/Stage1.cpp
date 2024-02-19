@@ -26,7 +26,7 @@ Stage1::Stage1(GameObject* parent)
 
 void Stage1::Initialize()
 {
-	Model::Load("DebugCollision/SphereCollider.fbx"); 
+	Model::Load("DebugCollision/SphereCollider.fbx");
 	Model::Load("Model/stoneGolem.fbx");
 	AudioManager::Initialize();
 

@@ -23,10 +23,11 @@ public:
 
 	WeaponObjectManager();
 	~WeaponObjectManager();
+	void AllKillWeaponObject();
 	void SceneTransitionInitialize();
+
 	void AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos);
 	void RemoveWeaponObject(WeaponObject* obj);
-	void AllKillWeaponObject();
 
 	//範囲内にWeaponObjectがあるかどうか
 	bool IsInPlayerRange();
@@ -37,7 +38,8 @@ public:
 	//一番近いWeaponObjectをプレイヤーにセットする
 	WeaponBase* PlayerWeaponSet();
 
-	float GetNearestDistance();
+	void InteractUIIsInPlayerRange();
+
 
 };
 

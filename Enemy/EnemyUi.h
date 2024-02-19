@@ -2,7 +2,6 @@
 #include "../Engine/Transform.h"
 
 class EnemyBase;
-class Player;
 
 class EnemyUi
 {
@@ -20,7 +19,6 @@ class EnemyUi
 	float foundParcent_;	//FoundのパAlphaーセント
 	Transform transform_[2];//HpとHPBack用のTransform
 	EnemyBase* pParent_;
-	Player* pPlayer_;
 
 	void SetGageAlpha(int value);
 

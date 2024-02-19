@@ -122,7 +122,7 @@ void StoneGolemPatrol::OnExit()
 
 //--------------------------------------------------------------------------------
 
-StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner)
+StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner), time_(0)
 {
 	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	
@@ -155,7 +155,9 @@ StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner)
 
 void StoneGolemCombat::Update()
 {
-	root_->Update();
+	time_++;
+	if (time_ % 10 == 0) root_->Update();
+	
 	StoneGolem* f = static_cast<StoneGolem*>(owner_->GetGameObject());
 	f->GetCombatStateManager()->Update();
 

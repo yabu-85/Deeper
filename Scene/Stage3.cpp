@@ -1,5 +1,6 @@
 #include "Stage3.h"
 #include "../GameManager.h"
+#include "../WaveManager.h"
 #include "../Engine/SceneManager.h"
 #include "../Player/Player.h"
 #include "../Stage/CollisionMap.h"
@@ -34,28 +35,27 @@ void Stage3::Initialize()
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
 	SkyBox* sky = InstantiateFront<SkyBox>(GetParent());
 	sky->LoadModel("Model/Stage/SkyBox.fbx");
+	WaveManager::SetStageData();
 
 	for (int i = 0; i < (int)warpList_.size(); i++) {
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
 	}
 
-	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_STONEGOLEM);
-	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_STONEGOLEM);
-
 }
 
 void Stage3::Update()
 {
-	//デバッグ用
-	if (Input::IsKeyDown(DIK_C)) {
-		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE);
-	}
+	WaveManager::Update();
 
-	if (!isCleared_ && GameManager::GetEnemyManager()->IsEnemyListEmpty()) {
+	if (!isCleared_ && WaveManager::IsClearStage()) {
 		isCleared_ = true;
 		OnStageCleared();
 	}
 
+	//デバッグ用
+	if (Input::IsKeyDown(DIK_C)) {
+		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE);
+	}
 }
 
 void Stage3::Draw()

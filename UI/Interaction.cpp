@@ -1,61 +1,57 @@
 #include "Interaction.h"
+#include "InteractionUI.h"
 #include "../GameManager.h"
-#include "../Weapon/WeaponObjectManager.h"
-#include "../Weapon/WeaponObject.h"
 #include "../Player/Player.h"
-
-#include "../Engine/SceneManager.h"
 #include "../Engine/Transform.h"
 #include "../Engine/Global.h"
 #include "../Engine/Sprite.h"
 #include "../Engine/Camera.h"
+#include "../Weapon/WeaponObjectManager.h"
+#include <vector>
 
 namespace Interaction {
-	bool isWarp_;
-	bool  isDraw_;
-	float minDistance_;
-	XMFLOAT3 minPosition_;
+	bool isDraw_;
+	int uiListIndex_;
 	Sprite* interactImage_;
+	std::vector<InteractionUI*> uiList_;
 
 	void Initialize() {
 		interactImage_ = new Sprite();
 		interactImage_->Load("Image/KeyImage/E.jpg");
 		isDraw_ = false;
-		minDistance_ = 10000;
-		isWarp_ = true;
+		uiListIndex_ = -1;
 	}
 
-	void Update() {
+	void Draw() {
+		float minDistance = 99999;
+		XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
 
-	}
+		//WeaponObject‚ÌUiValid‚ðŒvŽZ‚·‚é
+		if(rand() % 5 == 0) GameManager::GetWeaponObjectManager()->InteractUIIsInPlayerRange();
 
-	void Draw() {		
-		//•Ší‚ÌÅ¬‹——£FC³‰ÓŠ
-		float height = 1.8f;
-		isWarp_ = true;
-		WeaponObject* w = GameManager::GetWeaponObjectManager()->GetNearestWeapon();
-		if (w) {
-			XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
-			XMFLOAT3 wPos = w->GetPosition();
-			XMVECTOR v = XMLoadFloat3(&pPos) - XMLoadFloat3(&wPos);
-			float l = XMVectorGetX(XMVector3Length(v));
-			if (l < minDistance_) {
-				minPosition_ = w->GetPosition();
-				minDistance_ = l;
+		for (int it = 0; it < (int)uiList_.size(); it++) {
+			if (!uiList_[it]->GetValid()) continue;
+
+			XMFLOAT3 pos = uiList_[it]->GetParent()->GetPosition();
+			pos = { pos.x - pPos.x, 0.0f, pos.z - pPos.z };
+			float range = sqrtf(pos.x * pos.x + pos.z * pos.z);
+			if (range <= minDistance) {
+				minDistance = range;
 				isDraw_ = true;
-				height = 2.0f;
-				isWarp_ = false;
+				uiListIndex_ = it;
 			}
 		}
 
 		if (isDraw_) {
-			minPosition_.y += height;
-			XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&minPosition_), Camera::GetViewMatrix());
+			isDraw_ = false;
+			XMFLOAT3 minPos = uiList_.at(uiListIndex_)->GetParent()->GetPosition();
+			XMFLOAT3 of = uiList_.at(uiListIndex_)->GetOffset();
+			minPos = { minPos.x + of.x, minPos.y + of.y, minPos.z + of.z };
+
+			XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&minPos), Camera::GetViewMatrix());
 			v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
 			float x = XMVectorGetX(v2);
 			float y = XMVectorGetY(v2);
-			isDraw_ = false;
-			minDistance_ = 10000.0f;
 
 			XMFLOAT3 size = interactImage_->GetTextureSize();
 			RECT rect;
@@ -72,30 +68,41 @@ namespace Interaction {
 		}
 	}
 
-	void SetInteract(XMFLOAT3 pos)
+	void SceneTransitionInitialize()
 	{
-		XMFLOAT3 p = GameManager::GetPlayer()->GetPosition();
-		XMVECTOR v = XMLoadFloat3(&pos) - XMLoadFloat3(&p);
-		float l = XMVectorGetX(XMVector3Length(v));
-		if (l < minDistance_) {
-			minPosition_ = pos;
-			minDistance_ = l;
-			isDraw_ = true;
+		ResetInteractData();
+
+	}
+
+	void ResetInteractData()
+	{
+		uiList_.clear();
+	}
+
+	void AddInteractData(InteractionUI* data)
+	{
+		uiList_.push_back(data);
+	}
+
+	void RemoveInteractData(InteractionUI* data)
+	{
+		for (auto it = uiList_.begin(); it != uiList_.end();) {
+			if (*it == data) {
+				it = uiList_.erase(it);
+				break;
+			}
+			else {
+				++it;
+			}
 		}
 	}
 
-	void SetInteract(XMFLOAT3 pos, float length)
+	bool IsMinDistance(GameObject* parent)
 	{
-		if (length < minDistance_) {
-			minPosition_ = pos;
-			minDistance_ = length;
-			isDraw_ = true;
-		}
-	}
+		if (uiListIndex_ <= -1 || uiListIndex_ > ((int)uiList_.size() - 1)) return false;
 
-	bool IsWarp()
-	{
-		return isWarp_;
+		if (uiList_.at(uiListIndex_)->GetParent() == parent) return true;
+		return false;
 	}
 
 }

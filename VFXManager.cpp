@@ -15,7 +15,7 @@ void VFXManager::Initialize()
 	//âŒÇÃï≤
 	sparks.textureFileName = "Particle/cloudA.png";
 	sparks.delay = 0;
-	sparks.number = 30;
+	sparks.number = 20;
 	sparks.lifeTime = 50;
 	sparks.position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	sparks.positionRnd = XMFLOAT3(1.0f, 1.0f, 1.0f);
@@ -34,7 +34,7 @@ void VFXManager::Initialize()
 	//îöî≠
 	explode.textureFileName = "Particle/cloudA.png";
 	explode.delay = 0;
-	explode.number = 6;
+	explode.number = 4;
 	explode.lifeTime = 20;
 	explode.position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	explode.positionRnd = XMFLOAT3(0.5f, 0.0f, 0.5f);
@@ -52,18 +52,18 @@ void VFXManager::Initialize()
 	//âåÇèoÇ∑
 	smoke.textureFileName = "Particle/cloudA.png";
 	smoke.delay = 0;
-	smoke.number = 5;
+	smoke.number = 6;
 	smoke.lifeTime = 30;
 	smoke.position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	smoke.positionRnd = XMFLOAT3(0.2f, 0.2f, 0.2f);
-	smoke.direction = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	smoke.directionRnd = XMFLOAT3(90.0f, 90.0f, 90.0f);
+	smoke.positionRnd = XMFLOAT3(0.2f, 0.1f, 0.2f);
+	smoke.direction = XMFLOAT3(2.0f, 0.5f, 0.0f);
+	smoke.directionRnd = XMFLOAT3(20.0f, 180.0f, 0.0f);
 	smoke.speed = 0.05f;
 	smoke.speedRnd = 0.02f;
 	smoke.size = XMFLOAT2(1.3f, 1.3f);
 	smoke.sizeRnd = XMFLOAT2(0.3f, 0.3f);
 	smoke.scale = XMFLOAT2(1.0f, 1.0f);
-	smoke.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	smoke.color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	smoke.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / smoke.lifeTime);
 	smoke.gravity = 0.0f;
 
@@ -115,5 +115,6 @@ void VFXManager::CreatVfxEnemySpawn(XMFLOAT3& pos, int lifeTime)
 void VFXManager::CreatVfxSmoke(XMFLOAT3& pos)
 {
 	smoke.position = pos;
+	smoke.position.y -= 0.25f;
 	VFX::Start(smoke);
 }

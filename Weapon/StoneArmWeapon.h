@@ -23,6 +23,9 @@ public:
     void ResetState() override;
     void ChangeAttackState() override;
     void OnAttackCollision(GameObject* pTarget) override;
+    
+    void Attack();
+    SphereCollider* GetSphereCollider() { return pHandCollider_; }
 
 };
 
@@ -30,7 +33,6 @@ public:
 
 class StoneArmWeaponCombo1 : public StateBase
 {
-    bool next_;
     int time_;
 public:
     StoneArmWeaponCombo1(StateManager* owner);

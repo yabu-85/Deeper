@@ -37,6 +37,8 @@ class Player : public Character
     AnimationController* pAnimationController_;
     LifeManager* pLifeManager_;
 
+    void CalcRotate(XMFLOAT3 pos, float ratio);
+
 public:
     Player(GameObject* parent);
     ~Player();
@@ -47,7 +49,7 @@ public:
     void OnAttackCollision(GameObject* pTarget) override;
 
     //Aim
-    void TargetRotate(XMFLOAT3 pos);
+    void TargetRotate(XMFLOAT3 pos, float ratio = 1.0f);
     void Rotate();
     void Rotate(float ratio);
     void AimTargetRotate();

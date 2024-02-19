@@ -208,52 +208,24 @@ void Player::OnAttackCollision(GameObject* pTarget)
 
 }
 
-void Player::TargetRotate(XMFLOAT3 pos)
+void Player::CalcRotate(XMFLOAT3 pos, float ratio)
 {
     XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(transform_.rotate_.y)), cosf(XMConvertToRadians(transform_.rotate_.y)));
     XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
-    XMFLOAT2 b = XMFLOAT2(pos.x - transform_.position_.x, pos.z - transform_.position_.z);
+    XMFLOAT2 b = XMFLOAT2(pos.x, pos.z );
     XMVECTOR vB = XMVector2Normalize(XMLoadFloat2(&b));
     XMStoreFloat2(&a, vA);
     XMStoreFloat2(&b, vB);
     float cross = a.x * b.y - a.y * b.x;
     float dot = a.x * b.x + a.y * b.y;
-    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * 1.0f);
+    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * ratio);
 }
 
+void Player::TargetRotate(XMFLOAT3 pos, float ratio) { CalcRotate(XMFLOAT3(pos.x - transform_.position_.x, 0.0f, pos.z - transform_.position_.z), ratio); }
 void Player::Rotate() { Rotate(rotateRatio_); }
-void Player::Rotate(float ratio)
-{
-    XMFLOAT3 move = GetInputMove();
-
-    XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(transform_.rotate_.y)), cosf(XMConvertToRadians(transform_.rotate_.y)));
-    XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
-    XMFLOAT2 b = XMFLOAT2(move.x, move.z);
-    XMVECTOR vB = XMVector2Normalize(XMLoadFloat2(&b));
-    XMStoreFloat2(&a, vA);
-    XMStoreFloat2(&b, vB);
-
-    float cross = a.x * b.y - a.y * b.x;
-    float dot = a.x * b.x + a.y * b.y;
-    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * ratio);
-}
-
+void Player::Rotate(float ratio) { CalcRotate(GetInputMove(), ratio); }
 void Player::AimTargetRotate() { AimTargetRotate(rotateRatio_); }
-void Player::AimTargetRotate(float ratio)
-{
-    XMFLOAT3 tar = pAim_->GetTargetPos();
-    float rotateY = transform_.rotate_.y;
-
-    XMFLOAT2 a = XMFLOAT2(sinf(XMConvertToRadians(rotateY)), cosf(XMConvertToRadians(rotateY)));
-    XMVECTOR vA = XMVector2Normalize(XMLoadFloat2(&a));
-    XMFLOAT2 b(transform_.position_.x - tar.x, transform_.position_.z - tar.z);
-    XMVECTOR vB = XMVector2Normalize(XMLoadFloat2(&b)) * -1.0f;
-    XMStoreFloat2(&a, vA);
-    XMStoreFloat2(&b, vB);
-    float cross = a.x * b.y - a.y * b.x;
-    float dot = a.x * b.x + a.y * b.y;
-    transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * ratio);
-}
+void Player::AimTargetRotate(float ratio) { CalcRotate(pAim_->GetTargetPos(), ratio); }
 
 XMFLOAT3 Player::GetInputMove()
 {

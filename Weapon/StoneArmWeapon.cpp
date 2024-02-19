@@ -4,12 +4,14 @@
 #include "../Engine/Model.h"
 #include "../Player/Player.h"
 #include "../Player/PlayerCommand.h"
+#include "../Player/Aim.h"
 #include "../Enemy/EnemyBase.h"
 #include "../Engine/SphereCollider.h"
 #include "../VFXManager.h"
 
 namespace {
     static const int COMBO_TIME1 = 100;
+    static const int ATTACK_FRAME1 = 50;   //”»’èƒtƒŒ[ƒ€
     static const float MOVE_SPEED = 0.03f;
 
 }
@@ -31,7 +33,7 @@ void StoneArmWeapon::Initialize()
     hModel_ = Model::Load("Model/StoneArm.fbx");
     assert(hModel_ >= 0);
 
-    pPlayer_ = static_cast<Player*>(GetParent());
+    pPlayer_ = GameManager::GetPlayer();
     durance_ = 10;
     float size = 1.0f;
     transform_.scale_ = { size, size, size };
@@ -71,11 +73,8 @@ void StoneArmWeapon::Draw()
     //‘½•ª«—ˆ’¼‚·C³‰ÓŠ
     atkPosition_ = Model::GetBoneAnimPosition(hModel_, atkBoneIndex_, atkPartIndex_);
     XMFLOAT3 p = pPlayer_->GetPosition();
-    atkPosition_ = { atkPosition_.x - transform_.position_.x - p.x, 
-        atkPosition_.y - transform_.position_.y - p.y, atkPosition_.z - transform_.position_.z - p.z };
-    
+    atkPosition_ = { atkPosition_.x - transform_.position_.x - p.x, atkPosition_.y - transform_.position_.y - p.y, atkPosition_.z - transform_.position_.z - p.z };
     pHandCollider_->SetCenter(atkPosition_);
-    pHandCollider_->SetValid(true);
     CollisionDraw();
 
     Model::SetTransform(hModel_, transform_);
@@ -103,15 +102,22 @@ void StoneArmWeapon::OnAttackCollision(GameObject* pTarget)
 {
     if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
-        e->ApplyDamage(5);
-        XMFLOAT3 pos = { -atkPosition_.x, -atkPosition_.y, -atkPosition_.z };
-        VFXManager::CreatVfxExplode1(pos);
+        e->ApplyDamage(100);
     }
+}
+
+void StoneArmWeapon::Attack()
+{
+    XMFLOAT3 pos = { -atkPosition_.x, -atkPosition_.y, -atkPosition_.z };
+    VFXManager::CreatVfxSmoke(pos);
+
+    GameManager::GetPlayer()->GetAim()->SetCameraShakeDirection(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f });
+    GameManager::GetPlayer()->GetAim()->SetCameraShake(7, 0.28f, 0.7f, 0.3f, 0.8f);
 }
 
 //--------------------------state-----------------------------------
 
-StoneArmWeaponCombo1::StoneArmWeaponCombo1(StateManager* owner) : StateBase(owner), time_(0), next_(false)
+StoneArmWeaponCombo1::StoneArmWeaponCombo1(StateManager* owner) : StateBase(owner), time_(0)
 {
 }
 
@@ -120,7 +126,15 @@ void StoneArmWeaponCombo1::Update()
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     p->CalcNoMove();
     p->FrontMove(MOVE_SPEED);
-    if (p->GetCommand()->CmdAtk()) next_ = true;
+
+    StoneArmWeapon* s = static_cast<StoneArmWeapon*>(owner_->GetGameObject());
+    if (time_ == ATTACK_FRAME1) {
+        s->GetSphereCollider()->SetValid(true);
+        s->Attack();
+    }
+    else {
+        s->GetSphereCollider()->SetValid(false);
+    }
 
     time_++;
     if (time_ >= COMBO_TIME1) {
@@ -132,7 +146,6 @@ void StoneArmWeaponCombo1::Update()
 void StoneArmWeaponCombo1::OnEnter()
 {
     time_ = 0;
-    next_ = false;
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     Model::SetAnimFrame(p->GetModelHandle(), 700, 800, 1.0f);
 

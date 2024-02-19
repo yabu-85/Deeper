@@ -4,31 +4,33 @@
 #include "../Engine/Sprite.h"
 #include "../Engine/Text.h"
 
-namespace {
+namespace LifeManager {
 	static const int MAX_ALPHA = 255;
 
-}
+	Sprite* pSprite_[3];
+	Transform pic0Pos;
+	Transform pic1Pos;
 
-LifeManager::LifeManager(GameObject* parent)
-	: GameObject(parent, "LifeManager"), hPict_{-1, -1, -1}, playerLife_(0), defPlayerLife_(0), defInvincibleTime_(0), invincibleTime_(0)
-{
-}
+	int defInvincibleTime_ = 0;		//無敵時間
+	int invincibleTime_ = 0;		//ダメージ表示時間の計算用
+	int defPlayerLife_ = 0;			//今のHpMaxを入れる
+	int playerLife_ = 0;			//プレイヤーのライフ量
 
-LifeManager::~LifeManager()
-{
 }
 
 void LifeManager::Initialize()
 {
-	const char* fileName[] = { "Image/hpGaugeA0.png","Image/hpGaugeA1.png", "Image/damage.png" };
-	for (int i = 0; i < 3; i++) {
-		hPict_[i] = Image::Load(fileName[i]);
-		assert(hPict_[i] >= 0);
-	}
 	pic0Pos.scale_.y = 0.6f;
 	pic0Pos.position_.x = -0.95f;
 	pic0Pos.position_.y = -0.8f;
 	pic1Pos = pic0Pos;
+
+	const char* fileName[] = { "Image/hpGaugeA0.png","Image/hpGaugeA1.png", "Image/damage.png" };
+	for (int i = 0; i < 3; i++) {
+		pSprite_[i] = new Sprite();
+		pSprite_[i]->Load(fileName[i]);
+	}
+
 }
 
 void LifeManager::Update()
@@ -42,10 +44,18 @@ void LifeManager::Draw()
 	//ライフの表示
 	float hpGauge = (float)((playerLife_ * 100) / defPlayerLife_) * 0.01f;
 	pic0Pos.scale_.x = hpGauge;
-	Image::SetTransform(hPict_[0], pic0Pos);
-	Image::Draw(hPict_[0], 0);
-	Image::SetTransform(hPict_[1], pic1Pos);
-	Image::Draw(hPict_[1], 0);
+
+	XMFLOAT3 size = pSprite_[0]->GetTextureSize();
+	RECT rect;
+	rect.left = 0;
+	rect.top = 0;
+	rect.right = (long)size.x;
+	rect.bottom = (long)size.y;
+
+	pic0Pos.Calclation();
+	pSprite_[0]->Draw(pic0Pos, rect, 1.0f, 0);
+	pic1Pos.Calclation();
+	pSprite_[1]->Draw(pic1Pos, rect, 1.0f, 0);
 
 	//ダメージ画像の表示
 	if (invincibleTime_ > 0) DamageEffectDraw();
@@ -68,18 +78,29 @@ void LifeManager::SetInvincible(int i)
 
 void LifeManager::DamageEffectDraw()
 {
-	int a = (int)((float)MAX_ALPHA * ((float)invincibleTime_ / (float)defInvincibleTime_));
-	Image::SetAlpha(hPict_[2], a);
-	Image::SetTransform(hPict_[2], transform_);
-	Image::Draw(hPict_[2]);
+	XMFLOAT3 size = pSprite_[2]->GetTextureSize();
+	RECT rect;
+	rect.left = 0;
+	rect.top = 0;
+	rect.right = (long)size.x;
+	rect.bottom = (long)size.y;
+	Transform trans;
+	float a = (float)invincibleTime_ / (float)defInvincibleTime_;
+
+	pic0Pos.Calclation();
+	pSprite_[2]->Draw(trans, rect, a, 0);
+
+}
+
+void LifeManager::DirectDamage(int i)
+{
+	invincibleTime_ = defInvincibleTime_;
+	playerLife_ -= i;
 }
 
 void LifeManager::Damage(int i)
 {
-	if (IsInvincible()) return;
-
-	invincibleTime_ = defInvincibleTime_;
-	playerLife_ -= i;
+	if (!IsInvincible()) DirectDamage(i);
 }
 
 int LifeManager::GetReceiveDamage()

@@ -381,6 +381,7 @@
     <ClCompile Include="Weapon\StoneArmWeapon.cpp">
       <Filter>09Weapon\Weapons</Filter>
     </ClCompile>
+    <ClCompile Include="DifficultyManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -639,6 +640,7 @@
     <ClInclude Include="Weapon\StoneArmWeapon.h">
       <Filter>09Weapon\Weapons</Filter>
     </ClInclude>
+    <ClInclude Include="DifficultyManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

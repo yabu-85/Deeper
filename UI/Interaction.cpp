@@ -29,11 +29,7 @@ namespace Interaction {
 
 	}
 
-	void Draw() {
-		//タイトルシーンだったら表示しない&表示する対象がなければ表示しない
-		SCENE_ID cs = GameManager::GetSceneManager()->GetSceneID();
-		if (cs == SCENE_ID_TITLE || cs == SCENE_ID_RESULT) return;
-		
+	void Draw() {		
 		//武器の最小距離：修正箇所
 		float height = 1.8f;
 		isWarp_ = true;

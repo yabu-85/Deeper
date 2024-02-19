@@ -16,7 +16,6 @@
 #include "../Stage/CollisionMap.h"
 #include "../AnimationController.h"
 #include "../Weapon/BulletBase.h"
-#include "../Engine/SceneManager.h"
 
 #include "../Engine/Text.h"
 
@@ -68,18 +67,13 @@ void Player::DeadUpdate()
     time_--;
     if (time_ <= -(495 - 260)) {
         Model::SetAnimeStop(hModel_, true);
-
-    }
-
-    if (time_ <= -300) {
-        GameManager::GetSceneManager()->ChangeScene(SCENE_ID_RESULT);
     }
 
 }
 
 Player::Player(GameObject* parent)
     : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
-    pAnimationController_(nullptr), pLifeManager_(nullptr), pCollider_{nullptr, nullptr}, pEnemyBase_(nullptr),
+    pAnimationController_(nullptr), pCollider_{nullptr, nullptr}, pEnemyBase_(nullptr),
     moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), state_(MAIN_STATE::APPER), apperPos_(0,0,0), time_(0), gradually_(0.0f)
 {
 }
@@ -118,9 +112,8 @@ void Player::Initialize()
     pCommand_ = new PlayerCommand();
     pPlayerWeapon_ = new PlayerWeapon(this);
     pPlayerWeapon_->SetPlayerDataWeapon();
-    pLifeManager_ = Instantiate<LifeManager>(this);
-    pLifeManager_->SetLife(lifeMax - PlayerData::GetReceiveDamage(), lifeMax);
-    pLifeManager_->SetInvincible(invincible);
+    LifeManager::SetLife(lifeMax - PlayerData::GetReceiveDamage(), lifeMax);
+    LifeManager::SetInvincible(invincible);
 
     pStateManager_ = new StateManager(this);
     pStateManager_->AddState(new PlayerWait(pStateManager_));
@@ -162,6 +155,8 @@ void Player::Update()
     ReflectCharacter();
     
     //デバッグ用
+    if (Input::IsKey(DIK_3)) { LifeManager::DirectDamage(1); ReceivedDamage(); }
+    if (Input::IsKey(DIK_4)) PlayerData::AddClearStageCount(SCENE_ID_STAGE1);
     if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;
     if (Input::IsKey(DIK_DOWNARROW)) transform_.position_.y -= 0.1f;
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
@@ -189,20 +184,19 @@ void Player::Release()
 
 void Player::OnAttackCollision(GameObject* pTarget)
 {
-    if (pLifeManager_->IsInvincible() || pLifeManager_->IsDie()) return;
+    if (LifeManager::IsInvincible() || LifeManager::IsDie()) return;
 
     std::string name = pTarget->GetObjectName();
     if (name.find("Enemy") != std::string::npos) {
         EnemyBase* enemy = static_cast<EnemyBase*>(pTarget);
         TargetRotate(enemy->GetPosition());
-        pLifeManager_->Damage(enemy->GetAttackDamage());
+        LifeManager::Damage(enemy->GetAttackDamage());
         ReceivedDamage();
-
     }
     else if (name.find("EBullet") != std::string::npos) {
         BulletBase* bullet = static_cast<BulletBase*>(pTarget);
         TargetRotate(bullet->GetPosition());
-        pLifeManager_->Damage(bullet->GetDamage());
+        LifeManager::Damage(bullet->GetDamage());
         ReceivedDamage();
     }
 
@@ -394,7 +388,7 @@ void Player::ReceivedDamage()
     pAim_->SetCameraShake(4, 0.1f, 0.7f, 0.3f, 0.8f);
     
     //死亡ならDeadState
-    if (pLifeManager_->IsDie()) {
+    if (LifeManager::IsDie()) {
         state_ = MAIN_STATE::DEAD;
         Model::SetAnimFrame(hModel_, 260, 495, 1.0f);
         pAim_->SetAimMove(false);

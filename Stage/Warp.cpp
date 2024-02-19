@@ -80,7 +80,7 @@ void Warp::OnCollision(GameObject* pTarget)
 	//Player‚ÉÕ“Ë‚µŽn‚ß‚½
 	isPlayerHit_ = true;
 
-	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction() && !GameManager::GetPlayer()->GetLifeManager()->IsDie()) {
+	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction() && !LifeManager::IsDie()) {
 		GameManager::GetSceneManager()->ChangeScene(warpScene_);
 	}
 	

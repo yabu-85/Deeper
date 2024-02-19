@@ -24,7 +24,9 @@ namespace PlayerData
 	void SetWeaponData(int index, const WeaponData& data);
 	WeaponData& GetWeaponData(int index);
 	void AddClearStageCount(SCENE_ID id);
+	int GetClearStageCount();
 	int GetReceiveDamage();
+
 
 };
 

@@ -55,7 +55,7 @@ namespace PlayerData {
         if (plaWeapon == nullptr) return;
 
         //HP
-        data_.receiveDamage_ = player->GetLifeManager()->GetReceiveDamage();
+        data_.receiveDamage_ = LifeManager::GetReceiveDamage();
 
         //Weapon
         for (int i = 0; i < 2; i++) {
@@ -75,10 +75,8 @@ namespace PlayerData {
         if (id == SCENE_ID_STAGE1 || id == SCENE_ID_STAGE2 || id == SCENE_ID_STAGE3) data_.clearStageCount_++;
     }
 
-    int GetReceiveDamage()
-    {
-        return data_.receiveDamage_;
-    }
+    int GetClearStageCount() { return data_.clearStageCount_; }
+    int GetReceiveDamage() { return data_.receiveDamage_; }
 
 }
 

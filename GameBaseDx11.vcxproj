@@ -145,6 +145,7 @@
     <ClCompile Include="BehaviorTree\IsEnemyStateNode.cpp" />
     <ClCompile Include="BehaviorTree\PlayerConditionNode.cpp" />
     <ClCompile Include="BehaviorTree\StateCountNode.cpp" />
+    <ClCompile Include="DifficultyManager.cpp" />
     <ClCompile Include="Enemy\DropTable.cpp" />
     <ClCompile Include="Enemy\EnemyBase.cpp" />
     <ClCompile Include="Enemy\EnemyManager.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="BehaviorTree\IsEnemyStateNode.h" />
     <ClInclude Include="BehaviorTree\PlayerConditionNode.h" />
     <ClInclude Include="BehaviorTree\StateCountNode.h" />
+    <ClInclude Include="DifficultyManager.h" />
     <ClInclude Include="Enemy\DropTable.h" />
     <ClInclude Include="Enemy\EnemyBase.h" />
     <ClInclude Include="Enemy\EnemyManager.h" />

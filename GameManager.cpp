@@ -25,6 +25,9 @@ namespace GameManager {
 	GameObject* pNowStage_ = nullptr;
 	CreateStage* pCreateStage_ = nullptr;
 	SceneManager* pSceneManager_ = nullptr;
+
+	int time_ = 0;
+	bool isEnd_ = false;
 	std::vector<Character*> characterList_;
 
 	void GameManager::Initialize()
@@ -33,6 +36,7 @@ namespace GameManager {
 		pWeaponObjectManager_ = new WeaponObjectManager();
 		pNavigationAI_ = new NavigationAI();
 		pCreateStage_ = new CreateStage();
+		LifeManager::Initialize();
 		PlayerData::Initialize();
 		Interaction::Initialize();
 		VFXManager::Initialize();
@@ -41,13 +45,18 @@ namespace GameManager {
 
 	void GameManager::Update()
 	{
+		LifeManager::Update();
 		pCreateStage_->Update();
 
-		if (Input::IsKeyDown(DIK_TAB)) {
-			OutputDebugString("entity : ");
-			int count = (int)pEnemyManager_->GetAllEnemy().size();
-			OutputDebugStringA(std::to_string(count).c_str());
-			OutputDebugString("\n");
+		//終わるかどうかの判定
+		time_++;
+		if (isEnd_) {
+			if(time_ >= 230) pSceneManager_->ChangeScene(SCENE_ID_RESULT);
+
+		}
+		else if (PlayerData::GetClearStageCount() >= 10 || LifeManager::IsDie()) {
+			isEnd_ = true;
+			time_ = 0;
 		}
 
 		//デバッグ用
@@ -60,6 +69,12 @@ namespace GameManager {
 			if (Input::IsKeyDown(DIK_B)) pWeaponObjectManager_->AllKillWeaponObject();
 			if (Input::IsKeyDown(DIK_V)) { pEnemyManager_->AllKillEnemy(); }
 		}
+		if (Input::IsKeyDown(DIK_TAB)) {
+			OutputDebugString("entity : ");
+			int count = (int)pEnemyManager_->GetAllEnemy().size();
+			OutputDebugStringA(std::to_string(count).c_str());
+			OutputDebugString("\n");
+		}
 	}
 
 	void GameManager::Release() {
@@ -70,8 +85,14 @@ namespace GameManager {
 
 	void Draw()
 	{
+		//タイトルシーンだったら表示しない
+		SCENE_ID cs = GetSceneManager()->GetSceneID();
+		if (cs == SCENE_ID_TITLE || cs == SCENE_ID_RESULT) return;
+
+		LifeManager::Draw();
 		PlayerData::Draw();
 		Interaction::Draw();
+
 	}
 
 	void SceneTransitionInitialize()
@@ -81,7 +102,7 @@ namespace GameManager {
 		pPlayer_ = nullptr;
 		pNowStage_ = nullptr;
 
-		//PlayerData::SceneTransitionInitialize();
+		PlayerData::SceneTransitionInitialize();
 		pEnemyManager_->SceneTransitionInitialize();
 		pWeaponObjectManager_->SceneTransitionInitialize();
 

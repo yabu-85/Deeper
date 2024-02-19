@@ -5,16 +5,18 @@
 #include "../Engine/SceneManager.h"
 #include "../GameManager.h"
 #include "../AudioManager.h"
+#include "../Player/LifeManager.h"
 
 ResultUIManager::ResultUIManager(SceneBase* parent)
 	: UIManager(parent), hPict_{ -1, -1 }
 {
-	const char* fileName[] = { "Image/Title.png", "Image/ResultBG.png" };
-	const int png = sizeof(fileName) / sizeof(fileName[0]);
-	for (int i = 0; i < png; i++) {
-		hPict_[i] = Image::Load(fileName[i]);
-		assert(hPict_[i] >= 0);
-	}
+	hPict_[0] = Image::Load("Image/Title.png");
+	assert(hPict_[0] >= 0);
+	
+	const char* fileName[] = { "Image/GameOver.png", "Image/Clear.png" };
+	if (LifeManager::IsDie()) hPict_[1] = Image::Load(fileName[0]);
+	else hPict_[1] = Image::Load(fileName[1]);
+	assert(hPict_[1] >= 0);
 
 	AddUi("Play", XMFLOAT2(0.0f, 0.0f), [this]() { GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE); });
 	AddUi("Option", XMFLOAT2(0.0f, -0.35f), [this]() { AudioManager::Play(); });

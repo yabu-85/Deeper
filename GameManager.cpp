@@ -12,6 +12,8 @@
 #include "UI/Interaction.h"
 #include "VFXManager.h"
 #include "Engine/SceneManager.h"
+#include "WaveManager.h"
+#include "DifficultyManager.h"
 
 //デバッグ用
 #include "Engine/Input.h"
@@ -40,12 +42,15 @@ namespace GameManager {
 		PlayerData::Initialize();
 		Interaction::Initialize();
 		VFXManager::Initialize();
+		DifficultyManager::Initialize();
 
 	}
 
 	void GameManager::Update()
 	{
+		WaveManager::Update();
 		LifeManager::Update();
+		DifficultyManager::Update();
 		pCreateStage_->Update();
 
 		//終わるかどうかの判定
@@ -101,9 +106,11 @@ namespace GameManager {
 		pCollisionMap_ = nullptr;
 		pPlayer_ = nullptr;
 		pNowStage_ = nullptr;
-
+		
 		PlayerData::SceneTransitionInitialize();
 		Interaction::SceneTransitionInitialize();
+		DifficultyManager::SceneTransitionInitialize();
+
 		pEnemyManager_->SceneTransitionInitialize();
 		pWeaponObjectManager_->SceneTransitionInitialize();
 

@@ -62,7 +62,7 @@ void VFXManager::Initialize()
 	smoke.speedRnd = 0.02f;
 	smoke.size = XMFLOAT2(1.3f, 1.3f);
 	smoke.sizeRnd = XMFLOAT2(0.3f, 0.3f);
-	smoke.scale = XMFLOAT2(1.0f, 1.0f);
+	smoke.scale = XMFLOAT2(1.02f, 1.02f);
 	smoke.color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	smoke.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / smoke.lifeTime);
 	smoke.gravity = 0.0f;

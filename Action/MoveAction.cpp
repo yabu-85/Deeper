@@ -1,12 +1,12 @@
 #include "MoveAction.h"
+#include "../GameManager.h"
+#include "../Character.h"
 #include "../Player/Player.h"
 #include "../Stage/CollisionMap.h"
-#include "../GameManager.h"
 #include "../Enemy/EnemyManager.h"
 #include "../Stage/NavigationAI.h"
 #include "../Stage/CreateStage.h"
 #include "../Enemy/EnemyBase.h"
-#include "../Character.h"
 
 MoveAction::MoveAction(Character* obj, float speed, float range)
 	: BaseAction(obj), isInRange_(false), moveSpeed_(speed), moveRange_(range), targetPos_(0, 0, 0)
@@ -125,7 +125,7 @@ void AstarMoveAction::UpdatePath(XMFLOAT3 target)
 //------------------------------Oriented----------------------
 
 OrientedMoveAction::OrientedMoveAction(Character* obj, float speed)
-	: MoveAction(obj, speed, 0.0f), direction_ { 0, 0, -1, 0 }
+	: MoveAction(obj, speed, 0.0f), direction_ { 0, 0, -1, 0 }, move_{XMVectorZero()}
 {
 }
 
@@ -142,7 +142,23 @@ void OrientedMoveAction::Update() {
 	XMMATRIX mRotY = XMMatrixRotationY(rotationY);
 	XMVECTOR vMove = XMVector3TransformCoord(direction_, mRotY);
 	vMove = XMVector3Normalize(vMove);
-	XMStoreFloat3(&position, vPosition + vMove * moveSpeed_);
+	move_ = vMove * moveSpeed_;
+	XMStoreFloat3(&position, vPosition + move_);
 	pCharacter_->SetPosition(position);
 		
+}
+
+bool OrientedMoveAction::CheckWallCollision(int count)
+{
+	//is•ûŒü‚ð’²‚×‚é
+	XMFLOAT3 position = pCharacter_->GetPosition();
+	position = { position.x + (XMVectorGetX(move_) * (float)count), 0.0f, position.z + (XMVectorGetZ(move_) * (float)count) };
+	
+	//bodyRange‚ð‘«‚·
+	XMVECTOR vR = XMVector3Normalize(move_) * pCharacter_->GetBodyRange();
+	position = { position.x + XMVectorGetX(vR), 0.0f, position.z + XMVectorGetZ(vR) };
+
+	if (GameManager::GetCollisionMap()->IsWall((int)position.x, (int)position.z)) true;
+
+	return false;
 }

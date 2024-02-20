@@ -58,10 +58,15 @@ public:
 
 class OrientedMoveAction : public MoveAction {
     XMVECTOR direction_;
+    XMVECTOR move_;
 
 public:
     OrientedMoveAction(Character* obj, float speed);
     ~OrientedMoveAction() override {};
     void Update() override;
     void SetDirection(XMVECTOR vec) { direction_ = vec; }
+
+    //count‚Ì”ˆÚ“®‚µ‚½æ‚ª•Ç‚©‚Ç‚¤‚©F•Ç‚Ìê‡true
+    bool CheckWallCollision(int count);
+
 };

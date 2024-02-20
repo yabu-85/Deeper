@@ -26,11 +26,11 @@ public:
     virtual void Update() override;
     virtual void Draw() override = 0;
     virtual void Release();
-
     virtual void ApplyDamage(int da);
-    void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
-    float GetAimTargetPos() { return aimTargetPos_; }
     
+    float GetAimTargetPos() { return aimTargetPos_; }
+    void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
+    ENEMY_TYPE GetEnemyType() { return type_; }
     void SetAttackDamage(int i) { attackDamage_ = i; }
     int GetAttackDamage() { return attackDamage_; }
     void SetAttackCoolDown(int i) { attackCoolDown_ = i; }

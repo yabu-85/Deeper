@@ -19,6 +19,7 @@ public:
 
 	void AddWarpList(Warp* w) { warpList_.push_back(w); }
 	virtual void OnStageCleared() {}
+	bool IsClearStage();
 
 };
 

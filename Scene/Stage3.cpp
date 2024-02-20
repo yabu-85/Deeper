@@ -45,11 +45,9 @@ void Stage3::Initialize()
 
 void Stage3::Update()
 {
-	WaveManager::Update();
-
-	if (!isCleared_ && WaveManager::IsClearStage()) {
-		isCleared_ = true;
+	if (IsClearStage()) {
 		OnStageCleared();
+
 	}
 
 	//デバッグ用

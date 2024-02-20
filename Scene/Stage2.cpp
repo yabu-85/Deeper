@@ -39,7 +39,6 @@ void Stage2::Initialize()
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
 	SkyBox* sky = InstantiateFront<SkyBox>(GetParent());
 	sky->LoadModel("Model/Stage/SkyBox.fbx");
-	WaveManager::SetStageData();
 
 	for (int i = 0; i < (int)warpList_.size(); i++) {
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
@@ -52,11 +51,9 @@ void Stage2::Initialize()
 
 void Stage2::Update()
 {
-	WaveManager::Update();
-
-	if (!isCleared_ && WaveManager::IsClearStage()) {
-		isCleared_ = true;
+	if (IsClearStage()) {
 		OnStageCleared();
+
 	}
 
 	//デバッグ用

@@ -3,7 +3,7 @@
 #include "../Engine/Model.h"
 
 namespace {
-	float boxSize = 900.0f;
+	float boxSize = 10.0f;
 }
 
 SkyBox::SkyBox(GameObject* parent)

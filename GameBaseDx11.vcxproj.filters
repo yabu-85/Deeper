@@ -24,9 +24,6 @@
       <UniqueIdentifier>{47a6a3f5-8cfd-436b-8d58-beccd108f3f3}</UniqueIdentifier>
       <Extensions>hlsl</Extensions>
     </Filter>
-    <Filter Include="03Scene">
-      <UniqueIdentifier>{3c140e0d-d296-431c-a2e9-c6b1e3fae785}</UniqueIdentifier>
-    </Filter>
     <Filter Include="08Enemy">
       <UniqueIdentifier>{41ef1b12-3dc4-44d5-8224-49a169e131f1}</UniqueIdentifier>
     </Filter>
@@ -87,6 +84,30 @@
     <Filter Include="12Stage">
       <UniqueIdentifier>{f17cee51-8ce2-41ab-b564-b00204fc3e6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09Weapon\Weapons">
+      <UniqueIdentifier>{45555a1b-c656-4b82-90db-50aabcc9dbc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06State\Manager">
+      <UniqueIdentifier>{837039e6-d860-43e3-82a8-b3dde0b1a591}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07Player">
+      <UniqueIdentifier>{e04af741-50b7-426b-8ed5-0d84c1ba486c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04UI">
+      <UniqueIdentifier>{8b8e6f8e-5c92-4eb7-8beb-f190033fe076}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04UI\Base">
+      <UniqueIdentifier>{d7ded092-3bdb-499f-b158-284045e8ad77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04UI\Manager">
+      <UniqueIdentifier>{2d9d2699-ca70-41f6-bb69-82fe3c79a800}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04UI\Interaction">
+      <UniqueIdentifier>{28a3e141-47b1-4ca1-973e-4a861a4cc79f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03Scene">
+      <UniqueIdentifier>{3c140e0d-d296-431c-a2e9-c6b1e3fae785}</UniqueIdentifier>
+    </Filter>
     <Filter Include="03Scene\Stage">
       <UniqueIdentifier>{cb26ec16-ea84-4e65-9ca3-6bfdbd340bc9}</UniqueIdentifier>
     </Filter>
@@ -102,32 +123,11 @@
     <Filter Include="03Scene\Stage\Stage3">
       <UniqueIdentifier>{c8f62308-17d4-4d83-af48-fb7a7bc2ad71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="09Weapon\Weapons">
-      <UniqueIdentifier>{45555a1b-c656-4b82-90db-50aabcc9dbc6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06State\Manager">
-      <UniqueIdentifier>{837039e6-d860-43e3-82a8-b3dde0b1a591}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03Scene\Base">
       <UniqueIdentifier>{ca23a4cb-66f8-49a0-8901-bff618760a67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="07Player">
-      <UniqueIdentifier>{e04af741-50b7-426b-8ed5-0d84c1ba486c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04UI">
-      <UniqueIdentifier>{8b8e6f8e-5c92-4eb7-8beb-f190033fe076}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04UI\Base">
-      <UniqueIdentifier>{d7ded092-3bdb-499f-b158-284045e8ad77}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04UI\Manager">
-      <UniqueIdentifier>{2d9d2699-ca70-41f6-bb69-82fe3c79a800}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03Scene\Ornament">
       <UniqueIdentifier>{b78aad7c-1ab8-46ab-a6dc-9337e00b7fc9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04UI\Interaction">
-      <UniqueIdentifier>{28a3e141-47b1-4ca1-973e-4a861a4cc79f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -388,6 +388,9 @@
     </ClCompile>
     <ClCompile Include="UI\InteractionUI.cpp">
       <Filter>04UI\Interaction</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\IsEnemyAttackPermission.cpp">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -651,6 +654,9 @@
     </ClInclude>
     <ClInclude Include="UI\InteractionUI.h">
       <Filter>04UI\Interaction</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\IsEnemyAttackPermission.h">
+      <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

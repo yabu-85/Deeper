@@ -17,6 +17,8 @@ public:
     virtual void Draw() override = 0 {};
     virtual void Release() override = 0 {};
 
+    float GetBodyRange() { return bodyRange_; }
+
     void SetMovement(XMFLOAT3 move) { movement_ = move; }                   //プレイヤーだけ追加処理ある
     void SetMovement(XMVECTOR move) { XMStoreFloat3(&movement_, move); }    //・・
     XMFLOAT3 GetMovement() { return movement_; }

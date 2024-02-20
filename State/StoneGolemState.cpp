@@ -201,13 +201,15 @@ void StoneGolemWait::Update()
 	e->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
 	
 	//•Ç‚É“–‚½‚Á‚½‚©’²‚×‚Ä
-	if (!e->GetOrientedMoveAction()->CheckWallCollision(1)){
-		e->GetOrientedMoveAction()->Update();
-		OutputDebugString("•Ç“–‚½‚é‚æI\n");
+	if (e->GetOrientedMoveAction()->CheckWallCollision(1)){
+		e->GetOrientedMoveAction()->SetDirection(XMVector3Normalize(XMVECTOR{ 0.7, 0, 0.3, 0 }));
+		OutputDebugStringA(std::to_string(rand() % 100).c_str());
+		OutputDebugString(" : •Ç“–‚½‚é‚æI\n");
 	} else {
-		//•Ç‚É“–‚½‚Á‚½‚æ
-		e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
+	
 	}
+	
+	e->GetOrientedMoveAction()->Update();
 
 }
 

@@ -1,20 +1,24 @@
 #include "Warp.h"
-#include "CreateStage.h"
-#include "../VFXManager.h"
-#include "../Engine/SceneManager.h"
-#include "../Engine/BoxCollider.h"
 #include "../GameManager.h"
+#include "../Engine/BoxCollider.h"
+#include "../Engine/Model.h"
+#include "../Engine/Camera.h"
+#include "../Engine/TransitionEffect.h"
 #include "../Player/Player.h"
 #include "../Player/PlayerCommand.h"
-#include "../Engine/Direct3D.h"
-#include "../Engine/Model.h"
 #include "../Player/LifeManager.h"
+#include "../Player/Aim.h"
 #include "../UI/Interaction.h"
 #include "../UI/InteractionUI.h"
 
+namespace {
+	static const int WARP_TIME = 100;
+
+}
+
 Warp::Warp(GameObject* parent)
 	: GameObject(parent, "Warp"), warpScene_(SCENE_ID::SCENE_ID_TITLE), isPlayerHit_(false), isValid_(false), hModel_(-1),
-	pInteractionUI_(nullptr)
+	pInteractionUI_(nullptr), time_(0), isWarp_(false)
 {
 }
 
@@ -43,7 +47,13 @@ void Warp::Initialize()
 
 void Warp::Update()
 {
-	if (rand() % 60 == 0) VFXManager::CreatVfxExplode1(transform_.position_);
+	if (!isWarp_) return;
+
+	time_++;
+	if (time_ >= WARP_TIME) {
+		GameManager::GetSceneManager()->ChangeScene(warpScene_);
+
+	}
 
 }
 
@@ -85,9 +95,18 @@ void Warp::OnCollision(GameObject* pTarget)
 	isPlayerHit_ = true;
 
 	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction() && !LifeManager::IsDie()) {
-		GameManager::GetSceneManager()->ChangeScene(warpScene_);
+		GameManager::GetPlayer()->SetMainState(Player::MAIN_STATE::DISAPPEAR);
+		GameManager::GetPlayer()->GetAim()->SetValid(false);
+
+		GetColliderList().front()->SetValid(false);
+		TransitionEffect::SetFade(TRANSITION_TYPE::TYPE_ALPHA);
+		TransitionEffect::SetAlpha(0.0f);
+		TransitionEffect::SetAlphaDecrease(-0.01f);
+
+		isValid_ = false;
+		isWarp_ = true;
 	}
-	
+
 }
 
 void Warp::OutCollision()

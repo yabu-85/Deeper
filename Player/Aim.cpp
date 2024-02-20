@@ -37,7 +37,7 @@ Aim::Aim(GameObject* parent)
     compulsionTarget_{ 0,0,0 }, compulsionPosisiton_{ 0,0,0 }, pPlayer_(nullptr), pEnemyBase_(nullptr), pCollisionMap_(nullptr),
     isMove_(true), isCompulsion_(false), isTarget_(false), compulsionTime_(0), iterations_(0), sign_(1), range_(0), moveDistance_(0),
     distanceDecrease_(0), center_{ 0,0,0,0 }, shakeSpeed_(0), rangeDecrease_(0), isTargetChange_(false), targetChangeTime_(0), hPict_(-1),
-    shakeDirection_{ 1,0,0,0 }
+    shakeDirection_{ 1,0,0,0 }, isValid_(true)
 {
     mouseSensitivity = 2.0f;
     defPerspectDistance_ = 5.0f;
@@ -65,6 +65,8 @@ void Aim::Initialize()
 
 void Aim::Update()
 {
+    if (!IsValid()) return;
+
     //デバッグ用
     if (Input::IsKeyDown(DIK_R)) isMove_ = !isMove_;
     if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;

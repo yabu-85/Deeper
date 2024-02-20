@@ -13,7 +13,7 @@ namespace {
     static const int COMBO_TIME1 = 100;
     static const int ATTACK_FRAME1 = 52;   //îªíËÉtÉåÅ[ÉÄ
     static const float MOVE_SPEED = 0.03f;
-    static const float ROTATE_RATIO = 0.2f;
+    static const float ROTATE_RATIO = 0.02f;
 
 }
 
@@ -134,7 +134,6 @@ void StoneArmWeaponCombo1::Update()
     if (time_ <= ATTACK_FRAME1) {
         if (p->GetAim()->IsTarget()) p->AimTargetRotate(ROTATE_RATIO);
         else if (p->GetCommand()->CmdWalk()) p->Rotate(ROTATE_RATIO);
-        p->MinTargetRotate(ROTATE_RATIO);
     }
 
     //îªíË
@@ -160,7 +159,6 @@ void StoneArmWeaponCombo1::OnEnter()
     time_ = 0;
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     Model::SetAnimFrame(p->GetModelHandle(), 700, 800, 1.0f);
-    p->SetMinTarget();
 
 }
 

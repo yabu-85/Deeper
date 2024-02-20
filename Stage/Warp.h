@@ -7,8 +7,10 @@ class InteractionUI;
 class Warp : public GameObject
 {
     bool isValid_;
+    bool isWarp_;
     bool isPlayerHit_;
     int hModel_;
+    int time_;
 
     SCENE_ID warpScene_;
     InteractionUI* pInteractionUI_;

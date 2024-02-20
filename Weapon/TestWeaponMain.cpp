@@ -173,7 +173,6 @@ void TestWeaponCombo1::Update()
     if (time_ < ROTATE_FRAME) {
         if (p->GetAim()->IsTarget()) p->AimTargetRotate(ROTATE_RATIO);
         else if (p->GetCommand()->CmdWalk()) p->Rotate(ROTATE_RATIO);
-        p->MinTargetRotate(ROTATE_RATIO);
     }
 
     p->CalcNoMove();
@@ -201,7 +200,6 @@ void TestWeaponCombo1::OnEnter()
     next_ = false;
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     Model::SetAnimFrame(p->GetModelHandle(), ANIM_FRAME1[0], ANIM_FRAME1[1], 1.0f);
-    p->SetMinTarget();
 
 }
 
@@ -224,7 +222,6 @@ void TestWeaponCombo2::Update()
     if (time_ < ROTATE_FRAME) {
         if (p->GetAim()->IsTarget()) p->AimTargetRotate(ROTATE_RATIO);
         else if (p->GetCommand()->CmdWalk()) p->Rotate(ROTATE_RATIO);
-        p->MinTargetRotate(ROTATE_RATIO);
     }
 
     p->CalcNoMove();
@@ -253,7 +250,6 @@ void TestWeaponCombo2::OnEnter()
     next_ = false;
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     Model::SetAnimFrame(p->GetModelHandle(), ANIM_FRAME2[0], ANIM_FRAME2[1], 1.0f);
-    p->SetMinTarget();
 
 }
 
@@ -276,7 +272,6 @@ void TestWeaponCombo3::Update()
     if (time_ < ROTATE_FRAME) {
         if (p->GetAim()->IsTarget()) p->AimTargetRotate(ROTATE_RATIO);
         else if (p->GetCommand()->CmdWalk()) p->Rotate(ROTATE_RATIO);
-        p->MinTargetRotate(ROTATE_RATIO);
     }
     
     p->CalcNoMove();
@@ -305,7 +300,6 @@ void TestWeaponCombo3::OnEnter()
     next_ = false;
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     Model::SetAnimFrame(p->GetModelHandle(), ANIM_FRAME3[0], ANIM_FRAME3[1], 1.0f);
-    p->SetMinTarget();
 
 }
 

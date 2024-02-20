@@ -392,6 +392,9 @@
     <ClCompile Include="BehaviorTree\IsEnemyAttackPermission.cpp">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\TransitionEffect.cpp">
+      <Filter>01Engine\ResourceManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -657,6 +660,9 @@
     </ClInclude>
     <ClInclude Include="BehaviorTree\IsEnemyAttackPermission.h">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\TransitionEffect.h">
+      <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

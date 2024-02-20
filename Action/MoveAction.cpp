@@ -158,7 +158,7 @@ bool OrientedMoveAction::CheckWallCollision(int count)
 	XMVECTOR vR = XMVector3Normalize(move_) * pCharacter_->GetBodyRange();
 	position = { position.x + XMVectorGetX(vR), 0.0f, position.z + XMVectorGetZ(vR) };
 
-	if (GameManager::GetCollisionMap()->IsWall((int)position.x, (int)position.z)) true;
+	if (GameManager::GetCollisionMap()->IsWall((int)position.x, (int)position.z)) return true;
 
 	return false;
 }

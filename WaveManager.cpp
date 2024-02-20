@@ -26,6 +26,7 @@ namespace WaveManager {
 		StageData(1, { ENEMY_STONEGOLEM, ENEMY_THROW }, 3),
 	};
 
+	bool isStageClear = false;
 	int currentDataIndex = 0;
 	int waveCount_ = 0;
 
@@ -34,23 +35,25 @@ namespace WaveManager {
 	void Update()
 	{
 		//‰ŠúEWaveƒNƒŠƒA
-		if (waveCount_ >= 1 && GameManager::GetEnemyManager()->IsEnemyListEmpty()) {
-			waveCount_--;
-			SetWaveData();
-
+		if (GameManager::GetEnemyManager()->IsEnemyListEmpty()) {
+			if (waveCount_ <= 0) {
+				isStageClear = true;
+			}
+			else if (waveCount_ >= 1) {
+				waveCount_--;
+				SetWaveData();
+			}
 		}
 	}
 
 	void SetStageData() {
 		SCENE_ID cs = GameManager::GetSceneManager()->GetNextSceneID();
 		currentDataIndex = 0;
-
 		if (cs == SCENE_ID_STAGE1) currentDataIndex = 0;
 		else if (cs == SCENE_ID_STAGE2) currentDataIndex = 1;
 		else if (cs == SCENE_ID_STAGE3) currentDataIndex = 2;
 
 		waveCount_ = data_[currentDataIndex].waveCount;
-
 	}
 
 	void SetWaveData()
@@ -63,14 +66,18 @@ namespace WaveManager {
 			int r = rand() % random;
 			ma->SpawnEnemy(data_[currentDataIndex].spawnEnemy.at(r));
 		}
-
 	}
 
 	bool IsClearStage()
 	{
-		if (waveCount_ <= 0) return true;
+		return isStageClear;
+	}
 
-		return false;
+	void SceneTransitionInitialize()
+	{
+		SetStageData();
+		isStageClear = false;
+
 	}
 
 }

@@ -1,18 +1,18 @@
 #include "Stage1.h"
 #include "../GameManager.h"
-#include "../Engine/SceneManager.h"
 #include "../Player/Player.h"
 #include "../Stage/CollisionMap.h"
 #include "../Stage/CreateStage.h"
-#include "../AudioManager.h"
-#include "../Engine/Input.h"
 #include "../Stage/Warp.h"
 #include "../Stage/SkyBox.h"
+#include "../AudioManager.h"
+#include "../Engine/TransitionEffect.h"
+#include "../Engine/Input.h"
+#include "../Engine/SceneManager.h"
+#include "../Engine/Model.h"
 
 //デバッグ用
 #include "../Weapon/WeaponObjectManager.h"
-#include "../Player/PlayerWeapon.h"
-#include "../Engine/Model.h"
 
 namespace {
 	static const SCENE_ID WARP_STAGE[2] = { SCENE_ID_STAGE2 };
@@ -37,6 +37,9 @@ void Stage1::Initialize()
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
 	SkyBox* sky = InstantiateFront<SkyBox>(GetParent());
 	sky->LoadModel("Model/Stage/SkyBox.fbx");
+
+	TransitionEffect::SetFade(TRANSITION_TYPE::TYPE_ALPHA);
+	TransitionEffect::SetAlphaDecrease(0.01f);
 
 	for (int i = 0; i < (int)warpList_.size(); i++) {
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);

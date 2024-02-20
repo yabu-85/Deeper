@@ -7,6 +7,7 @@ namespace WaveManager
 	void SetStageData();
 	void SetWaveData();
 	bool IsClearStage();
+	void SceneTransitionInitialize();
 
 };
 

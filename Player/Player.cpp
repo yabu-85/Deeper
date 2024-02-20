@@ -34,7 +34,7 @@ namespace {
 
 }
 
-void Player::ApperUpdate()
+void Player::AppearUpdate()
 {
     time_--;
     transform_.position_.y -= 0.5f;
@@ -43,10 +43,16 @@ void Player::ApperUpdate()
     pAim_->SetCompulsion(cPos, apperPos_);
 
     if (time_ <= 0) {
-        state_ = MAIN_STATE::UPDATE;
+        state_ = MAIN_STATE::DEFAULT;
         XMFLOAT3 pos = { transform_.position_.x, transform_.position_.y + 0.7f, transform_.position_.z };
         VFXManager::CreatVfxExplode1(pos);
     }
+}
+
+void Player::DisAppearUpdate()
+{
+    transform_.position_.y -= 0.1f;
+
 }
 
 void Player::HearUpdate()
@@ -54,10 +60,13 @@ void Player::HearUpdate()
     float speed = (float)time_ / (float)HEAR_TIME;
     BackMove(speed);
 
+    if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
+    ReflectCharacter();
+
     time_--;
     if (time_ <= 0) {
         Model::SetAnimFrame(hModel_, 0, 120, 1.0f);
-        state_ = MAIN_STATE::UPDATE;
+        state_ = MAIN_STATE::DEFAULT;
     }
 
 }
@@ -69,12 +78,25 @@ void Player::DeadUpdate()
         Model::SetAnimeStop(hModel_, true);
     }
 
+    if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
+    ReflectCharacter();
+
+}
+
+void Player::DefaultUpdate()
+{
+    pStateManager_->Update();
+    if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
+
+    if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
+    ReflectCharacter();
+
 }
 
 Player::Player(GameObject* parent)
     : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
-    pAnimationController_(nullptr), pCollider_{nullptr, nullptr}, pEnemyBase_(nullptr),
-    moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), state_(MAIN_STATE::APPER), apperPos_(0,0,0), time_(0), gradually_(0.0f)
+    pAnimationController_(nullptr), pCollider_{nullptr, nullptr},
+    moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), state_(MAIN_STATE::APPEAR), apperPos_(0,0,0), time_(0), gradually_(0.0f)
 {
 }
 
@@ -143,16 +165,11 @@ void Player::Update()
     pAnimationController_->Update();
 
     //MainState
-    if (state_ == MAIN_STATE::APPER) ApperUpdate();
+    if (state_ == MAIN_STATE::DEFAULT) DefaultUpdate();
     else if (state_ == MAIN_STATE::HEAR) HearUpdate();
     else if (state_ == MAIN_STATE::DEAD) DeadUpdate();
-    else {
-        pStateManager_->Update();
-        if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
-    }
-
-    if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
-    ReflectCharacter();
+    else if (state_ == MAIN_STATE::APPEAR) AppearUpdate();
+    else if (state_ == MAIN_STATE::DISAPPEAR) DisAppearUpdate();
     
     //デバッグ用
     if (Input::IsKey(DIK_3)) { LifeManager::DirectDamage(1); ReceivedDamage(); }
@@ -215,14 +232,6 @@ void Player::CalcRotate(XMFLOAT3 pos, float ratio)
     float cross = a.x * b.y - a.y * b.x;
     float dot = a.x * b.x + a.y * b.y;
     transform_.rotate_.y += XMConvertToDegrees(-atan2f(cross, dot) * ratio);
-}
-
-void Player::SetMinTarget() { pEnemyBase_ = pAim_->CalcTargetEnemy(); }
-void Player::MinTargetRotate(float ratio) { 
-    if (!pEnemyBase_) return;
-    XMFLOAT3 pos = pEnemyBase_->GetPosition();
-    pos = { pos.x - transform_.position_.x, 0.0f, pos.z - transform_.position_.z };
-    CalcRotate(pos, ratio); 
 }
 
 void Player::TargetRotate(XMFLOAT3 pos, float ratio) { CalcRotate(XMFLOAT3(pos.x - transform_.position_.x, 0.0f, pos.z - transform_.position_.z), ratio); }

@@ -7,6 +7,7 @@ class CollisionMap;
 
 class Aim : public GameObject
 {
+    bool isValid_;                  //全ての挙動を止める
     bool isMove_;                   //エイムを動かすかどうか
     bool isCompulsion_;             //強制的に移動させる状態か
     bool isTarget_;                 //ターゲット状態か
@@ -62,8 +63,11 @@ public:
     void Draw() override;
     void Release() override;
 
+    void SetValid(bool b) { isValid_ = b; }
+    bool IsValid() { return isValid_; };
     void SetAimMove(bool b) { isMove_ = b; };
     bool IsAimMove() { return isMove_; }
+
     float GetMouseSensitivity() { return mouseSensitivity; };
     void SetMouseSensitivity(float f) { mouseSensitivity = f; };
 

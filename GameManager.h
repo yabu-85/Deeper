@@ -15,7 +15,6 @@ namespace GameManager
 {
 	void Initialize();
 	void Update();
-	void Release();
 	void Draw();
 	void SceneTransitionInitialize();
 

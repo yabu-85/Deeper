@@ -1,19 +1,19 @@
 #include "GameManager.h"
+#include "VFXManager.h"
+#include "WaveManager.h"
+#include "DifficultyManager.h"
 #include "Enemy/EnemyManager.h"
 #include "Stage/NavigationAI.h"
-#include "Player/Player.h"
 #include "Stage/CreateStage.h"
 #include "Stage/CollisionMap.h"
 #include "Weapon/WeaponObjectManager.h"
+#include "Engine/TransitionEffect.h"
 #include "Engine/GameObject.h"
-#include "Engine/Global.h"
+#include "Engine/SceneManager.h"
 #include "Player/LifeManager.h"
+#include "Player/Player.h"
 #include "Player/PlayerData.h"
 #include "UI/Interaction.h"
-#include "VFXManager.h"
-#include "Engine/SceneManager.h"
-#include "WaveManager.h"
-#include "DifficultyManager.h"
 
 //デバッグ用
 #include "Engine/Input.h"
@@ -43,7 +43,7 @@ namespace GameManager {
 		Interaction::Initialize();
 		VFXManager::Initialize();
 		DifficultyManager::Initialize();
-
+		TransitionEffect::Initialize();
 	}
 
 	void GameManager::Update()
@@ -82,21 +82,16 @@ namespace GameManager {
 		}
 	}
 
-	void GameManager::Release() {
-		SAFE_DELETE(pEnemyManager_);
-		SAFE_DELETE(pNavigationAI_);
-		SAFE_DELETE(pWeaponObjectManager_);
-	}
-
 	void Draw()
 	{
-		//タイトルシーンだったら表示しない
 		SCENE_ID cs = GetSceneManager()->GetSceneID();
-		if (cs == SCENE_ID_TITLE || cs == SCENE_ID_RESULT) return;
-
-		LifeManager::Draw();
-		PlayerData::Draw();
-		Interaction::Draw();
+		if (cs != SCENE_ID_TITLE && cs != SCENE_ID_RESULT) {
+			LifeManager::Draw();
+			PlayerData::Draw();
+			Interaction::Draw();
+		}
+		
+		TransitionEffect::Draw();
 
 	}
 
@@ -110,6 +105,8 @@ namespace GameManager {
 		PlayerData::SceneTransitionInitialize();
 		Interaction::SceneTransitionInitialize();
 		DifficultyManager::SceneTransitionInitialize();
+		WaveManager::SceneTransitionInitialize();
+		TransitionEffect::SceneTransitionInitialize();
 
 		pEnemyManager_->SceneTransitionInitialize();
 		pWeaponObjectManager_->SceneTransitionInitialize();
@@ -130,8 +127,8 @@ namespace GameManager {
 	GameObject* GetStage() { return pNowStage_; }
 	void SetStage(GameObject* stage) { pNowStage_ = stage; pEnemyManager_->SetParent(stage); }
 
+	//別に用意した方がいいよね//修正箇所
 	std::vector<Character*> GetCharacterList() { return characterList_; }
-	
 	void AddCharacter(Character* c) { characterList_.push_back(static_cast<Character*>(c)); }
 	void RemoveCharacter(Character* c) {
 		for (auto it = characterList_.begin(); it != characterList_.end();) {

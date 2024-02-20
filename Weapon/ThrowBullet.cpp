@@ -9,8 +9,13 @@
 #include "../Engine/Global.h"
 
 namespace {
-	static const float DEF_TIME = 60.0f;
+	static const int DAMAGE = 1;
 	static const int DEATH_TIME = 30;
+	static const float DEF_TIME = 60.0f;
+	static const float MAX_HEIGHT = 8.0f;
+	static const float MAX_DISTANCE = 10.0f;
+	static const float AUDIO_DISTANCE = 10.0f;
+
 }
 
 ThrowBullet::ThrowBullet(GameObject* parent)
@@ -29,9 +34,10 @@ void ThrowBullet::Initialize()
 	assert(hModel_ >= 0);
 
 	transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
-	damage_ = 1;
-	lifeTime_ = 120;
+	damage_ = DAMAGE;
 	time_ = (int)DEF_TIME;
+	maxHeight_ = MAX_HEIGHT;
+	maxDistance_ = MAX_DISTANCE;
 
 	pSphereCollider_ = new SphereCollider(XMFLOAT3(0, 0, 0), 0.2f);
 	AddAttackCollider(pSphereCollider_);
@@ -61,7 +67,6 @@ void ThrowBullet::Update()
 	//CollisionMapÇ∆ÇÃîªíËÅiç°ÇÕy<=0ÇæÇØÅj
 	if (transform_.position_.y <= 0.0f) Hit();
 
-	LifeTime();
 	time_--;
 }
 
@@ -99,8 +104,6 @@ void ThrowBullet::SetThrowData(float maxHeight, float maxDist)
 
 void ThrowBullet::Shot(XMFLOAT3 pos, XMFLOAT3 target)
 {
-	maxHeight_ = 10.0f;
-	maxDistance_ = 10.0f; 
 	transform_.position_ = pos;
 	
 	float distX = target.x - pos.x;
@@ -143,7 +146,7 @@ void ThrowBullet::Hit()
 	Move();
 
 	VFXManager::CreatVfxExplode1(transform_.position_);
-	AudioManager::Play(transform_.position_, 10.0f);
+	AudioManager::Play(transform_.position_, AUDIO_DISTANCE);
 	deathPosition_ = transform_.position_;
 	time_ = DEATH_TIME;
 	isDeath_ = true;

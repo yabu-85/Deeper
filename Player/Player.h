@@ -2,7 +2,6 @@
 #include "../Character.h"
 
 class SphereCollider;
-class EnemyBase;
 class Aim;
 class StateManager;
 class PlayerCommand;
@@ -11,16 +10,22 @@ class AnimationController;
 
 class Player : public Character
 {
-    enum MAIN_STATE {
-        APPER = 0,
-        HEAR,
-        DEAD,
-        UPDATE,
-    }state_;
-    void ApperUpdate();
+    void AppearUpdate();
+    void DisAppearUpdate();
     void HearUpdate();
     void DeadUpdate();
+    void DefaultUpdate();
+public:
+    enum MAIN_STATE {
+        APPEAR = 0,
+        DISAPPEAR,
+        HEAR,
+        DEAD,
+        DEFAULT,
+    } state_;
+    void SetMainState(MAIN_STATE state) { state_ = state; }
 
+private:    
     int hModel_;
     int time_;
     float moveSpeed_;           //移動スピード
@@ -30,7 +35,6 @@ class Player : public Character
     XMFLOAT3 apperPos_;
 
     SphereCollider* pCollider_[2];
-    EnemyBase* pEnemyBase_;
     Aim* pAim_;
     StateManager* pStateManager_;
     PlayerCommand* pCommand_;
@@ -49,8 +53,6 @@ public:
     void OnAttackCollision(GameObject* pTarget) override;
 
     //Aim
-    void SetMinTarget();
-    void MinTargetRotate(float ratio = 1.0f);
     void TargetRotate(XMFLOAT3 pos, float ratio = 1.0f);
     void Rotate();
     void Rotate(float ratio);

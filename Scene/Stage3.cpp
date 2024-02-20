@@ -1,16 +1,19 @@
 #include "Stage3.h"
 #include "../GameManager.h"
 #include "../WaveManager.h"
-#include "../Engine/SceneManager.h"
 #include "../Player/Player.h"
 #include "../Stage/CollisionMap.h"
 #include "../Stage/CreateStage.h"
-#include "../AudioManager.h"
-#include "../Engine/Input.h"
 #include "../Stage/Warp.h"
 #include "../Stage/SkyBox.h"
-#include "../Enemy/EnemyManager.h"
+#include "../AudioManager.h"
+#include "../Engine/TransitionEffect.h"
+#include "../Engine/Input.h"
+#include "../Engine/SceneManager.h"
 #include "../Engine/Model.h"
+
+//デバッグ用
+#include "../Weapon/WeaponObjectManager.h"
 
 namespace {
 	static const SCENE_ID WARP_STAGE[] = { SCENE_ID_STAGE1 };
@@ -37,9 +40,15 @@ void Stage3::Initialize()
 	sky->LoadModel("Model/Stage/SkyBox.fbx");
 	WaveManager::SetStageData();
 
+	TransitionEffect::SetFade(TRANSITION_TYPE::TYPE_ALPHA);
+	TransitionEffect::SetAlphaDecrease(0.01f);
+
 	for (int i = 0; i < (int)warpList_.size(); i++) {
 		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
 	}
+
+	//デバッグ用
+	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_STONE, GameManager::GetCreateStage()->GetPlayerStartPos());
 
 }
 

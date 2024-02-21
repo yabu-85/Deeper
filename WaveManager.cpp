@@ -13,17 +13,30 @@ namespace WaveManager {
 		MAX,
 	};
 
+	//ステージごとにEnemyTableを分けて、そのテーブルの中からランダムで選ぶ
+	static const std::vector<std::vector<ENEMY_TYPE>> spawnEnemyTable[2] = {
+		{
+			{ ENEMY_STONEGOLEM, ENEMY_STONEGOLEM, ENEMY_THROW},
+			{ ENEMY_STONEGOLEM, ENEMY_THROW, ENEMY_THROW},
+			{ ENEMY_STONEGOLEM, ENEMY_STONEGOLEM, ENEMY_THROW, ENEMY_THROW},
+		},
+		{
+			{ ENEMY_MAX, ENEMY_MAX},
+			{ ENEMY_MAX, ENEMY_MAX},
+			{ ENEMY_MAX, ENEMY_MAX},
+		}
+	};
+
 	struct StageData {
 		int waveCount;		//Waveの数
-		int enemyCount;		//１Waveで出てくる敵の数
-		std::vector<ENEMY_TYPE> spawnEnemy;
-		
-		StageData(int wave, std::vector<ENEMY_TYPE> list, int enemy) : waveCount(wave), spawnEnemy(list), enemyCount(enemy) {};
+		int spawnTable;		//spawnEnemyTableを選ぶための
+
+		StageData(int wave, int list) : waveCount(wave), spawnTable(list) {};
 	} 
 	data_[MAX] = {
-		StageData(0, {}, 0 ),
-		StageData(3, { ENEMY_STONEGOLEM, ENEMY_THROW }, 5),
-		StageData(1, { ENEMY_STONEGOLEM, ENEMY_THROW }, 3),
+		StageData(0, 0),
+		StageData(3, 0),
+		StageData(1, 0),
 	};
 
 	bool isStageClear = false;
@@ -58,13 +71,16 @@ namespace WaveManager {
 
 	void SetWaveData()
 	{
-		EnemyManager* ma = GameManager::GetEnemyManager();
-		int random = (int)data_[currentDataIndex].spawnEnemy.size();
-		if (random <= 0) return;
+		//spawnEnemyTableの中からspawnTableの場所からとってそのvectorのsizeを取得
+		int randMax = (int)spawnEnemyTable[data_[currentDataIndex].spawnTable].size();
+		if (randMax <= 0) return;
+		int r = rand() % randMax;
 
-		for (int i = 0; i < data_[currentDataIndex].enemyCount; i++) {
-			int r = rand() % random;
-			ma->SpawnEnemy(data_[currentDataIndex].spawnEnemy.at(r));
+		EnemyManager* ma = GameManager::GetEnemyManager();
+		int max = (int)spawnEnemyTable[data_[currentDataIndex].spawnTable].size();
+		for (int i = 0; i < max; i++) {
+			ENEMY_TYPE t = spawnEnemyTable[data_[currentDataIndex].spawnTable][r].at(i);
+			ma->SpawnEnemy(t);
 		}
 	}
 

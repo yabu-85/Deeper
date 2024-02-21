@@ -201,12 +201,8 @@ void StoneGolemWait::Update()
 	e->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
 	
 	//壁に当たったか調べて
-	if (e->GetOrientedMoveAction()->CheckWallCollision(1)){
-		e->GetOrientedMoveAction()->SetDirection(XMVector3Normalize(XMVECTOR{ 0.7, 0, 0.3, 0 }));
-		OutputDebugStringA(std::to_string(rand() % 100).c_str());
-		OutputDebugString(" : 壁当たるよ！\n");
-	} else {
-	
+	if (e->GetOrientedMoveAction()->CheckWallCollision(1)) {
+		e->GetOrientedMoveAction()->SetDirection(XMVector3Normalize(XMVECTOR{ 0.7f, 0.0f, 0.3f, 0.0f }));
 	}
 	
 	e->GetOrientedMoveAction()->Update();
@@ -217,6 +213,10 @@ void StoneGolemWait::OnEnter()
 {
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
+
+	//プレイヤーから指定の範囲内で
+	//ゲーム参考にしてから作る
+
 	e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, -1, 0 });
 
 }

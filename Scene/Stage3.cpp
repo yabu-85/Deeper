@@ -16,7 +16,7 @@
 #include "../Weapon/WeaponObjectManager.h"
 
 namespace {
-	static const SCENE_ID WARP_STAGE[] = { SCENE_ID_STAGE1 };
+	static const SCENE_ID WARP_STAGE[] = { SCENE_ID_STAGE1, SCENE_ID_TITLE };
 
 }
 

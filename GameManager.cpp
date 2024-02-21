@@ -48,6 +48,9 @@ namespace GameManager {
 
 	void GameManager::Update()
 	{
+		//ここタイトルシーン・リザルトシーンでのUpdateはいらないよDrawもね
+		if (!GameManager::GetStage()) return;
+
 		WaveManager::Update();
 		LifeManager::Update();
 		DifficultyManager::Update();
@@ -84,8 +87,10 @@ namespace GameManager {
 
 	void Draw()
 	{
-		SCENE_ID cs = GetSceneManager()->GetSceneID();
+		SCENE_ID cs = GetSceneManager()->GetNextSceneID();
 		if (cs != SCENE_ID_TITLE && cs != SCENE_ID_RESULT) {
+			if (!GameManager::GetStage()) return;
+
 			LifeManager::Draw();
 			PlayerData::Draw();
 			Interaction::Draw();

@@ -1,6 +1,6 @@
 #include "IsEnemyAttackPermission.h"
 #include "../Enemy/EnemyBase.h"
-#include "../DifficultyManager.h"
+#include "../CombatAI.h"
 
 IsEnemyAttackPermission::IsEnemyAttackPermission(TreeNode* child, EnemyBase* enemy)
 	: Condition(child), pEnemyBase_(enemy)
@@ -9,6 +9,6 @@ IsEnemyAttackPermission::IsEnemyAttackPermission(TreeNode* child, EnemyBase* ene
 
 IsEnemyAttackPermission::Status IsEnemyAttackPermission::Update()
 {
-	if (DifficultyManager::IsEnemyAttackPermission()) return child_->Tick();
+	if (CombatAI::IsEnemyAttackPermission(pEnemyBase_)) return child_->Tick();
 	return Status::FAILURE;
 }

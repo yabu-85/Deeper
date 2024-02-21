@@ -7,7 +7,7 @@ namespace DifficultyManager
 	void Initialize();
 	void Update();
 	void SceneTransitionInitialize();
-	bool IsEnemyAttackPermission();
+	bool AttackPermission();
 
 
 };

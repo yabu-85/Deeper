@@ -25,6 +25,10 @@ namespace DifficultyManager {
 
 	void Update()
 	{
+		//修正箇所
+		//今いるEnemyの中でMainStateがCombatのやつの中から一番高い対象を計算
+		//そのEnemyは常時リストに追加みたいな感じで
+
 		//難易度の計算
 		difficulty = 0;
 		std::vector<EnemyBase*> eList = GameManager::GetEnemyManager()->GetAllEnemy();
@@ -47,7 +51,7 @@ namespace DifficultyManager {
 
 	}
 
-	bool IsEnemyAttackPermission()
+	bool AttackPermission()
 	{
 		if (difficulty <= MAX_DIFFICULTY) return true;
 		return false;

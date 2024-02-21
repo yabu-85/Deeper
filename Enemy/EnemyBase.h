@@ -8,12 +8,13 @@ class StateManager;
 class EnemyBase : public Character
 {
 protected:
-    int hp_;
-    int maxHp_;
-    int attackDamage_;
-    int attackCoolDown_;
-    float aimTargetPos_;
-    ENEMY_TYPE type_;
+    int hp_;                //HP
+    int maxHp_;             //HPMAX
+    int attackDamage_;      //攻撃のダメージ
+    int attackCoolDown_;    //攻撃のクールダウン
+    float aimTargetPos_;    //AimTarget時のY軸の加算値
+    float combatDistance_;  //CombatStateに移っていいかどうかの距離
+    ENEMY_TYPE type_;       
 
     EnemyUi* pEnemyUi_;
     StateManager* pStateManager_;
@@ -29,6 +30,7 @@ public:
     virtual void ApplyDamage(int da);
     
     float GetAimTargetPos() { return aimTargetPos_; }
+    float GetCombatDistance() { return combatDistance_; }
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
     ENEMY_TYPE GetEnemyType() { return type_; }
     void SetAttackDamage(int i) { attackDamage_ = i; }

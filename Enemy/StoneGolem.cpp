@@ -39,6 +39,7 @@ void StoneGolem::Initialize()
 	bodyWeight_ = 100.0f;
 	bodyRange_ = 0.7f;
 	attackDamage_ = 1;
+	combatDistance_ = 10.0f;
 
 	//ColliderÇÃê›íË
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5, 0), 0.75f);

@@ -74,6 +74,8 @@ namespace WaveManager {
 		//spawnEnemyTable‚Ì’†‚©‚çspawnTable‚ÌêŠ‚©‚ç‚Æ‚Á‚Ä‚»‚Ìvector‚Ìsize‚ğæ“¾
 		int randMax = (int)spawnEnemyTable[data_[currentDataIndex].spawnTable].size();
 		if (randMax <= 0) return;
+
+		//‚±‚±“ïˆÕ“x‚É‚æ‚Á‚Ä‘I‚ÔŠm—¦§Œä‚Æ‚©‚µ‚½‚¢
 		int r = rand() % randMax;
 
 		EnemyManager* ma = GameManager::GetEnemyManager();

@@ -355,11 +355,6 @@ void Player::CalcNoMove()
     playerMovement_ = { playerMovement_.x + move.x , 0.0f , playerMovement_.z + move.z };
 }
 
-void Player::ReverseMove(XMFLOAT3 move)
-{
-
-}
-
 void Player::Avo()
 {
     //“®‚¢‚Ä‚¢‚éê‡

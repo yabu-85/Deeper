@@ -10,6 +10,7 @@
 #include "../VFXManager.h"
 
 namespace {
+    static const int ATTACK_DAMAGE = 100;
     static const int COMBO_TIME1 = 100;
     static const int ATTACK_FRAME1 = 52;   //判定フレーム
     static const float MOVE_SPEED = 0.03f;
@@ -103,7 +104,7 @@ void StoneArmWeapon::OnAttackCollision(GameObject* pTarget)
 {
     if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
-        e->ApplyDamage(100);
+        e->ApplyDamage(ATTACK_DAMAGE);
 
         //当たったエネミーの全コライダーを無効か
         std::list<Collider*> cList = e->GetColliderList();

@@ -45,6 +45,7 @@ void ThrowEnemy::Initialize()
 	bodyWeight_ = 10.0f;
 	bodyRange_ = 0.25f;
 	attackDamage_ = 50;
+	combatDistance_ = 15.0f;
 
 	//Collider‚Ìİ’è
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.25, 0), 0.325f);

@@ -38,14 +38,6 @@ public:
 	void OnEnter() override;
 };
 
-class StoneGolemDead : public StateBase
-{
-public:
-	StoneGolemDead(StateManager* owner);
-	const char* GetName() const override { return "Dead"; }
-	void Update() override;
-};
-
 //---------------------------------------------------------------------------------
 
 class StoneGolemWait : public StateBase

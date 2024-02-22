@@ -1,23 +1,49 @@
 #include "CombatAI.h"
 #include "GameManager.h"
 #include "DifficultyManager.h"
-
 #include "Player/Player.h"
+#include "Player/Aim.h"
 #include "Enemy/EnemyBase.h"
+#include "Enemy/EnemyManager.h"
+#include "State/StateManager.h"
+#include <vector>
 
 namespace CombatAI {
-	float minDistance_ = 0.0f;
+	unsigned calcTime_ = 0;
+	static const unsigned CALC_RAND = 5;	//n回に１回Enemyの計算をする：軽い処理になったら１でもいいかもね
 	
 	void Initialize() {
 
 	}
 
 	void Update(){
+		calcTime_++;
+		if (calcTime_ % CALC_RAND != 0) return;
+		
+		//ここでEnemyごとのやる
+		//IsEnemyなんたらでポインタのエネミーは行動をしていいかをboolのみ
+		//計算したものを渡す
 
+		EnemyBase* pAimEnemy = GameManager::GetPlayer()->GetAim()->GetTargetEnemy();
+		float minCombatDist = 99999.9f;
+
+		for (auto e : GameManager::GetEnemyManager()->GetAllEnemy()) {
+			//CombatStateでもない・すでに攻撃Stateなら計算しない
+			if (e->GetStateManager()->GetName() != "Combat" || e->GetCombatStateManager()->GetName() == "Attack") continue;
+			
+
+
+
+		
+		}
 	}
 
 	bool IsEnemyAttackPermission(EnemyBase* enemy)
 	{
+		//いったんこれで
+		return DifficultyManager::AttackPermission();
+
+
 		//危険度やばめだから行動しちゃダメ
 		if (!DifficultyManager::AttackPermission()) return false;
 

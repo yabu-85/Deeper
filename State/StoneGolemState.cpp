@@ -129,26 +129,31 @@ StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner), time
 	
 	//-----------------------------ビヘイビアツリーの設定--------------------------------------
 	root_ = new Root();
+	
 	Selector* selector1 = new Selector();
 	root_->SetRootNode(selector1);
 
-	//---------------------------------------攻撃StateのSelectorの登録----------------------------
-	Selector* selector2 = new Selector();
-	IsNotEnemyCombatState* condition1 = new IsNotEnemyCombatState(selector2, "Attack", e);
-	selector1->AddChildren(condition1);
+	Selector* waitSelector = new Selector();
+	Selector* moveSelector = new Selector();
+	Selector* attackSelector = new Selector();
+	IsEnemyCombatState* wCon = new IsEnemyCombatState(waitSelector, "Wait", e);
+	IsEnemyCombatState* mCon = new IsEnemyCombatState(moveSelector, "Move", e);
+	//IsEnemyCombatState* aCon = new IsEnemyCombatState(attackSelector, "Attack", e);
+	selector1->AddChildren(wCon);
+	selector1->AddChildren(mCon);
+	//selector1->AddChildren(aCon);
 
-	//----------------DifficultyManager：攻撃許可申請・Moveへ移行する-------------
+	//-------------------------------------Wait--------------------------------------
 	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(e, "Move");
-	IsEnemyAttackReady* condition2 = new IsEnemyAttackReady(action1, e);
-	IsEnemyAttackPermission* conditionA = new IsEnemyAttackPermission(condition2, e);
-	IsEnemyCombatState* condition3 = new IsEnemyCombatState(conditionA, "Wait", e);
-	selector2->AddChildren(condition3);
+	IsEnemyAttackPermission* condition2 = new IsEnemyAttackPermission(action1, e);
+	waitSelector->AddChildren(condition2);
 
-	//--------------------Attackへ移行する-----------------------
+	//-------------------------------------Move--------------------------------------
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 2.0f, e, GameManager::GetPlayer());
-	IsEnemyCombatState* condition5 = new IsEnemyCombatState(condition4, "Move", e);
-	selector2->AddChildren(condition5);
+	IsPlayerInRangeNode* condition3 = new IsPlayerInRangeNode(action2, 2.0f, e, GameManager::GetPlayer());
+	moveSelector->AddChildren(condition3);
+
+	//-------------------------------------Attack--------------------------------------
 
 }
 
@@ -175,16 +180,6 @@ void StoneGolemCombat::OnEnter()
 StoneGolemCombat::~StoneGolemCombat()
 {
 	delete root_;
-}
-
-//--------------------------------------------------------------------------------
-
-StoneGolemDead::StoneGolemDead(StateManager* owner) : StateBase(owner)
-{
-}
-
-void StoneGolemDead::Update()
-{
 }
 
 //-------------------------------------CombatState-------------------------------------------
@@ -221,7 +216,7 @@ void StoneGolemWait::OnEnter()
 
 }
 
-//--------------------------------------------------------------------------------
+//------------------------------------Move--------------------------------------------
 
 StoneGolemMove::StoneGolemMove(StateManager* owner) : StateBase(owner)
 {
@@ -257,7 +252,7 @@ void StoneGolemMove::OnExit()
 	e->GetMoveAction()->StopMove();
 }
 
-//--------------------------------------------------------------------------------
+//-------------------------------------Attack-------------------------------------------
 
 StoneGolemAttack::StoneGolemAttack(StateManager* owner) : StateBase(owner), time_(0)
 {

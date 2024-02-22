@@ -15,6 +15,8 @@ EnemyChangeStateNode::Status EnemyChangeStateNode::Update()
 	return Status::SUCCESS;
 }
 
+//----------------------------------------------------------------------------------------
+
 EnemyChangeCombatStateNode::EnemyChangeCombatStateNode(EnemyBase* owner, std::string name)
 	: Action(), stateName_(name), owner_(owner)
 {
@@ -27,3 +29,5 @@ EnemyChangeCombatStateNode::Status EnemyChangeCombatStateNode::Update()
 
 	return Status::SUCCESS;
 }
+
+//----------------------------------------------------------------------------------------

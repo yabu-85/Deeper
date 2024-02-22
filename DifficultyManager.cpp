@@ -7,16 +7,18 @@
 
 namespace DifficultyManager {
 	static const int MAX_DIFFICULTY = 50;
-	int difficulty = 0;
-
 	struct EnemyData
 	{
 		int enemyPowerLevels;
 		EnemyData(int p) : enemyPowerLevels(p) {}
-	}data_[ENEMY_MAX]{
+	}static const data_[ENEMY_MAX]{
 		EnemyData(10),	//Stone
 		EnemyData(5),	//Throw
 	};
+	
+	int difficulty = 0;
+
+	//--------------------------------------------
 
 	void Initialize()
 	{
@@ -34,12 +36,8 @@ namespace DifficultyManager {
 		std::vector<EnemyBase*> eList = GameManager::GetEnemyManager()->GetAllEnemy();
 		if (!eList.empty()) {
 			for (auto e : eList) {
-				if (e->GetStateManager()->GetName() != "Combat") continue;
-				
-				std::string name = e->GetCombatStateManager()->GetName();
-				if (name == "Attack" || name == "Move") 
+				if (e->GetStateManager()->GetName() != "Combat" && e->GetCombatStateManager()->GetName() == "Attack")
 					difficulty += data_[(int)e->GetEnemyType()].enemyPowerLevels;
-			
 			}
 		}
 

@@ -11,4 +11,3 @@ public:
 	IsEnemyAttackReady(TreeNode* child, EnemyBase* enemy);
 	Status Update() override;
 };
-

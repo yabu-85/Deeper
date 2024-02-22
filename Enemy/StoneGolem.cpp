@@ -68,7 +68,6 @@ void StoneGolem::Initialize()
 	pStateManager_->AddState(new StoneGolemAppear(pStateManager_));
 	pStateManager_->AddState(new StoneGolemPatrol(pStateManager_));
 	pStateManager_->AddState(new StoneGolemCombat(pStateManager_));
-	pStateManager_->AddState(new StoneGolemDead(pStateManager_));
 	pStateManager_->ChangeState("Appear");
 	pStateManager_->Initialize();
 	

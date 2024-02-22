@@ -29,8 +29,8 @@ public:
     Status Tick();
 
     virtual Status Update() = 0;    //本体処理
-    virtual void Initialize() {}    //Invalidの時だけ実行
-    virtual void Terminate() {};    //Running以外の時実行
+    //virtual void Initialize() {}    //Invalidの時だけ実行
+    //virtual void Terminate() {};    //Running以外の時実行
 
     virtual void ResetState() { status_ = Status::INVALID; }
     void SetStatus(Status newState) { status_ = newState; }
@@ -67,7 +67,6 @@ class Sequence : public CompositeNode
 public:
     Sequence();
     virtual ~Sequence() override;
-    void Initialize() override;
     Status Update() override;
 };
 
@@ -78,7 +77,6 @@ class Selector : public CompositeNode
 public:
     Selector();
     virtual ~Selector() override;
-    void Initialize() override;
     Status Update() override;
 };
 

@@ -15,20 +15,26 @@ TreeNode::Status TreeNode::Tick()
 {
     
     return status_ = Update();
-    //Initalize / Terminate今のとこ使う予定がない、そのままなら無くてもいいんじゃないかな
+    
+    //Initalize / Terminate今のとこ使う予定がない、そのままなら無くてもいいんじゃないかな重くなるし
+    //
 
-
+    /*
     if (status_ == Status::INVALID)
     {
         Initialize();
     }
-
+    */
+    
     status_ = Update();
 
+    /*
     if (status_ != Status::RUNNING)
     {
         Terminate();
     }
+    */
+
     return status_;
 }
 
@@ -65,11 +71,6 @@ Sequence::~Sequence()
 {
 }
 
-void Sequence::Initialize()
-{
-    currentIndex_ = 0;
-}
-
 Sequence::Status Sequence::Update()
 {
     Status s;
@@ -92,11 +93,6 @@ Selector::Selector() : CompositeNode()
 
 Selector::~Selector()
 {
-}
-
-void Selector::Initialize()
-{
-    currentIndex_ = 0;
 }
 
 Selector::Status Selector::Update()

@@ -4,6 +4,8 @@
 StageBase::StageBase(GameObject* parent, std::string name)
 	:GameObject(parent, name), isCleared_(false)
 {
+	OutputDebugString("StageBase : Stage Constract\n");
+
 }
 
 void StageBase::Initialize()

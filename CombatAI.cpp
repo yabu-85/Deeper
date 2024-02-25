@@ -20,10 +20,6 @@ namespace CombatAI {
 		calcTime_++;
 		if (calcTime_ % CALC_RAND != 0) return;
 		
-		//ここでEnemyごとのやる
-		//IsEnemyなんたらでポインタのエネミーは行動をしていいかをboolのみ
-		//計算したものを渡す
-
 		EnemyBase* pAimEnemy = GameManager::GetPlayer()->GetAim()->GetTargetEnemy();
 		float minCombatDist = 99999.9f;
 

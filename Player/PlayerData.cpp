@@ -8,27 +8,25 @@
 
 namespace PlayerData {
     PlayerStats data_;
-    Text* pText = nullptr;
+    Text* pTextP = nullptr;
 
     void Initialize()
     {
         ResetData();
 
-        pText = new Text();
-        pText->Initialize();
+        pTextP = new Text();
+        pTextP->Initialize();
 
     }
 
     void Draw()
     {
-        pText->Draw(30, 250, data_.clearStageCount_);
+        if(rand() % 5 == 0) pTextP->Draw(30, 250, data_.clearStageCount_);
 
     }
 
     void SceneTransitionInitialize()
     {
-        pText->Initialize();
-
     }
 
     void ResetData()

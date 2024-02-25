@@ -66,7 +66,7 @@ public:
     void Update() override;
     void SetDirection(XMVECTOR vec) { direction_ = vec; }
 
-    //count‚Ì”ˆÚ“®‚µ‚½æ‚ª•Ç‚©‚Ç‚¤‚©F•Ç‚Ìê‡true
+    //count‚Ì”ˆÚ“®‚µ‚½A•Ç‚ÉÚG‚·‚é‚©‚Ç‚¤‚©F•Ç‚Ìê‡true
     bool CheckWallCollision(int count);
 
 };

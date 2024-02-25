@@ -51,6 +51,7 @@ public:
 
 class StoneGolemMove : public StateBase
 {
+	int time_;
 public:
 	StoneGolemMove(StateManager* owner);
 	const char* GetName() const override { return "Move"; }

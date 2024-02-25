@@ -9,9 +9,12 @@ Character::Character(GameObject* parent, std::string name)
 
 void Character::ReflectCharacter() {
 	std::vector<Character*> cList = GameManager::GetCharacterList();
+	float sY = transform_.position_.y;
 
 	for (Character* c : cList) {
 		if (c == this) continue;
+
+		float oY = c->transform_.position_.y;
 
 		//相手の中心方向へのベクトルを求める
 		XMFLOAT3 tarPos = c->GetPosition();
@@ -43,6 +46,8 @@ void Character::ReflectCharacter() {
 			XMStoreFloat3(&transform_.position_, sPos);
 			oPos = oPos + direction + (push * oWeight);
 			XMStoreFloat3(&c->transform_.position_, oPos);
+			
+			transform_.position_.y = oY;
 		}
 	}
 }

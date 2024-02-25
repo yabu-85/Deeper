@@ -40,6 +40,8 @@ void SceneManager::Update()
 	//次のシーンが現在のシーンと違う　＝　シーンを切り替えなければならない
 	if (currentSceneID_ != nextSceneID_)
 	{
+		OutputDebugString("SceneManager : ChangeInitialize\n");
+		
 		//今のプレイヤーのデータを保存する
 		PlayerData::SavePlayerData();
 
@@ -66,6 +68,8 @@ void SceneManager::Update()
 			case SCENE_ID_STAGE2: Instantiate<Stage2>(this); break;
 			case SCENE_ID_STAGE3: Instantiate<Stage3>(this); break;
 		}
+
+		OutputDebugString("SceneManager : ChangeScene\n");
 
 		Audio::Initialize();
 		currentSceneID_ = nextSceneID_;

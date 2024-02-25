@@ -6,38 +6,48 @@
 #include <vector>
 
 namespace DifficultyManager {
-	static const int MAX_DIFFICULTY = 50;
 	struct EnemyData
 	{
 		int enemyPowerLevels;
 		EnemyData(int p) : enemyPowerLevels(p) {}
-	}static const data_[ENEMY_MAX]{
+	}data_[ENEMY_MAX]{
 		EnemyData(10),	//Stone
 		EnemyData(5),	//Throw
 	};
 	
-	int difficulty = 0;
+	//使うかどうか・・・	//修正箇所
+	int stageTime_;
+	int waveTime_;
+
+	int maxDifficulty_ = 50;
+	int waveDifficulty_ = 0;
+
+	/*
+	難易度を決めるパラメータ
+	　Wave　
+		クリア時間
+		HP
+	　常時
+		ゲーム周りの敵の強さの合計で判断
+		今攻撃している敵のなんか
+		HP
+	*/
 
 	//--------------------------------------------
 
 	void Initialize()
 	{
-
 	}
 
 	void Update()
 	{
-		//修正箇所
-		//今いるEnemyの中でMainStateがCombatのやつの中から一番高い対象を計算
-		//そのEnemyは常時リストに追加みたいな感じで
-
-		//難易度の計算
-		difficulty = 0;
+		//現在の難易度を計算
+		waveDifficulty_ = 0;
 		std::vector<EnemyBase*> eList = GameManager::GetEnemyManager()->GetAllEnemy();
 		if (!eList.empty()) {
 			for (auto e : eList) {
 				if (e->GetStateManager()->GetName() != "Combat" && e->GetCombatStateManager()->GetName() == "Attack")
-					difficulty += data_[(int)e->GetEnemyType()].enemyPowerLevels;
+					waveDifficulty_ += data_[(int)e->GetEnemyType()].enemyPowerLevels;
 			}
 		}
 
@@ -45,13 +55,12 @@ namespace DifficultyManager {
 
 	void SceneTransitionInitialize()
 	{
-		difficulty = 0;
-
+		waveDifficulty_ = 0;
 	}
 
 	bool AttackPermission()
 	{
-		if (difficulty <= MAX_DIFFICULTY) return true;
+		if (waveDifficulty_ <= maxDifficulty_) return true;
 		return false;
 	}
 

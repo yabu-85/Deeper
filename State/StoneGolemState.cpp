@@ -27,6 +27,9 @@ namespace {
 	static const float SLOW_SPEED = 0.04f;
 	static const float ROTATE_RATIO = 0.07f;
 
+	static const int FPS = 60;
+	static const int MAX_MOVE_TIME = 5;
+
 	//攻撃Stateの情報
 	static const int ATTACK_FRAME[2] = { 0, 300 };
 	static const float ATTACK_ROTATE_RATIO = 0.05f;
@@ -51,7 +54,7 @@ void StoneGolemAppear::Update()
 	time_++;
 	if (time_ > APPER_TIME) owner_->ChangeState("Patrol");
 
-	float tsize = (float)time_ / (float)APPER_TIME * 1.2f;
+	float tsize = (float)time_ / (float)APPER_TIME;
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
 	e->SetScale(XMFLOAT3(tsize, tsize, tsize));
 
@@ -68,8 +71,7 @@ void StoneGolemAppear::OnEnter()
 void StoneGolemAppear::OnExit()
 {
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
-	float size = 1.2f;
-	e->SetScale(XMFLOAT3(size, size, size));
+	e->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 }
 
@@ -127,7 +129,7 @@ StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner), time
 {
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
 	
-	//-----------------------------ビヘイビアツリーの設定--------------------------------------
+	//----------ビヘイビアツリーの設定------------
 	root_ = new Root();
 	
 	Selector* selector1 = new Selector();
@@ -138,20 +140,19 @@ StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner), time
 	Selector* attackSelector = new Selector();
 	IsEnemyCombatState* wCon = new IsEnemyCombatState(waitSelector, "Wait", e);
 	IsEnemyCombatState* mCon = new IsEnemyCombatState(moveSelector, "Move", e);
-	//IsEnemyCombatState* aCon = new IsEnemyCombatState(attackSelector, "Attack", e);
 	selector1->AddChildren(wCon);
 	selector1->AddChildren(mCon);
-	//selector1->AddChildren(aCon);
 
 	//-------------------------------------Wait--------------------------------------
 	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(e, "Move");
 	IsEnemyAttackPermission* condition2 = new IsEnemyAttackPermission(action1, e);
-	waitSelector->AddChildren(condition2);
+	IsEnemyAttackReady* condition3 = new IsEnemyAttackReady(condition2, e);
+	waitSelector->AddChildren(condition3);
 
 	//-------------------------------------Move--------------------------------------
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsPlayerInRangeNode* condition3 = new IsPlayerInRangeNode(action2, 2.0f, e, GameManager::GetPlayer());
-	moveSelector->AddChildren(condition3);
+	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 2.0f, e, GameManager::GetPlayer());
+	moveSelector->AddChildren(condition4);
 
 	//-------------------------------------Attack--------------------------------------
 
@@ -193,9 +194,8 @@ void StoneGolemWait::Update()
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
 	e->GetRotateAction()->Update();
 
-	e->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
-	
 	//壁に当たったか調べて
+	e->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
 	if (e->GetOrientedMoveAction()->CheckWallCollision(1)) {
 		e->GetOrientedMoveAction()->SetDirection(XMVector3Normalize(XMVECTOR{ 0.7f, 0.0f, 0.3f, 0.0f }));
 	}
@@ -211,39 +211,38 @@ void StoneGolemWait::OnEnter()
 
 	//プレイヤーから指定の範囲内で
 	//ゲーム参考にしてから作る
-
 	e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, -1, 0 });
 
 }
 
 //------------------------------------Move--------------------------------------------
 
-StoneGolemMove::StoneGolemMove(StateManager* owner) : StateBase(owner)
+StoneGolemMove::StoneGolemMove(StateManager* owner) : StateBase(owner), time_(0)
 {
 }
 
 void StoneGolemMove::Update()
 {
-	//らんｄやめよう
+	time_--;
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
-	if (e->GetMoveAction()->IsInRange() && rand() % 10 == 0) {
-		e->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
-	}
 
-	if (e->GetMoveAction()->IsOutTarget(3.0f)) {
+	if (e->GetMoveAction()->IsInRange() || (time_ % 5 == 0 && e->GetMoveAction()->IsOutTarget(3.0f)) ) {
 		e->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
 	}
 
 	e->GetMoveAction()->Update();
 	e->GetRotateAction()->Update();
+
+	//移動時間終了
+	if(time_ <= 0) owner_->ChangeState("Wait");
 }
 
 void StoneGolemMove::OnEnter()
 {
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
-
+	time_ = rand() % MAX_MOVE_TIME * FPS;
 }
 
 void StoneGolemMove::OnExit()
@@ -316,9 +315,6 @@ void StoneGolemAttack::OnEnter()
 	e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
 	e->GetOrientedMoveAction()->SetMoveSpeed(MOVESPEED_FRAME3);
 	e->GetRotateAction()->SetRatio(ATTACK_ROTATE_RATIO);
-	
-	e->SetAttackCoolDown(ATTACK_FRAME[1] + rand() % 100);
-
 }
 
 void StoneGolemAttack::OnExit()
@@ -327,6 +323,7 @@ void StoneGolemAttack::OnExit()
 	e->GetOrientedMoveAction()->SetMoveSpeed(MOVESPEED_FRAME3);
 	e->GetRotateAction()->SetRatio(ROTATE_RATIO);
 
+	e->SetAttackCoolDown(rand() % 100);
 }
 
 //--------------------------------------------------------------------------------

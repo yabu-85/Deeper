@@ -17,6 +17,7 @@
 
 //デバッグ用
 #include "Engine/Input.h"
+#include "Enemy/EnemyBase.h"
 
 namespace GameManager {
 	EnemyManager* pEnemyManager_ = nullptr;
@@ -75,7 +76,11 @@ namespace GameManager {
 			if (Input::IsKeyDown(DIK_K)) { for (int i = 0; i < 20; i++) pEnemyManager_->SpawnEnemy(ENEMY_THROW); }
 
 			if (Input::IsKeyDown(DIK_B)) pWeaponObjectManager_->AllKillWeaponObject();
-			if (Input::IsKeyDown(DIK_V)) { pEnemyManager_->AllKillEnemy(); }
+			if (Input::IsKeyDown(DIK_V)) { 
+				std::vector<EnemyBase*> eList = pEnemyManager_->GetAllEnemy();
+				for (auto e : eList) e->ApplyDamage(1000000); 
+			}
+		
 		}
 		if (Input::IsKeyDown(DIK_TAB)) {
 			OutputDebugString("entity : ");

@@ -51,6 +51,8 @@ void Warp::Update()
 
 	time_++;
 	if (time_ >= WARP_TIME) {
+		OutputDebugString("Warp : Warp Time\n");
+		
 		GameManager::GetSceneManager()->ChangeScene(warpScene_);
 
 	}
@@ -95,6 +97,8 @@ void Warp::OnCollision(GameObject* pTarget)
 	isPlayerHit_ = true;
 
 	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction() && !LifeManager::IsDie()) {
+		OutputDebugString("Warp : Use\n");
+
 		GameManager::GetPlayer()->SetMainState(Player::MAIN_STATE::DISAPPEAR);
 		GameManager::GetPlayer()->GetAim()->SetValid(false);
 

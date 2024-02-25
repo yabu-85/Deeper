@@ -14,7 +14,7 @@ namespace WaveManager {
 	};
 
 	//ステージごとにEnemyTableを分けて、そのテーブルの中からランダムで選ぶ
-	static const std::vector<std::vector<ENEMY_TYPE>> spawnEnemyTable[2] = {
+	std::vector<std::vector<ENEMY_TYPE>> spawnEnemyTable[2] = {
 		{
 			{ ENEMY_STONEGOLEM, ENEMY_STONEGOLEM, ENEMY_THROW},
 			{ ENEMY_STONEGOLEM, ENEMY_THROW, ENEMY_THROW},

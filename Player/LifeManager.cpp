@@ -2,7 +2,6 @@
 #include "../GameManager.h"
 #include "../Engine/Transform.h"
 #include "../Engine/Sprite.h"
-#include "../Engine/Text.h"
 
 namespace LifeManager {
 	static const int MAX_ALPHA = 255;

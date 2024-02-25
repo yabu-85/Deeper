@@ -109,7 +109,7 @@ Player::~Player()
 
 void Player::Initialize()
 {
-    hModel_ = Model::Load("Model/Fiter2.fbx");
+    hModel_ = Model::Load("Model/Fiter3.fbx");
     assert(hModel_ >= 0);
 
     GameManager::AddCharacter(this);

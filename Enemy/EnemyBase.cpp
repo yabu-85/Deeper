@@ -44,9 +44,16 @@ void EnemyBase::ApplyDamage(int da)
 	if(pEnemyUi_) pEnemyUi_->SetParcent((float)(hp_) / (float)(maxHp_));
 	
 	if (hp_ <= 0) {
-		DropTable::DropItem(type_, transform_.position_);
-		GameManager::GetEnemyManager()->KillEnemy(this);
+		StateManager* ma = GetStateManager();
+		std::string name = ma->GetName();
+		if(name != "Dead") GetStateManager()->ChangeState("Dead");
 	}
+}
+
+void EnemyBase::Dead()
+{
+	DropTable::DropItem(type_, transform_.position_);
+	GameManager::GetEnemyManager()->KillEnemy(this);
 }
 
 bool EnemyBase::IsAttackReady()

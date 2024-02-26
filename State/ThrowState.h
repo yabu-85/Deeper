@@ -15,6 +15,15 @@ public:
 	void OnExit() override;
 };
 
+class ThrowDead : public StateBase
+{
+public:
+	ThrowDead(StateManager* owner);
+	const char* GetName() const override { return "Dead"; }
+	void Update() override;
+	void OnEnter() override;
+};
+
 class ThrowPatrol : public StateBase
 {
 	int foundSearchTime_;
@@ -36,14 +45,6 @@ public:
 	const char* GetName() const override { return "Combat"; }
 	void Update() override;
 	void OnEnter() override;
-};
-
-class ThrowDead : public StateBase
-{
-public:
-	ThrowDead(StateManager* owner);
-	const char* GetName() const override { return "Dead"; }
-	void Update() override;
 };
 
 //---------------------------------------------------------------------------------

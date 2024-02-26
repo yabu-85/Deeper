@@ -43,15 +43,13 @@ void ThrowEnemy::Initialize()
 	hp_ = maxHp_;
 	aimTargetPos_ = 1.0f;
 	bodyWeight_ = 10.0f;
-	bodyRange_ = 0.25f;
+	bodyRange_ = 0.3f;
 	attackDamage_ = 50;
-	combatDistance_ = 15.0f;
+	combatDistance_ = 10.0f;
 
 	//Colliderの設定
-	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.25, 0), 0.325f);
-	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 0.75, 0), 0.325f);
+	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.7f, 0), 0.6f);
 	AddCollider(collision1);
-	AddCollider(collision2);
 
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize(1.0f);
@@ -65,9 +63,9 @@ void ThrowEnemy::Initialize()
 	//ステートの設定
 	pStateManager_ = new StateManager(this);
 	pStateManager_->AddState(new ThrowAppear(pStateManager_));
+	pStateManager_->AddState(new ThrowDead(pStateManager_));
 	pStateManager_->AddState(new ThrowPatrol(pStateManager_));
 	pStateManager_->AddState(new ThrowCombat(pStateManager_));
-	pStateManager_->AddState(new ThrowDead(pStateManager_));
 	pStateManager_->ChangeState("Appear");
 	pStateManager_->Initialize();
 

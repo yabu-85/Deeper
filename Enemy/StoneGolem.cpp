@@ -66,6 +66,7 @@ void StoneGolem::Initialize()
 	//ステートの設定
 	pStateManager_ = new StateManager(this);
 	pStateManager_->AddState(new StoneGolemAppear(pStateManager_));
+	pStateManager_->AddState(new StoneGolemDead(pStateManager_));
 	pStateManager_->AddState(new StoneGolemPatrol(pStateManager_));
 	pStateManager_->AddState(new StoneGolemCombat(pStateManager_));
 	pStateManager_->ChangeState("Appear");
@@ -128,9 +129,17 @@ void StoneGolem::Release()
 void StoneGolem::ApplyDamage(int da)
 {
 	EnemyBase::ApplyDamage(da);
+	//死んでたら終わり
+	if (pStateManager_->GetName() == "Dead") return;
 
 	if (pStateManager_->GetName() != "Combat") {
 		pStateManager_->ChangeState("Combat");
 	}
 
+}
+
+void StoneGolem::SetAllHandColliderValid(bool b)
+{
+	pHandCollider_[0]->SetValid(b);
+	pHandCollider_[1]->SetValid(b);
 }

@@ -15,6 +15,16 @@ public:
 	void OnExit() override;
 };
 
+class StoneGolemDead : public StateBase
+{
+	int time_;
+public:
+	StoneGolemDead(StateManager* owner);
+	const char* GetName() const override { return "Dead"; }
+	void Update() override;
+	void OnEnter() override;
+};
+
 class StoneGolemPatrol : public StateBase
 {
 	int foundSearchTime_;

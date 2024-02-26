@@ -58,6 +58,22 @@ void ThrowAppear::OnExit()
 
 //--------------------------------------------------------------------------------
 
+ThrowDead::ThrowDead(StateManager* owner) : StateBase(owner)
+{
+}
+
+void ThrowDead::Update()
+{
+}
+
+void ThrowDead::OnEnter()
+{
+	ThrowEnemy* e = static_cast<ThrowEnemy*>(owner_->GetGameObject());
+	e->Dead();
+}
+
+//--------------------------------------------------------------------------------
+
 ThrowPatrol::ThrowPatrol(StateManager* owner) : StateBase(owner), foundSearchTime_(0)
 {
 }
@@ -157,16 +173,6 @@ void ThrowCombat::OnEnter()
 ThrowCombat::~ThrowCombat()
 {
 	delete root_;
-}
-
-//--------------------------------------------------------------------------------
-
-ThrowDead::ThrowDead(StateManager* owner) : StateBase(owner)
-{
-}
-
-void ThrowDead::Update()
-{
 }
 
 //-------------------------------------CombatState-------------------------------------------

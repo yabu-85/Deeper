@@ -30,6 +30,7 @@ public:
     virtual void Draw() override = 0;
     virtual void Release();
     virtual void ApplyDamage(int da);
+    void Dead();
 
     float GetAimTargetPos() { return aimTargetPos_; }
     void SetAttackDamage(int i) { attackDamage_ = i; }

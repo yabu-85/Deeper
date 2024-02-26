@@ -38,6 +38,7 @@ namespace {
 	static const int CALC_FRAME3[2] = { 235, 247 };
 	//UŒ‚‚P‚Ìî•ñ
 	static const int ROTATE_FRAME = 30;
+	static const float ATTACK_READY_DISTANCE = 2.0f;
 	//UŒ‚‚R‚Ìî•ñ
 	static const int ROTATE_FRAME3[2] = { 140, 230 };
 	static const int ATTACK_EFFECT_TIME[2] = { 244, 247 };
@@ -151,7 +152,7 @@ StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner), time
 
 	//-------------------------------------Move--------------------------------------
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 2.0f, e, GameManager::GetPlayer());
+	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, ATTACK_READY_DISTANCE, e, GameManager::GetPlayer());
 	moveSelector->AddChildren(condition4);
 
 	//-------------------------------------Attack--------------------------------------
@@ -211,7 +212,12 @@ void StoneGolemWait::OnEnter()
 
 	//ƒvƒŒƒCƒ„[‚©‚çŽw’è‚Ì”ÍˆÍ“à‚Å
 	//ƒQ[ƒ€ŽQl‚É‚µ‚Ä‚©‚çì‚é
-	e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, -1, 0 });
+	XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
+	XMFLOAT3 ePos = e->GetPosition();
+	XMFLOAT3 vec = { pPos.x - ePos.x, 0.0f, pPos.z - ePos.z };
+	float dist = sqrt(vec.x * vec.x + vec.z * vec.z);
+	if(dist <= e->GetCombatDistance()) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
+	else e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, -1, 0 });
 
 }
 

@@ -18,6 +18,7 @@
 //デバッグ用
 #include "Engine/Input.h"
 #include "Enemy/EnemyBase.h"
+#include "CombatAI.h"
 
 namespace GameManager {
 	EnemyManager* pEnemyManager_ = nullptr;
@@ -52,6 +53,7 @@ namespace GameManager {
 		//ここタイトルシーン・リザルトシーンでのUpdateはいらないよDrawもね
 		if (!GameManager::GetStage()) return;
 
+		CombatAI::Update();
 		WaveManager::Update();
 		LifeManager::Update();
 		DifficultyManager::Update();
@@ -60,7 +62,7 @@ namespace GameManager {
 		//終わるかどうかの判定
 		time_++;
 		if (isEnd_) {
-			if(time_ >= 230) pSceneManager_->ChangeScene(SCENE_ID_RESULT);
+			if(time_ >= 0) pSceneManager_->ChangeScene(SCENE_ID_RESULT);
 
 		}
 		else if (PlayerData::GetClearStageCount() >= 10 || LifeManager::IsDie()) {

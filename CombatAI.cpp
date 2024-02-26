@@ -21,39 +21,40 @@ namespace CombatAI {
 		if (calcTime_ % CALC_RAND != 0) return;
 		
 		EnemyBase* pAimEnemy = GameManager::GetPlayer()->GetAim()->GetTargetEnemy();
+		std::vector<EnemyBase*> eList = GameManager::GetEnemyManager()->GetAllEnemy();
 		float minCombatDist = 99999.9f;
-
-		for (auto e : GameManager::GetEnemyManager()->GetAllEnemy()) {
-			//CombatStateでもない・すでに攻撃Stateなら計算しない
-			if (e->GetStateManager()->GetName() != "Combat" || e->GetCombatStateManager()->GetName() == "Attack") continue;
-			
-
-
-
+		int minCombatIndex = -1;
+		XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
 		
+		for (int i = 0; i < eList.size();i++) {
+			//CombatStateでもない・すでに攻撃Stateなら計算しない
+			eList[i]->SetCombatReady(false);
+			if (eList[i]->GetStateManager()->GetName() != "Combat" || eList[i]->GetCombatStateManager()->GetName() == "Attack") continue;
+			
+			//AimTargetのEnemyは優先的に
+			if (pAimEnemy == eList[i] && rand() % 2 == 0) {
+				eList[i]->SetCombatReady(true);
+				break;
+			}
+			//AimTargetじゃないやつ
+			else {
+				XMFLOAT3 enePos = eList[i]->GetPosition();
+				XMFLOAT3 vec = { plaPos.x - enePos.x, 0.0f, plaPos.z - enePos.z };
+				float dist = sqrtf(vec.x * vec.x + vec.z * vec.z);
+				if (dist <= minCombatDist) minCombatIndex = i;
+			}
 		}
+
+		//AimTarget以外で一番近いやつ
+		if (minCombatIndex >= 0 && rand() % 5 == 0) {
+			eList[minCombatIndex]->SetCombatReady(true);
+		}
+
 	}
 
 	bool IsEnemyAttackPermission(EnemyBase* enemy)
 	{
-		//いったんこれで
-		return DifficultyManager::AttackPermission();
-
-
-		//危険度やばめだから行動しちゃダメ
-		if (!DifficultyManager::AttackPermission()) return false;
-
-		XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
-		XMFLOAT3 enePos = enemy->GetPosition();
-		XMFLOAT3 vec = { plaPos.x - enePos.x, 0.0f, plaPos.z - enePos.z };
-
-		//距離計算して範囲内なら行動可能
-		float dist = sqrtf(vec.x * vec.x + vec.z * vec.z);
-		if (dist <= enemy->GetCombatDistance()) return true;
-
-		//範囲外だと敵全員動かんかもしれん
-		//一番近い敵やったら行動してええみたいな処理が必要になる
-
+		if (DifficultyManager::AttackPermission() && enemy->GetCombatReady()) return true;
 		return false;
 	}
 

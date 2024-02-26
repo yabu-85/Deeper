@@ -21,7 +21,7 @@ namespace PlayerData {
 
     void Draw()
     {
-        if(rand() % 5 == 0) pTextP->Draw(30, 250, data_.clearStageCount_);
+        pTextP->Draw(30, 250, data_.clearStageCount_);
 
     }
 

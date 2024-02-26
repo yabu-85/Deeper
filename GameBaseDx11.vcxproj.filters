@@ -396,6 +396,12 @@
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
     <ClCompile Include="CombatAI.cpp" />
+    <ClCompile Include="Enemy\MeleeFighter.cpp">
+      <Filter>08Enemy\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="State\MeleeFighterState.cpp">
+      <Filter>06State\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -666,6 +672,12 @@
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
     <ClInclude Include="CombatAI.h" />
+    <ClInclude Include="Enemy\MeleeFighter.h">
+      <Filter>08Enemy\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="State\MeleeFighterState.h">
+      <Filter>06State\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

@@ -27,76 +27,16 @@ namespace {
     const int lifeMax = 50;
     const int invincible = 60;
     const int APPER_TIME = 60;
-    const int HEAR_TIME = 50;
 
     bool isCollider = true; //当たり判定するかどうか
     Text* pText = new Text;
 
 }
 
-void Player::AppearUpdate()
-{
-    time_--;
-    transform_.position_.y -= 0.5f;
-
-    XMFLOAT3 cPos = XMFLOAT3(apperPos_.x, apperPos_.y + 5.0f, apperPos_.z + 13.0f);
-    pAim_->SetCompulsion(cPos, apperPos_);
-
-    if (time_ <= 0) {
-        state_ = MAIN_STATE::DEFAULT;
-        XMFLOAT3 pos = { transform_.position_.x, transform_.position_.y + 0.7f, transform_.position_.z };
-        VFXManager::CreatVfxExplode1(pos);
-    }
-}
-
-void Player::DisAppearUpdate()
-{
-    transform_.position_.y -= 0.1f;
-
-}
-
-void Player::HearUpdate()
-{
-    float speed = (float)time_ / (float)HEAR_TIME;
-    BackMove(speed);
-
-    if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
-    ReflectCharacter();
-
-    time_--;
-    if (time_ <= 0) {
-        Model::SetAnimFrame(hModel_, 0, 120, 1.0f);
-        state_ = MAIN_STATE::DEFAULT;
-    }
-
-}
-
-void Player::DeadUpdate()
-{
-    time_--;
-    if (time_ <= -(495 - 260)) {
-        Model::SetAnimeStop(hModel_, true);
-    }
-
-    if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
-    ReflectCharacter();
-
-}
-
-void Player::DefaultUpdate()
-{
-    pStateManager_->Update();
-    if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
-
-    if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
-    ReflectCharacter();
-
-}
-
 Player::Player(GameObject* parent)
     : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
     pAnimationController_(nullptr), pCollider_{nullptr, nullptr},
-    moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), state_(MAIN_STATE::APPEAR), apperPos_(0,0,0), time_(0), gradually_(0.0f)
+    moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), apperPos_(0,0,0), time_(0), gradually_(0.0f)
 {
 }
 
@@ -127,8 +67,15 @@ void Player::Initialize()
     pAnimationController_ = new AnimationController(hModel_);
     pAnimationController_->AddAnime(0, 120);    //待機
     pAnimationController_->AddAnime(548, 590);  //走り
-    pAnimationController_->AddAnime(120, 180);  //ローリング
+    pAnimationController_->AddAnime(120, 175);  //ローリング
     pAnimationController_->AddAnime(500, 546);  //バックステップ
+    pAnimationController_->AddAnime(175, 210);  //ダメージ小
+    pAnimationController_->AddAnime(210, 260);  //ダメージ中
+    pAnimationController_->AddAnime(260, 495);  //死亡
+    pAnimationController_->AddAnime(595, 650);  //攻撃1
+    pAnimationController_->AddAnime(650, 700);  //攻撃2
+    pAnimationController_->AddAnime(666, 700);  //攻撃3
+    pAnimationController_->AddAnime(700, 800);  //StoneAttack
 
     pAim_ = Instantiate<Aim>(this);
     pCommand_ = new PlayerCommand();
@@ -144,7 +91,11 @@ void Player::Initialize()
     pStateManager_->AddState(new PlayerAvo(pStateManager_));
     pStateManager_->AddState(new PlayerAtk(pStateManager_));
     pStateManager_->AddState(new PlayerSubAtk(pStateManager_));
-    pStateManager_->ChangeState("Wait");
+    pStateManager_->AddState(new PlayerHear(pStateManager_));
+    pStateManager_->AddState(new PlayerDead(pStateManager_));
+    pStateManager_->AddState(new PlayerAppear(pStateManager_));
+    pStateManager_->AddState(new PlayerDisAppear(pStateManager_));
+    pStateManager_->ChangeState("Appear");
     pStateManager_->Initialize();
 
     pCollider_[1] = new SphereCollider(XMFLOAT3(0.0f, 0.95f, 0.0f), 0.25f);
@@ -163,17 +114,14 @@ void Player::Update()
 {
     pCommand_->Update();
     pAnimationController_->Update();
+    pStateManager_->Update();
 
-    //MainState
-    if (state_ == MAIN_STATE::DEFAULT) DefaultUpdate();
-    else if (state_ == MAIN_STATE::HEAR) HearUpdate();
-    else if (state_ == MAIN_STATE::DEAD) DeadUpdate();
-    else if (state_ == MAIN_STATE::APPEAR) AppearUpdate();
-    else if (state_ == MAIN_STATE::DISAPPEAR) DisAppearUpdate();
-    
+    if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
+    if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
+    ReflectCharacter();
+
     //デバッグ用
-    if (Input::IsKey(DIK_3)) { LifeManager::DirectDamage(1); ReceivedDamage(); }
-    if (Input::IsKey(DIK_4)) PlayerData::AddClearStageCount(SCENE_ID_STAGE1);
+    if (Input::IsKey(DIK_3)) { LifeManager::Damage(30); }
     if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;
     if (Input::IsKey(DIK_DOWNARROW)) transform_.position_.y -= 0.1f;
     if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
@@ -208,13 +156,11 @@ void Player::OnAttackCollision(GameObject* pTarget)
         EnemyBase* enemy = static_cast<EnemyBase*>(pTarget);
         TargetRotate(enemy->GetPosition());
         LifeManager::Damage(enemy->GetAttackDamage());
-        ReceivedDamage();
     }
     else if (name.find("EBullet") != std::string::npos) {
         BulletBase* bullet = static_cast<BulletBase*>(pTarget);
         TargetRotate(bullet->GetPosition());
         LifeManager::Damage(bullet->GetDamage());
-        ReceivedDamage();
     }
 
 
@@ -384,26 +330,5 @@ void Player::Avo()
         GetSphereCollider(1)->SetValid(false);
 
     }
-
-}
-
-void Player::ReceivedDamage()
-{
-    pAim_->SetCameraShake(4, 0.1f, 0.7f, 0.3f, 0.8f);
-    
-    //死亡ならDeadState
-    if (LifeManager::IsDie()) {
-        state_ = MAIN_STATE::DEAD;
-        Model::SetAnimFrame(hModel_, 260, 495, 1.0f);
-        pAim_->SetAimMove(false);
-        time_ = 0;
-        return;
-    }
-    
-    time_ = HEAR_TIME;
-    state_ = MAIN_STATE::HEAR;
-    pStateManager_->ChangeState("Wait");
-    ResetMovement();
-    Model::SetAnimFrame(hModel_, 210, 260, 1.0f);
 
 }

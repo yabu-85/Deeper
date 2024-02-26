@@ -9,6 +9,7 @@
 #include "../Player/PlayerWeapon.h"
 #include "../Engine/Model.h"
 #include "../AnimationController.h"
+#include "../VFXManager.h"
 
 namespace {
 	static const int AVO_TIME = 40;
@@ -16,6 +17,7 @@ namespace {
 	static const int UP_COLLIDER_ACTIVE = 38;
 	static const float AVO_SPEED = 2.0f;
 	static const float CHANGE_TIME = 60;
+	static const int HEAR_TIME = 50;
 
 }
 
@@ -330,4 +332,102 @@ void PlayerSubAtk::OnExit()
 	}
 	p->GetPlayerWeapon()->GetSubWeapon()->ResetState();
 
+}
+
+//--------------------------------------------------------------------------------
+
+PlayerHear::PlayerHear(StateManager* owner) : StateBase(owner), time_(0), nextCmd_(0)
+{
+}
+
+void PlayerHear::Update()
+{
+	Player* p = static_cast<Player*>(owner_->GetGameObject());
+	float speed = 1.0f - ((float)time_ / (float)HEAR_TIME);
+	p->BackMove(speed);
+
+	time_++;
+	if (time_ >= HEAR_TIME) {
+		owner_->ChangeState("Wait");
+	}
+
+}
+
+void PlayerHear::OnEnter()
+{
+	time_ = 0;
+}
+
+//--------------------------------------------------------------------------------
+
+PlayerDead::PlayerDead(StateManager* owner) : StateBase(owner), time_(0)
+{
+}
+
+void PlayerDead::Update()
+{
+	Player* p = static_cast<Player*>(owner_->GetGameObject());
+	time_++;
+	
+	int s = p->GetAnimationController()->GetAnim(6).startFrame;
+	int e = p->GetAnimationController()->GetAnim(6).endFrame;
+
+	if (time_ >= (e - s)) {
+		Model::SetAnimeStop(p->GetModelHandle(), true);
+		//ここでプレイヤーの死亡制御終わったってやつ必要
+	}
+
+}
+
+void PlayerDead::OnEnter()
+{
+	time_ = 0;
+}
+
+//--------------------------------------------------------------------------------
+
+PlayerAppear::PlayerAppear(StateManager* owner) : StateBase(owner), time_(0), apperPos_{0.0f, 0.0f, 0.0f}
+{
+}
+
+void PlayerAppear::Update()
+{
+	Player* p = static_cast<Player*>(owner_->GetGameObject());
+	time_++;
+	
+	XMFLOAT3 pos = p->GetPosition();
+	owner_->GetGameObject()->SetPosition({ pos.x, pos.y - 0.5f, pos.z });
+
+	XMFLOAT3 cPos = XMFLOAT3(apperPos_.x, 5.0f, apperPos_.z + 13.0f);
+	p->GetAim()->SetCompulsion(cPos, apperPos_);
+
+	if (time_ >= 60) {
+		pos.y += 0.7f;
+		VFXManager::CreatVfxExplode1(pos);
+		owner_->ChangeState("Wait");
+	}
+}
+
+void PlayerAppear::OnEnter()
+{
+	apperPos_ = owner_->GetGameObject()->GetPosition();
+	time_ = 0;
+
+}
+
+//--------------------------------------------------------------------------------
+
+PlayerDisAppear::PlayerDisAppear(StateManager* owner) : StateBase(owner), time_(0)
+{
+}
+
+void PlayerDisAppear::Update()
+{
+	XMFLOAT3 pos = owner_->GetGameObject()->GetPosition();
+	owner_->GetGameObject()->SetPosition({ pos.x, pos.y - 0.1f, pos.z });
+
+}
+
+void PlayerDisAppear::OnEnter()
+{
 }

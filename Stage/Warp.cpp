@@ -10,6 +10,7 @@
 #include "../Player/Aim.h"
 #include "../UI/Interaction.h"
 #include "../UI/InteractionUI.h"
+#include "../State/StateManager.h"
 
 namespace {
 	static const int WARP_TIME = 100;
@@ -99,7 +100,7 @@ void Warp::OnCollision(GameObject* pTarget)
 	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction() && !LifeManager::IsDie()) {
 		OutputDebugString("Warp : Use\n");
 
-		GameManager::GetPlayer()->SetMainState(Player::MAIN_STATE::DISAPPEAR);
+		GameManager::GetPlayer()->GetStateManager()->ChangeState("DisAppear");
 		GameManager::GetPlayer()->GetAim()->SetValid(false);
 
 		GetColliderList().front()->SetValid(false);

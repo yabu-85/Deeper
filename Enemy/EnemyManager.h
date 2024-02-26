@@ -9,6 +9,7 @@ class GameObject;
 enum ENEMY_TYPE {
 	ENEMY_STONEGOLEM,
 	ENEMY_THROW,
+	ENEMY_MELEE,
 	ENEMY_MAX,
 };
 

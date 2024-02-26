@@ -14,6 +14,11 @@ void AnimationController::AddAnime(int s, int e)
 	animeDatas_.push_back(data);
 }
 
+AnimationController::AnimeData AnimationController::GetAnim(int id)
+{
+	return animeDatas_[id];
+}
+
 void AnimationController::SetNextAnime(int id, float blendFactor, float red)
 {
 	//“¯‚¶ID‚Ìê‡‚ÍblendFactor‚ğÄŒvZ‚·‚é

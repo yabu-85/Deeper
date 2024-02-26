@@ -1,7 +1,11 @@
 #include "LifeManager.h"
 #include "../GameManager.h"
+#include "../AnimationController.h"
 #include "../Engine/Transform.h"
 #include "../Engine/Sprite.h"
+#include "../Player/Player.h"
+#include "../Player/Aim.h"
+#include "../State/StateManager.h"
 
 namespace LifeManager {
 	static const int MAX_ALPHA = 255;
@@ -99,13 +103,27 @@ void LifeManager::DirectDamage(int i)
 
 void LifeManager::Damage(int i)
 {
-	if (!IsInvincible()) DirectDamage(i);
+	if (IsInvincible()) return;
+
+	DirectDamage(i);
+
+	Player* pPlayer = GameManager::GetPlayer();
+	pPlayer->GetAim()->SetCameraShake(4, 0.1f, 0.7f, 0.3f, 0.8f);
+
+	//Ž€–S‚µ‚Ä‚¢‚éê‡
+	if (LifeManager::IsDie()) {
+		pPlayer->GetStateManager()->ChangeState("Dead");
+		pPlayer->GetAnimationController()->SetNextAnime(6, 0.0f, 1.0f);
+		pPlayer->GetAim()->SetAimMove(false);
+		return;
+	}
+
+	pPlayer->GetStateManager()->ChangeState("Hear");
+	pPlayer->ResetMovement();
+	pPlayer->GetAnimationController()->SetNextAnime(5, 0.0f, 1.0f);
+
 }
 
-int LifeManager::GetReceiveDamage()
-{
-	return (defPlayerLife_ - playerLife_);
-}
-
+int LifeManager::GetReceiveDamage() { return (defPlayerLife_ - playerLife_); }
 bool LifeManager::IsInvincible() { return (invincibleTime_ > 0.0f); }
 bool LifeManager::IsDie() { return playerLife_ <= 0; }

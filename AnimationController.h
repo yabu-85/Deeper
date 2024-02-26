@@ -17,11 +17,11 @@ class AnimationController
 public:
 	AnimationController(int number);
 	void AddAnime(int s, int e);
+	AnimeData GetAnim(int id);
 
 	//redはblendFactorを１フレームごとに下げる値（整数で
 	void SetNextAnime(int id, float blendFactor, float red);
 
 	void Update();
-
 };
 

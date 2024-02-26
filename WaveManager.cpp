@@ -17,9 +17,10 @@ namespace WaveManager {
 	//ステージごとにEnemyTableを分けて、そのテーブルの中からランダムで選ぶ
 	std::vector<std::vector<ENEMY_TYPE>> spawnEnemyTable[2] = {
 		{
-			{ ENEMY_STONEGOLEM, ENEMY_STONEGOLEM, ENEMY_THROW},
-			{ ENEMY_STONEGOLEM, ENEMY_THROW, ENEMY_THROW},
-			{ ENEMY_STONEGOLEM, ENEMY_STONEGOLEM, ENEMY_THROW, ENEMY_THROW},
+			{ ENEMY_MELEE, ENEMY_MELEE, ENEMY_STONEGOLEM, ENEMY_THROW},
+		//	{ ENEMY_STONEGOLEM, ENEMY_STONEGOLEM, ENEMY_THROW},
+		//	{ ENEMY_STONEGOLEM, ENEMY_THROW, ENEMY_THROW},
+		//	{ ENEMY_STONEGOLEM, ENEMY_STONEGOLEM, ENEMY_THROW, ENEMY_THROW},
 		},
 		{
 			{ ENEMY_MAX, ENEMY_MAX},
@@ -81,7 +82,7 @@ namespace WaveManager {
 
 		DifficultyManager::SetMaxDifficulty(spawnEnemyTable[data_[currentDataIndex].spawnTable][r]);
 		EnemyManager* ma = GameManager::GetEnemyManager();
-		int max = (int)spawnEnemyTable[data_[currentDataIndex].spawnTable].size();
+		int max = (int)spawnEnemyTable[data_[currentDataIndex].spawnTable][r].size();
 		
 		for (int i = 0; i < max; i++) {
 			ENEMY_TYPE t = spawnEnemyTable[data_[currentDataIndex].spawnTable][r].at(i);

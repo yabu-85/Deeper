@@ -1,8 +1,8 @@
-#include "StoneGolemState.h"
+#include "MeleeFighterState.h"
 #include "StateManager.h"
 #include "../Player/Player.h"
 #include "../Player/Aim.h"
-#include "../Enemy/StoneGolem.h"
+#include "../Enemy/MeleeFighter.h"
 #include "../Stage/CreateStage.h"
 #include "../GameManager.h"
 #include "../Enemy/EnemyUi.h"
@@ -47,46 +47,46 @@ namespace {
 
 }
 
-StoneGolemAppear::StoneGolemAppear(StateManager* owner) : StateBase(owner), time_(0)
+MeleeFighterAppear::MeleeFighterAppear(StateManager* owner) : StateBase(owner), time_(0)
 {
 }
 
-void StoneGolemAppear::Update()
+void MeleeFighterAppear::Update()
 {
 	time_++;
 	if (time_ > APPER_TIME) owner_->ChangeState("Patrol");
 
 	float tsize = (float)time_ / (float)APPER_TIME;
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->SetScale(XMFLOAT3(tsize, tsize, tsize));
 
 }
 
-void StoneGolemAppear::OnEnter()
+void MeleeFighterAppear::OnEnter()
 {
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	XMFLOAT3 pos = e->GetPosition();
 	VFXManager::CreatVfxEnemySpawn(pos, APPER_TIME);
 
 }
 
-void StoneGolemAppear::OnExit()
+void MeleeFighterAppear::OnExit()
 {
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 }
 
 //--------------------------------------------------------------------------------
 
-StoneGolemDead::StoneGolemDead(StateManager* owner) : StateBase(owner), time_(0)
+MeleeFighterDead::MeleeFighterDead(StateManager* owner) : StateBase(owner), time_(0)
 {
 }
 
-void StoneGolemDead::Update()
+void MeleeFighterDead::Update()
 {
 	time_++;
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	
 	const int DEAD_TIME = 100;
 	float s = (float)time_ / (float)DEAD_TIME;
@@ -96,21 +96,21 @@ void StoneGolemDead::Update()
 	if (time_ >= DEAD_TIME) e->Dead();
 }
 
-void StoneGolemDead::OnEnter()
+void MeleeFighterDead::OnEnter()
 {
 	time_ = 0;
 }
 
 //--------------------------------------------------------------------------------
 
-StoneGolemPatrol::StoneGolemPatrol(StateManager* owner) : StateBase(owner), foundSearchTime_(0)
+MeleeFighterPatrol::MeleeFighterPatrol(StateManager* owner) : StateBase(owner), foundSearchTime_(0)
 {
 }
 
-void StoneGolemPatrol::Update()
+void MeleeFighterPatrol::Update()
 {
 	//Astar移動が終わったなら更新・待ち時間適当にrandamで デバッグ用
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	if (e->GetMoveAction()->IsInRange() && rand() % 60 == 0) {
 		CreateStage* pCreateStage = GameManager::GetCreateStage();
 		e->GetMoveAction()->UpdatePath(pCreateStage->GetRandomFloarPosition());
@@ -133,26 +133,26 @@ void StoneGolemPatrol::Update()
 	}
 }
 
-void StoneGolemPatrol::OnEnter()
+void MeleeFighterPatrol::OnEnter()
 {
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
 	e->GetRotateAction()->SetTarget(nullptr);
 	e->GetRotateAction()->SetRatio(ROTATE_RATIO);
 
 }
 
-void StoneGolemPatrol::OnExit()
+void MeleeFighterPatrol::OnExit()
 {
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetMoveAction()->StopMove();
 }
 
 //--------------------------------------------------------------------------------
 
-StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner), time_(0)
+MeleeFighterCombat::MeleeFighterCombat(StateManager* owner) : StateBase(owner), time_(0)
 {
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	
 	//----------ビヘイビアツリーの設定------------
 	root_ = new Root();
@@ -187,19 +187,19 @@ StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner), time
 
 }
 
-void StoneGolemCombat::Update()
+void MeleeFighterCombat::Update()
 {
 	time_++;
 	if (time_ % 10 == 0) root_->Update();
 	
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetCombatStateManager()->Update();
 
 }
 
-void StoneGolemCombat::OnEnter()
+void MeleeFighterCombat::OnEnter()
 {
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetEnemyUi()->InitTargetFoundUi();
 	e->GetRotateAction()->Initialize();
 	e->GetRotateAction()->SetTarget(GameManager::GetPlayer());
@@ -207,20 +207,20 @@ void StoneGolemCombat::OnEnter()
 
 }
 
-StoneGolemCombat::~StoneGolemCombat()
+MeleeFighterCombat::~MeleeFighterCombat()
 {
 	delete root_;
 }
 
 //-------------------------------------CombatState-------------------------------------------
 
-StoneGolemWait::StoneGolemWait(StateManager* owner) : StateBase(owner)
+MeleeFighterWait::MeleeFighterWait(StateManager* owner) : StateBase(owner)
 {
 }
 
-void StoneGolemWait::Update()
+void MeleeFighterWait::Update()
 {
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetRotateAction()->Update();
 
 	//壁に当たったか調べて
@@ -233,9 +233,9 @@ void StoneGolemWait::Update()
 
 }
 
-void StoneGolemWait::OnEnter()
+void MeleeFighterWait::OnEnter()
 {
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
 
 	//プレイヤーから指定の範囲内で
@@ -259,14 +259,14 @@ void StoneGolemWait::OnEnter()
 
 //------------------------------------Move--------------------------------------------
 
-StoneGolemMove::StoneGolemMove(StateManager* owner) : StateBase(owner), time_(0)
+MeleeFighterMove::MeleeFighterMove(StateManager* owner) : StateBase(owner), time_(0)
 {
 }
 
-void StoneGolemMove::Update()
+void MeleeFighterMove::Update()
 {
 	time_--;
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
 
 	if (e->GetMoveAction()->IsInRange() || (time_ % 5 == 0 && e->GetMoveAction()->IsOutTarget(3.0f)) ) {
@@ -280,9 +280,9 @@ void StoneGolemMove::Update()
 	if(time_ <= 0) owner_->ChangeState("Wait");
 }
 
-void StoneGolemMove::OnEnter()
+void MeleeFighterMove::OnEnter()
 {
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
 	time_ = FPS * MIN_MOVE_TIME + rand() % MAX_MOVE_TIME * FPS;
 
@@ -291,22 +291,22 @@ void StoneGolemMove::OnEnter()
 
 }
 
-void StoneGolemMove::OnExit()
+void MeleeFighterMove::OnExit()
 {
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetMoveAction()->StopMove();
 }
 
 //-------------------------------------Attack-------------------------------------------
 
-StoneGolemAttack::StoneGolemAttack(StateManager* owner) : StateBase(owner), time_(0)
+MeleeFighterAttack::MeleeFighterAttack(StateManager* owner) : StateBase(owner), time_(0)
 {
 }
 
-void StoneGolemAttack::Update()
+void MeleeFighterAttack::Update()
 {
 	time_++;
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	
 	//攻撃を続けるか計算
 	if (time_ == 100 || time_ == 150) {
@@ -327,12 +327,7 @@ void StoneGolemAttack::Update()
 	}
 
 	//攻撃フラグの制御
-	if (time_ == CALC_FRAME1[0]) e->SetAllHandColliderValid(true);
-	else if (time_ == CALC_FRAME1[1]) e->SetAllHandColliderValid(false);
-	else if (time_ == CALC_FRAME2[0]) e->SetAllHandColliderValid(true);
-	else if (time_ == CALC_FRAME2[1]) e->SetAllHandColliderValid(false);
-	else if (time_ == CALC_FRAME3[0]) e->SetAllHandColliderValid(true);
-	else if (time_ == CALC_FRAME3[1]) e->SetAllHandColliderValid(false);
+	//if (time_ == CALC_FRAME1[0]) e->SetAllHandColliderValid(true);
 
 	//エフェクト
 	if (time_ >= ATTACK_EFFECT_TIME[0] && time_ <= ATTACK_EFFECT_TIME[1]) {
@@ -360,19 +355,19 @@ void StoneGolemAttack::Update()
 	}
 }
 
-void StoneGolemAttack::OnEnter()
+void MeleeFighterAttack::OnEnter()
 {
 	time_ = 0;
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	Model::SetAnimFrame(e->GetModelHandle(), ATTACK_FRAME[0], ATTACK_FRAME[1], 1.0f);
 	e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
 	e->GetOrientedMoveAction()->SetMoveSpeed(MOVESPEED_FRAME3);
 	e->GetRotateAction()->SetRatio(ATTACK_ROTATE_RATIO);
 }
 
-void StoneGolemAttack::OnExit()
+void MeleeFighterAttack::OnExit()
 {
-	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetOrientedMoveAction()->SetMoveSpeed(MOVESPEED_FRAME3);
 	e->GetRotateAction()->SetRatio(ROTATE_RATIO);
 	e->SetAttackCoolDown(rand() % 100);

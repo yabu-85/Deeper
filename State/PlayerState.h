@@ -1,5 +1,7 @@
 #pragma once
 #include "StateBase.h"
+#include <DirectXMath.h>
+using namespace DirectX;
 
 class PlayerWait : public StateBase
 {
@@ -62,4 +64,46 @@ public:
 	void Update() override;
 	void OnEnter() override;
 	void OnExit() override;
+};
+
+class PlayerHear : public StateBase
+{
+	int time_;
+	int nextCmd_;
+public:
+	PlayerHear(StateManager* owner);
+	const char* GetName() const override { return "Hear"; }
+	void Update() override;
+	void OnEnter() override;
+};
+
+class PlayerDead : public StateBase
+{
+	int time_;
+public:
+	PlayerDead(StateManager* owner);
+	const char* GetName() const override { return "Dead"; }
+	void Update() override;
+	void OnEnter() override;
+};
+
+class PlayerAppear : public StateBase
+{
+	int time_;
+	XMFLOAT3 apperPos_;
+public:
+	PlayerAppear(StateManager* owner);
+	const char* GetName() const override { return "Appear"; }
+	void Update() override;
+	void OnEnter() override;
+};
+
+class PlayerDisAppear : public StateBase
+{
+	int time_;
+public:
+	PlayerDisAppear(StateManager* owner);
+	const char* GetName() const override { return "DisAppear"; }
+	void Update() override;
+	void OnEnter() override;
 };

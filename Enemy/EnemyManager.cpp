@@ -3,6 +3,7 @@
 #include "../State/StateManager.h"
 #include "StoneGolem.h"
 #include "ThrowEnemy.h"
+#include "MeleeFighter.h"
 
 EnemyManager::EnemyManager() : pParent_(nullptr)
 {
@@ -41,7 +42,8 @@ void EnemyManager::SpawnEnemy(ENEMY_TYPE type)
 {
 	if (type == ENEMY_STONEGOLEM) AddEnemyList(InstantiateFront<StoneGolem>(pParent_), type);
 	else if (type == ENEMY_THROW) AddEnemyList(InstantiateFront<ThrowEnemy>(pParent_), type);
-
+	else if (type == ENEMY_MELEE) AddEnemyList(InstantiateFront<MeleeFighter>(pParent_), type);
+	
 }
 
 std::vector<EnemyBase*>& EnemyManager::GetAllEnemy()

@@ -12,6 +12,7 @@ namespace DifficultyManager {
 	}data_[ENEMY_MAX]{
 		EnemyData(10),	//Stone
 		EnemyData(5),	//Throw
+		EnemyData(8),	//Melee
 	};
 	const float DIFFICULTY_SUPPRESS = 0.8f;
 

@@ -62,8 +62,10 @@ namespace GameManager {
 		//I‚í‚é‚©‚Ç‚¤‚©‚Ì”»’è
 		time_++;
 		if (isEnd_) {
-			if(time_ >= 0) pSceneManager_->ChangeScene(SCENE_ID_RESULT);
-
+			if (time_ >= 300) {
+				pSceneManager_->ChangeScene(SCENE_ID_RESULT);
+				isEnd_ = false;
+			}
 		}
 		else if (PlayerData::GetClearStageCount() >= 10 || LifeManager::IsDie()) {
 			isEnd_ = true;

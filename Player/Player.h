@@ -10,22 +10,6 @@ class AnimationController;
 
 class Player : public Character
 {
-    void AppearUpdate();
-    void DisAppearUpdate();
-    void HearUpdate();
-    void DeadUpdate();
-    void DefaultUpdate();
-public:
-    enum MAIN_STATE {
-        APPEAR = 0,
-        DISAPPEAR,
-        HEAR,
-        DEAD,
-        DEFAULT,
-    } state_;
-    void SetMainState(MAIN_STATE state) { state_ = state; }
-
-private:    
     int hModel_;
     int time_;
     float moveSpeed_;           //移動スピード
@@ -66,7 +50,6 @@ public:
     void Move(float f = 1.0f);      //移動
     void CalcMove();                //Inputを考慮したやつ
     void CalcNoMove();              //Input考慮してない、滑るやつとかの計算用
-
     XMVECTOR GetDirectionVec();     //向いている方向（正規化済み
     void ResetKeyMovement() { movement_ = XMFLOAT3(0.0f, 0.0f, 0.0f); }
     void ResetMovement() override;
@@ -74,15 +57,12 @@ public:
     //回避
     void Avo();
 
-    //ダメージ
-    void ReceivedDamage();
-
     int GetModelHandle() { return hModel_; }
     SphereCollider* GetSphereCollider(int i) { return pCollider_[i]; }
     Aim* GetAim() { return pAim_; }
     PlayerCommand* GetCommand() { return pCommand_; }
     PlayerWeapon* GetPlayerWeapon() { return pPlayerWeapon_; }
     AnimationController* GetAnimationController() { return pAnimationController_; }
-
+    StateManager* GetStateManager() { return pStateManager_; }
 };
 

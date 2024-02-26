@@ -4,6 +4,7 @@
 #include "Engine/SceneManager.h"
 #include "Enemy/EnemyManager.h"
 #include <vector>
+#include <map>
 
 namespace WaveManager {
 	enum STAGE_INDEX {
@@ -78,8 +79,10 @@ namespace WaveManager {
 		//‚±‚±“ïˆÕ“x‚É‚æ‚Á‚Ä‘I‚ÔŠm—¦§Œä‚Æ‚©‚µ‚½‚¢
 		int r = rand() % randMax;
 
+		DifficultyManager::SetMaxDifficulty(spawnEnemyTable[data_[currentDataIndex].spawnTable][r]);
 		EnemyManager* ma = GameManager::GetEnemyManager();
 		int max = (int)spawnEnemyTable[data_[currentDataIndex].spawnTable].size();
+		
 		for (int i = 0; i < max; i++) {
 			ENEMY_TYPE t = spawnEnemyTable[data_[currentDataIndex].spawnTable][r].at(i);
 			ma->SpawnEnemy(t);

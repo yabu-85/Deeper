@@ -13,6 +13,7 @@ class PlayerWeapon
 public:
     PlayerWeapon(Player* pPlayer);
     void DrawWeapon();
+    void SceneTransitionInitialize();
 
     void SetPlayerDataWeapon();
     void SetWeapon(WeaponBase* weapon);

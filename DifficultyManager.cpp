@@ -1,6 +1,5 @@
 #include "DifficultyManager.h"
 #include "GameManager.h"
-#include "Enemy/EnemyManager.h"
 #include "Enemy/EnemyBase.h"
 #include "State/StateManager.h"
 #include <vector>
@@ -14,10 +13,9 @@ namespace DifficultyManager {
 		EnemyData(10),	//Stone
 		EnemyData(5),	//Throw
 	};
-	
-	//使うかどうか・・・	//修正箇所
-	int stageTime_;
-	int waveTime_;
+	const float DIFFICULTY_SUPPRESS = 0.8f;
+
+	//------------------------------------------------------
 
 	int maxDifficulty_ = 50;
 	int waveDifficulty_ = 0;
@@ -62,6 +60,21 @@ namespace DifficultyManager {
 	{
 		if (waveDifficulty_ <= maxDifficulty_) return true;
 		return false;
+	}
+
+	void SetMaxDifficulty(std::vector<ENEMY_TYPE> elist)
+	{
+		maxDifficulty_ = 99999;
+		int maxPower = 0;
+		for (auto e : elist) {
+			int p = data_[e].enemyPowerLevels;
+			maxDifficulty_ += p;
+			if (p < maxPower) maxPower = p;
+		}
+		
+		maxDifficulty_ = (int)((float)maxDifficulty_ * DIFFICULTY_SUPPRESS);
+		if (maxDifficulty_ < maxPower) maxDifficulty_ = maxPower;
+	
 	}
 
 }

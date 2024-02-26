@@ -24,7 +24,7 @@ namespace {
 	static const int FOUND_SEARCH = 10;		//視覚探知の更新時間
 	static const int APPER_TIME = 180;
 	static const float FAST_SPEED = 0.05f;
-	static const float SLOW_SPEED = 0.04f;
+	static const float SLOW_SPEED = 0.03f;
 	static const float ROTATE_RATIO = 0.07f;
 
 	static const int FPS = 60;
@@ -198,7 +198,7 @@ void StoneGolemWait::Update()
 	//壁に当たったか調べて
 	e->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
 	if (e->GetOrientedMoveAction()->CheckWallCollision(1)) {
-		e->GetOrientedMoveAction()->SetDirection(XMVector3Normalize(XMVECTOR{ 0.7f, 0.0f, 0.3f, 0.0f }));
+		e->GetOrientedMoveAction()->SetDirection(XMVector3Normalize(XMVECTOR{ 0.0f, 0.0f, 1.0f, 0.0f }));
 	}
 	
 	e->GetOrientedMoveAction()->Update();
@@ -217,7 +217,12 @@ void StoneGolemWait::OnEnter()
 	XMFLOAT3 vec = { pPos.x - ePos.x, 0.0f, pPos.z - ePos.z };
 	float dist = sqrt(vec.x * vec.x + vec.z * vec.z);
 	if(dist <= e->GetCombatDistance()) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
-	else e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, -1, 0 });
+	else {
+		int r = rand() % 5;
+		if(r == 0 || r == 1) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 1, 0, 0, 0 });
+		else if (r == 2 || r == 3) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ -1, 0, 0, 0 });
+		else e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, -1, 0 });
+	}
 
 }
 

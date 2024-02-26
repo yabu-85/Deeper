@@ -27,6 +27,8 @@ namespace PlayerData {
 
     void SceneTransitionInitialize()
     {
+        pTextP = new Text();
+        pTextP->Initialize();
     }
 
     void ResetData()

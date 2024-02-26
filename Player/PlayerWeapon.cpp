@@ -24,7 +24,8 @@ PlayerWeapon::PlayerWeapon(Player* pPlayer)
 
 void PlayerWeapon::DrawWeapon()
 {
-    pText->Draw(1000, 600, currentSubIndex_);
+    pText->Draw(30, 300, currentSubIndex_);
+
     if (pSubWeapon_[0]) {
         const char* cstr = pSubWeapon_[0]->GetObjectName().c_str();
         pText->Draw(1000, 650, cstr);
@@ -34,6 +35,11 @@ void PlayerWeapon::DrawWeapon()
         pText->Draw(1000, 700, cstr);
     }
 
+}
+
+void SceneTransitionInitialize() {
+    pText = new Text();
+    pText->Initialize();
 }
 
 void PlayerWeapon::SetPlayerDataWeapon()

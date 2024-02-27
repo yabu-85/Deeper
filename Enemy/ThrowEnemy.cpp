@@ -39,6 +39,7 @@ void ThrowEnemy::Initialize()
 	transform_.scale_ = { 0.5f, 0.5f, 0.5f };
 	itemTransform_.scale_ = { 0.2f, 0.2f, 0.2f };
 
+	type_ = ENEMY_THROW;
 	maxHp_ = 30;
 	hp_ = maxHp_;
 	aimTargetPos_ = 1.0f;
@@ -138,6 +139,7 @@ void ThrowEnemy::ThrowItem()
 
 	ThrowBullet* bullet = Instantiate<ThrowBullet>(GetParent());
 	bullet->Shot(itemTransform_.position_, plaPos);
+	bullet->SetObjectName("ThrowEBullet");
 
 }
 

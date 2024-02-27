@@ -69,4 +69,13 @@ public:
     //countの数移動した時、壁に接触するかどうか：壁の場合true
     bool CheckWallCollision(int count);
 
+    //エネミーの位置とターゲットの位置から方向を計算してセット
+    void CalcOptimalDirection();
+
+    //４方向確率を入れてDirectionを取得０はなし、高ければ高いほど確率上がる
+    void SelectProbabilityDirection(int f, int b, int r, int l);
+
+    //Directionを逆に
+    void InverseDirection();
+
 };

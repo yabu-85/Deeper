@@ -53,10 +53,10 @@ namespace GameManager {
 		//ここタイトルシーン・リザルトシーンでのUpdateはいらないよDrawもね
 		if (!GameManager::GetStage()) return;
 
+		DifficultyManager::Update();
 		CombatAI::Update();
 		WaveManager::Update();
 		LifeManager::Update();
-		DifficultyManager::Update();
 		pCreateStage_->Update();
 
 		//終わるかどうかの判定

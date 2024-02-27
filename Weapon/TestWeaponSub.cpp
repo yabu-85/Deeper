@@ -1,10 +1,12 @@
 #include "TestWeaponSub.h"
+#include "TestBullet.h"
+#include "ThrowBullet.h"
+
 #include "../State/StateManager.h"
 #include "../Engine/Model.h"
 #include "../GameManager.h"
 #include "../Player/Player.h"
 #include "../Player/PlayerCommand.h"
-#include "TestBullet.h"
 #include "../Player/Aim.h"
 #include "../Enemy/EnemyBase.h"
 
@@ -90,15 +92,17 @@ void TestWeaponSub::ShotBullet()
     if (pAim->IsTarget()) {
         tar = pAim->GetTargetPos();
         float aimTarPos = pAim->GetTargetEnemy()->GetAimTargetPos();
-        tar = XMFLOAT3(tar.x, tar.y + aimTarPos, tar.z);
+    //    tar = XMFLOAT3(tar.x, tar.y + aimTarPos, tar.z);
+        tar = XMFLOAT3(tar.x, tar.y, tar.z);
     }
     else {
         XMFLOAT3 pos = transform_.position_;
         XMFLOAT3 vec = pAim->GetAimDirection();
-        tar = XMFLOAT3(pos.x + vec.x, pos.y + vec.y, pos.z + vec.z);
+        tar = XMFLOAT3(pos.x + vec.x * 10.0f, pos.y + vec.y * 10.0f, pos.z + vec.z * 10.0f);
     }
-    TestBullet* b = Instantiate<TestBullet>(pPlayer_->GetParent());
+    ThrowBullet* b = Instantiate<ThrowBullet>(pPlayer_->GetParent());
     b->Shot(transform_.position_, tar);
+
 }
 
 //--------------------------state-----------------------------------

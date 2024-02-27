@@ -31,7 +31,7 @@ void Stage1::Initialize()
 	AudioManager::Initialize();
 
 	GameManager::SetStage(this);
-	GameManager::GetCreateStage()->CreateStageData("Csv/Map1.csv");
+	GameManager::GetCreateStage()->CreateStageData("Csv/Map2.csv");
 	Instantiate<Player>(this);
 	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
 	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();

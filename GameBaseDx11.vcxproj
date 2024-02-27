@@ -142,7 +142,7 @@
     <ClCompile Include="BehaviorTree\BehaviourNode.cpp" />
     <ClCompile Include="BehaviorTree\ChangeStateNode.cpp" />
     <ClCompile Include="BehaviorTree\IsEnemyActionReadyNode.cpp" />
-    <ClCompile Include="BehaviorTree\IsEnemyAttackPermission.cpp" />
+    <ClCompile Include="BehaviorTree\IsEnemyPermission.cpp" />
     <ClCompile Include="BehaviorTree\IsEnemyStateNode.cpp" />
     <ClCompile Include="BehaviorTree\PlayerConditionNode.cpp" />
     <ClCompile Include="BehaviorTree\StateCountNode.cpp" />
@@ -239,7 +239,7 @@
     <ClInclude Include="BehaviorTree\BehaviourNode.h" />
     <ClInclude Include="BehaviorTree\ChangeStateNode.h" />
     <ClInclude Include="BehaviorTree\IsEnemyActionReadyNode.h" />
-    <ClInclude Include="BehaviorTree\IsEnemyAttackPermission.h" />
+    <ClInclude Include="BehaviorTree\IsEnemyPermission.h" />
     <ClInclude Include="BehaviorTree\IsEnemyStateNode.h" />
     <ClInclude Include="BehaviorTree\PlayerConditionNode.h" />
     <ClInclude Include="BehaviorTree\StateCountNode.h" />

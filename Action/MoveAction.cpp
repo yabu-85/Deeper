@@ -162,3 +162,61 @@ bool OrientedMoveAction::CheckWallCollision(int count)
 
 	return false;
 }
+
+namespace {
+	const float DIR_X[4] = { 0, 1, 0, -1 };
+	const float DIR_Z[4] = { 1, 0, -1, 0 };
+	enum DIRECTION{
+		FRONT = 0,
+		RIGHT,
+		BACK,
+		LEFT,
+		MAX
+	};
+}
+
+void OrientedMoveAction::CalcOptimalDirection()
+{
+	EnemyBase* enemy = static_cast<EnemyBase*>(pCharacter_);
+	XMFLOAT3 pos = enemy->GetPosition();
+	XMFLOAT3 vec = { pos.x - targetPos_.x, 0.0f, pos.z - targetPos_.z };
+	float dist = sqrtf(vec.x * vec.x + vec.z * vec.z);
+	float comDist = enemy->GetCombatDistance();
+	int dirRand = 0;
+	if (dist < comDist) {
+		//前・前・前・右・左
+		dirRand = rand() % 5;
+		if (dirRand == 1 || dirRand == 2) dirRand = 0;
+		else if (dirRand == 3) dirRand = 1;
+		else if (dirRand == 4) dirRand = 2;
+	}
+	else {
+		//前・前・右・左・後
+		dirRand = rand() % 5;
+		if (dirRand == 1) dirRand = 0;
+		else if (dirRand == 2) dirRand = 1;
+		else if (dirRand == 3) dirRand = 2;
+		else if (dirRand == 4) dirRand = 3;
+	}
+
+	direction_ = { DIR_X[dirRand], 0.0f, DIR_Z[dirRand] };
+
+}
+
+void OrientedMoveAction::SelectProbabilityDirection(int f, int b, int r, int l)
+{
+	int max = f + b + r + l;
+	if (max <= 0) return;
+	int random = rand() % max;
+
+	if(random < f) direction_ = { DIR_X[FRONT], 0.0f, DIR_Z[FRONT] };
+	else if(random < f + b) direction_ = { DIR_X[BACK], 0.0f, DIR_Z[BACK] };
+	else if(random < f + b + r) direction_ = { DIR_X[RIGHT], 0.0f, DIR_Z[RIGHT] };
+	else if(random <= f + b + r + l) direction_ = { DIR_X[LEFT], 0.0f, DIR_Z[LEFT] };
+	
+}
+
+void OrientedMoveAction::InverseDirection()
+{
+	direction_ *= -1.0f;
+}

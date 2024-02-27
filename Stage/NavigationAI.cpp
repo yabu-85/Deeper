@@ -149,9 +149,9 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos)
 
 void NavigationAI::PathSmoothing(std::vector<XMFLOAT3>& path) {
 	const std::vector<XMFLOAT3> prePath = path;
-	const float alpha = 0.6f;			// 大きいほど、元のPathに似ているPathができる。　　　　 大きいほど処理が速い
-	const float beta = 0.3f;			// 大きいほど、隣接する点間での滑らかさが向上する。　   大きいほど処理が遅い
-	const float tolerance = 0.3f;		// 変化量がこの値以下の時平滑化を終了。　　　　　　　　 大きいほど処理が速い
+	const float alpha = 0.2f;			// 大きいほど、元のPathに似ているPathができる。　　　　 大きいほど処理が速い
+	const float beta = 0.5f;			// 大きいほど、隣接する点間での滑らかさが向上する。　   大きいほど処理が遅い
+	const float tolerance = 0.7f;		// 変化量がこの値以下の時平滑化を終了。　　　　　　　　 大きいほど処理が速い
 	float change = tolerance;			// パスの位置の変化量
 
 	while (change >= tolerance) {

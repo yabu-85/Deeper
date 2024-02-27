@@ -19,7 +19,7 @@ namespace {
 }
 
 ThrowBullet::ThrowBullet(GameObject* parent)
-	: BulletBase(parent, "ThrowEBullet"), maxDistance_(0), maxHeight_(0), time_(0), pPolyLine_(nullptr), pSphereCollider_(nullptr),
+	: BulletBase(parent, "ThrowBullet"), maxDistance_(0), maxHeight_(0), time_(0), pPolyLine_(nullptr), pSphereCollider_(nullptr),
 	deathPosition_(XMFLOAT3()), isDeath_(false)
 {
 }
@@ -89,8 +89,12 @@ void ThrowBullet::Release()
 
 void ThrowBullet::OnAttackCollision(GameObject* pTarget)
 {
-	if (pTarget->GetObjectName() == "Player") {
-		Hit();
+	if (objectName_ == "ThrowEBullet") {
+		if (pTarget->GetObjectName() == "Player") Hit();
+	}
+	else {
+		if (pTarget->GetObjectName().find("Enemy") != std::string::npos) 
+			Hit();
 	}
 
 }

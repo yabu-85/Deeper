@@ -13,10 +13,11 @@
 #include "../BehaviorTree/BehaviourNode.h"
 #include "../BehaviorTree/PlayerConditionNode.h"
 #include "../BehaviorTree/IsEnemyStateNode.h"
+#include "../BehaviorTree/IsEnemyPermission.h"
+
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
 #include "../Action/SearchAction.h"
-#include "../BehaviorTree/IsEnemyAttackPermission.h"
 
 namespace {
 	static const int FOUND_SEARCH = 10;		//視覚探知の更新時間

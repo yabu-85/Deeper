@@ -125,5 +125,6 @@ void LifeManager::Damage(int i)
 }
 
 int LifeManager::GetReceiveDamage() { return (defPlayerLife_ - playerLife_); }
+float LifeManager::GetLifeParcent() { return ((float)playerLife_ / (float)defPlayerLife_); }
 bool LifeManager::IsInvincible() { return (invincibleTime_ > 0.0f); }
 bool LifeManager::IsDie() { return playerLife_ <= 0; }

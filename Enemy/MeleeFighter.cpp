@@ -33,6 +33,7 @@ void MeleeFighter::Initialize()
 	transform_.position_ = startPos;
 	transform_.rotate_.y = (float)(rand() % 360);
 
+	type_ = ENEMY_MELEE;
 	maxHp_ = 200;
 	hp_ = maxHp_;
 	aimTargetPos_ = 1.3f;

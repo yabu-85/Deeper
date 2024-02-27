@@ -389,7 +389,7 @@
     <ClCompile Include="UI\InteractionUI.cpp">
       <Filter>04UI\Interaction</Filter>
     </ClCompile>
-    <ClCompile Include="BehaviorTree\IsEnemyAttackPermission.cpp">
+    <ClCompile Include="BehaviorTree\IsEnemyPermission.cpp">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClCompile>
     <ClCompile Include="Engine\TransitionEffect.cpp">
@@ -665,7 +665,7 @@
     <ClInclude Include="UI\InteractionUI.h">
       <Filter>04UI\Interaction</Filter>
     </ClInclude>
-    <ClInclude Include="BehaviorTree\IsEnemyAttackPermission.h">
+    <ClInclude Include="BehaviorTree\IsEnemyPermission.h">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClInclude>
     <ClInclude Include="Engine\TransitionEffect.h">

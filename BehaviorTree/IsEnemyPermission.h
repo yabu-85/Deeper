@@ -12,3 +12,11 @@ public:
 	Status Update() override;
 };
 
+class IsEnemyMovePermission : public Condition
+{
+	EnemyBase* pEnemyBase_;
+
+public:
+	IsEnemyMovePermission(TreeNode* child, EnemyBase* enemy);
+	Status Update() override;
+};

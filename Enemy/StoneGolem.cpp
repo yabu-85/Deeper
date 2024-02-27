@@ -33,12 +33,14 @@ void StoneGolem::Initialize()
 	transform_.position_ = startPos;
 	transform_.rotate_.y = (float)(rand() % 360);
 
+	type_ = ENEMY_STONEGOLEM;
 	maxHp_ = 200;
 	hp_ = maxHp_;
-	aimTargetPos_ = 1.3f;
+	aimTargetPos_ = 1.1f;
 	bodyWeight_ = 100.0f;
 	bodyRange_ = 0.7f;
 	attackDamage_ = 1;
+	attackDistance_ = 2.0f;
 	combatDistance_ = 5.0f;
 
 	//ColliderÇÃê›íË

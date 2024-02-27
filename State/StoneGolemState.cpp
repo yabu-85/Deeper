@@ -14,22 +14,23 @@
 #include "../BehaviorTree/BehaviourNode.h"
 #include "../BehaviorTree/PlayerConditionNode.h"
 #include "../BehaviorTree/IsEnemyStateNode.h"
-#include "../BehaviorTree/IsEnemyAttackPermission.h"
+#include "../BehaviorTree/IsEnemyPermission.h"
 
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
 #include "../Action/SearchAction.h"
 
 namespace {
-	static const int FOUND_SEARCH = 10;		//Ž‹Šo’T’m‚ÌXVŽžŠÔ
 	static const int APPER_TIME = 180;
-	static const float FAST_SPEED = 0.03f;
-	static const float SLOW_SPEED = 0.01f;
-	static const float ROTATE_RATIO = 0.07f;
-
+	static const int DEAD_TIME = 100;
+	static const int FOUND_SEARCH = 10;
 	static const int FPS = 60;
 	static const int MIN_MOVE_TIME = 6;
 	static const int MAX_MOVE_TIME = 5;
+
+	static const float FAST_SPEED = 0.03f;
+	static const float SLOW_SPEED = 0.02f;
+	static const float ROTATE_RATIO = 0.07f;
 
 	//UŒ‚State‚Ìî•ñ
 	static const int ATTACK_FRAME[2] = { 0, 300 };
@@ -37,13 +38,14 @@ namespace {
 	static const int CALC_FRAME1[2] = { 65, 85 };
 	static const int CALC_FRAME2[2] = { 120, 140 };
 	static const int CALC_FRAME3[2] = { 235, 247 };
+	static const float COMBO_ATTACK_DIST = 3.0f;
+
 	//UŒ‚‚P‚Ìî•ñ
 	static const int ROTATE_FRAME = 30;
-	static const float ATTACK_READY_DISTANCE = 2.0f;
 	//UŒ‚‚R‚Ìî•ñ
 	static const int ROTATE_FRAME3[2] = { 140, 230 };
 	static const int ATTACK_EFFECT_TIME[2] = { 244, 247 };
-	static const float MOVESPEED_FRAME3 = 0.03f;
+	static const float MOVESPEED_FRAME3 = 0.02f;
 
 }
 
@@ -54,12 +56,12 @@ StoneGolemAppear::StoneGolemAppear(StateManager* owner) : StateBase(owner), time
 void StoneGolemAppear::Update()
 {
 	time_++;
-	if (time_ > APPER_TIME) owner_->ChangeState("Patrol");
-
-	float tsize = (float)time_ / (float)APPER_TIME;
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	
+	float tsize = (float)time_ / (float)APPER_TIME * 0.8f;
 	e->SetScale(XMFLOAT3(tsize, tsize, tsize));
-
+	
+	if (time_ > APPER_TIME) owner_->ChangeState("Patrol");
 }
 
 void StoneGolemAppear::OnEnter()
@@ -73,7 +75,8 @@ void StoneGolemAppear::OnEnter()
 void StoneGolemAppear::OnExit()
 {
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
-	e->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
+	float size = 0.8f;
+	e->SetScale(XMFLOAT3(size, size, size));
 
 }
 
@@ -88,9 +91,8 @@ void StoneGolemDead::Update()
 	time_++;
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
 	
-	const int DEAD_TIME = 100;
 	float s = (float)time_ / (float)DEAD_TIME;
-	s = 1.0f - s;
+	s = (1.0f - s) * 0.8f;
 	e->SetScale({ s, s, s });
 
 	if (time_ >= DEAD_TIME) e->Dead();
@@ -170,18 +172,20 @@ StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner), time
 
 	//-------------------------------------Wait--------------------------------------
 	EnemyChangeCombatStateNode* action3 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsPlayerInRangeNode* condition5 = new IsPlayerInRangeNode(action3, ATTACK_READY_DISTANCE, e, GameManager::GetPlayer());
-	waitSelector->AddChildren(condition5);
+	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(action3, e);
+	IsPlayerInRangeNode* condition6 = new IsPlayerInRangeNode(condition5, e->GetAttackDistance(), e, GameManager::GetPlayer());
+	waitSelector->AddChildren(condition6);
 
 	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(e, "Move");
-	IsEnemyAttackPermission* condition2 = new IsEnemyAttackPermission(action1, e);
-	IsEnemyAttackReady* condition3 = new IsEnemyAttackReady(condition2, e);
+	IsEnemyMovePermission* condition2 = new IsEnemyMovePermission(action1, e);
+	IsEnemyActionReady* condition3 = new IsEnemyActionReady(condition2, e);
 	waitSelector->AddChildren(condition3);
 
 	//-------------------------------------Move--------------------------------------
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, ATTACK_READY_DISTANCE, e, GameManager::GetPlayer());
-	moveSelector->AddChildren(condition4);
+	IsEnemyAttackPermission* condition4 = new IsEnemyAttackPermission(action2, e);
+	IsPlayerInRangeNode* condition7 = new IsPlayerInRangeNode(condition4, e->GetAttackDistance(), e, GameManager::GetPlayer());
+	moveSelector->AddChildren(condition7);
 
 	//-------------------------------------Attack--------------------------------------
 
@@ -214,45 +218,50 @@ StoneGolemCombat::~StoneGolemCombat()
 
 //-------------------------------------CombatState-------------------------------------------
 
-StoneGolemWait::StoneGolemWait(StateManager* owner) : StateBase(owner)
+StoneGolemWait::StoneGolemWait(StateManager* owner) : StateBase(owner), time_(0)
 {
 }
 
 void StoneGolemWait::Update()
 {
+	time_++;
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
 	e->GetRotateAction()->Update();
 
 	//•Ç‚É“–‚½‚Á‚½‚©’²‚×‚Ä
 	e->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
-	if (e->GetOrientedMoveAction()->CheckWallCollision(1)) {
-		e->GetOrientedMoveAction()->SetDirection(XMVector3Normalize(XMVECTOR{ 0.0f, 0.0f, 1.0f, 0.0f }));
+	if (e->GetOrientedMoveAction()->CheckWallCollision(2)) {
+		e->GetOrientedMoveAction()->InverseDirection();
 	}
-	
+
+	XMFLOAT3 pos = e->GetPosition();
+	XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
+	pos = { pos.x - pPos.x, 0.0f, pos.z - pPos.z };
+	float dist = sqrtf(pos.x * pos.x + pos.z * pos.z);
+	if (time_ > (FPS * 3) && dist < e->GetCombatDistance()) {
+		e->GetOrientedMoveAction()->SelectProbabilityDirection(0, 0, 1, 1);
+		time_ = 0;
+	}
+
+	//ŽžŠÔ‚Æƒ‰ƒ“ƒ_ƒ€‚ÅŒü‚«ŒvŽZ
+	if (time_ > (FPS * 3) && rand() % 10 == 0) {
+		e->GetOrientedMoveAction()->CalcOptimalDirection();
+		time_ = 0;
+	}
+
 	e->GetOrientedMoveAction()->Update();
 
 }
 
 void StoneGolemWait::OnEnter()
 {
+	time_ = 0;
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
-	e->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
+	e->GetOrientedMoveAction()->SetMoveSpeed(SLOW_SPEED);
+	e->GetOrientedMoveAction()->CalcOptimalDirection();
+	e->SetActionCoolDown((FPS * MIN_MOVE_TIME) + (rand() % MAX_MOVE_TIME) * FPS);
 
-	//ƒvƒŒƒCƒ„[‚©‚çŽw’è‚Ì”ÍˆÍ“à‚Å
-	//ƒQ[ƒ€ŽQl‚É‚µ‚Ä‚©‚çì‚é
-	XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
-	XMFLOAT3 ePos = e->GetPosition();
-	XMFLOAT3 vec = { pPos.x - ePos.x, 0.0f, pPos.z - ePos.z };
-	float dist = sqrt(vec.x * vec.x + vec.z * vec.z);
-	if(dist <= e->GetCombatDistance()) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
-	else {
-		int r = rand() % 5;
-		if(r == 0 || r == 1) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 1, 0, 0, 0 });
-		else if (r == 2 || r == 3) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ -1, 0, 0, 0 });
-		else e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, -1, 0 });
-	}
-
-	float size = 1.0f;
+	float size = 0.8f;
 	e->SetScale(XMFLOAT3(size, size, size));
 
 }
@@ -269,7 +278,19 @@ void StoneGolemMove::Update()
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
 
-	if (e->GetMoveAction()->IsInRange() || (time_ % 5 == 0 && e->GetMoveAction()->IsOutTarget(3.0f)) ) {
+	//C³‰ÓŠ
+	//ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£‚ªAttackDist‚æ‚è¬‚³‚¢‚È‚çMoveI‚í‚è‚É‚·‚é
+	//‚±‚ê‚ðState‚©B|Tree‚ÅŽÀ‘•‚·‚é
+
+	XMFLOAT3 pos = e->GetPosition();
+	XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
+	pos = { pos.x - pPos.x, 0.0f, pos.z - pPos.z };
+	float dist = sqrtf(pos.x * pos.x + pos.z * pos.z);
+	if (e->GetMoveAction()->IsInRange() && dist > e->GetAttackDistance()) {
+		e->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
+	}
+		
+	if((time_ % 5 == 0 && e->GetMoveAction()->IsOutTarget(3.0f)) ) {
 		e->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
 	}
 
@@ -286,7 +307,7 @@ void StoneGolemMove::OnEnter()
 	e->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
 	time_ = FPS * MIN_MOVE_TIME + rand() % MAX_MOVE_TIME * FPS;
 
-	float size = 0.8f;
+	float size = 0.6f;
 	e->SetScale(XMFLOAT3(size, size, size));
 
 }
@@ -314,8 +335,7 @@ void StoneGolemAttack::Update()
 		XMFLOAT3 ePos = e->GetPosition();
 		XMFLOAT3 vec = { pPos.x - ePos.x, 0.0f, pPos.z - ePos.z };
 		float dist = sqrt(vec.x * vec.x + vec.z * vec.z);
-		const float ATTACK_DIST = 2.5f;
-		if (dist > ATTACK_DIST) owner_->ChangeState("Wait");
+		if (dist > COMBO_ATTACK_DIST) owner_->ChangeState("Wait");
 	}
 
 	//‰ñ“]‚â‚çˆÚ“®‚â‚ç
@@ -368,6 +388,11 @@ void StoneGolemAttack::OnEnter()
 	e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
 	e->GetOrientedMoveAction()->SetMoveSpeed(MOVESPEED_FRAME3);
 	e->GetRotateAction()->SetRatio(ATTACK_ROTATE_RATIO);
+	e->SetCombatReady(false);
+
+	float size = 0.8f;
+	e->SetScale(XMFLOAT3(size, size, size));
+
 }
 
 void StoneGolemAttack::OnExit()

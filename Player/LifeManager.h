@@ -13,6 +13,8 @@ namespace LifeManager {
 	void DamageEffectDraw();
 	
 	int GetReceiveDamage();
+	float GetLifeParcent();
+
 	bool IsInvincible();
 	bool IsDie();
 

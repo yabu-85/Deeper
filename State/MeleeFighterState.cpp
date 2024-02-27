@@ -14,22 +14,23 @@
 #include "../BehaviorTree/BehaviourNode.h"
 #include "../BehaviorTree/PlayerConditionNode.h"
 #include "../BehaviorTree/IsEnemyStateNode.h"
-#include "../BehaviorTree/IsEnemyAttackPermission.h"
+#include "../BehaviorTree/IsEnemyPermission.h"
 
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
 #include "../Action/SearchAction.h"
 
 namespace {
-	static const int FOUND_SEARCH = 10;		//Ž‹Šo’T’m‚ÌXVŽžŠÔ
 	static const int APPER_TIME = 180;
+	static const int DEAD_TIME = 100;
+	static const int FOUND_SEARCH = 10;
+	static const int FPS = 60;
+	static const int MIN_MOVE_TIME = 6;
+	static const int MAX_MOVE_TIME = 5; 
+
 	static const float FAST_SPEED = 0.03f;
 	static const float SLOW_SPEED = 0.01f;
 	static const float ROTATE_RATIO = 0.07f;
-
-	static const int FPS = 60;
-	static const int MIN_MOVE_TIME = 6;
-	static const int MAX_MOVE_TIME = 5;
 
 	//UŒ‚State‚Ìî•ñ
 	static const int ATTACK_FRAME[2] = { 0, 300 };
@@ -54,12 +55,12 @@ MeleeFighterAppear::MeleeFighterAppear(StateManager* owner) : StateBase(owner), 
 void MeleeFighterAppear::Update()
 {
 	time_++;
-	if (time_ > APPER_TIME) owner_->ChangeState("Patrol");
-
-	float tsize = (float)time_ / (float)APPER_TIME;
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
+	
+	float tsize = (float)time_ / (float)APPER_TIME;
 	e->SetScale(XMFLOAT3(tsize, tsize, tsize));
 
+	if (time_ > APPER_TIME) owner_->ChangeState("Patrol");
 }
 
 void MeleeFighterAppear::OnEnter()
@@ -88,7 +89,6 @@ void MeleeFighterDead::Update()
 	time_++;
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	
-	const int DEAD_TIME = 100;
 	float s = (float)time_ / (float)DEAD_TIME;
 	s = 1.0f - s;
 	e->SetScale({ s, s, s });
@@ -246,10 +246,9 @@ void MeleeFighterWait::OnEnter()
 	float dist = sqrt(vec.x * vec.x + vec.z * vec.z);
 	if(dist <= e->GetCombatDistance()) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
 	else {
-		int r = rand() % 5;
-		if(r == 0 || r == 1) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 1, 0, 0, 0 });
-		else if (r == 2 || r == 3) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ -1, 0, 0, 0 });
-		else e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, -1, 0 });
+		int r = rand() % 2;
+		if(r == 0) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 1, 0, 0, 0 });
+		else if (r == 1) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ -1, 0, 0, 0 });
 	}
 
 	float size = 1.0f;

@@ -52,6 +52,7 @@ public:
 
 class StoneGolemWait : public StateBase
 {
+	int time_;
 public:
 	StoneGolemWait(StateManager* owner);
 	const char* GetName() const override { return "Wait"; }

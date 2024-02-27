@@ -16,7 +16,8 @@ struct RayCastData
 	BOOL        hit;	//ƒŒƒC‚ª“–‚½‚Á‚½‚©
 	XMFLOAT3 normal;	//–@ü
 
-	RayCastData() { hit = FALSE; dist = 99999.0f; }
+	RayCastData() { start = { 0.0f, 0.0f, 0.0f }, dir = { 0.0f, 0.0f, 0.0f }, 
+		normal = {0.0f, 0.0f, 0.0f}, hit = FALSE; dist = 99999.0f; }
 };
 
 //-----------------------------------------------------------

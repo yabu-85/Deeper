@@ -237,6 +237,16 @@ void GameObject::AddAttackCollider(Collider* collider)
 	attackColliderList_.push_back(collider);
 }
 
+void GameObject::SetAllColliderValid(bool b)
+{
+	for (auto e : colliderList_) e->SetValid(b);
+}
+
+void GameObject::SetAllAttackColliderValid(bool b)
+{
+	for (auto e : attackColliderList_) e->SetValid(b);
+}
+
 //コライダー（衝突判定）を削除
 void GameObject::ClearCollider()
 {
@@ -272,7 +282,6 @@ void GameObject::Collision(GameObject* pTarget)
 
 				//当たった
 				this->OnCollision(pTarget);
-				pTarget->OnCollision(this);
 
 			}
 		}	
@@ -290,7 +299,6 @@ void GameObject::Collision(GameObject* pTarget)
 
 				//当たった
 				this->OnAttackCollision(pTarget);
-				pTarget->OnAttackCollision(this);
 
 			}
 		}

@@ -34,7 +34,6 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
-    void OnAttackCollision(GameObject* pTarget) override;
 
     //Aim
     void TargetRotate(XMFLOAT3 pos, float ratio = 1.0f);

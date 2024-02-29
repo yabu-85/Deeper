@@ -105,10 +105,7 @@ void StoneArmWeapon::OnAttackCollision(GameObject* pTarget)
     if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
         e->ApplyDamage(ATTACK_DAMAGE);
-
-        //当たったエネミーの全コライダーを無効か
-        std::list<Collider*> cList = e->GetColliderList();
-        for (auto e : cList) e->SetValid(false);
+        e->SetAllColliderValid(false);
     }
 }
 

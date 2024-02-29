@@ -57,6 +57,13 @@ void EnemyBase::Dead()
 	GameManager::GetEnemyManager()->KillEnemy(this);
 }
 
+void EnemyBase::KnockBack(KNOCK_TYPE type)
+{
+	if (type == SMALL) SmallKnockBack();
+	else if (type == MEDIUM) MediumKnockBack();
+	else if (type == LARGE) LargetKnockBack();
+}
+
 bool EnemyBase::IsAttackReady()
 {
 	if (attackCoolDown_ <= 0) return true;

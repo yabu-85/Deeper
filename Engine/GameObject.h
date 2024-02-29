@@ -132,6 +132,10 @@ public:
 	std::list<Collider*> GetColliderList() { return colliderList_; }
 	std::list<Collider*> GetAttackColliderList() { return attackColliderList_; }
 
+	//すべてのコライダーのvalidをセット
+	void SetAllColliderValid(bool b);
+	void SetAllAttackColliderValid(bool b);
+
 	//コライダー（衝突判定）を削除
 	void ClearCollider();
 

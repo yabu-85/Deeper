@@ -103,14 +103,14 @@ void LifeManager::DirectDamage(int i)
 
 void LifeManager::Damage(int i)
 {
-	if (IsInvincible()) return;
+	if (IsInvincible() || IsDie()) return;
 
 	DirectDamage(i);
 
 	Player* pPlayer = GameManager::GetPlayer();
 	pPlayer->GetAim()->SetCameraShake(4, 0.1f, 0.7f, 0.3f, 0.8f);
 
-	//Ž€–S‚µ‚Ä‚¢‚éê‡
+	//ƒ_ƒ[ƒWŒvŽZ‚µ‚½‚çAHP‚ª‚OˆÈ‰º‚É‚È‚Á‚½
 	if (LifeManager::IsDie()) {
 		pPlayer->GetStateManager()->ChangeState("Dead");
 		pPlayer->GetAnimationController()->SetNextAnime(6, 0.0f, 1.0f);

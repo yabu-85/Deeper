@@ -1,14 +1,15 @@
 #include "ThrowEnemy.h"
 #include "EnemyUi.h"
+#include "../GameManager.h"
 #include "../State/ThrowState.h"
 #include "../Engine/Model.h"
 #include "../Engine/SphereCollider.h"
+#include "../Engine/Global.h"
 #include "../State/StateManager.h"
 #include "../Stage/CreateStage.h"
-#include "../Engine/Global.h"
-#include "../GameManager.h"
 #include "../Stage/CollisionMap.h"
 #include "../Player/Player.h"
+#include "../Player/LifeManager.h"
 #include "../Weapon/ThrowBullet.h"
 
 #include "../Action/MoveAction.h"
@@ -128,6 +129,14 @@ void ThrowEnemy::ApplyDamage(int da)
 		pStateManager_->ChangeState("Combat");
 	}
 
+}
+
+void ThrowEnemy::OnAttackCollision(GameObject* pTarget)
+{
+	if (pTarget->GetObjectName() == "Player") {
+		GameManager::GetPlayer()->TargetRotate(GetPosition());
+		LifeManager::Damage(GetAttackDamage());
+	}
 }
 
 void ThrowEnemy::ThrowItem()

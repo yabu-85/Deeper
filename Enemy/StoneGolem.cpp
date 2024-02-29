@@ -1,13 +1,15 @@
 #include "StoneGolem.h"
-#include "../Engine/Model.h"
 #include "EnemyUi.h"
+#include "../GameManager.h"
+#include "../Engine/Model.h"
 #include "../Engine/SphereCollider.h"
+#include "../Engine/Global.h"
 #include "../State/StateManager.h"
 #include "../State/StoneGolemState.h"
 #include "../Stage/CreateStage.h"
-#include "../Engine/Global.h"
-#include "../GameManager.h"
 #include "../Stage/CollisionMap.h"
+#include "../Player/Player.h"
+#include "../Player/LifeManager.h"
 
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
@@ -138,6 +140,14 @@ void StoneGolem::ApplyDamage(int da)
 		pStateManager_->ChangeState("Combat");
 	}
 
+}
+
+void StoneGolem::OnAttackCollision(GameObject* pTarget)
+{
+	if (pTarget->GetObjectName() == "Player") {
+		GameManager::GetPlayer()->TargetRotate(GetPosition());
+		LifeManager::Damage(GetAttackDamage());
+	}
 }
 
 void StoneGolem::SetAllHandColliderValid(bool b)

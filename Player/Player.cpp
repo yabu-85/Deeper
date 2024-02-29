@@ -35,7 +35,7 @@ namespace {
 
 Player::Player(GameObject* parent)
     : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
-    pAnimationController_(nullptr), pCollider_{nullptr, nullptr},
+    pAnimationController_(nullptr),
     moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), apperPos_(0,0,0), time_(0), gradually_(0.0f)
 {
 }
@@ -145,25 +145,6 @@ void Player::Draw()
 
 void Player::Release()
 {
-}
-
-void Player::OnAttackCollision(GameObject* pTarget)
-{
-    if (LifeManager::IsInvincible() || LifeManager::IsDie()) return;
-
-    std::string name = pTarget->GetObjectName();
-    if (name.find("Enemy") != std::string::npos) {
-        EnemyBase* enemy = static_cast<EnemyBase*>(pTarget);
-        TargetRotate(enemy->GetPosition());
-        LifeManager::Damage(enemy->GetAttackDamage());
-    }
-    else if (name.find("EBullet") != std::string::npos) {
-        BulletBase* bullet = static_cast<BulletBase*>(pTarget);
-        TargetRotate(bullet->GetPosition());
-        LifeManager::Damage(bullet->GetDamage());
-    }
-
-
 }
 
 //private関数：Rotateの計算する--------------------------------
@@ -312,7 +293,7 @@ void Player::Avo()
 
         GetSphereCollider(0)->SetValid(false);
         GetSphereCollider(1)->SetValid(false);
-
+        SetAllColliderValid(false);
     }
     //動いていない・ターゲット状態
     else if(pAim_->IsTarget()) {

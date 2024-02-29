@@ -39,12 +39,13 @@ void AnimationController::Update()
 	currentBlend_ -= blendRed_;
 
 	//0ˆÈ‰º‚É‚È‚Á‚½‚çƒuƒŒƒ“ƒhI‚í‚è‚É‚·‚é
-	if (currentBlend_ < 0.0f) {
-		Model::SetBlend(modelNum_, false);
+	if (currentBlend_ <= 0.0f) {
 		currentBlend_ = 0.0f;
-		return;
+		Model::SetBlendFactor(modelNum_, currentBlend_);
+		Model::SetBlend(modelNum_, false);
 	}
-
-	Model::SetBlendFactor(modelNum_, currentBlend_);
+	else {
+		Model::SetBlendFactor(modelNum_, currentBlend_);
+	}
 
 }

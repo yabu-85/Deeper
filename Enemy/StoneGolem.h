@@ -29,9 +29,9 @@ public:
     void Draw() override;
     void Release() override;
     void ApplyDamage(int da) override;
+    void OnAttackCollision(GameObject* pTarget) override;
 
     void SetAllHandColliderValid(bool b);
-
     int GetModelHandle() { return hModel_; }
     SphereCollider* GetSphereCollider(int i) { return pHandCollider_[i]; }
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }

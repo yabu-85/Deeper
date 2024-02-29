@@ -5,6 +5,13 @@
 class EnemyUi;
 class StateManager;
 
+enum KNOCK_TYPE {
+    SMALL = 0,
+    MEDIUM,
+    LARGE,
+    MAX,
+};
+
 class EnemyBase : public Character
 {
 protected:
@@ -20,6 +27,10 @@ protected:
     bool isCombatReady_;    //CombatState‚ÉˆÚ‚Á‚Ä‚¢‚¢‚©‚Ç‚¤‚©
     float combatDistance_;  //CombatState‚ÉˆÚ‚Á‚Ä‚¢‚¢‚©‚Ç‚¤‚©‚ÌŒvŽZ‹——£
 
+    virtual void SmallKnockBack() {};
+    virtual void MediumKnockBack() {};
+    virtual void LargetKnockBack() {};
+
     EnemyUi* pEnemyUi_;
     StateManager* pStateManager_;
     StateManager* pCombatStateManager_;
@@ -32,7 +43,9 @@ public:
     virtual void Draw() override = 0;
     virtual void Release();
     virtual void ApplyDamage(int da);
+
     void Dead();
+    void KnockBack(KNOCK_TYPE type);
     bool IsAttackReady();
 
     int GetActionCoolDown() { return actionCoolDown_; }

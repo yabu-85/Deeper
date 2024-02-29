@@ -110,12 +110,10 @@ void TestWeaponMain::OnAttackCollision(GameObject* pTarget)
     if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
         e->ApplyDamage(damage_);
-        VFXManager::CreatVfxExplode1(wandPos_);
+        e->KnockBack(MEDIUM);
+        e->SetAllColliderValid(false);
 
-        //当たったエネミーの全コライダーを無効か
-        std::list<Collider*> cList = e->GetColliderList();
-        for (auto e : cList) e->SetValid(false);
-        
+        VFXManager::CreatVfxExplode1(wandPos_);
     }
 }
 

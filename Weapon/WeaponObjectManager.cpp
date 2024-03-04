@@ -4,7 +4,7 @@
 #include "StoneArmWeapon.h"
 #include "../Engine/Model.h"
 #include "../Player/Player.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../UI/InteractionUI.h"
 
 WeaponObjectManager::WeaponObjectManager()
@@ -26,12 +26,9 @@ void WeaponObjectManager::SceneTransitionInitialize()
 
 void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos)
 {
-	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "StoneArmObj", "RedBox", "BlueBox"};
+	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "StoneArmObj", "RedBoxObj", "BlueBox"};
 
 	WeaponObject* weapon = InstantiateFront<WeaponObject>(GameManager::GetStage());
-
-	//デバッグ用
-	if ((int)type == 0) weapon->SetScale(0.2f, 0.2f, 0.2f);
 
 	weapon->SetPosition(pos);
 	weapon->LoadModel(fileName[(int)type]);

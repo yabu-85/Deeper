@@ -33,6 +33,13 @@ private:
     XMFLOAT3 startPos_;
     std::vector<std::vector<int>> mapData_;
 
+
+	struct Cell	{
+		int x, z;
+		Cell() : x(0), z(0) {};
+		Cell(int _x, int _z) : x(_x), z(_z) {};
+	};
+
 public:
     enum MAP {
         M_FLOAR,
@@ -54,7 +61,7 @@ public:
     XMFLOAT3 GetRandomFloarPosition();
     
     //プレイヤーから見た引数:Position方向にrangeの距離で最適な場所を取得する
-    XMFLOAT3 GetFloarPosition(XMFLOAT3 position, float range);
+    XMFLOAT3 GetPositionPlayerDirection(XMFLOAT3 position, float range);
 
     void CreateStageData(std::string name);
 

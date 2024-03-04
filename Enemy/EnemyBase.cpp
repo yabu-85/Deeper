@@ -1,17 +1,17 @@
 #include "EnemyBase.h"
 #include "EnemyUi.h"
-#include "../GameManager.h"
 #include "DropTable.h"
+#include "../GameManager/GameManager.h"
 #include "../Player/Player.h"
 #include "../Player/Aim.h"
 #include "../State/StateManager.h"
-#include "../GameManager.h"
 #include "../Engine/Global.h"
+#include "../VFXManager.h"
 
 EnemyBase::EnemyBase(GameObject* parent, std::string name)
 	: Character(parent, name), pEnemyUi_(nullptr), pStateManager_(nullptr), pCombatStateManager_(nullptr),
 	type_(ENEMY_MAX), aimTargetPos_(0.0f), attackCoolDown_(0), hp_(0), maxHp_(0), attackDamage_(0), 
-	combatDistance_(0.0f), isCombatReady_(false), attackDistance_(0.0f), actionCoolDown_(0)
+	combatDistance_(0.0f), isCombatReady_(false), attackDistance_(0.0f), actionCoolDown_(0), isAimTarget_(true)
 {
 }
 
@@ -29,13 +29,9 @@ void EnemyBase::Update()
 
 void EnemyBase::Release()
 {
-	//Aim‚ÌTarget‚ðXV‚·‚éŠÖ”
-	GameManager::GetPlayer()->GetAim()->TargetIsDead(this);
-
 	SAFE_DELETE(pStateManager_);
 	SAFE_DELETE(pCombatStateManager_);
 	SAFE_DELETE(pEnemyUi_);
-	
 }
 
 void EnemyBase::ApplyDamage(int da)
@@ -51,9 +47,18 @@ void EnemyBase::ApplyDamage(int da)
 	}
 }
 
-void EnemyBase::Dead()
+void EnemyBase::DeadEnter()
 {
 	DropTable::DropItem(type_, transform_.position_);
+	GetEnemyUi()->SetIsDraw(false);
+
+	isAimTarget_ = false;
+	GameManager::GetPlayer()->GetAim()->TargetIsDead(this);
+}
+
+void EnemyBase::Dead()
+{
+	VFXManager::CreatVfxSmoke(transform_.position_);
 	GameManager::GetEnemyManager()->KillEnemy(this);
 }
 

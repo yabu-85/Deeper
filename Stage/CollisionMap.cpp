@@ -1,7 +1,7 @@
 #include "CollisionMap.h"
 #include "../Engine/FbxParts.h"
 #include "../Engine/Model.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "Cell.h"
 #include "CreateStage.h"
 #include <vector>

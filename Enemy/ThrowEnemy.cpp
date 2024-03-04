@@ -1,6 +1,6 @@
 #include "ThrowEnemy.h"
 #include "EnemyUi.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../State/ThrowState.h"
 #include "../Engine/Model.h"
 #include "../Engine/SphereCollider.h"
@@ -43,11 +43,12 @@ void ThrowEnemy::Initialize()
 	type_ = ENEMY_THROW;
 	maxHp_ = 30;
 	hp_ = maxHp_;
-	aimTargetPos_ = 1.0f;
+	aimTargetPos_ = 1.1f;
 	bodyWeight_ = 10.0f;
 	bodyRange_ = 0.3f;
-	attackDamage_ = 50;
-	combatDistance_ = 10.0f;
+	attackDamage_ = 1;
+	combatDistance_ = 7.0f;
+	attackDistance_ = 8.0f;
 
 	//Collider‚ÌÝ’è
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.7f, 0), 0.6f);
@@ -124,6 +125,8 @@ void ThrowEnemy::Release()
 void ThrowEnemy::ApplyDamage(int da)
 {
 	EnemyBase::ApplyDamage(da);
+	//Ž€‚ñ‚Å‚½‚çI‚í‚è
+	if (pStateManager_->GetName() == "Dead") return;
 
 	if (pStateManager_->GetName() != "Combat") {
 		pStateManager_->ChangeState("Combat");

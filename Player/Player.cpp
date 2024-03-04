@@ -4,7 +4,7 @@
 #include "PlayerWeapon.h"
 #include "LifeManager.h"
 #include "PlayerData.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../VFXManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"

@@ -4,7 +4,7 @@
 #include "LifeManager.h"
 #include "../Weapon/WeaponBase.h"
 #include "../Engine/Text.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 
 namespace PlayerData {
     PlayerStats data_;

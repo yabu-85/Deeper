@@ -129,6 +129,9 @@
     <Filter Include="03Scene\Ornament">
       <UniqueIdentifier>{b78aad7c-1ab8-46ab-a6dc-9337e00b7fc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="13GameManager">
+      <UniqueIdentifier>{cae6212c-5e18-4c1a-8b02-835e76869ce9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -200,7 +203,6 @@
     <ClCompile Include="Engine\VFX.cpp">
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Engine\SegmentCollider.cpp">
       <Filter>01Engine\Collider</Filter>
@@ -381,8 +383,6 @@
     <ClCompile Include="Weapon\StoneArmWeapon.cpp">
       <Filter>09Weapon\Weapons</Filter>
     </ClCompile>
-    <ClCompile Include="DifficultyManager.cpp" />
-    <ClCompile Include="WaveManager.cpp" />
     <ClCompile Include="UI\Interaction.cpp">
       <Filter>04UI\Interaction</Filter>
     </ClCompile>
@@ -395,12 +395,23 @@
     <ClCompile Include="Engine\TransitionEffect.cpp">
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="CombatAI.cpp" />
     <ClCompile Include="Enemy\MeleeFighter.cpp">
       <Filter>08Enemy\Enemies</Filter>
     </ClCompile>
     <ClCompile Include="State\MeleeFighterState.cpp">
       <Filter>06State\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager\CombatAI.cpp">
+      <Filter>13GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager\DifficultyManager.cpp">
+      <Filter>13GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager\GameManager.cpp">
+      <Filter>13GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager\WaveManager.cpp">
+      <Filter>13GameManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -473,7 +484,6 @@
     <ClInclude Include="Engine\VFX.h">
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="GameManager.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Engine\SegmentCollider.h">
       <Filter>01Engine\Collider</Filter>
@@ -657,8 +667,6 @@
     <ClInclude Include="Weapon\StoneArmWeapon.h">
       <Filter>09Weapon\Weapons</Filter>
     </ClInclude>
-    <ClInclude Include="DifficultyManager.h" />
-    <ClInclude Include="WaveManager.h" />
     <ClInclude Include="UI\Interaction.h">
       <Filter>04UI\Interaction</Filter>
     </ClInclude>
@@ -671,12 +679,23 @@
     <ClInclude Include="Engine\TransitionEffect.h">
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="CombatAI.h" />
     <ClInclude Include="Enemy\MeleeFighter.h">
       <Filter>08Enemy\Enemies</Filter>
     </ClInclude>
     <ClInclude Include="State\MeleeFighterState.h">
       <Filter>06State\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager\CombatAI.h">
+      <Filter>13GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager\DifficultyManager.h">
+      <Filter>13GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager\GameManager.h">
+      <Filter>13GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager\WaveManager.h">
+      <Filter>13GameManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -693,9 +712,6 @@
       <Filter>02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\OutLine.hlsl">
-      <Filter>02Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Assets\Shader\Chara3D.hlsl">
       <Filter>02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\BillBoard2D.hlsl">

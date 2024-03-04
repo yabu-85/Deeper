@@ -1,6 +1,6 @@
 #include "IsEnemyPermission.h"
 #include "../Enemy/EnemyBase.h"
-#include "../CombatAI.h"
+#include "../GameManager/CombatAI.h"
 
 IsEnemyAttackPermission::IsEnemyAttackPermission(TreeNode* child, EnemyBase* enemy) : Condition(child), pEnemyBase_(enemy)
 {

@@ -3,7 +3,7 @@
 #include "../Engine/Image.h"
 #include "../Engine/Direct3D.h"
 #include "../Engine/SceneManager.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../AudioManager.h"
 
 TitleUIManager::TitleUIManager(SceneBase* parent)

@@ -1,6 +1,6 @@
 #include "NavigationAI.h"
 #include "CreateStage.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include <queue>
 
 namespace {

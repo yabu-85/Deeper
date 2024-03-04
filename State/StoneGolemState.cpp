@@ -4,7 +4,7 @@
 #include "../Player/Aim.h"
 #include "../Enemy/StoneGolem.h"
 #include "../Stage/CreateStage.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Enemy/EnemyUi.h"
 #include "../Engine/Model.h"
 #include "../VFXManager.h"
@@ -100,6 +100,8 @@ void StoneGolemDead::Update()
 
 void StoneGolemDead::OnEnter()
 {
+	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	e->DeadEnter();
 	time_ = 0;
 }
 
@@ -164,7 +166,6 @@ StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner), time
 
 	Selector* waitSelector = new Selector();
 	Selector* moveSelector = new Selector();
-	Selector* attackSelector = new Selector();
 	IsEnemyCombatState* wCon = new IsEnemyCombatState(waitSelector, "Wait", e);
 	IsEnemyCombatState* mCon = new IsEnemyCombatState(moveSelector, "Move", e);
 	selector1->AddChildren(wCon);
@@ -257,9 +258,20 @@ void StoneGolemWait::OnEnter()
 {
 	time_ = 0;
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
-	e->GetOrientedMoveAction()->SetMoveSpeed(SLOW_SPEED);
-	e->GetOrientedMoveAction()->CalcOptimalDirection();
 	e->SetActionCoolDown((FPS * MIN_MOVE_TIME) + (rand() % MAX_MOVE_TIME) * FPS);
+	e->GetOrientedMoveAction()->SetMoveSpeed(SLOW_SPEED);
+	
+	//プレイヤーから指定の範囲内で
+	//ゲーム参考にして
+	XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
+	XMFLOAT3 ePos = e->GetPosition();
+	XMFLOAT3 vec = { pPos.x - ePos.x, 0.0f, pPos.z - ePos.z };
+	float dist = sqrt(vec.x * vec.x + vec.z * vec.z);
+	if (dist <= e->GetCombatDistance()) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
+	else {
+		if (rand() % 2 == 0) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 1, 0, 0, 0 });
+		else e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ -1, 0, 0, 0 });
+	}
 
 	float size = 0.8f;
 	e->SetScale(XMFLOAT3(size, size, size));
@@ -277,10 +289,6 @@ void StoneGolemMove::Update()
 	time_--;
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
-
-	//修正箇所
-	//プレイヤーとの距離がAttackDistより小さいならMove終わりにする
-	//これをStateかB－Treeで実装する
 
 	XMFLOAT3 pos = e->GetPosition();
 	XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();

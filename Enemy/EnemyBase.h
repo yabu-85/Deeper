@@ -18,6 +18,7 @@ protected:
     int hp_;                //HP
     int maxHp_;             //HPMAX
     float aimTargetPos_;    //AimTarget時のY軸の加算値
+    bool isAimTarget_;      //AimTargetにしていいかどうか
     ENEMY_TYPE type_;
 
     int actionCoolDown_;    //Moveとかの切り替え時間用の変数
@@ -44,9 +45,20 @@ public:
     virtual void Release();
     virtual void ApplyDamage(int da);
 
+    //DeadStateに入った時の処理
+    void DeadEnter();
+
+    //完全に死亡
     void Dead();
+
+    //ノックバックさせる（制作待ち）
     void KnockBack(KNOCK_TYPE type);
+
+    //攻撃の準備ができているか
     bool IsAttackReady();
+
+    //AimTargetにしていいかどうか
+    bool IsAimTarget() { return isAimTarget_; }
 
     int GetActionCoolDown() { return actionCoolDown_; }
     void SetActionCoolDown(int i) { actionCoolDown_ = i; }
@@ -55,7 +67,6 @@ public:
     int GetAttackDamage() { return attackDamage_; }
     void SetAttackCoolDown(int i) { attackCoolDown_ = i; }
     float GetAttackDistance() { return attackDistance_; }
-
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }
     ENEMY_TYPE GetEnemyType() { return type_; }
 

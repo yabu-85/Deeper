@@ -2,7 +2,7 @@
 #include "../Enemy/EnemyBase.h"
 #include "../Enemy/EnemyManager.h"
 #include "../State/StateManager.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include <vector>
 
 StateCountNode::StateCountNode(TreeNode* child, int count, vector<string> name)

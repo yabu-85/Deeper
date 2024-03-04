@@ -1,8 +1,8 @@
 #include "WaveManager.h"
 #include "GameManager.h"
 #include "DifficultyManager.h"
-#include "Engine/SceneManager.h"
-#include "Enemy/EnemyManager.h"
+#include "../Engine/SceneManager.h"
+#include "../Enemy/EnemyManager.h"
 #include <vector>
 #include <map>
 
@@ -80,7 +80,6 @@ namespace WaveManager {
 		//‚±‚±“ïˆÕ“x‚É‚æ‚Á‚Ä‘I‚ÔŠm—¦§Œä‚Æ‚©‚µ‚½‚¢
 		int r = rand() % randMax;
 
-		DifficultyManager::SetMaxDifficulty(spawnEnemyTable[data_[currentDataIndex].spawnTable][r]);
 		EnemyManager* ma = GameManager::GetEnemyManager();
 		int max = (int)spawnEnemyTable[data_[currentDataIndex].spawnTable][r].size();
 		

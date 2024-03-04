@@ -1,5 +1,5 @@
 #include "Character.h"
-#include "GameManager.h"
+#include "GameManager/GameManager.h"
 #include <vector>
 
 Character::Character(GameObject* parent, std::string name)

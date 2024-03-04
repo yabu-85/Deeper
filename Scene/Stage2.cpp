@@ -1,6 +1,6 @@
 #include "Stage2.h"
-#include "../GameManager.h"
-#include "../WaveManager.h"
+#include "../GameManager/GameManager.h"
+#include "../GameManager/WaveManager.h"
 #include "../Player/Player.h"
 #include "../Stage/CollisionMap.h"
 #include "../Stage/CreateStage.h"

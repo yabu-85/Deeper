@@ -17,6 +17,7 @@ class EnemyUi
 	float height_;			//uiの高さ
 	float parcent;			//hpのパーセント
 	float foundParcent_;	//FoundのパAlphaーセント
+	bool isDraw_;			//表示するかどうか
 	Transform transform_[2];//HpとHPBack用のTransform
 	EnemyBase* pParent_;
 
@@ -28,6 +29,7 @@ public:
 	void Initialize(float height); //height：Uiの高さ
 	void Draw();
 	void SetParcent(float f);
+	void SetIsDraw(bool b);
 	void InitTargetFoundUi();
 
 };

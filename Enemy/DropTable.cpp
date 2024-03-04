@@ -1,6 +1,6 @@
 #include "DropTable.h"
 #include "EnemyBase.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Weapon/WeaponObjectManager.h"
 #include "../Player/PlayerData.h"
 

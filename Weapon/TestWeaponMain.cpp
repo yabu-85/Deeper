@@ -1,5 +1,5 @@
 #include "TestWeaponMain.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../VFXManager.h"
 #include "../Player/Player.h"
 #include "../Player/PlayerCommand.h"

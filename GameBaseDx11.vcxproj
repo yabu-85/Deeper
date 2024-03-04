@@ -146,8 +146,6 @@
     <ClCompile Include="BehaviorTree\IsEnemyStateNode.cpp" />
     <ClCompile Include="BehaviorTree\PlayerConditionNode.cpp" />
     <ClCompile Include="BehaviorTree\StateCountNode.cpp" />
-    <ClCompile Include="CombatAI.cpp" />
-    <ClCompile Include="DifficultyManager.cpp" />
     <ClCompile Include="Enemy\DropTable.cpp" />
     <ClCompile Include="Enemy\EnemyBase.cpp" />
     <ClCompile Include="Enemy\EnemyManager.cpp" />
@@ -184,7 +182,10 @@
     <ClCompile Include="Engine\Text.cpp" />
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
-    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameManager\CombatAI.cpp" />
+    <ClCompile Include="GameManager\DifficultyManager.cpp" />
+    <ClCompile Include="GameManager\GameManager.cpp" />
+    <ClCompile Include="GameManager\WaveManager.cpp" />
     <ClCompile Include="Ornament\PlayerOrnament.cpp" />
     <ClCompile Include="Ornament\WeaponMainOrnament.cpp" />
     <ClCompile Include="Player\Aim.cpp" />
@@ -220,7 +221,6 @@
     <ClCompile Include="UI\UIBase.cpp" />
     <ClCompile Include="UI\UIManager.cpp" />
     <ClCompile Include="VFXManager.cpp" />
-    <ClCompile Include="WaveManager.cpp" />
     <ClCompile Include="Weapon\BulletBase.cpp" />
     <ClCompile Include="Weapon\StoneArmWeapon.cpp" />
     <ClCompile Include="Weapon\TestBullet.cpp" />
@@ -243,8 +243,6 @@
     <ClInclude Include="BehaviorTree\IsEnemyStateNode.h" />
     <ClInclude Include="BehaviorTree\PlayerConditionNode.h" />
     <ClInclude Include="BehaviorTree\StateCountNode.h" />
-    <ClInclude Include="CombatAI.h" />
-    <ClInclude Include="DifficultyManager.h" />
     <ClInclude Include="Enemy\DropTable.h" />
     <ClInclude Include="Enemy\EnemyBase.h" />
     <ClInclude Include="Enemy\EnemyManager.h" />
@@ -281,7 +279,10 @@
     <ClInclude Include="Engine\Text.h" />
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\Transform.h" />
-    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameManager\CombatAI.h" />
+    <ClInclude Include="GameManager\DifficultyManager.h" />
+    <ClInclude Include="GameManager\GameManager.h" />
+    <ClInclude Include="GameManager\WaveManager.h" />
     <ClInclude Include="Ornament\PlayerOrnament.h" />
     <ClInclude Include="Ornament\WeaponMainOrnament.h" />
     <ClInclude Include="Player\Aim.h" />
@@ -318,7 +319,6 @@
     <ClInclude Include="UI\UIBase.h" />
     <ClInclude Include="UI\UIManager.h" />
     <ClInclude Include="VFXManager.h" />
-    <ClInclude Include="WaveManager.h" />
     <ClInclude Include="Weapon\BulletBase.h" />
     <ClInclude Include="Weapon\StoneArmWeapon.h" />
     <ClInclude Include="Weapon\TestBullet.h" />
@@ -335,10 +335,6 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS</EntryPointName>
     </FxCompile>
     <FxCompile Include="Assets\Shader\BillBoard2D.hlsl">
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS</EntryPointName>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS</EntryPointName>
-    </FxCompile>
-    <FxCompile Include="Assets\Shader\Chara3D.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS</EntryPointName>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS</EntryPointName>
     </FxCompile>

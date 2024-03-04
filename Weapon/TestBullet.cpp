@@ -1,7 +1,7 @@
 #include "TestBullet.h"
 #include "../Engine/Model.h"
 #include "../Engine/SphereCollider.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../AudioManager.h"
 #include "../VFXManager.h"
 #include "../Enemy/EnemyBase.h"

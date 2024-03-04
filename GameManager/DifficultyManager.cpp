@@ -1,8 +1,8 @@
 #include "DifficultyManager.h"
 #include "GameManager.h"
-#include "Player/LifeManager.h"
-#include "Enemy/EnemyBase.h"
-#include "State/StateManager.h"
+#include "../Player/LifeManager.h"
+#include "../Enemy/EnemyBase.h"
+#include "../State/StateManager.h"
 #include <vector>
 
 namespace DifficultyManager {
@@ -51,6 +51,18 @@ namespace DifficultyManager {
 
 		float lifePar = 1.0f - LifeManager::GetLifeParcent();
 		waveDifficulty_ = waveDifficulty_ + (int)((float)waveDifficulty_ * LIFE_DIFFICULTY_SUPPRESS * lifePar);
+
+		//Update‚ÅŒvŽZ‚·‚é‚æ‚¤‚É‚µ‚½
+		maxDifficulty_ = 0;
+		int maxPower = 99999;
+		for (auto e : eList) {
+			int p = data_[e->GetEnemyType()].enemyPowerLevels;
+			maxDifficulty_ += p;
+			if (p < maxPower) maxPower = p;
+		}
+
+		maxDifficulty_ = (int)((float)maxDifficulty_ * WAVE_DIFFICULTY_SUPPRESS);
+		if (maxDifficulty_ < maxPower) maxDifficulty_ = maxPower;
 
 	}
 

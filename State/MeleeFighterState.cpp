@@ -4,7 +4,7 @@
 #include "../Player/Aim.h"
 #include "../Enemy/MeleeFighter.h"
 #include "../Stage/CreateStage.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Enemy/EnemyUi.h"
 #include "../Engine/Model.h"
 #include "../VFXManager.h"
@@ -86,8 +86,8 @@ MeleeFighterDead::MeleeFighterDead(StateManager* owner) : StateBase(owner), time
 
 void MeleeFighterDead::Update()
 {
-	time_++;
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
+	time_++;
 	
 	float s = (float)time_ / (float)DEAD_TIME;
 	s = 1.0f - s;
@@ -98,6 +98,8 @@ void MeleeFighterDead::Update()
 
 void MeleeFighterDead::OnEnter()
 {
+	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
+	e->DeadEnter();
 	time_ = 0;
 }
 
@@ -111,9 +113,8 @@ void MeleeFighterPatrol::Update()
 {
 	//Astar移動が終わったなら更新・待ち時間適当にrandamで デバッグ用
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
-	if (e->GetMoveAction()->IsInRange() && rand() % 60 == 0) {
-		CreateStage* pCreateStage = GameManager::GetCreateStage();
-		e->GetMoveAction()->UpdatePath(pCreateStage->GetRandomFloarPosition());
+	if (rand() % 60 == 0 && e->GetMoveAction()->IsInRange()) {
+		e->GetMoveAction()->UpdatePath(GameManager::GetCreateStage()->GetRandomFloarPosition());
 	}
 
 	//Astar移動・回転

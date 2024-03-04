@@ -11,7 +11,7 @@
 #include "Input.h"
 #include "Audio.h"
 #include "VFX.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 
 #pragma comment(lib,"Winmm.lib")
 

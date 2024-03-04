@@ -1,5 +1,5 @@
 #include "SkyBox.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Engine/Model.h"
 
 namespace {

@@ -1,6 +1,6 @@
 #include "Interaction.h"
 #include "InteractionUI.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Player/Player.h"
 #include "../Engine/Transform.h"
 #include "../Engine/Global.h"

@@ -5,7 +5,7 @@
 #include "../Scene/Stage1.h"
 #include "../Scene/Stage2.h"
 #include "../Scene/Stage3.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Player/PlayerData.h"
 #include "../Scene/TitleScene.h"
 #include "../Scene/ResultScene.h"

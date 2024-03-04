@@ -1,11 +1,11 @@
 #include "CombatAI.h"
 #include "GameManager.h"
 #include "DifficultyManager.h"
-#include "Player/Player.h"
-#include "Player/Aim.h"
-#include "Enemy/EnemyBase.h"
-#include "Enemy/EnemyManager.h"
-#include "State/StateManager.h"
+#include "../Player/Player.h"
+#include "../Player/Aim.h"
+#include "../Enemy/EnemyBase.h"
+#include "../Enemy/EnemyManager.h"
+#include "../State/StateManager.h"
 #include <vector>
 #include <queue>
 

@@ -2,7 +2,7 @@
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
 #include "../Engine/CsvReader.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "CollisionMap.h"
 #include "NavigationAI.h"
 #include "Warp.h"
@@ -13,7 +13,6 @@
 namespace {
     //デバッグ用
     bool drawCell = false;
-
 }
 
 CreateStage::CreateStage()
@@ -54,7 +53,7 @@ void CreateStage::Draw()
         trans.position_ = intersectDatas_.at(i).position;
         trans.scale_ = intersectDatas_.at(i).scale;
         Model::SetTransform(handle, trans);
-        Model::Draw(handle, 0);
+        Model::Draw(handle, 6);
     }
 
     //Ray用のワイヤー表示
@@ -81,55 +80,39 @@ XMFLOAT3 CreateStage::GetPlayerStartPos()
 
 XMFLOAT3 CreateStage::GetRandomFloarPosition()
 {
-    struct Cell
-    {
-        float x, z;
-    };
     std::vector<Cell> posList;
     for (int x = 0; x < mapSizeX_; x++) {
         for (int z = 0; z < mapSizeZ_; z++) {
             if (mapData_[z][x] == CreateStage::MAP::M_FLOAR) {
                 Cell cell;
-                cell.x = (float)x;
-                cell.z = (float)z;
+                cell.x = x;
+                cell.z = z;
                 posList.push_back(cell);
             }
         }
     }
 
     int index = rand() % posList.size();
-    return XMFLOAT3(posList.at(index).x + 0.5f, 0.0f, posList.at(index).z + 0.5f);
+    return XMFLOAT3((float)posList.at(index).x + 0.5f, 0.0f, (float)posList.at(index).z + 0.5f);
 }
 
-XMFLOAT3 CreateStage::GetFloarPosition(XMFLOAT3 position, float range)
+XMFLOAT3 CreateStage::GetPositionPlayerDirection(XMFLOAT3 position, float range)
 {
-    Player* pPlayer = GameManager::GetPlayer();
-    XMFLOAT3 f = pPlayer->GetPosition();
- 
-    XMVECTOR pPos = XMLoadFloat3(&f);
-    XMVECTOR ePos = XMLoadFloat3(&position);
-    XMVECTOR vec = ePos - pPos;
-    vec = XMVector3Normalize(vec) * range;
-    
-    XMVECTOR endPosition = pPos + vec;
-    XMStoreFloat3(&f, endPosition);
+    XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
+    XMFLOAT3 dir = Float3Multiply(Float3Normalize(Float3Sub(position, pPos)), range);
+    pPos = Float3Add(pPos, dir);
 
     int pos[2] = { 0,0 };
-    pos[0] = static_cast<int>(f.x / 0.5f);
-    pos[1] = static_cast<int>(f.z / 0.5f);
+    pos[0] = static_cast<int>(pPos.x);
+    pos[1] = static_cast<int>(pPos.z);
     int size = 0;
     int max = 5;
     int maxCount = 0;
 
-    struct Cell
-    {
-        int x, z;
-        Cell(int _x, int _z) : x(_x), z(_z) {};
-    };
-    std::vector<Cell> cellList;
-
     while (maxCount < max) {
-        cellList.clear();
+        std::vector<Cell> cellList;
+
+        //sizeの範囲で床があればリストに追加
         for (int i = pos[0] - size; i <= pos[0] + size; ++i) {
             for (int j = pos[1] - size; j <= pos[1] + size; ++j) {
                 if (i < 0 || i >= (int)mapData_[0].size() || j < 0 || j >= (int)mapData_.size())
@@ -142,6 +125,7 @@ XMFLOAT3 CreateStage::GetFloarPosition(XMFLOAT3 position, float range)
             }
         }
 
+        //リストからじゃなければその中からランダムで選び返す
         if (!cellList.empty()) {
             int randamIndex = rand() % cellList.size();
             XMFLOAT3 out = XMFLOAT3((float)cellList.at(randamIndex).x, 0.0f, (float)cellList.at(randamIndex).z);
@@ -190,7 +174,8 @@ void CreateStage::CreateStageData(std::string name)
             if (data == 2)
             {
                 mapData_[z][x] = WALL;
-                intersectDatas_.push_back({ hModel_[WALL], hModel_[R_WALL], XMFLOAT3((float)x, 0.0f, (float)z), XMFLOAT3(1.0f, 0.1f, 1.0f) });
+                //intersectDatas_.push_back({ hModel_[WALL], hModel_[R_WALL], XMFLOAT3((float)x, 0.0f, (float)z), XMFLOAT3(1.0f, 0.1f, 1.0f) });
+                intersectDatas_.push_back({ hModel_[WALL], hModel_[R_WALL], XMFLOAT3((float)x, 0.0f, (float)z), XMFLOAT3(1.0f, 1.0f, 1.0f) });
             }
 
             //PlayerStartPoint

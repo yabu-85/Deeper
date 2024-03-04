@@ -5,7 +5,7 @@
 #include "../Stage/CollisionMap.h"
 #include "../Enemy/EnemyBase.h"
 #include "../Enemy/Enemymanager.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include <vector>
 
 //デバッグ用
@@ -147,7 +147,7 @@ void Aim::Release()
 
 void Aim::TargetIsDead(EnemyBase* target)
 {
-    //死んでたら今向いている方向にターゲットできるEnemyがいるならそいつをターゲットにする
+    //Aimtargetが引数と同じならTarget状態から外し、新たにTargetがいるか計算
     if (pEnemyBase_ == target) {
         isTarget_ = false;
         SetTargetEnemy();
@@ -186,6 +186,8 @@ EnemyBase* Aim::CalcTargetEnemy()
     int minLengIndex = -1;
 
     for (int i = 0; i < eList.size(); i++) {
+        if(!eList.at(i)->IsAimTarget()) continue;
+
         XMFLOAT3 ePos = eList.at(i)->GetPosition();
 
         //ターゲットへのベクトルを計算（逆ベクトル）

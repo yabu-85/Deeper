@@ -1,6 +1,6 @@
 #include "AudioManager.h"
 #include "Engine/Audio.h"
-#include "GameManager.h"
+#include "GameManager/GameManager.h"
 #include "Enemy/EnemyManager.h"
 #include <cassert>
 #include <vector>

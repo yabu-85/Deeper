@@ -1,11 +1,12 @@
 #include "ThrowState.h"
 #include "StateManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Player/Player.h"
 #include "../Enemy/ThrowEnemy.h"
 #include "../Stage/CreateStage.h"
-#include "../GameManager.h"
 #include "../Enemy/EnemyUi.h"
 #include "../Engine/Model.h"
+#include "../Engine/Global.h"
 #include "../VFXManager.h"
 
 #include "../BehaviorTree/IsEnemyActionReadyNode.h"
@@ -22,8 +23,9 @@
 namespace {
 	static const int FOUND_SEARCH = 10;		//視覚探知の更新時間
 	static const int APPER_TIME = 180;
-	static const float FAST_SPEED = 0.08f;
-	static const float SLOW_SPEED = 0.06f;
+	static const float FAST_SPEED = 0.03f;
+	static const float SLOW_SPEED = 0.02f;
+	static const int DEAD_TIME = 100;
 
 }
 
@@ -59,18 +61,27 @@ void ThrowAppear::OnExit()
 
 //--------------------------------------------------------------------------------
 
-ThrowDead::ThrowDead(StateManager* owner) : StateBase(owner)
+ThrowDead::ThrowDead(StateManager* owner) : StateBase(owner), time_(0)
 {
 }
 
 void ThrowDead::Update()
 {
+	ThrowEnemy* e = static_cast<ThrowEnemy*>(owner_->GetGameObject());
+	time_++;
+
+	float s = (float)time_ / (float)DEAD_TIME;
+	s = (1.0f - s) * 0.8f;
+	e->SetScale({ s, s, s });
+
+	if (time_ >= DEAD_TIME) e->Dead();
 }
 
 void ThrowDead::OnEnter()
 {
 	ThrowEnemy* e = static_cast<ThrowEnemy*>(owner_->GetGameObject());
-	e->Dead();
+	e->DeadEnter();
+	time_ = 0;
 }
 
 //--------------------------------------------------------------------------------
@@ -84,8 +95,7 @@ void ThrowPatrol::Update()
 	//Astar移動が終わったなら更新・待ち時間適当にrandamで デバッグ用
 	ThrowEnemy* e = static_cast<ThrowEnemy*>(owner_->GetGameObject());
 	if (e->GetMoveAction()->IsInRange() && rand() % 60 == 0) {
-		CreateStage* pCreateStage = GameManager::GetCreateStage();
-		e->GetMoveAction()->UpdatePath(pCreateStage->GetRandomFloarPosition());
+		e->GetMoveAction()->UpdatePath(GameManager::GetCreateStage()->GetRandomFloarPosition());
 	}
 
 	//Astar移動・回転
@@ -130,25 +140,29 @@ ThrowCombat::ThrowCombat(StateManager* owner) : StateBase(owner), time_(0)
 	Selector* selector1 = new Selector();
 	root_->SetRootNode(selector1);
 
-	//---------------------------------------攻撃StateのSelectorの登録----------------------------
-	Selector* selector2 = new Selector();
-	IsNotEnemyCombatState* condition1 = new IsNotEnemyCombatState(selector2, "Attack", e);
-	selector1->AddChildren(condition1);
+	Selector* waitSelector = new Selector();
+	Selector* moveSelector = new Selector();
+	IsEnemyCombatState* wCon = new IsEnemyCombatState(waitSelector, "Wait", e);
+	IsEnemyCombatState* mCon = new IsEnemyCombatState(moveSelector, "Move", e);
+	selector1->AddChildren(wCon);
+	selector1->AddChildren(mCon);
 
 	//--------------------Moveへ移行する------------------------------------
-	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(e, "Move");
-	IsEnemyAttackReady* condition2 = new IsEnemyAttackReady(action1, e);
+	EnemyChangeCombatStateNode* action3 = new EnemyChangeCombatStateNode(e, "Attack");
+	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(action3, e);
+	IsPlayerInRangeNode* condition6 = new IsPlayerInRangeNode(condition5, e->GetAttackDistance(), e, GameManager::GetPlayer());
+	waitSelector->AddChildren(condition6);
 
-	//制御AIのConditionNode（攻撃可能最大数範囲内かTest
-	IsEnemyAttackPermission* conditionA = new IsEnemyAttackPermission(condition2, e);
-	IsEnemyCombatState* condition3 = new IsEnemyCombatState(conditionA, "Wait", e);
-	selector2->AddChildren(condition3);
+	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(e, "Move");
+	IsEnemyMovePermission* condition2 = new IsEnemyMovePermission(action1, e);
+	IsEnemyActionReady* condition3 = new IsEnemyActionReady(condition2, e);
+	waitSelector->AddChildren(condition3);
 
 	//--------------------Attackへ移行する-----------------------
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, 6.0f, e, GameManager::GetPlayer());
-	IsEnemyCombatState* condition5 = new IsEnemyCombatState(condition4, "Move", e);
-	selector2->AddChildren(condition5);
+	IsEnemyAttackPermission* condition4 = new IsEnemyAttackPermission(action2, e);
+	IsPlayerInRangeNode* condition7 = new IsPlayerInRangeNode(condition4, e->GetAttackDistance(), e, GameManager::GetPlayer());
+	moveSelector->AddChildren(condition7);
 
 }
 
@@ -187,12 +201,10 @@ void ThrowWait::Update()
 	ThrowEnemy* e = static_cast<ThrowEnemy*>(owner_->GetGameObject());
 
 	//Playerが特定の距離移動したら
-	if (rand() % 30 == 0) {
-		e->GetMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
-		if (e->GetMoveAction()->IsOutTarget(5.0f)) {
-			CreateStage* pCreateStage = GameManager::GetCreateStage();
-			e->GetMoveAction()->UpdatePath(pCreateStage->GetFloarPosition(e->GetPosition(), 7.0f));
-		}
+	if (rand() % 10 == 0) {
+		//プレイヤーの方向でプレイヤーとの距離がCombadDistanceになるよう移動する
+		XMFLOAT3 pos = GameManager::GetCreateStage()->GetPositionPlayerDirection(e->GetPosition(), e->GetCombatDistance());
+		e->GetMoveAction()->UpdatePath(pos);
 	}
 
 	e->GetMoveAction()->Update();
@@ -217,9 +229,11 @@ void ThrowMove::Update()
 {
 	//プレイヤーの場所に移動
 	ThrowEnemy* e = static_cast<ThrowEnemy*>(owner_->GetGameObject());
-	e->GetMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
-	if (e->GetMoveAction()->IsOutTarget(3.0f)) {
-		e->GetMoveAction()->UpdatePath(GameManager::GetPlayer()->GetPosition());
+	if (rand() % 10 == 0) {
+		
+		//プレイヤーの方向でプレイヤーとの距離がCombadDistanceになるよう移動する
+		XMFLOAT3 pos = GameManager::GetCreateStage()->GetPositionPlayerDirection(e->GetPosition(), e->GetCombatDistance());
+		e->GetMoveAction()->UpdatePath(pos);
 	}
 
 	e->GetMoveAction()->Update();
@@ -230,7 +244,6 @@ void ThrowMove::OnEnter()
 {
 	ThrowEnemy* e = static_cast<ThrowEnemy*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
-
 }
 
 void ThrowMove::OnExit()
@@ -266,7 +279,13 @@ void ThrowAttack::OnEnter()
 	time_ = 0;
 	ThrowEnemy* e = static_cast<ThrowEnemy*>(owner_->GetGameObject());
 	Model::SetAnimFrame(e->GetModelHandle(), 0, 200, 1.0f);
-	e->SetAttackCoolDown(200 + rand() % 100);
+
+}
+
+void ThrowAttack::OnExit()
+{
+	ThrowEnemy* e = static_cast<ThrowEnemy*>(owner_->GetGameObject());
+	e->SetAttackCoolDown(rand() % 100);
 
 }
 

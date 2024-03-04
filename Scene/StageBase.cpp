@@ -1,5 +1,5 @@
 #include "StageBase.h"
-#include "../WaveManager.h"
+#include "../GameManager/WaveManager.h"
 
 StageBase::StageBase(GameObject* parent, std::string name)
 	:GameObject(parent, name), isCleared_(false)

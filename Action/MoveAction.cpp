@@ -1,5 +1,5 @@
 #include "MoveAction.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Character.h"
 #include "../Player/Player.h"
 #include "../Stage/CollisionMap.h"

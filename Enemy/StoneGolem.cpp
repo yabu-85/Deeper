@@ -1,6 +1,6 @@
 #include "StoneGolem.h"
 #include "EnemyUi.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/SphereCollider.h"
 #include "../Engine/Global.h"

@@ -2,7 +2,7 @@
 #include "../Player/Player.h"
 #include "StateManager.h"
 #include "../Player/PlayerCommand.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Weapon/WeaponBase.h"
 #include "../Weapon/WeaponObjectManager.h"
 #include "../Player/Aim.h"

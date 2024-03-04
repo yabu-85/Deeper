@@ -1,6 +1,6 @@
 #include "Stage3.h"
-#include "../GameManager.h"
-#include "../WaveManager.h"
+#include "../GameManager/GameManager.h"
+#include "../GameManager/WaveManager.h"
 #include "../Player/Player.h"
 #include "../Stage/CollisionMap.h"
 #include "../Stage/CreateStage.h"
@@ -57,8 +57,10 @@ void Stage3::Update()
 	if (IsClearStage()) {
 		OnStageCleared();
 
+		//修正箇所、Stageの制御が全て出来たら直すべき場所
+		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_RESULT);
 	}
-
+	
 	//デバッグ用
 	if (Input::IsKeyDown(DIK_C)) {
 		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE);

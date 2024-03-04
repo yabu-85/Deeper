@@ -4,7 +4,7 @@
 
 #include "../State/StateManager.h"
 #include "../Engine/Model.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Player/Player.h"
 #include "../Player/PlayerCommand.h"
 #include "../Player/Aim.h"

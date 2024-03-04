@@ -1,6 +1,6 @@
 #include "EnemyUi.h"
 #include "EnemyBase.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Image.h"
 #include "../Player/Player.h"
@@ -34,7 +34,7 @@ void EnemyUi::SetGageAlpha(int value)
 }
 
 EnemyUi::EnemyUi(EnemyBase* parent)
-	: pParent_(parent), hPict_{ -1, -1, -1 }, parcent(1.0f), height_(0.0f), gageAlpha_(0), foundParcent_(0.0f)
+	: pParent_(parent), hPict_{ -1, -1, -1 }, parcent(1.0f), height_(0.0f), gageAlpha_(0), foundParcent_(0.0f), isDraw_(true)
 {
 }
 
@@ -62,6 +62,18 @@ void EnemyUi::Initialize(float height)
 
 void EnemyUi::Draw()
 {
+	//表示しない
+	if (!isDraw_) {
+		SetGageAlpha(-alphaValue);
+		if (gageAlpha_ > 0)
+			for (int i = 0; i < 2; i++) {
+				Image::SetTransform(hPict_[i], transform_[i]);
+				Image::Draw(hPict_[i], 0);
+			}
+		return;
+	}
+
+	//位置計算して表示
 	XMFLOAT3 pos = pParent_->GetPosition();
 	pos.y += height_; 
 	
@@ -121,6 +133,11 @@ void EnemyUi::SetParcent(float f)
 {
 	parcent = f;
 	transform_[0].scale_.x = parcent * defSizeX;
+}
+
+void EnemyUi::SetIsDraw(bool b)
+{
+	isDraw_ = b;
 }
 
 void EnemyUi::InitTargetFoundUi()

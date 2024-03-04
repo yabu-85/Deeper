@@ -17,6 +17,7 @@ public:
 
 class ThrowDead : public StateBase
 {
+	int time_;
 public:
 	ThrowDead(StateManager* owner);
 	const char* GetName() const override { return "Dead"; }
@@ -76,4 +77,5 @@ public:
 	const char* GetName() const override { return "Attack"; }
 	void Update() override;
 	void OnEnter() override;
+	void OnExit() override;
 };

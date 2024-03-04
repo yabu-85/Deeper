@@ -3,7 +3,7 @@
 #include "../Engine/Input.h"
 #include "../AudioManager.h"
 #include "../UI/TitleUIManager.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Stage/CreateStage.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Model.h"

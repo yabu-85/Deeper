@@ -4,7 +4,7 @@
 #include "../Engine/Camera.h"
 #include "../AudioManager.h"
 #include "../UI/ResultUIManager.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Stage/CreateStage.h"
 #include "../Player/PlayerData.h"
 

@@ -1,12 +1,14 @@
 #include "ThrowBullet.h"
 #include "../Engine/Model.h"
 #include "../Engine/SphereCollider.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../AudioManager.h"
 #include "../VFXManager.h"
 #include "../Enemy/EnemyBase.h"
 #include "../Engine/PolyLine.h"
 #include "../Engine/Global.h"
+#include "../Player/Player.h"
+#include "../Player/LifeManager.h"
 
 namespace {
 	static const int DAMAGE = 1;
@@ -90,11 +92,18 @@ void ThrowBullet::Release()
 void ThrowBullet::OnAttackCollision(GameObject* pTarget)
 {
 	if (objectName_ == "ThrowEBullet") {
-		if (pTarget->GetObjectName() == "Player") Hit();
+		if (pTarget->GetObjectName() == "Player") {
+			Hit();
+			GameManager::GetPlayer()->TargetRotate(GetPosition());
+			LifeManager::Damage(damage_);
+		}
 	}
 	else {
-		if (pTarget->GetObjectName().find("Enemy") != std::string::npos) 
+		if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
 			Hit();
+			EnemyBase* e = static_cast<EnemyBase*>(pTarget);
+			e->ApplyDamage(damage_);
+		}
 	}
 
 }

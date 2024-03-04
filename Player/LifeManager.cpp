@@ -1,5 +1,5 @@
 #include "LifeManager.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../AnimationController.h"
 #include "../Engine/Transform.h"
 #include "../Engine/Sprite.h"

@@ -1,5 +1,5 @@
 #include "Stage1.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Player/Player.h"
 #include "../Stage/CollisionMap.h"
 #include "../Stage/CreateStage.h"

@@ -1,5 +1,5 @@
 #include "StoneArmWeapon.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../State/StateManager.h"
 #include "../Engine/Model.h"
 #include "../Player/Player.h"

@@ -1,5 +1,5 @@
 #include "EnemyManager.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../State/StateManager.h"
 #include "StoneGolem.h"
 #include "ThrowEnemy.h"

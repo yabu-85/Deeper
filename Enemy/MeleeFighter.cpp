@@ -1,6 +1,6 @@
 #include "MeleeFighter.h"
 #include "EnemyUi.h"
-#include "../GameManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/SphereCollider.h"
 #include "../Engine/Global.h"
@@ -36,7 +36,7 @@ void MeleeFighter::Initialize()
 	transform_.rotate_.y = (float)(rand() % 360);
 
 	type_ = ENEMY_MELEE;
-	maxHp_ = 200;
+	maxHp_ = 100;
 	hp_ = maxHp_;
 	aimTargetPos_ = 1.3f;
 	bodyWeight_ = 100.0f;

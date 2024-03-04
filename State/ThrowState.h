@@ -38,7 +38,7 @@ public:
 
 class ThrowCombat : public StateBase
 {
-	unsigned time_;
+	int time_;
 	Root* root_;
 public:
 	ThrowCombat(StateManager* owner);
@@ -49,6 +49,16 @@ public:
 };
 
 //---------------------------------------------------------------------------------
+
+class ThrowHear : public StateBase
+{
+	int time_;
+public:
+	ThrowHear(StateManager* owner);
+	const char* GetName() const override { return "Hear"; }
+	void Update() override;
+	void OnEnter() override;
+};
 
 class ThrowWait : public StateBase
 {

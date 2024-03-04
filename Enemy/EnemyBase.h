@@ -21,6 +21,9 @@ protected:
     bool isAimTarget_;      //AimTargetにしていいかどうか
     ENEMY_TYPE type_;
 
+    int knockBackTime_;     //ノックバックの時間
+    float knockPower_;      //ノックバックの強さ
+
     int actionCoolDown_;    //Moveとかの切り替え時間用の変数
     int attackDamage_;      //攻撃のダメージ
     int attackCoolDown_;    //攻撃のクールダウン
@@ -51,8 +54,13 @@ public:
     //完全に死亡
     void Dead();
 
-    //ノックバックさせる（制作待ち）
-    void KnockBack(KNOCK_TYPE type);
+    //ノックバックさせる
+    void SetKnockBack(KNOCK_TYPE type, int time);
+    void KnockBack(float speed = 0.0f);
+    void SetKnockBackTime(int i) { knockBackTime_ = i; }
+    int GetKnockBackTime() { return knockBackTime_; }
+   // float SetKnockBackPower(float p) { knockBackPower}
+
 
     //攻撃の準備ができているか
     bool IsAttackReady();

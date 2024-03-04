@@ -15,7 +15,9 @@ namespace {
     static const float WEAPON_SIZE = 1.2f;
     static const float MOVE_SPEED = 0.3f;
     static const float ROTATE_RATIO = 0.2f;
-    static const int ROTATE_FRAME = 5;
+    
+    //回転フレーム
+    static const int ROTATE_FRAME[2] = { 3, 10 };
 
     //攻撃アニメーションのフレーム
     static const int ANIM_FRAME1[2] = { 595, 650 };
@@ -168,9 +170,10 @@ TestWeaponCombo1::TestWeaponCombo1(StateManager* owner) : StateBase(owner), time
 void TestWeaponCombo1::Update()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    if (time_ < ROTATE_FRAME) {
-        if (p->GetAim()->IsTarget()) p->AimTargetRotate(ROTATE_RATIO);
-        else if (p->GetCommand()->CmdWalk()) p->Rotate(ROTATE_RATIO);
+    if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
+        float rRatio = (float)time_ / (float)ROTATE_FRAME[1];
+        if (p->GetAim()->IsTarget()) p->AimTargetRotate(rRatio);
+        else if (p->GetCommand()->CmdWalk()) p->Rotate(rRatio);
     }
 
     p->CalcNoMove();
@@ -217,9 +220,10 @@ TestWeaponCombo2::TestWeaponCombo2(StateManager* owner) : StateBase(owner), time
 void TestWeaponCombo2::Update()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    if (time_ < ROTATE_FRAME) {
-        if (p->GetAim()->IsTarget()) p->AimTargetRotate(ROTATE_RATIO);
-        else if (p->GetCommand()->CmdWalk()) p->Rotate(ROTATE_RATIO);
+    if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
+        float rRatio = (float)time_ / (float)ROTATE_FRAME[1];
+        if (p->GetAim()->IsTarget()) p->AimTargetRotate(rRatio);
+        else if (p->GetCommand()->CmdWalk()) p->Rotate(rRatio);
     }
 
     p->CalcNoMove();
@@ -267,9 +271,10 @@ TestWeaponCombo3::TestWeaponCombo3(StateManager* owner) : StateBase(owner), time
 void TestWeaponCombo3::Update()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    if (time_ < ROTATE_FRAME) {
-        if (p->GetAim()->IsTarget()) p->AimTargetRotate(ROTATE_RATIO);
-        else if (p->GetCommand()->CmdWalk()) p->Rotate(ROTATE_RATIO);
+    if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
+        float rRatio = (float)time_ / (float)ROTATE_FRAME[1];
+        if (p->GetAim()->IsTarget()) p->AimTargetRotate(rRatio);
+        else if (p->GetCommand()->CmdWalk()) p->Rotate(rRatio);
     }
     
     p->CalcNoMove();

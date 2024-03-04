@@ -62,11 +62,25 @@ void EnemyBase::Dead()
 	GameManager::GetEnemyManager()->KillEnemy(this);
 }
 
-void EnemyBase::KnockBack(KNOCK_TYPE type)
+void EnemyBase::SetKnockBack(KNOCK_TYPE type, int time)
 {
 	if (type == SMALL) SmallKnockBack();
 	else if (type == MEDIUM) MediumKnockBack();
 	else if (type == LARGE) LargetKnockBack();
+}
+
+void EnemyBase::KnockBack(float speed)
+{
+	XMVECTOR vMove = { 0.0, 0.0, -1.0, 0.0 };
+	XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+	vMove = XMVector3TransformCoord(vMove, mRotY);
+	vMove = XMVector3Normalize(vMove) * (speed + 0.1f);
+	XMFLOAT3 move{};
+	XMStoreFloat3(&move, vMove);
+
+	transform_.position_.x += move.x;
+	transform_.position_.z += move.z;
+	SetMovement(XMLoadFloat3(&move));
 }
 
 bool EnemyBase::IsAttackReady()

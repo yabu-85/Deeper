@@ -192,6 +192,30 @@ ThrowCombat::~ThrowCombat()
 
 //-------------------------------------CombatState-------------------------------------------
 
+ThrowHear::ThrowHear(StateManager* owner) : StateBase(owner), time_(0)
+{
+}
+
+void ThrowHear::Update()
+{
+	ThrowEnemy* e = static_cast<ThrowEnemy*>(owner_->GetGameObject());
+	time_--;
+
+	int kcTime = e->GetKnockBackTime();
+	float speed = 1.0f - (float)time_ / float(kcTime);
+	e->SetKnockBackTime(--kcTime);
+	e->KnockBack(speed);
+
+	if(kcTime <= 0)	owner_->ChangeState("Wait");
+}
+
+void ThrowHear::OnEnter()
+{
+	time_ = 0;
+}
+
+//--------------------------------------------------------------------------------
+
 ThrowWait::ThrowWait(StateManager* owner) : StateBase(owner)
 {
 }

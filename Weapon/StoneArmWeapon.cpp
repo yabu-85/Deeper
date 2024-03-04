@@ -11,10 +11,11 @@
 
 namespace {
     static const int ATTACK_DAMAGE = 100;
+    static const float MOVE_SPEED = 0.03f;
+    
     static const int COMBO_TIME1 = 100;
     static const int ATTACK_FRAME1 = 52;   //”»’èƒtƒŒ[ƒ€
-    static const float MOVE_SPEED = 0.03f;
-    static const float ROTATE_RATIO = 0.02f;
+    static const int ROTATE_FRAME[2] = { 5, 20 };
 
 }
 
@@ -130,8 +131,9 @@ void StoneArmWeaponCombo1::Update()
     p->CalcNoMove();
     p->FrontMove(MOVE_SPEED);
     if (time_ <= ATTACK_FRAME1) {
-        if (p->GetAim()->IsTarget()) p->AimTargetRotate(ROTATE_RATIO);
-        else if (p->GetCommand()->CmdWalk()) p->Rotate(ROTATE_RATIO);
+        float rRatio = (float)time_ / (float)ROTATE_FRAME[1];
+        if (p->GetAim()->IsTarget()) p->AimTargetRotate(rRatio);
+        else if (p->GetCommand()->CmdWalk()) p->Rotate(rRatio);
     }
 
     //”»’è

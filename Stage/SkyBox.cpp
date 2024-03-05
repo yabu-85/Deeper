@@ -1,6 +1,7 @@
 #include "SkyBox.h"
 #include "../GameManager/GameManager.h"
 #include "../Engine/Model.h"
+#include "../Engine/Direct3D.h"
 
 namespace {
 	float boxSize = 900.0f;
@@ -28,7 +29,7 @@ void SkyBox::Update()
 void SkyBox::Draw()
 {
 	Model::SetTransform(hModel_, transform_);
-	Model::Draw(hModel_, 7);
+	Model::Draw(hModel_, Direct3D::SHADER_TYPE::SHADER_SKYBOX);
 
 }
 

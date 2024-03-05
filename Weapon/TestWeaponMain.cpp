@@ -68,8 +68,7 @@ void TestWeaponMain::Initialize()
     AddAttackCollider(seg_);
 
     pPolyLine_ = new PolyLine;
-    pPolyLine_->Load("tex2.png");
-
+    pPolyLine_->Load("PolyImage/Sword.png");
 }
 
 void TestWeaponMain::Update()
@@ -112,9 +111,8 @@ void TestWeaponMain::OnAttackCollision(GameObject* pTarget)
     if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
         e->ApplyDamage(damage_);
-        e->KnockBack(MEDIUM);
         e->SetAllColliderValid(false);
-
+        e->SetKnockBack(MEDIUM, 2, 0.01f, pPlayer_->GetPosition());
         VFXManager::CreatVfxExplode1(wandPos_);
     }
 }

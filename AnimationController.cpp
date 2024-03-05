@@ -30,7 +30,7 @@ void AnimationController::SetNextAnime(int id, float blendFactor, float red)
 
 	//アニメーションのフレーム数をセット
 	Model::SetBlendingAnimFrame(modelNum_, animeDatas_.at(id).startFrame, animeDatas_.at(id).endFrame,
-		Model::GetAnimFrame(modelNum_), 1.0f, blendFactor);
+								Model::GetAnimFrame(modelNum_), 1.0f, blendFactor);
 	
 }
 

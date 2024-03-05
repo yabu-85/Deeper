@@ -1,5 +1,5 @@
 #include "SearchAction.h"
-#include "../Character.h"
+#include "../Character/Character.h"
 #include "../Stage/CollisionMap.h"
 
 VisionSearchAction::VisionSearchAction(Character* obj, float range, float fov) : BaseAction(obj), range_(range), isFoundTarget_(false)

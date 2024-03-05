@@ -89,7 +89,7 @@ void ThrowEnemy::Update()
 	EnemyBase::Update();
 
 	pStateManager_->Update();
-	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.3f);
+	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.3f, GetBodyRange());
 
 }
 

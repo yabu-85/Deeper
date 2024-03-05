@@ -55,7 +55,7 @@ void Aim::Initialize()
     pPlayer_ = static_cast<Player*>(FindObject("Player"));
     DefaultAim();
 
-    hPict_ = Image::Load("Image/TargetFound.png");
+    hPict_ = Image::Load("Image/AimTarget.png");
     assert(hPict_ >= 0);
     Transform foundTrans;
     foundTrans.position_ = XMFLOAT3(0.0f, 0.0f, 0.0f);

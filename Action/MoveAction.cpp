@@ -1,6 +1,6 @@
 #include "MoveAction.h"
 #include "../GameManager/GameManager.h"
-#include "../Character.h"
+#include "../Character/Character.h"
 #include "../Player/Player.h"
 #include "../Stage/CollisionMap.h"
 #include "../Enemy/EnemyManager.h"
@@ -94,7 +94,7 @@ void AstarMoveAction::Update()
 
 	//壁とのあたり判定してからポジションセット
 	CollisionMap* pMap = static_cast<CollisionMap*>(pCharacter_->FindObject("CollisionMap"));
-	pMap->CalcMapWall(pos, moveSpeed_);
+	pMap->CalcMapWall(pos, moveSpeed_, pCharacter_->GetBodyRange());
 	pCharacter_->SetPosition(pos);
 
 }

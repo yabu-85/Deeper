@@ -4,6 +4,7 @@ using namespace DirectX;
 
 namespace VFXManager
 {
+	//必ず一回は呼ぶVFXデータの初期化
 	void Initialize();
 
 	void CreatVfxExplode1(XMFLOAT3 &pos);

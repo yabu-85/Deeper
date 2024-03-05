@@ -21,10 +21,16 @@ EnemyBase::~EnemyBase()
 
 void EnemyBase::Update()
 {
+	int kcTime = GetKnockBackTime();
+	if (kcTime > 0) {
+		float speed = 1.0f - (1.0f / float(kcTime));
+		SetKnockBackTime(--kcTime);
+		if (speed > 0.0f) KnockBack(speed);
+	}
+
 	attackCoolDown_--;
 	actionCoolDown_--;
 	ReflectCharacter();
-
 }
 
 void EnemyBase::Release()
@@ -62,25 +68,21 @@ void EnemyBase::Dead()
 	GameManager::GetEnemyManager()->KillEnemy(this);
 }
 
-void EnemyBase::SetKnockBack(KNOCK_TYPE type, int time)
+void EnemyBase::SetKnockBack(KNOCK_TYPE type, int time, float power, XMFLOAT3 pos)
 {
 	if (type == SMALL) SmallKnockBack();
 	else if (type == MEDIUM) MediumKnockBack();
 	else if (type == LARGE) LargetKnockBack();
+	knockBackTime_ = time;
+	knockBackPower_ = power;
+	knockBackDirection_ = Float3Normalize(Float3Sub(transform_.position_, pos));
 }
 
 void EnemyBase::KnockBack(float speed)
 {
-	XMVECTOR vMove = { 0.0, 0.0, -1.0, 0.0 };
-	XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-	vMove = XMVector3TransformCoord(vMove, mRotY);
-	vMove = XMVector3Normalize(vMove) * (speed + 0.1f);
-	XMFLOAT3 move{};
-	XMStoreFloat3(&move, vMove);
-
-	transform_.position_.x += move.x;
-	transform_.position_.z += move.z;
-	SetMovement(XMLoadFloat3(&move));
+	transform_.position_.x += (knockBackDirection_.x * speed);
+	transform_.position_.z += (knockBackDirection_.z * speed);
+	SetMovement(Float3Multiply(knockBackDirection_, speed));
 }
 
 bool EnemyBase::IsAttackReady()

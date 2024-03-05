@@ -15,7 +15,7 @@ namespace {
     
     static const int COMBO_TIME1 = 100;
     static const int ATTACK_FRAME1 = 52;   //”»’èƒtƒŒ[ƒ€
-    static const int ROTATE_FRAME[2] = { 5, 20 };
+    static const int ROTATE_FRAME[2] = { 5, 15 };
 
 }
 
@@ -24,7 +24,7 @@ StoneArmWeapon::StoneArmWeapon(GameObject* parent)
     atkPosition_{0,0,0}
 {
     transform_.pParent_ = nullptr;
-    
+    Invisible();
 }
 
 StoneArmWeapon::~StoneArmWeapon()
@@ -37,7 +37,7 @@ void StoneArmWeapon::Initialize()
     assert(hModel_ >= 0);
 
     pPlayer_ = GameManager::GetPlayer();
-    durance_ = 10;
+    durance_ = 100;
     float size = 1.0f;
     transform_.scale_ = { size, size, size };
     
@@ -107,6 +107,7 @@ void StoneArmWeapon::OnAttackCollision(GameObject* pTarget)
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
         e->ApplyDamage(ATTACK_DAMAGE);
         e->SetAllColliderValid(false);
+        e->SetKnockBack(MEDIUM, 7, 0.3f, pPlayer_->GetPosition());
     }
 }
 
@@ -130,7 +131,7 @@ void StoneArmWeaponCombo1::Update()
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     p->CalcNoMove();
     p->FrontMove(MOVE_SPEED);
-    if (time_ <= ATTACK_FRAME1) {
+    if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
         float rRatio = (float)time_ / (float)ROTATE_FRAME[1];
         if (p->GetAim()->IsTarget()) p->AimTargetRotate(rRatio);
         else if (p->GetCommand()->CmdWalk()) p->Rotate(rRatio);

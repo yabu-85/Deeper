@@ -74,35 +74,3 @@ bool Cell::SegmentVsTriangle(RayCastData* _data, float& minDist)
 
 	return hit;
 }
-
-//----------------------------------------------------------------------
-
-void CellBox::Initialize()
-{
-	//モデルデータのロード
-	hModel_ = Model::Load("Model/BoxCollider.fbx");
-	assert(hModel_ >= 0);
-
-}
-
-void CellBox::Update()
-{
-	//デバッグ用
-	if (Input::IsKeyDown(DIK_Y)) boxDraw = !boxDraw;
-
-}
-
-void CellBox::Draw()
-{
-	if (boxDraw) {
-		Transform t = transform_;
-		t.position_ = {
-			transform_.position_.x + (transform_.scale_.x / 2),
-			transform_.position_.y + (transform_.scale_.y / 2),
-			transform_.position_.z + (transform_.scale_.z / 2) };
-
-		Model::SetTransform(hModel_, t);
-		Model::Draw(hModel_, 2);
-	}
-
-}

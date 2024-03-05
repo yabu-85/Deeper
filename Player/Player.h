@@ -1,5 +1,5 @@
 #pragma once
-#include "../Character.h"
+#include "../Character/Character.h"
 
 class SphereCollider;
 class Aim;

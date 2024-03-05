@@ -132,6 +132,9 @@
     <Filter Include="13GameManager">
       <UniqueIdentifier>{cae6212c-5e18-4c1a-8b02-835e76869ce9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="14Character">
+      <UniqueIdentifier>{d58b2a94-1d06-4230-b086-4db5cd8acf23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -210,7 +213,6 @@
     <ClCompile Include="AnimationController.cpp">
       <Filter>11Animation</Filter>
     </ClCompile>
-    <ClCompile Include="Character.cpp" />
     <ClCompile Include="VFXManager.cpp" />
     <ClCompile Include="Engine\PolyLine.cpp">
       <Filter>01Engine\GameObject</Filter>
@@ -222,9 +224,6 @@
       <Filter>12Stage</Filter>
     </ClCompile>
     <ClCompile Include="Stage\CreateStage.cpp">
-      <Filter>12Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Stage\NavigationAI.cpp">
       <Filter>12Stage</Filter>
     </ClCompile>
     <ClCompile Include="Stage\Triangle.cpp">
@@ -413,6 +412,15 @@
     <ClCompile Include="GameManager\WaveManager.cpp">
       <Filter>13GameManager</Filter>
     </ClCompile>
+    <ClCompile Include="Character\Character.cpp">
+      <Filter>14Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\CharacterManager.cpp">
+      <Filter>14Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage\NavigationAI.cpp">
+      <Filter>12Stage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -491,7 +499,6 @@
     <ClInclude Include="AnimationController.h">
       <Filter>11Animation</Filter>
     </ClInclude>
-    <ClInclude Include="Character.h" />
     <ClInclude Include="VFXManager.h" />
     <ClInclude Include="Engine\PolyLine.h">
       <Filter>01Engine\GameObject</Filter>
@@ -503,9 +510,6 @@
       <Filter>12Stage</Filter>
     </ClInclude>
     <ClInclude Include="Stage\CreateStage.h">
-      <Filter>12Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Stage\NavigationAI.h">
       <Filter>12Stage</Filter>
     </ClInclude>
     <ClInclude Include="Stage\Triangle.h">
@@ -696,6 +700,15 @@
     </ClInclude>
     <ClInclude Include="GameManager\WaveManager.h">
       <Filter>13GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Character.h">
+      <Filter>14Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\CharacterManager.h">
+      <Filter>14Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage\NavigationAI.h">
+      <Filter>12Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

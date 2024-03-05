@@ -65,5 +65,6 @@ void StateManager::AddState(StateBase* state)
 
 std::string StateManager::GetName()
 {
-	return currentState_->GetName();
+	if (currentState_) return currentState_->GetName();
+	else return std::string();
 }

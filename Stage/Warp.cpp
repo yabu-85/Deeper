@@ -66,7 +66,7 @@ void Warp::Draw()
 		Transform t = transform_;
 		t.position_ = { t.position_.x, t.position_.y, t.position_.z};
 		Model::SetTransform(hModel_, t);
-		Model::Draw(hModel_, 0);
+		Model::Draw(hModel_);
 
 		CollisionDraw();
 
@@ -98,7 +98,6 @@ void Warp::OnCollision(GameObject* pTarget)
 	isPlayerHit_ = true;
 
 	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction() && !LifeManager::IsDie()) {
-		OutputDebugString("Warp : Use\n");
 
 		GameManager::GetPlayer()->GetStateManager()->ChangeState("DisAppear");
 		GameManager::GetPlayer()->GetAim()->SetValid(false);

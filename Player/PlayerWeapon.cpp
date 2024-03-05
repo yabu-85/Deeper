@@ -82,9 +82,11 @@ void PlayerWeapon::WeaponChangeIndex()
 {
     if (pPlayer_->GetCommand()->CmdCenterUp()) {
         currentSubIndex_ = 0;
+        pMainWeapon_->Invisible();
     }
     if (pPlayer_->GetCommand()->CmdCenterDown()) {
         currentSubIndex_ = 1;
+        pMainWeapon_->Invisible();
     }
 
     //C³‰ÓŠ

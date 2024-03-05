@@ -96,7 +96,7 @@ void StoneGolem::Update()
 	EnemyBase::Update();
 
 	pStateManager_->Update();
-	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
+	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f, GetBodyRange());
 
 }
 

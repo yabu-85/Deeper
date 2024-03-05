@@ -20,7 +20,7 @@ TestWeaponSub::TestWeaponSub(GameObject* parent)
     : WeaponBase(parent, "TestWeaponSub"), pPlayer_(nullptr)
 {
     transform_.pParent_ = nullptr;
-
+    Invisible();
 }
 
 TestWeaponSub::~TestWeaponSub()

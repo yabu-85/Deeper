@@ -4,8 +4,8 @@
 #include "PlayerWeapon.h"
 #include "LifeManager.h"
 #include "PlayerData.h"
-#include "../GameManager/GameManager.h"
 #include "../VFXManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"
@@ -16,6 +16,8 @@
 #include "../Stage/CollisionMap.h"
 #include "../AnimationController.h"
 #include "../Weapon/BulletBase.h"
+#include "../Character/CharacterManager.h"
+#include "../Scene/StageBase.h"
 
 #include "../Engine/Text.h"
 
@@ -35,7 +37,7 @@ namespace {
 
 Player::Player(GameObject* parent)
     : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
-    pAnimationController_(nullptr),
+    pAnimationController_(nullptr), pCollider_{nullptr, nullptr},
     moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), apperPos_(0,0,0), time_(0), gradually_(0.0f)
 {
 }
@@ -44,20 +46,17 @@ Player::~Player()
 {
     SAFE_DELETE(pStateManager_);
     SAFE_DELETE(pCommand_);
-
 }
 
 void Player::Initialize()
 {
-    hModel_ = Model::Load("Model/Fiter3.fbx");
+    GameManager::SetPlayer(this);
+    hModel_ = Model::Load("Model/Fiter.fbx");
     assert(hModel_ >= 0);
 
-    GameManager::AddCharacter(this);
-    GameManager::SetPlayer(this);
-
     transform_.rotate_.y = 180.0f;
-    transform_.scale_ = { 0.5f, 0.5f, 0.5f };
-    transform_.position_ = GameManager::GetCreateStage()->GetPlayerStartPos();
+    transform_.position_ = GameManager::GetStage()->GetStartPosition();
+
     moveSpeed_ = 0.08f;
     rotateRatio_ = 0.2f;
     bodyWeight_ = 0.1f;
@@ -117,7 +116,7 @@ void Player::Update()
     pStateManager_->Update();
 
     if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
-    if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
+    if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f, GetBodyRange());
     ReflectCharacter();
 
     //デバッグ用

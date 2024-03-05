@@ -5,8 +5,7 @@ class EnemyManager;
 class NavigationAI;
 class WeaponObjectManager;
 class CollisionMap;
-class GameObject;
-class Character;
+class StageBase;
 class Player;
 class CreateStage;
 class SceneManager;
@@ -32,11 +31,6 @@ namespace GameManager
 	Player* GetPlayer();
 	void SetPlayer(Player* player);
 
-	GameObject* GetStage();
-	void SetStage(GameObject* stage);
-
-	std::vector<Character*> GetCharacterList();
-	void AddCharacter(Character* c);
-	void RemoveCharacter(Character* c);
-	
+	StageBase* GetStage();
+	void SetStage(StageBase* stage);
 };

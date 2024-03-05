@@ -1,15 +1,16 @@
 #include "PlayerState.h"
-#include "../Player/Player.h"
 #include "StateManager.h"
-#include "../Player/PlayerCommand.h"
-#include "../GameManager/GameManager.h"
-#include "../Weapon/WeaponBase.h"
-#include "../Weapon/WeaponObjectManager.h"
-#include "../Player/Aim.h"
-#include "../Player/PlayerWeapon.h"
-#include "../Engine/Model.h"
 #include "../AnimationController.h"
 #include "../VFXManager.h"
+#include "../GameManager/GameManager.h"
+#include "../Engine/Model.h"
+#include "../Engine/SceneManager.h"
+#include "../Player/Player.h"
+#include "../Player/PlayerCommand.h"
+#include "../Player/Aim.h"
+#include "../Player/PlayerWeapon.h"
+#include "../Weapon/WeaponBase.h"
+#include "../Weapon/WeaponObjectManager.h"
 
 namespace {
 	static const int AVO_TIME = 40;
@@ -374,9 +375,8 @@ void PlayerDead::Update()
 
 	if (time_ >= (e - s)) {
 		Model::SetAnimeStop(p->GetModelHandle(), true);
-		//ここでプレイヤーの死亡制御終わったってやつ必要
+		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_RESULT);
 	}
-
 }
 
 void PlayerDead::OnEnter()

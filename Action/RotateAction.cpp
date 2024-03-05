@@ -1,5 +1,5 @@
 #include "RotateAction.h"
-#include "../Character.h"
+#include "../Character/Character.h"
 
 RotateAction::RotateAction(Character* obj) : BaseAction(obj), pTarget_(nullptr), rotateRatio_(1.0f)
 {

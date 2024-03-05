@@ -6,6 +6,7 @@
 #include "../Player/Player.h"
 #include "../GameManager/GameManager.h"
 #include "../UI/InteractionUI.h"
+#include "../Scene/StageBase.h"
 
 WeaponObjectManager::WeaponObjectManager()
 	: range_(0), nearestObject_(nullptr)

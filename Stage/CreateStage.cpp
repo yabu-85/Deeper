@@ -1,22 +1,18 @@
 #include "CreateStage.h"
+#include "CollisionMap.h"
+#include "NavigationAI.h"
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
 #include "../Engine/CsvReader.h"
+#include "../Engine/Global.h"
 #include "../GameManager/GameManager.h"
-#include "CollisionMap.h"
-#include "NavigationAI.h"
-#include "Warp.h"
 #include "../Scene/StageBase.h"
 #include "../Player/Player.h"
+#include "../Stage/Warp.h"
 #include <vector>
 
-namespace {
-    //デバッグ用
-    bool drawCell = false;
-}
-
 CreateStage::CreateStage()
-    : startPos_(0,0,0), mapSizeX_(0), mapSizeZ_(0)
+    : mapSizeX_(0), mapSizeZ_(0)
 {
     for (int i = 0; i < MAX; i++) hModel_[i] = -1;
 }
@@ -37,14 +33,6 @@ void CreateStage::Initialize()
 
 }
 
-void CreateStage::Update()
-{
-    //デバッグ用
-    if (Input::IsKeyDown(DIK_U)) 
-        drawCell = !drawCell;
-
-}
-
 void CreateStage::Draw()
 {
     for (int i = 0; i < intersectDatas_.size(); i++) {
@@ -55,27 +43,6 @@ void CreateStage::Draw()
         Model::SetTransform(handle, trans);
         Model::Draw(handle, 6);
     }
-
-    //Ray用のワイヤー表示
-    if (drawCell) {
-        for (int i = 0; i < intersectDatas_.size(); i++) {
-            int handle = intersectDatas_.at(i).hRayModelNum;
-            Transform trans;
-            trans.position_ = intersectDatas_.at(i).position;
-            trans.scale_ = intersectDatas_.at(i).scale;
-            Model::SetTransform(handle, trans);
-            Model::Draw(handle, 2);
-        }
-    }
-}
-
-void CreateStage::Release()
-{
-}
-
-XMFLOAT3 CreateStage::GetPlayerStartPos()
-{
-    return XMFLOAT3(startPos_.x + 0.5f, 0.0f, startPos_.z + 0.5f);
 }
 
 XMFLOAT3 CreateStage::GetRandomFloarPosition()
@@ -140,7 +107,6 @@ XMFLOAT3 CreateStage::GetPositionPlayerDirection(XMFLOAT3 position, float range)
     return position;
 }
 
-//HADESみたいに作ろう：CSVを読み込みで作成
 void CreateStage::CreateStageData(std::string name)
 {
     Initialize();
@@ -174,7 +140,6 @@ void CreateStage::CreateStageData(std::string name)
             if (data == 2)
             {
                 mapData_[z][x] = WALL;
-                //intersectDatas_.push_back({ hModel_[WALL], hModel_[R_WALL], XMFLOAT3((float)x, 0.0f, (float)z), XMFLOAT3(1.0f, 0.1f, 1.0f) });
                 intersectDatas_.push_back({ hModel_[WALL], hModel_[R_WALL], XMFLOAT3((float)x, 0.0f, (float)z), XMFLOAT3(1.0f, 1.0f, 1.0f) });
             }
 
@@ -182,24 +147,20 @@ void CreateStage::CreateStageData(std::string name)
             if (data == 10)
             {
                 intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3((float)x, 0.0f, (float)z) });
-                startPos_ = XMFLOAT3((float)x, 0.0f, (float)z);
+                static_cast<StageBase*>(GameManager::GetStage())->SetStartPosition( {(float)x + 0.5f, 0.0f, (float)z + 0.5f } );
             }
 
             //WarpPoint
             if (data == 11)
             {
                 intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3((float)x, 0.0f, (float)z) });
-                
                 StageBase* stage = static_cast<StageBase*>(GameManager::GetStage());
-                if (!stage) continue;
                 Warp* warp = Instantiate<Warp>(stage);
                 warp->SetPosition(XMFLOAT3((float)x, 0.0f, (float)z));
                 stage->AddWarpList(warp);
-
             }
         }
     }
     
     GameManager::GetNavigationAI()->SetMapData();
-
 }

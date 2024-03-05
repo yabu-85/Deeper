@@ -1,7 +1,7 @@
 #include "GameManager.h"
-#include "../VFXManager.h"
 #include "WaveManager.h"
 #include "DifficultyManager.h"
+#include "../VFXManager.h"
 #include "../Enemy/EnemyManager.h"
 #include "../Stage/NavigationAI.h"
 #include "../Stage/CreateStage.h"
@@ -14,6 +14,7 @@
 #include "../Player/Player.h"
 #include "../Player/PlayerData.h"
 #include "../UI/Interaction.h"
+#include "../Scene/SceneBase.h"
 
 //デバッグ用
 #include "../Engine/Input.h"
@@ -26,13 +27,9 @@ namespace GameManager {
 	WeaponObjectManager* pWeaponObjectManager_ = nullptr;
 	CollisionMap* pCollisionMap_ = nullptr;
 	Player* pPlayer_ = nullptr;
-	GameObject* pNowStage_ = nullptr;
+	StageBase* pStage_ = nullptr;
 	CreateStage* pCreateStage_ = nullptr;
 	SceneManager* pSceneManager_ = nullptr;
-
-	int time_ = 0;
-	bool isEnd_ = false;
-	std::vector<Character*> characterList_;
 
 	void GameManager::Initialize()
 	{
@@ -57,20 +54,6 @@ namespace GameManager {
 		CombatAI::Update();
 		WaveManager::Update();
 		LifeManager::Update();
-		pCreateStage_->Update();
-
-		//終わるかどうかの判定
-		time_++;
-		if (isEnd_) {
-			if (time_ >= 300) {
-				pSceneManager_->ChangeScene(SCENE_ID_RESULT);
-				isEnd_ = false;
-			}
-		}
-		else if (PlayerData::GetClearStageCount() >= 10 || LifeManager::IsDie()) {
-			isEnd_ = true;
-			time_ = 0;
-		}
 
 		//デバッグ用
 		if (GetStage()) {
@@ -111,10 +94,9 @@ namespace GameManager {
 
 	void SceneTransitionInitialize()
 	{
-		characterList_.clear();
 		pCollisionMap_ = nullptr;
 		pPlayer_ = nullptr;
-		pNowStage_ = nullptr;
+		pStage_ = nullptr;
 		
 		PlayerData::SceneTransitionInitialize();
 		Interaction::SceneTransitionInitialize();
@@ -124,7 +106,6 @@ namespace GameManager {
 
 		pEnemyManager_->SceneTransitionInitialize();
 		pWeaponObjectManager_->SceneTransitionInitialize();
-
 	}
 
 	EnemyManager* GetEnemyManager() { return pEnemyManager_; }
@@ -138,23 +119,8 @@ namespace GameManager {
 	void SetCollisionMap(CollisionMap* map) { pCollisionMap_ = map; }
 	Player* GetPlayer() { return pPlayer_; }
 	void SetPlayer(Player* player) { pPlayer_ = player; }
-	GameObject* GetStage() { return pNowStage_; }
-	void SetStage(GameObject* stage) { pNowStage_ = stage; pEnemyManager_->SetParent(stage); }
-
-	//別に用意した方がいいよね//修正箇所
-	std::vector<Character*> GetCharacterList() { return characterList_; }
-	void AddCharacter(Character* c) { characterList_.push_back(static_cast<Character*>(c)); }
-	void RemoveCharacter(Character* c) {
-		for (auto it = characterList_.begin(); it != characterList_.end();) {
-			if (*it == c) {
-				it = characterList_.erase(it);
-				break;
-			}
-			else {
-				++it;
-			}
-		}
-	}
+	StageBase* GetStage() { return pStage_; }
+	void SetStage(StageBase* stage) { pStage_ = stage; }
 
 }
 

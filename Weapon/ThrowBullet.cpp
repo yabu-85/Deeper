@@ -46,7 +46,7 @@ void ThrowBullet::Initialize()
 	pSphereCollider_->SetValid(false);
 
 	pPolyLine_ = new PolyLine;
-	pPolyLine_->Load("tex3.png");
+	pPolyLine_->Load("PolyImage/Line.png");
 	pPolyLine_->SetLength(30);
 
 }

@@ -27,7 +27,7 @@ MeleeFighter::~MeleeFighter()
 
 void MeleeFighter::Initialize()
 {
-	hModel_ = Model::Load("Model/Fiter3.fbx");
+	hModel_ = Model::Load("Model/Fiter.fbx");
 	assert(hModel_ >= 0);
 
 	CreateStage* pCreateStage = GameManager::GetCreateStage();
@@ -95,7 +95,7 @@ void MeleeFighter::Update()
 	EnemyBase::Update();
 
 	pStateManager_->Update();
-	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f);
+	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f, GetBodyRange());
 
 }
 

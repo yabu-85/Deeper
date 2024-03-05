@@ -544,7 +544,10 @@ void FbxParts::DrawBlendedSkinAnime(Transform& transform, FbxTime time1, FbxTime
 		XMVECTOR Pos = XMLoadFloat3(&pWeightArray_[i].posOrigin);
 		XMVECTOR Normal = XMLoadFloat3(&pWeightArray_[i].normalOrigin);
 		XMStoreFloat3(&pVertexData_[i].position, XMVector3TransformCoord(Pos, matrix));
-		XMStoreFloat3(&pVertexData_[i].normal, XMVector3TransformCoord(Normal, matrix));
+		XMFLOAT3X3 mat33;
+		XMStoreFloat3x3(&mat33, matrix);
+		XMMATRIX matrix33 = XMLoadFloat3x3(&mat33);
+		XMStoreFloat3(&pVertexData_[i].normal, XMVector3TransformCoord(Normal, matrix33));
 	}
 
 	// 頂点バッファをロックして、変形させた後の頂点情報で上書きする
@@ -603,9 +606,11 @@ void FbxParts::DrawSkinAnime(Transform& transform, FbxTime time)
 		// 作成された関節行列を使って、頂点を変形する
 		XMVECTOR Pos = XMLoadFloat3(&pWeightArray_[i].posOrigin);
 		XMVECTOR Normal = XMLoadFloat3(&pWeightArray_[i].normalOrigin);
-		XMStoreFloat3(&pVertexData_[i].position,XMVector3TransformCoord(Pos, matrix));
-		XMStoreFloat3(&pVertexData_[i].normal, XMVector3TransformCoord(Normal, matrix));
-
+		XMStoreFloat3(&pVertexData_[i].position, XMVector3TransformCoord(Pos, matrix));
+		XMFLOAT3X3 mat33;
+		XMStoreFloat3x3(&mat33, matrix);
+		XMMATRIX matrix33 = XMLoadFloat3x3(&mat33);
+		XMStoreFloat3(&pVertexData_[i].normal, XMVector3TransformCoord(Normal, matrix33));
 	}
 
 	// 頂点バッファをロックして、変形させた後の頂点情報で上書きする

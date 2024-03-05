@@ -15,11 +15,6 @@
 //デバッグ用
 #include "../Weapon/WeaponObjectManager.h"
 
-namespace {
-	static const SCENE_ID WARP_STAGE[] = { SCENE_ID_STAGE1, SCENE_ID_TITLE };
-
-}
-
 Stage3::Stage3(GameObject* parent)
 	: StageBase(parent, "Stage3")
 {
@@ -29,26 +24,17 @@ void Stage3::Initialize()
 {
 	Model::Load("DebugCollision/SphereCollider.fbx");
 	Model::Load("Model/stoneGolem.fbx");
+
 	AudioManager::Initialize();
-
-	GameManager::SetStage(this);
-	GameManager::GetCreateStage()->CreateStageData("Csv/Map3.csv");
-	Instantiate<Player>(this);
-	GameManager::SetCollisionMap(Instantiate<CollisionMap>(this));
-	GameManager::GetCollisionMap()->CreatIntersectDataTriangle();
-	SkyBox* sky = InstantiateFront<SkyBox>(GetParent());
-	sky->LoadModel("Model/Stage/SkyBox.fbx");
-	WaveManager::SetStageData();
-
 	TransitionEffect::SetFade(TRANSITION_TYPE::TYPE_ALPHA);
 	TransitionEffect::SetAlphaDecrease(0.01f);
 
-	for (int i = 0; i < (int)warpList_.size(); i++) {
-		warpList_[i]->SetWarpScene(WARP_STAGE[i]);
-	}
+	InitializeStage("Csv/Map3.csv", "Model/Stage/SkyBox.fbx");
+	SCENE_ID WARP_STAGE[] = { SCENE_ID_STAGE1, SCENE_ID_TITLE };
+	SetWarpStage(WARP_STAGE);
 
 	//デバッグ用
-	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_STONE, GameManager::GetCreateStage()->GetPlayerStartPos());
+	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_STONE, GameManager::GetStage()->GetStartPosition());
 
 }
 
@@ -81,8 +67,6 @@ void Stage3::Release()
 
 void Stage3::OnStageCleared()
 {
-	for (int i = 0; i < (int)warpList_.size(); i++) {
-		warpList_[i]->SetValid(true);
-	}
+	SetAllWarpValid(true);
 
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "../Character.h"
+#include "../Character/Character.h"
 #include "EnemyManager.h"
 
 class EnemyUi;
@@ -21,8 +21,9 @@ protected:
     bool isAimTarget_;      //AimTargetにしていいかどうか
     ENEMY_TYPE type_;
 
-    int knockBackTime_;     //ノックバックの時間
-    float knockPower_;      //ノックバックの強さ
+    int knockBackTime_;             //ノックバックの時間
+    float knockBackPower_;          //ノックバックの強さ
+    XMFLOAT3 knockBackDirection_;   //ノックバックさせる方向
 
     int actionCoolDown_;    //Moveとかの切り替え時間用の変数
     int attackDamage_;      //攻撃のダメージ
@@ -54,13 +55,15 @@ public:
     //完全に死亡
     void Dead();
 
-    //ノックバックさせる
-    void SetKnockBack(KNOCK_TYPE type, int time);
-    void KnockBack(float speed = 0.0f);
+    //ノックバックさせる、KnockBackPowerと引数で掛けた値でノックバックさせる
+    void KnockBack(float speed);
+
+    //ノックバックの情報をセットする
+    void SetKnockBack(KNOCK_TYPE type, int time, float power, XMFLOAT3 pos);
+
     void SetKnockBackTime(int i) { knockBackTime_ = i; }
     int GetKnockBackTime() { return knockBackTime_; }
-   // float SetKnockBackPower(float p) { knockBackPower}
-
+    float SetKnockBackPower(float p) { knockBackPower_ = p; }
 
     //攻撃の準備ができているか
     bool IsAttackReady();

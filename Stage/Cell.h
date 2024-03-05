@@ -42,17 +42,3 @@ public:
 	bool SegmentVsTriangle(RayCastData* _data, float& minDist);
 
 };
-
-
-class CellBox : public GameObject
-{
-	int hModel_ = -1;
-
-public:
-	CellBox(GameObject* parent) : GameObject(parent, "CollisionMap"), hModel_(-1) {};
-	~CellBox() {};
-	void Initialize() override;
-	void Update() override;
-	void Draw() override;
-	void Release() override {};
-};

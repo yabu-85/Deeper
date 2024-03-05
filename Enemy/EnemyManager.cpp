@@ -13,7 +13,6 @@ void EnemyManager::AllKillEnemy()
 {
 	for (auto it = enemyList_.begin(); it != enemyList_.end();) {
 		EnemyBase* erasedEnemy = static_cast<EnemyBase*>(*it);
-		GameManager::RemoveCharacter(erasedEnemy);
 	
 		(*it)->KillMe();
 		it = enemyList_.erase(it);
@@ -26,7 +25,6 @@ void EnemyManager::KillEnemy(EnemyBase* enemy)
 	for (auto it = enemyList_.begin(); it != enemyList_.end();) {
 		if (*it == enemy) {
 			EnemyBase* erasedEnemy = static_cast<EnemyBase*>(*it);
-			GameManager::RemoveCharacter(erasedEnemy); 
 			
 			it = enemyList_.erase(it);
 			break;
@@ -84,6 +82,5 @@ void EnemyManager::AddEnemyList(EnemyBase* e, int type)
 {
 	e->SetEnemyType(ENEMY_TYPE(type));
 	enemyList_.push_back(e);
-	GameManager::AddCharacter(e);
 
 }

@@ -32,7 +32,7 @@ public:
     //ü•ªã‚ÌCell‚ÌTriangle‚ÆRay‚Ì”»’è“–‚½‚Á‚½‚ç‘¦I—¹
     void RaySelectCellVsSegment(RayCastData& _data, XMFLOAT3 target);
 
-    void CalcMapWall(XMFLOAT3& _pos, float speed);
+    void CalcMapWall(XMFLOAT3& _pos, float speed, float radius);
 
     //CollisionMap‚Æ‚Ì”»’èŠÔ“à‚©‚ç‚Ì‚â‚Â
     bool IsWall(int x, int z);

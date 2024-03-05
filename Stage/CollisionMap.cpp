@@ -1,22 +1,15 @@
 #include "CollisionMap.h"
-#include "../Engine/FbxParts.h"
-#include "../Engine/Model.h"
-#include "../GameManager/GameManager.h"
 #include "Cell.h"
 #include "CreateStage.h"
-#include <vector>
-
-//デバッグ用
-#include "../Player/Player.h"
+#include "../GameManager/GameManager.h"
+#include "../Engine/FbxParts.h"
+#include "../Engine/Model.h"
 #include "../Engine/Global.h"
+#include <vector>
 
 namespace {
     const float boxSize = 5.0f;
     const int polySize = 3;
-
-    Player* pPlayer;
-    CreateStage* pCreateStage;
-    Fbx* pFbx;
 
     //AimRayCastStage補完してないからサイズ小さいと判定正しくできない
     float minX = 0;
@@ -25,12 +18,9 @@ namespace {
     float maxY = 10; 
     float minZ = 0;
     float maxZ = 50;
-
     int numX = 0;
     int numY = 0;
     int numZ = 0;
-
-    CellBox* pBox;
 }
 
 CollisionMap::CollisionMap(GameObject* parent)
@@ -54,9 +44,6 @@ CollisionMap::~CollisionMap()
 
 void CollisionMap::Initialize()
 {
-    pPlayer = GameManager::GetPlayer();
-    pCreateStage = GameManager::GetCreateStage();
-
     numX = int((abs(maxX) + abs(minX)) / boxSize) + 1;
     numY = int((abs(maxY) + abs(minY)) / boxSize) + 1;
     numZ = int((abs(maxZ) + abs(minZ)) / boxSize) + 1;
@@ -78,20 +65,10 @@ void CollisionMap::Initialize()
             }
         }
     }
-    
-    pBox = Instantiate<CellBox>(this);
 }
 
 void CollisionMap::Update()
 {
-    //デバッグ用
-    //プレイヤーの位置を取得して、判定距離内に入った分割ブロックを取得
-    XMFLOAT3 plaPos = pPlayer->GetPosition();
-    Cell* cell = GetCell(plaPos);
-    if (cell) {
-        pBox->SetPosition(cell->GetPosision());
-        pBox->SetScale(XMFLOAT3(boxSize, boxSize, boxSize));
-    }
 }
 
 void CollisionMap::Draw()
@@ -105,10 +82,10 @@ void CollisionMap::Release()
 void CollisionMap::CreatIntersectDataTriangle()
 {
     //Cellに追加する予定のTriangleをすべて計算してCreatする
-    std::vector<IntersectData> inteDatas = pCreateStage->GetIntersectDatas();
+    std::vector<IntersectData> inteDatas = GameManager::GetCreateStage()->GetIntersectDatas();
     for (int i = 0; i < inteDatas.size(); i++) {
         if (inteDatas[i].hRayModelNum <= -1) continue;
-        pFbx = Model::GetFbx(inteDatas[i].hRayModelNum);
+        Fbx* pFbx = Model::GetFbx(inteDatas[i].hRayModelNum);
         std::vector<FbxParts*> pFbxParts = pFbx->GetFbxParts();
 
         //IntersectDataのCollision用モデルのパーツをすべて取得し、その全ポリゴンの座標を計算
@@ -276,49 +253,49 @@ void CollisionMap::RaySelectCellVsSegment(RayCastData& _data, XMFLOAT3 target)
     }
 }
 
-void CollisionMap::CalcMapWall(XMFLOAT3& _pos, float speed)
+void CollisionMap::CalcMapWall(XMFLOAT3& _pos, float speed, float radius)
 {
     float sp = 1.0f + speed;
-
-    const float defrad = 0.3f;
-    const float diameter = defrad * sp;
-    const float radius = diameter * 0.5f;
-
+    float dia = radius * sp;
+    float rad = dia * 0.5f;
     int checkX1, checkX2;
     int checkZ1, checkZ2;
 
-    checkX1 = (int)(_pos.x + radius); //前
-    checkZ1 = (int)(_pos.z + diameter);
-    checkX2 = (int)(_pos.x - radius);
-    checkZ2 = (int)(_pos.z + diameter);
+    //前
+    checkX1 = (int)(_pos.x + rad);
+    checkZ1 = (int)(_pos.z + dia);
+    checkX2 = (int)(_pos.x - rad);
+    checkZ2 = (int)(_pos.z + dia);
     if (IsWall(checkX1, checkZ1) == 1 || IsWall(checkX2, checkZ2) == 1) {
-        _pos.z = (float)((int)_pos.z + 1.0f - (defrad * sp));
+        _pos.z = (float)((int)_pos.z + 1.0f - (radius * sp));
     }
 
-    checkX1 = (int)(_pos.x + radius); //後ろ
-    checkZ1 = (int)(_pos.z - diameter);
-    checkX2 = (int)(_pos.x - radius);
-    checkZ2 = (int)(_pos.z - diameter);
+    //後ろ
+    checkX1 = (int)(_pos.x + rad);
+    checkZ1 = (int)(_pos.z - dia);
+    checkX2 = (int)(_pos.x - rad);
+    checkZ2 = (int)(_pos.z - dia);
     if (IsWall(checkX1, checkZ1) == 1 || IsWall(checkX2, checkZ2) == 1) {
-        _pos.z = (float)((int)_pos.z + (0.3f * sp));
+        _pos.z = (float)((int)_pos.z + (radius * sp));
     }
 
-    checkX1 = (int)(_pos.x + diameter); //右
-    checkZ1 = (int)(_pos.z + radius);
-    checkX2 = (int)(_pos.x + diameter);
-    checkZ2 = (int)(_pos.z - radius);
+    //右
+    checkX1 = (int)(_pos.x + dia);
+    checkZ1 = (int)(_pos.z + rad);
+    checkX2 = (int)(_pos.x + dia);
+    checkZ2 = (int)(_pos.z - rad);
     if (IsWall(checkX1, checkZ1) == 1 || IsWall(checkX2, checkZ2) == 1) {
-        _pos.x = (float)((int)_pos.x + 1 - (0.3f * sp));
+        _pos.x = (float)((int)_pos.x + 1 - (radius * sp));
     }
 
-    checkX1 = (int)(_pos.x - diameter); //左
-    checkZ1 = (int)(_pos.z + radius);
-    checkX2 = (int)(_pos.x - diameter);
-    checkZ2 = (int)(_pos.z - radius);
+    //左
+    checkX1 = (int)(_pos.x - dia);
+    checkZ1 = (int)(_pos.z + rad);
+    checkX2 = (int)(_pos.x - dia);
+    checkZ2 = (int)(_pos.z - rad);
     if (IsWall(checkX1, checkZ1) == 1 || IsWall(checkX2, checkZ2) == 1) {
-        _pos.x = (float)((int)_pos.x + (0.3f * sp));
+        _pos.x = (float)((int)_pos.x + (radius * sp));
     }
-
 }
 
 bool CollisionMap::IsWall(int _x, int _z)
@@ -326,7 +303,7 @@ bool CollisionMap::IsWall(int _x, int _z)
     int pos[2];
     pos[0] = static_cast<int>((float)_x);
     pos[1] = static_cast<int>((float)_z);
-    std::vector<std::vector<int>> data = pCreateStage->GetMapData();
+    std::vector<std::vector<int>> data = GameManager::GetCreateStage()->GetMapData();
     
     int z = (int)(data.size());
     int x = (int)(data[1].size());

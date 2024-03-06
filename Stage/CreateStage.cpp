@@ -147,7 +147,8 @@ void CreateStage::CreateStageData(std::string name)
             if (data == 10)
             {
                 intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3((float)x, 0.0f, (float)z) });
-                static_cast<StageBase*>(GameManager::GetStage())->SetStartPosition( {(float)x + 0.5f, 0.0f, (float)z + 0.5f } );
+                StageBase* stage = static_cast<StageBase*>(GameManager::GetStage());
+                if(stage) stage->SetStartPosition( {(float)x + 0.5f, 0.0f, (float)z + 0.5f } );
             }
 
             //WarpPoint
@@ -155,6 +156,8 @@ void CreateStage::CreateStageData(std::string name)
             {
                 intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3((float)x, 0.0f, (float)z) });
                 StageBase* stage = static_cast<StageBase*>(GameManager::GetStage());
+                if (!stage) continue;
+
                 Warp* warp = Instantiate<Warp>(stage);
                 warp->SetPosition(XMFLOAT3((float)x, 0.0f, (float)z));
                 stage->AddWarpList(warp);

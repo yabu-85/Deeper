@@ -14,10 +14,10 @@ public:
 	BulletBase(GameObject* parent, std::string name);
 	virtual void Shot(XMFLOAT3 pos, XMFLOAT3 target);	//発射
 	virtual void Move();								//移動させる
-	virtual void LifeTime();							//生存時間の計算
-	virtual void LifeDead();							//生存時間が終わったら呼ぶ関数
-	virtual void Hit();									//当たった時の処理
+	virtual void Hit() = 0;								//当たった時の処理
 
+	void LifeTime();							//生存時間の計算
+	void LifeDead();							//生存時間が終わったら呼ぶ関数	
 	int GetDamage() { return damage_; }
 
 };

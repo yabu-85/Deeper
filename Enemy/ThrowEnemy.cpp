@@ -153,7 +153,6 @@ void ThrowEnemy::ThrowItem()
 	NormalBullet* bullet = Instantiate<NormalBullet>(GetParent());
 	bullet->Shot(itemTransform_.position_, plaPos);
 	bullet->SetObjectName("NormalEBullet");
-
 }
 
 void ThrowEnemy::SetItem()

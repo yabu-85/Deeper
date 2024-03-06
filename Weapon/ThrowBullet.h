@@ -25,9 +25,8 @@ public:
     void OnAttackCollision(GameObject* pTarget);
     void Shot(XMFLOAT3 pos, XMFLOAT3 target) override;
     void Move() override;
+    void Hit() override;
 
     void SetThrowData(float maxHeight, float maxDist);
-    void Hit();
-
 };
 

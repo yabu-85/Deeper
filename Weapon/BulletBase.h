@@ -16,6 +16,7 @@ public:
 	virtual void Move();								//ˆÚ“®‚³‚¹‚é
 	virtual void LifeTime();							//¶‘¶ŠÔ‚ÌŒvZ
 	virtual void LifeDead();							//¶‘¶ŠÔ‚ªI‚í‚Á‚½‚çŒÄ‚ÔŠÖ”
+	virtual void Hit();									//“–‚½‚Á‚½‚Ìˆ—
 
 	int GetDamage() { return damage_; }
 

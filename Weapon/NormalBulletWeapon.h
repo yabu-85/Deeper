@@ -4,12 +4,12 @@
 
 class Player;
 
-class TestWeaponSub : public WeaponBase
+class NormalBulletWeapon : public WeaponBase
 {
     Player* pPlayer_;
 public:
-    TestWeaponSub(GameObject* parent);
-    ~TestWeaponSub() override;
+    NormalBulletWeapon(GameObject* parent);
+    ~NormalBulletWeapon() override;
     void Initialize() override;
     void Update() override;
     void Draw() override;
@@ -22,25 +22,12 @@ public:
 
 //-------------------State----------------------
 
-class TestWeaponSubCombo1 : public StateBase
+class NormalBulletWeaponCombo1 : public StateBase
 {
-    bool next_;
     int time_;
 public:
-    TestWeaponSubCombo1(StateManager* owner);
+    NormalBulletWeaponCombo1(StateManager* owner);
     const char* GetName() const override { return "Combo1"; }
-    void Update() override;
-    void OnEnter() override;
-    void OnExit() override;
-};
-
-class TestWeaponSubCombo2 : public StateBase
-{
-    bool next_;
-    int time_;
-public:
-    TestWeaponSubCombo2(StateManager* owner);
-    const char* GetName() const override { return "Combo2"; }
     void Update() override;
     void OnEnter() override;
     void OnExit() override;

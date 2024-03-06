@@ -3,8 +3,8 @@
 #include "PlayerCommand.h"
 #include "PlayerData.h"
 #include "../Weapon/WeaponBase.h"
-#include "../Weapon/TestWeaponMain.h"
-#include "../Weapon/TestWeaponSub.h"
+#include "../Weapon/MainSwordWeapon.h"
+#include "../Weapon/NormalBulletWeapon.h"
 #include "../Weapon/StoneArmWeapon.h"
 
 #include "../Engine/Text.h"
@@ -24,6 +24,7 @@ PlayerWeapon::PlayerWeapon(Player* pPlayer)
 
 void PlayerWeapon::DrawWeapon()
 {
+    //UI‚Ì•\Ž¦
     pText->Draw(30, 300, currentSubIndex_);
 
     if (pSubWeapon_[0]) {
@@ -44,21 +45,12 @@ void SceneTransitionInitialize() {
 
 void PlayerWeapon::SetPlayerDataWeapon()
 {
-    pMainWeapon_ = Instantiate<TestWeaponMain>(pPlayer_);
-
-    int type[2] = { 0,0 };
-    type[0] = PlayerData::GetWeaponData(0).type_;
-    type[1] = PlayerData::GetWeaponData(1).type_;
-    
-    if (type[0] >= 1) {
-        if(type[0] == 1) SetWeapon(Instantiate<StoneArmWeapon>(pPlayer_));
-        else if(type[0] == 2) SetWeapon(Instantiate<TestWeaponSub>(pPlayer_));
+    pMainWeapon_ = Instantiate<MainSwordWeapon>(pPlayer_);
+    for (int i = 0; i < 2; i++) {
+        int type = PlayerData::GetWeaponData(i).type_;
+        if(type == PlayerData::STONE_ARM_WEAPON) SetWeapon(Instantiate<StoneArmWeapon>(pPlayer_));
+        else if (type == PlayerData::NORMAL_BULLET_WEAPON) SetWeapon(Instantiate<NormalBulletWeapon>(pPlayer_));
     }
-    if (type[1] >= 1) {
-        if (type[1] == 1) SetWeapon(Instantiate<StoneArmWeapon>(pPlayer_));
-        else if (type[1] == 2) SetWeapon(Instantiate<TestWeaponSub>(pPlayer_));
-    }
-
 }
 
 void PlayerWeapon::SetWeapon(WeaponBase* weapon)

@@ -62,8 +62,8 @@ namespace PlayerData {
             WeaponBase* weapon = plaWeapon->GetSubWeapon(i);
             if (weapon == nullptr) continue;
             std::string name = weapon->GetObjectName();
-            if (name == "StoneArmWeapon") SetWeaponData(1, weapon);
-            else if (name == "TestWeaponSub") SetWeaponData(2, weapon);
+            if (name == "StoneArmWeapon") SetWeaponData(STONE_ARM_WEAPON, weapon);
+            else if (name == "TestWeaponSub") SetWeaponData(NORMAL_BULLET_WEAPON, weapon);
         }
     }
 

@@ -250,20 +250,11 @@
     <ClCompile Include="Weapon\WeaponBase.cpp">
       <Filter>09Weapon\Base</Filter>
     </ClCompile>
-    <ClCompile Include="Weapon\TestBullet.cpp">
-      <Filter>09Weapon\Bullet</Filter>
-    </ClCompile>
     <ClCompile Include="Enemy\EnemyBase.cpp">
       <Filter>08Enemy\EnemyBase</Filter>
     </ClCompile>
     <ClCompile Include="Enemy\EnemyUi.cpp">
       <Filter>08Enemy\EnemyBase</Filter>
-    </ClCompile>
-    <ClCompile Include="Weapon\TestWeaponMain.cpp">
-      <Filter>09Weapon\Weapons</Filter>
-    </ClCompile>
-    <ClCompile Include="Weapon\TestWeaponSub.cpp">
-      <Filter>09Weapon\Weapons</Filter>
     </ClCompile>
     <ClCompile Include="Weapon\WeaponObject.cpp">
       <Filter>09Weapon\Object</Filter>
@@ -421,6 +412,15 @@
     <ClCompile Include="Stage\NavigationAI.cpp">
       <Filter>12Stage</Filter>
     </ClCompile>
+    <ClCompile Include="Weapon\NormalBullet.cpp">
+      <Filter>09Weapon\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\MainSwordWeapon.cpp">
+      <Filter>09Weapon\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon\NormalBulletWeapon.cpp">
+      <Filter>09Weapon\Weapons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -536,20 +536,11 @@
     <ClInclude Include="Weapon\WeaponBase.h">
       <Filter>09Weapon\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Weapon\TestBullet.h">
-      <Filter>09Weapon\Bullet</Filter>
-    </ClInclude>
     <ClInclude Include="Enemy\EnemyBase.h">
       <Filter>08Enemy\EnemyBase</Filter>
     </ClInclude>
     <ClInclude Include="Enemy\EnemyUi.h">
       <Filter>08Enemy\EnemyBase</Filter>
-    </ClInclude>
-    <ClInclude Include="Weapon\TestWeaponMain.h">
-      <Filter>09Weapon\Weapons</Filter>
-    </ClInclude>
-    <ClInclude Include="Weapon\TestWeaponSub.h">
-      <Filter>09Weapon\Weapons</Filter>
     </ClInclude>
     <ClInclude Include="Weapon\WeaponObject.h">
       <Filter>09Weapon\Object</Filter>
@@ -709,6 +700,15 @@
     </ClInclude>
     <ClInclude Include="Stage\NavigationAI.h">
       <Filter>12Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\NormalBullet.h">
+      <Filter>09Weapon\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\MainSwordWeapon.h">
+      <Filter>09Weapon\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon\NormalBulletWeapon.h">
+      <Filter>09Weapon\Weapons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

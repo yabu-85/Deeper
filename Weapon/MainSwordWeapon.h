@@ -6,7 +6,7 @@ class Player;
 class SegmentCollider;
 class PolyLine;
 
-class TestWeaponMain : public WeaponBase
+class MainSwordWeapon : public WeaponBase
 {
     int damage_;
     XMFLOAT3 wandPos_;
@@ -15,8 +15,8 @@ class TestWeaponMain : public WeaponBase
     PolyLine* pPolyLine_;
 
 public:
-    TestWeaponMain(GameObject* parent);
-    ~TestWeaponMain() override;
+    MainSwordWeapon(GameObject* parent);
+    ~MainSwordWeapon() override;
     void Initialize() override;
     void Update() override;
     void Draw() override;
@@ -33,36 +33,36 @@ public:
 
 //-------------------State----------------------
 
-class TestWeaponCombo1 : public StateBase
+class MainSwordWeaponCombo1 : public StateBase
 {
     bool next_;
     int time_;
 public:
-    TestWeaponCombo1(StateManager* owner);
+    MainSwordWeaponCombo1(StateManager* owner);
     const char* GetName() const override { return "Combo1"; }
     void Update() override;
     void OnEnter() override;
     void OnExit() override;
 };
 
-class TestWeaponCombo2 : public StateBase
+class MainSwordWeaponCombo2 : public StateBase
 {
     bool next_;
     int time_;
 public:
-    TestWeaponCombo2(StateManager* owner);
+    MainSwordWeaponCombo2(StateManager* owner);
     const char* GetName() const override { return "Combo2"; }
     void Update() override;
     void OnEnter() override;
     void OnExit() override;
 };
 
-class TestWeaponCombo3 : public StateBase
+class MainSwordWeaponCombo3 : public StateBase
 {
     bool next_;
     int time_;
 public:
-    TestWeaponCombo3(StateManager* owner);
+    MainSwordWeaponCombo3(StateManager* owner);
     const char* GetName() const override { return "Combo3"; }
     void Update() override;
     void OnEnter() override;

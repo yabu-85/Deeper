@@ -223,10 +223,10 @@
     <ClCompile Include="UI\UIManager.cpp" />
     <ClCompile Include="VFXManager.cpp" />
     <ClCompile Include="Weapon\BulletBase.cpp" />
+    <ClCompile Include="Weapon\MainSwordWeapon.cpp" />
+    <ClCompile Include="Weapon\NormalBullet.cpp" />
+    <ClCompile Include="Weapon\NormalBulletWeapon.cpp" />
     <ClCompile Include="Weapon\StoneArmWeapon.cpp" />
-    <ClCompile Include="Weapon\TestBullet.cpp" />
-    <ClCompile Include="Weapon\TestWeaponMain.cpp" />
-    <ClCompile Include="Weapon\TestWeaponSub.cpp" />
     <ClCompile Include="Weapon\ThrowBullet.cpp" />
     <ClCompile Include="Weapon\WeaponBase.cpp" />
     <ClCompile Include="Weapon\WeaponObject.cpp" />
@@ -322,10 +322,10 @@
     <ClInclude Include="UI\UIManager.h" />
     <ClInclude Include="VFXManager.h" />
     <ClInclude Include="Weapon\BulletBase.h" />
+    <ClInclude Include="Weapon\MainSwordWeapon.h" />
+    <ClInclude Include="Weapon\NormalBullet.h" />
+    <ClInclude Include="Weapon\NormalBulletWeapon.h" />
     <ClInclude Include="Weapon\StoneArmWeapon.h" />
-    <ClInclude Include="Weapon\TestBullet.h" />
-    <ClInclude Include="Weapon\TestWeaponMain.h" />
-    <ClInclude Include="Weapon\TestWeaponSub.h" />
     <ClInclude Include="Weapon\ThrowBullet.h" />
     <ClInclude Include="Weapon\WeaponBase.h" />
     <ClInclude Include="Weapon\WeaponObject.h" />

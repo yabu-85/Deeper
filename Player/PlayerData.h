@@ -3,6 +3,13 @@
 
 namespace PlayerData
 {
+	enum WEAPON_TYPE {
+		MAIN_SWORD_WEAPON = 1,
+		NORMAL_BULLET_WEAPON,
+		STONE_ARM_WEAPON,
+		MAX,
+	};
+
 	struct WeaponData {
 		int type_;
 		unsigned durability_;

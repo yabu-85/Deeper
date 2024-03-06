@@ -11,6 +11,7 @@
 #include "../Player/Player.h"
 #include "../Player/LifeManager.h"
 #include "../Weapon/ThrowBullet.h"
+#include "../Weapon/NormalBullet.h"
 
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
@@ -149,9 +150,9 @@ void ThrowEnemy::ThrowItem()
 	XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
 	plaPos.y += 0.75f;
 
-	ThrowBullet* bullet = Instantiate<ThrowBullet>(GetParent());
+	NormalBullet* bullet = Instantiate<NormalBullet>(GetParent());
 	bullet->Shot(itemTransform_.position_, plaPos);
-	bullet->SetObjectName("ThrowEBullet");
+	bullet->SetObjectName("NormalEBullet");
 
 }
 

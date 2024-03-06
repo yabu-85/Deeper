@@ -1,4 +1,4 @@
-#include "TestWeaponMain.h"
+#include "MainSwordWeapon.h"
 #include "../GameManager/GameManager.h"
 #include "../VFXManager.h"
 #include "../Player/Player.h"
@@ -35,17 +35,17 @@ namespace {
 
 }
 
-TestWeaponMain::TestWeaponMain(GameObject* parent)
-	: WeaponBase(parent, "TestWeaponMain"), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0), pPolyLine_(nullptr)
+MainSwordWeapon::MainSwordWeapon(GameObject* parent)
+	: WeaponBase(parent, "MainSwordWeapon"), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0), pPolyLine_(nullptr)
 {
     transform_.pParent_ = nullptr;
 }
 
-TestWeaponMain::~TestWeaponMain()
+MainSwordWeapon::~MainSwordWeapon()
 {
 }
 
-void TestWeaponMain::Initialize()
+void MainSwordWeapon::Initialize()
 {
     hModel_ = Model::Load("Model/BlueBox.fbx");
     assert(hModel_ >= 0);
@@ -57,9 +57,9 @@ void TestWeaponMain::Initialize()
     damage_ = 20;
 
     pStateManager_ = new StateManager(this);
-    pStateManager_->AddState(new TestWeaponCombo1(pStateManager_));
-    pStateManager_->AddState(new TestWeaponCombo2(pStateManager_));
-    pStateManager_->AddState(new TestWeaponCombo3(pStateManager_));
+    pStateManager_->AddState(new MainSwordWeaponCombo1(pStateManager_));
+    pStateManager_->AddState(new MainSwordWeaponCombo2(pStateManager_));
+    pStateManager_->AddState(new MainSwordWeaponCombo3(pStateManager_));
     pStateManager_->ChangeState("");
     pStateManager_->Initialize();
 
@@ -71,12 +71,12 @@ void TestWeaponMain::Initialize()
     pPolyLine_->Load("PolyImage/Sword.png");
 }
 
-void TestWeaponMain::Update()
+void MainSwordWeapon::Update()
 {
 
 }
 
-void TestWeaponMain::Draw()
+void MainSwordWeapon::Draw()
 {
     if (!IsVisibled()) return;
    
@@ -99,14 +99,14 @@ void TestWeaponMain::Draw()
     pPolyLine_->Draw();
 }
 
-void TestWeaponMain::Release()
+void MainSwordWeapon::Release()
 {
     SAFE_RELEASE(pPolyLine_);
     SAFE_DELETE(pPolyLine_);
 
 }
 
-void TestWeaponMain::OnAttackCollision(GameObject* pTarget)
+void MainSwordWeapon::OnAttackCollision(GameObject* pTarget)
 {
     if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
@@ -117,14 +117,14 @@ void TestWeaponMain::OnAttackCollision(GameObject* pTarget)
     }
 }
 
-void TestWeaponMain::ChangeAttackState()
+void MainSwordWeapon::ChangeAttackState()
 {
     atkEnd_ = false;
     pStateManager_->ChangeState("Combo1");
 
 }
 
-void TestWeaponMain::ResetState()
+void MainSwordWeapon::ResetState()
 {
     atkEnd_ = true;
     pStateManager_->ChangeState("");
@@ -133,7 +133,7 @@ void TestWeaponMain::ResetState()
 
 }
 
-void TestWeaponMain::CalcDamage()
+void MainSwordWeapon::CalcDamage()
 {
     XMFLOAT3 tar = XMFLOAT3(transform_.rotate_.x, transform_.rotate_.y, 0.0f);
     XMFLOAT3 target;
@@ -161,11 +161,11 @@ void TestWeaponMain::CalcDamage()
 
 //--------------------state---------------------------------------------------
 
-TestWeaponCombo1::TestWeaponCombo1(StateManager* owner) : StateBase(owner), time_(0), next_(false)
+MainSwordWeaponCombo1::MainSwordWeaponCombo1(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
 }
 
-void TestWeaponCombo1::Update()
+void MainSwordWeaponCombo1::Update()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
@@ -178,7 +178,7 @@ void TestWeaponCombo1::Update()
     p->FrontMove(MOVE_SPEED);
     if (p->GetCommand()->CmdAtk()) next_ = true;
 
-    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetSegmentCollider()->SetValid(false);
     if(time_ >= ANIM_ATTACK_FRAME1[0] && time_ <= ANIM_ATTACK_FRAME1[1])
     m->CalcDamage();
@@ -193,7 +193,7 @@ void TestWeaponCombo1::Update()
     }
 }
 
-void TestWeaponCombo1::OnEnter()
+void MainSwordWeaponCombo1::OnEnter()
 {
     time_ = 0;
     next_ = false;
@@ -202,20 +202,20 @@ void TestWeaponCombo1::OnEnter()
 
 }
 
-void TestWeaponCombo1::OnExit()
+void MainSwordWeaponCombo1::OnExit()
 {
-    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetPolyLine()->ResetPosition();
 
 }
 
 //---------------------------------------------
 
-TestWeaponCombo2::TestWeaponCombo2(StateManager* owner) : StateBase(owner), time_(0), next_(false)
+MainSwordWeaponCombo2::MainSwordWeaponCombo2(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
 }
 
-void TestWeaponCombo2::Update()
+void MainSwordWeaponCombo2::Update()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
@@ -228,7 +228,7 @@ void TestWeaponCombo2::Update()
     p->FrontMove(MOVE_SPEED);
     if (p->GetCommand()->CmdAtk()) next_ = true;
 
-    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetSegmentCollider()->SetValid(false);
     if (time_ >= ANIM_ATTACK_FRAME2[0] && time_ <= ANIM_ATTACK_FRAME2[1])
     m->CalcDamage();
@@ -244,7 +244,7 @@ void TestWeaponCombo2::Update()
     }
 }
 
-void TestWeaponCombo2::OnEnter()
+void MainSwordWeaponCombo2::OnEnter()
 {
     time_ = 0;
     next_ = false;
@@ -253,20 +253,20 @@ void TestWeaponCombo2::OnEnter()
 
 }
 
-void TestWeaponCombo2::OnExit()
+void MainSwordWeaponCombo2::OnExit()
 {
-    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetPolyLine()->ResetPosition();
 
 }
 
 //---------------------------------------------
 
-TestWeaponCombo3::TestWeaponCombo3(StateManager* owner) : StateBase(owner), time_(0), next_(false)
+MainSwordWeaponCombo3::MainSwordWeaponCombo3(StateManager* owner) : StateBase(owner), time_(0), next_(false)
 {
 }
 
-void TestWeaponCombo3::Update()
+void MainSwordWeaponCombo3::Update()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
@@ -279,7 +279,7 @@ void TestWeaponCombo3::Update()
     p->FrontMove(MOVE_SPEED);
     if (p->GetCommand()->CmdAtk()) next_ = true;
 
-    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetSegmentCollider()->SetValid(false);
     if (time_ >= ANIM_ATTACK_FRAME3[0] && time_ <= ANIM_ATTACK_FRAME3[1])
     m->CalcDamage();
@@ -295,7 +295,7 @@ void TestWeaponCombo3::Update()
     }
 }
 
-void TestWeaponCombo3::OnEnter()
+void MainSwordWeaponCombo3::OnEnter()
 {
     time_ = 0;
     next_ = false;
@@ -304,9 +304,9 @@ void TestWeaponCombo3::OnEnter()
 
 }
 
-void TestWeaponCombo3::OnExit()
+void MainSwordWeaponCombo3::OnExit()
 {
-    TestWeaponMain* m = static_cast<TestWeaponMain*>(owner_->GetGameObject());
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetPolyLine()->ResetPosition();
 
 }

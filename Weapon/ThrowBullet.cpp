@@ -105,14 +105,6 @@ void ThrowBullet::OnAttackCollision(GameObject* pTarget)
 			e->ApplyDamage(damage_);
 		}
 	}
-
-}
-
-void ThrowBullet::SetThrowData(float maxHeight, float maxDist)
-{
-	maxHeight_ = maxHeight;
-	maxDistance_ = maxDist;
-
 }
 
 void ThrowBullet::Shot(XMFLOAT3 pos, XMFLOAT3 target)
@@ -164,5 +156,12 @@ void ThrowBullet::Hit()
 	time_ = DEATH_TIME;
 	isDeath_ = true;
 	transform_.position_.y = 10000.0f;
+
+}
+
+void ThrowBullet::SetThrowData(float maxHeight, float maxDist)
+{
+	maxHeight_ = maxHeight;
+	maxDistance_ = maxDist;
 
 }

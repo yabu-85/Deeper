@@ -1,6 +1,6 @@
 #include "WeaponObjectManager.h"
 #include "WeaponObject.h"
-#include "TestWeaponSub.h"
+#include "NormalBulletWeapon.h"
 #include "StoneArmWeapon.h"
 #include "../Engine/Model.h"
 #include "../Player/Player.h"
@@ -30,7 +30,6 @@ void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos)
 	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "StoneArmObj", "RedBoxObj", "BlueBox"};
 
 	WeaponObject* weapon = InstantiateFront<WeaponObject>(GameManager::GetStage());
-
 	weapon->SetPosition(pos);
 	weapon->LoadModel(fileName[(int)type]);
 	weapon->SetType(int(type));
@@ -94,8 +93,8 @@ WeaponBase* WeaponObjectManager::PlayerWeaponSet()
 
 	WeaponBase* weapon = nullptr;
 	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_STONE) weapon = Instantiate<StoneArmWeapon>(GameManager::GetPlayer());
-	else if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_THROW) weapon = Instantiate<TestWeaponSub>(GameManager::GetPlayer());
-	else if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_MELEE) weapon = Instantiate<TestWeaponSub>(GameManager::GetPlayer());
+	else if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_THROW) weapon = Instantiate<NormalBulletWeapon>(GameManager::GetPlayer());
+	else if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_MELEE) weapon = Instantiate<NormalBulletWeapon>(GameManager::GetPlayer());
 	
 	RemoveWeaponObject(nearestObject_);
 	nearestObject_->KillMe();

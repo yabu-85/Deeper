@@ -42,9 +42,9 @@ void PlayerData::ResetData()
     }
 }
 
-void PlayerData::SetWeaponData(int i, WeaponBase* weapon) {
-    data_.subWeapon_[i].type_ = i;
-    data_.subWeapon_[i].durability_ = weapon->GetDurability();
+void PlayerData::SetWeaponData(int index, int type, WeaponBase* weapon) {
+    data_.subWeapon_[index].type_ = type;
+    data_.subWeapon_[index].durability_ = weapon->GetDurability();
 }
 
 void PlayerData::SavePlayerData()
@@ -64,8 +64,10 @@ void PlayerData::SavePlayerData()
         if (weapon == nullptr) continue;
 
         std::string name = weapon->GetObjectName();
-        if (name == "StoneArmWeapon") SetWeaponData(static_cast<int>(STONE_ARM_WEAPON), weapon);
-        else if (name == "TestWeaponSub") SetWeaponData(NORMAL_BULLET_WEAPON, weapon);
+        if (name == "StoneArmWeapon") 
+            SetWeaponData(i, static_cast<int>(STONE_ARM_WEAPON), weapon);
+        else if (name == "TestWeaponSub") 
+            SetWeaponData(i, static_cast<int>(NORMAL_BULLET_WEAPON), weapon);
     }
 }
 

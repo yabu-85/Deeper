@@ -30,7 +30,7 @@ namespace PlayerData
 	void ResetData();
 	void SavePlayerData();
 
-	void SetWeaponData(int i, WeaponBase* weapon);
+	void SetWeaponData(int index, int type, WeaponBase* weapon);
 	WeaponData& GetWeaponData(int index);
 
 	void AddClearStageCount(SCENE_ID id);

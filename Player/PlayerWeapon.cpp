@@ -46,6 +46,7 @@ void SceneTransitionInitialize() {
 void PlayerWeapon::SetPlayerDataWeapon()
 {
     pMainWeapon_ = Instantiate<MainSwordWeapon>(pPlayer_);
+
     for (int i = 0; i < 2; i++) {
         int type = PlayerData::GetWeaponData(i).type_;
         if(type == PlayerData::STONE_ARM_WEAPON) SetWeapon(Instantiate<StoneArmWeapon>(pPlayer_));

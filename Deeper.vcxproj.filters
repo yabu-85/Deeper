@@ -421,6 +421,9 @@
     <ClCompile Include="Weapon\NormalBulletWeapon.cpp">
       <Filter>09Weapon\Weapons</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Easing.cpp">
+      <Filter>01Engine\ResourceManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -709,6 +712,9 @@
     </ClInclude>
     <ClInclude Include="Weapon\NormalBulletWeapon.h">
       <Filter>09Weapon\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Easing.h">
+      <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

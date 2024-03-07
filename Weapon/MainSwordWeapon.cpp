@@ -112,7 +112,7 @@ void MainSwordWeapon::OnAttackCollision(GameObject* pTarget)
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
         e->ApplyDamage(damage_);
         e->SetAllColliderValid(false);
-        e->SetKnockBack(MEDIUM, 2, 0.01f, pPlayer_->GetPosition());
+        e->SetKnockBack(Character::MEDIUM, 3, 0.2f, pPlayer_->GetPosition());
         VFXManager::CreatVfxExplode1(wandPos_);
     }
 }

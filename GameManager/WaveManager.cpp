@@ -32,10 +32,8 @@ namespace WaveManager {
 	struct StageData {
 		int waveCount;		//Waveの数
 		int spawnTable;		//spawnEnemyTableを選ぶための
-
 		StageData(int wave, int list) : waveCount(wave), spawnTable(list) {};
-	} 
-	data_[MAX] = {
+	} data_[MAX] = {
 		StageData(0, 0),
 		StageData(3, 0),
 		StageData(1, 0),
@@ -45,60 +43,58 @@ namespace WaveManager {
 	int currentDataIndex = 0;
 	int waveCount_ = 0;
 
-	//-----------------------------------------------------------------
+}
 
-	void Update()
-	{
-		//初期・Waveクリア
-		if (GameManager::GetEnemyManager()->IsEnemyListEmpty()) {
-			if (waveCount_ <= 0) {
-				isStageClear = true;
-			}
-			else if (waveCount_ >= 1) {
-				waveCount_--;
-				SetWaveData();
-			}
+void WaveManager::Update()
+{
+	//初期・Waveクリア
+	if (GameManager::GetEnemyManager()->IsEnemyListEmpty()) {
+		if (waveCount_ <= 0) {
+			isStageClear = true;
+		}
+		else if (waveCount_ >= 1) {
+			waveCount_--;
+			SetWaveData();
 		}
 	}
+}
 
-	void SetStageData() {
-		SCENE_ID cs = GameManager::GetSceneManager()->GetNextSceneID();
-		currentDataIndex = 0;
-		if (cs == SCENE_ID_STAGE1) currentDataIndex = 0;
-		else if (cs == SCENE_ID_STAGE2) currentDataIndex = 1;
-		else if (cs == SCENE_ID_STAGE3) currentDataIndex = 2;
+void WaveManager::SetStageData() {
+	SCENE_ID cs = GameManager::GetSceneManager()->GetNextSceneID();
+	currentDataIndex = 0;
+	if (cs == SCENE_ID_STAGE1) currentDataIndex = 0;
+	else if (cs == SCENE_ID_STAGE2) currentDataIndex = 1;
+	else if (cs == SCENE_ID_STAGE3) currentDataIndex = 2;
 
-		waveCount_ = data_[currentDataIndex].waveCount;
+	waveCount_ = data_[currentDataIndex].waveCount;
+}
+
+void WaveManager::SetWaveData()
+{
+	//spawnEnemyTableの中からspawnTableの場所からとってそのvectorのsizeを取得
+	int randMax = (int)spawnEnemyTable[data_[currentDataIndex].spawnTable].size();
+	if (randMax <= 0) return;
+
+	//ここ難易度によって選ぶ確率制御とかしたい
+	int r = rand() % randMax;
+
+	EnemyManager* ma = GameManager::GetEnemyManager();
+	int max = (int)spawnEnemyTable[data_[currentDataIndex].spawnTable][r].size();
+
+	for (int i = 0; i < max; i++) {
+		ENEMY_TYPE t = spawnEnemyTable[data_[currentDataIndex].spawnTable][r].at(i);
+		ma->SpawnEnemy(t);
 	}
+}
 
-	void SetWaveData()
-	{
-		//spawnEnemyTableの中からspawnTableの場所からとってそのvectorのsizeを取得
-		int randMax = (int)spawnEnemyTable[data_[currentDataIndex].spawnTable].size();
-		if (randMax <= 0) return;
+bool WaveManager::IsClearStage()
+{
+	return isStageClear;
+}
 
-		//ここ難易度によって選ぶ確率制御とかしたい
-		int r = rand() % randMax;
-
-		EnemyManager* ma = GameManager::GetEnemyManager();
-		int max = (int)spawnEnemyTable[data_[currentDataIndex].spawnTable][r].size();
-		
-		for (int i = 0; i < max; i++) {
-			ENEMY_TYPE t = spawnEnemyTable[data_[currentDataIndex].spawnTable][r].at(i);
-			ma->SpawnEnemy(t);
-		}
-	}
-
-	bool IsClearStage()
-	{
-		return isStageClear;
-	}
-
-	void SceneTransitionInitialize()
-	{
-		SetStageData();
-		isStageClear = false;
-
-	}
+void WaveManager::SceneTransitionInitialize()
+{
+	SetStageData();
+	isStageClear = false;
 
 }

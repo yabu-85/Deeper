@@ -21,12 +21,7 @@ EnemyBase::~EnemyBase()
 
 void EnemyBase::Update()
 {
-	int kcTime = GetKnockBackTime();
-	if (kcTime > 0) {
-		float speed = 1.0f - (1.0f / float(kcTime));
-		SetKnockBackTime(--kcTime);
-		if (speed > 0.0f) KnockBack(speed);
-	}
+	Character::Update();
 
 	attackCoolDown_--;
 	actionCoolDown_--;
@@ -66,23 +61,6 @@ void EnemyBase::Dead()
 {
 	VFXManager::CreatVfxSmoke(transform_.position_);
 	GameManager::GetEnemyManager()->KillEnemy(this);
-}
-
-void EnemyBase::SetKnockBack(KNOCK_TYPE type, int time, float power, XMFLOAT3 pos)
-{
-	if (type == SMALL) SmallKnockBack();
-	else if (type == MEDIUM) MediumKnockBack();
-	else if (type == LARGE) LargetKnockBack();
-	knockBackTime_ = time;
-	knockBackPower_ = power;
-	knockBackDirection_ = Float3Normalize(Float3Sub(transform_.position_, pos));
-}
-
-void EnemyBase::KnockBack(float speed)
-{
-	transform_.position_.x += (knockBackDirection_.x * speed);
-	transform_.position_.z += (knockBackDirection_.z * speed);
-	SetMovement(Float3Multiply(knockBackDirection_, speed));
 }
 
 bool EnemyBase::IsAttackReady()

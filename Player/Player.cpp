@@ -111,6 +111,8 @@ void Player::Initialize()
 
 void Player::Update()
 {
+    Character::Update();
+
     pCommand_->Update();
     pAnimationController_->Update();
     pStateManager_->Update();

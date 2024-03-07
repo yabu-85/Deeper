@@ -5,13 +5,6 @@
 class EnemyUi;
 class StateManager;
 
-enum KNOCK_TYPE {
-    SMALL = 0,
-    MEDIUM,
-    LARGE,
-    MAX,
-};
-
 class EnemyBase : public Character
 {
 protected:
@@ -21,20 +14,12 @@ protected:
     bool isAimTarget_;      //AimTargetにしていいかどうか
     ENEMY_TYPE type_;
 
-    int knockBackTime_;             //ノックバックの時間
-    float knockBackPower_;          //ノックバックの強さ
-    XMFLOAT3 knockBackDirection_;   //ノックバックさせる方向
-
     int actionCoolDown_;    //Moveとかの切り替え時間用の変数
     int attackDamage_;      //攻撃のダメージ
     int attackCoolDown_;    //攻撃のクールダウン
     float attackDistance_;  //攻撃に移れるTargetとの距離
     bool isCombatReady_;    //CombatStateに移っていいかどうか
     float combatDistance_;  //CombatStateに移っていいかどうかの計算距離
-
-    virtual void SmallKnockBack() {};
-    virtual void MediumKnockBack() {};
-    virtual void LargetKnockBack() {};
 
     EnemyUi* pEnemyUi_;
     StateManager* pStateManager_;
@@ -54,16 +39,6 @@ public:
 
     //完全に死亡
     void Dead();
-
-    //ノックバックさせる、KnockBackPowerと引数で掛けた値でノックバックさせる
-    void KnockBack(float speed);
-
-    //ノックバックの情報をセットする
-    void SetKnockBack(KNOCK_TYPE type, int time, float power, XMFLOAT3 pos);
-
-    void SetKnockBackTime(int i) { knockBackTime_ = i; }
-    int GetKnockBackTime() { return knockBackTime_; }
-    float SetKnockBackPower(float p) { knockBackPower_ = p; }
 
     //攻撃の準備ができているか
     bool IsAttackReady();

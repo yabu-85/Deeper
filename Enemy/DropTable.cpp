@@ -14,13 +14,12 @@ namespace DropTable {
 		{ 50, 50 },	//THROW
 		{ 50, 50 },	//Melee
 	};
+}
 
-	void DropItem(ENEMY_TYPE type, XMFLOAT3 pos)
-	{
-		if ((unsigned)(rand() % 100) < table_[type].weaponParcent_) {
-			WeaponObjectManager* ma = GameManager::GetWeaponObjectManager();
-			ma->AddWeaponObject((WeaponObjectManager::WEAPON_TYPE)type, pos);
-		}
+void DropTable::DropItem(ENEMY_TYPE type, XMFLOAT3 pos)
+{
+	if ((unsigned)(rand() % 100) < table_[type].weaponParcent_) {
+		WeaponObjectManager* ma = GameManager::GetWeaponObjectManager();
+		ma->AddWeaponObject((WeaponObjectManager::WEAPON_TYPE)type, pos);
 	}
-
 }

@@ -1,22 +1,21 @@
 #include "StoneArmWeapon.h"
+#include "../VFXManager.h"
 #include "../GameManager/GameManager.h"
-#include "../State/StateManager.h"
 #include "../Engine/Model.h"
+#include "../Engine/SphereCollider.h"
+#include "../State/StateManager.h"
 #include "../Player/Player.h"
 #include "../Player/PlayerCommand.h"
 #include "../Player/Aim.h"
 #include "../Enemy/EnemyBase.h"
-#include "../Engine/SphereCollider.h"
-#include "../VFXManager.h"
 
 namespace {
     static const int ATTACK_DAMAGE = 100;
     static const float MOVE_SPEED = 0.03f;
-    
+
     static const int COMBO_TIME1 = 100;
     static const int ATTACK_FRAME1 = 52;   //îªíËÉtÉåÅ[ÉÄ
     static const int ROTATE_FRAME[2] = { 5, 15 };
-
 }
 
 StoneArmWeapon::StoneArmWeapon(GameObject* parent)
@@ -107,7 +106,7 @@ void StoneArmWeapon::OnAttackCollision(GameObject* pTarget)
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
         e->ApplyDamage(ATTACK_DAMAGE);
         e->SetAllColliderValid(false);
-        e->SetKnockBack(MEDIUM, 7, 0.3f, pPlayer_->GetPosition());
+        e->SetKnockBack(Character::MEDIUM, 30, 0.3f, pPlayer_->GetPosition());
     }
 }
 

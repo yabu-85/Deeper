@@ -1,6 +1,8 @@
 #pragma once
 #include "../Engine/SceneManager.h"
 
+class WeaponBase;
+
 namespace PlayerData
 {
 	enum WEAPON_TYPE {
@@ -26,14 +28,14 @@ namespace PlayerData
 	void Draw();
 	void SceneTransitionInitialize();
 	void ResetData();
-
 	void SavePlayerData();
-	void SetWeaponData(int index, const WeaponData& data);
+
+	void SetWeaponData(int i, WeaponBase* weapon);
 	WeaponData& GetWeaponData(int index);
+
 	void AddClearStageCount(SCENE_ID id);
 	int GetClearStageCount();
 	int GetReceiveDamage();
-
 
 };
 

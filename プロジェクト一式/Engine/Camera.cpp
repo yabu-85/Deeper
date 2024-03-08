@@ -1,5 +1,6 @@
 #include "camera.h"
 #include "Direct3D.h"
+#include "Global.h"
 
 XMFLOAT3 _position;
 XMFLOAT3 _target;
@@ -53,3 +54,32 @@ XMMATRIX Camera::GetProjectionMatrix() { return _proj; }
 
 //ƒrƒ‹ƒ{[ƒh—p‰ñ“]s—ñ‚ğæ“¾
 XMMATRIX Camera::GetBillboardMatrix(){	return _billBoard; }
+
+bool Camera::IsPositionWithinScreen(XMFLOAT3 pos)
+{
+	XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&pos), Camera::GetViewMatrix());
+	v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
+	float x = XMVectorGetX(v2);
+	float y = XMVectorGetY(v2);
+	
+	if (x >= 1.0f || y >= 1.0f || x <= -1.0f || y <= -1.0f) return false;
+	return true;
+}
+
+bool Camera::IsPositionWithinVector(XMFLOAT3 pos)
+{
+	XMFLOAT3 cPos = GetPosition();
+	XMFLOAT3 cTar = GetTarget();
+
+	//CameraPosition‚ÆCameraTarget‚Ì‹——£‚æ‚èCameraPosition‚Æpos‚Æ‚Ì‹——£‚ª’Z‚¢‚È‚ç”ÍˆÍ“à‚Æ‚·‚é
+	float dist1 = DistanceCalculation(cPos, cTar);
+	float dist2 = DistanceCalculation(cPos, pos);
+	if (dist2 <= dist1) return true;
+
+	//“àÏŒvZ‚·‚é
+	XMVECTOR vec = XMVector3Normalize(XMLoadFloat3(&cTar) - XMLoadFloat3(&cPos));
+	XMVECTOR tVec = XMVector3Normalize(XMLoadFloat3(&pos) - XMLoadFloat3(&cTar));
+	float dot = XMVectorGetX(XMVector3Dot(tVec, vec));
+	if (dot > 0.0f) return true;
+	return false;
+}

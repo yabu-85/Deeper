@@ -96,9 +96,6 @@ void EnemyUi::Draw()
 	if (parcent >= 1.0f)
 		return;
 
-	if (XMVectorGetZ(v2) > 1.0f)
-		return;
-
 	//‰æŠp§ŒÀ‚·‚é
 	if (x >= drawSize || y >= drawSize || x <= -drawSize || y <= -drawSize) {
 		SetGageAlpha(-alphaValue);

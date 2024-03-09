@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "PlayerCommand.h"
 #include "../Engine/Camera.h"
+#include "../Engine/Global.h"
 #include "../Stage/CollisionMap.h"
 #include "../Enemy/EnemyBase.h"
 #include "../Enemy/Enemymanager.h"
@@ -177,10 +178,11 @@ EnemyBase* Aim::CalcTargetEnemy()
     std::vector<EnemyBase*> eList = pEnemyManager->GetAllEnemy();
 
     // プレイヤーの視線方向を計算
-    XMFLOAT3 playerForward;
-    playerForward.x = (float)sin(XMConvertToRadians(transform_.rotate_.y));
-    playerForward.y = 0.0f;
-    playerForward.z = (float)cos(XMConvertToRadians(transform_.rotate_.y));
+    XMFLOAT3 forward;
+    forward.x = (float)sin(XMConvertToRadians(transform_.rotate_.y));
+    forward.y = 0.0f;
+    forward.z = (float)cos(XMConvertToRadians(transform_.rotate_.y));
+    XMVECTOR vForward = XMLoadFloat3(&forward);
 
     float minLeng = 999999;
     int minLengIndex = -1;
@@ -188,29 +190,19 @@ EnemyBase* Aim::CalcTargetEnemy()
     for (int i = 0; i < eList.size(); i++) {
         if(!eList.at(i)->IsAimTarget()) continue;
 
-        XMFLOAT3 ePos = eList.at(i)->GetPosition();
+        //距離計算して、範囲外だったら次
+        float dist = DistanceCalculation(cameraTarget_, eList.at(i)->GetPosition());
+        if (dist >= TARGET_RANGE) continue;
 
-        //ターゲットへのベクトルを計算（逆ベクトル）
-        XMFLOAT3 toTarget = XMFLOAT3(cameraTarget_.x - ePos.x, 0.0f, cameraTarget_.z - ePos.z);
+        //視野角を計算
+        XMFLOAT3 toTarget = Float3Sub(cameraTarget_, eList.at(i)->GetPosition());
+        float dot = XMVectorGetX(XMVector3Dot(XMVector3Normalize(XMLoadFloat3(&toTarget)), vForward));
+        float angle = acosf(dot);
 
-        //ターゲットへの距離を計算
-        float distance = (float)sqrt(toTarget.x * toTarget.x + toTarget.z * toTarget.z);
-
-        //範囲外だったら次
-        if (distance >= TARGET_RANGE) continue;
-
-        // 方向ベクトルを正規化
-        XMVECTOR toTargetNorm = XMVector3Normalize(XMLoadFloat3(&toTarget));
-        XMVECTOR playerForwardNorm = XMLoadFloat3(&playerForward);
-
-        // 視野角を計算
-        float dotProduct = XMVectorGetX(XMVector3Dot(toTargetNorm, playerForwardNorm));
-        float angle = acosf(dotProduct);
-
-        // 角度を比較してターゲットが範囲内にあるかどうかを確認
+        //ターゲットが範囲内にあるかどうかを確認
         if (angle <= FOV_RADIAN) {
-            if (minLeng > distance) {
-                minLeng = distance;
+            if (minLeng > dist) {
+                minLeng = dist;
                 minLengIndex = i;
             }
         }

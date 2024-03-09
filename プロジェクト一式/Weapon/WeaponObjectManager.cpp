@@ -3,6 +3,7 @@
 #include "NormalBulletWeapon.h"
 #include "StoneArmWeapon.h"
 #include "../Engine/Model.h"
+#include "../Engine/Global.h"
 #include "../Player/Player.h"
 #include "../GameManager/GameManager.h"
 #include "../UI/InteractionUI.h"
@@ -61,13 +62,8 @@ void WeaponObjectManager::AllKillWeaponObject()
 bool WeaponObjectManager::IsInPlayerRange()
 {
 	XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
-
 	for (int i = 0; i < objctList_.size(); i++) {
-		XMFLOAT3 objPos = objctList_.at(i)->GetPosition();
-		objPos = XMFLOAT3(plaPos.x - objPos.x, plaPos.y - objPos.y, plaPos.z - objPos.z);
-
-		float range = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
-		if (range <= range_) {
+		if (DistanceCalculation(plaPos, objctList_.at(i)->GetPosition()) <= range_) {
 			return true;
 		}
 	}
@@ -75,27 +71,17 @@ bool WeaponObjectManager::IsInPlayerRange()
 	return false;
 }
 
-WeaponObject* WeaponObjectManager::GetNearestWeapon()
+WeaponBase* WeaponObjectManager::GetNearestWeapon()
 {
 	CaclNearestObject();
-
-	return nearestObject_;
-}
-
-WeaponBase* WeaponObjectManager::PlayerWeaponSet()
-{
-	CaclNearestObject();
-
-	if (nearestObject_ == nullptr) {
-		OutputDebugString("nearestObject->Is NullPtr Deth");
-		return nullptr;
-	}
+	if (nearestObject_ == nullptr) return nullptr;
 
 	WeaponBase* weapon = nullptr;
 	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_STONE) weapon = Instantiate<StoneArmWeapon>(GameManager::GetPlayer());
 	else if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_THROW) weapon = Instantiate<NormalBulletWeapon>(GameManager::GetPlayer());
 	else if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_MELEE) weapon = Instantiate<NormalBulletWeapon>(GameManager::GetPlayer());
 	
+	//削除
 	RemoveWeaponObject(nearestObject_);
 	nearestObject_->KillMe();
 	nearestObject_ = nullptr;
@@ -105,40 +91,32 @@ WeaponBase* WeaponObjectManager::PlayerWeaponSet()
 
 void WeaponObjectManager::CaclNearestObject()
 {
-	Player* pPlayer = GameManager::GetPlayer();
-	XMFLOAT3 plaPos = pPlayer->GetPosition();
-
+	XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
 	int minRangeIndex = -1;
 	float minRange = range_;
+	nearestObject_ = nullptr;
 
+	//一番近いオブジェクトのインデックス計算
 	for (int i = 0; i < objctList_.size(); i++) {
-		XMFLOAT3 objPos = objctList_.at(i)->GetPosition();
-		objPos = XMFLOAT3(plaPos.x - objPos.x, plaPos.y - objPos.y, plaPos.z - objPos.z);
-
-		float range = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
+		float range = DistanceCalculation(plaPos, objctList_.at(i)->GetPosition());
 		if (minRange > range) {
 			minRangeIndex = i;
 			minRange = range;
 		}
 	}
 
-	nearestObject_ = nullptr;
+	//範囲内にあれば更新
 	if (minRangeIndex >= 0) {
 		nearestObject_ = objctList_.at(minRangeIndex);
 	}
-
 }
 
 void WeaponObjectManager::InteractUIIsInPlayerRange()
 {
+	//rangeの範囲内ならInteractionUIのValidをtrueに
 	XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
-
 	for (int i = 0; i < objctList_.size(); i++) {
-		XMFLOAT3 objPos = objctList_.at(i)->GetPosition();
-		objPos = XMFLOAT3(plaPos.x - objPos.x, plaPos.y - objPos.y, plaPos.z - objPos.z);
-
-		float range = XMVectorGetX(XMVector3Length(XMLoadFloat3(&objPos)));
-		if (range <= range_) objctList_.at(i)->GetInteractionUI()->SetValid(true);
+		if(DistanceCalculation(plaPos, objctList_.at(i)->GetPosition()) <= range_) objctList_.at(i)->GetInteractionUI()->SetValid(true);
 		else objctList_.at(i)->GetInteractionUI()->SetValid(false);
 	}
 }

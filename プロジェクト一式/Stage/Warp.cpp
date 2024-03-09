@@ -52,12 +52,8 @@ void Warp::Update()
 
 	time_++;
 	if (time_ >= WARP_TIME) {
-		OutputDebugString("Warp : Warp Time\n");
-		
 		GameManager::GetSceneManager()->ChangeScene(warpScene_);
-
 	}
-
 }
 
 void Warp::Draw()
@@ -69,16 +65,13 @@ void Warp::Draw()
 		Model::Draw(hModel_);
 
 		CollisionDraw();
-
 	}
-
 }
 
 void Warp::Release()
 {
 	pInteractionUI_->Release();
 	SAFE_DELETE(pInteractionUI_);
-
 }
 
 void Warp::OnCollision(GameObject* pTarget)
@@ -98,7 +91,6 @@ void Warp::OnCollision(GameObject* pTarget)
 	isPlayerHit_ = true;
 
 	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction() && !LifeManager::IsDie()) {
-
 		GameManager::GetPlayer()->GetStateManager()->ChangeState("DisAppear");
 		GameManager::GetPlayer()->GetAim()->SetValid(false);
 
@@ -110,7 +102,6 @@ void Warp::OnCollision(GameObject* pTarget)
 		isValid_ = false;
 		isWarp_ = true;
 	}
-
 }
 
 void Warp::OutCollision()

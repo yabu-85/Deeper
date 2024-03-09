@@ -32,13 +32,7 @@ void TitleUIManager::Draw()
 	Image::SetTransform(hPict_[0], title);
 	Image::Draw(hPict_[0]);
 
-	float screenWidth = (float)Direct3D::screenWidth_;		//ÉXÉNÉäÅ[ÉìÇÃïù
-	float screenHeight = (float)Direct3D::screenHeight_;
-	XMFLOAT3 size = Image::GetTextureSize(hPict_[1]);
-	Transform bg;
-	bg.scale_.x = (screenWidth / size.x);
-	bg.scale_.y = (screenHeight / size.y);
-	Image::SetTransform(hPict_[1], bg);
+	Image::SetFullScreenTransform(hPict_[1]);
 	Image::Draw(hPict_[1]);
 
 	UIManager::Draw();

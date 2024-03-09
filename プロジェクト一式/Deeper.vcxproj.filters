@@ -111,9 +111,6 @@
     <Filter Include="03Scene\Stage">
       <UniqueIdentifier>{cb26ec16-ea84-4e65-9ca3-6bfdbd340bc9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03Scene\Stage\Base">
-      <UniqueIdentifier>{8752cc89-5c8f-4eca-a46b-13c5cbf4ed1f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03Scene\Stage\Stage1">
       <UniqueIdentifier>{ca4fc463-693b-40c2-8e29-cf77a712cee3}</UniqueIdentifier>
     </Filter>
@@ -319,9 +316,6 @@
     <ClCompile Include="Scene\TitleScene.cpp">
       <Filter>03Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\StageBase.cpp">
-      <Filter>03Scene\Stage\Base</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\Stage1.cpp">
       <Filter>03Scene\Stage\Stage1</Filter>
     </ClCompile>
@@ -423,6 +417,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Easing.cpp">
       <Filter>01Engine\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\StageBase.cpp">
+      <Filter>03Scene\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -611,9 +608,6 @@
     <ClInclude Include="Scene\TitleScene.h">
       <Filter>03Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\StageBase.h">
-      <Filter>03Scene\Stage\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\Stage1.h">
       <Filter>03Scene\Stage\Stage1</Filter>
     </ClInclude>
@@ -715,6 +709,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Easing.h">
       <Filter>01Engine\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\StageBase.h">
+      <Filter>03Scene\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,9 +10,9 @@
 #include <vector>
 
 namespace Interaction {
-	bool isDraw_;
-	int uiListIndex_;
-	Sprite* interactImage_;
+	int time_ = 0;
+	int uiListIndex_ = -1;
+	Sprite* interactImage_ = nullptr;
 	std::vector<InteractionUI*> uiList_;
 
 }
@@ -20,37 +20,36 @@ namespace Interaction {
 void Interaction::Initialize() {
 	interactImage_ = new Sprite();
 	interactImage_->Load("Image/KeyImage/E.jpg");
-	isDraw_ = false;
-	uiListIndex_ = -1;
+
 }
 
 void Interaction::Draw() {
+	//WeaponのUIを表示するかどうかを計算
+	time_++;
+	if (time_ > 5) {
+		time_ = 0;
+		GameManager::GetWeaponObjectManager()->InteractUIIsInPlayerRange();
+	}
+	
+	uiListIndex_ = -1;
 	float minDistance = 99999;
-	XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
+	XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
 
-	//WeaponObjectのUiValidを計算する
-	if (rand() % 5 == 0) GameManager::GetWeaponObjectManager()->InteractUIIsInPlayerRange();
-
+	//一番近いUIオブジェクトを計算
 	for (int it = 0; it < (int)uiList_.size(); it++) {
 		if (!uiList_[it]->GetValid()) continue;
+		float dist = DistanceCalculation(plaPos, uiList_[it]->GetParent()->GetPosition());
 
-		XMFLOAT3 pos = uiList_[it]->GetParent()->GetPosition();
-		pos = { pos.x - pPos.x, 0.0f, pos.z - pPos.z };
-		float range = sqrtf(pos.x * pos.x + pos.z * pos.z);
-		if (range <= minDistance) {
-			minDistance = range;
-			isDraw_ = true;
+		if (dist <= minDistance) {
+			minDistance = dist;
 			uiListIndex_ = it;
 		}
 	}
 
-	if (isDraw_) {
-		isDraw_ = false;
-		XMFLOAT3 minPos = uiList_.at(uiListIndex_)->GetParent()->GetPosition();
-		XMFLOAT3 of = uiList_.at(uiListIndex_)->GetOffset();
-		minPos = { minPos.x + of.x, minPos.y + of.y, minPos.z + of.z };
-
-		XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&minPos), Camera::GetViewMatrix());
+	//表示するオブジェクトがあるから計算して表示
+	if (uiListIndex_ >= 0) {
+		XMFLOAT3 pos = Float3Add(uiList_.at(uiListIndex_)->GetParent()->GetPosition(), uiList_.at(uiListIndex_)->GetOffset());
+		XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&pos), Camera::GetViewMatrix());
 		v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
 		float x = XMVectorGetX(v2);
 		float y = XMVectorGetY(v2);
@@ -101,6 +100,7 @@ void Interaction::RemoveInteractData(InteractionUI* data)
 
 bool Interaction::IsMinDistance(GameObject* parent)
 {
+	//エラー処理
 	if (uiListIndex_ <= -1 || uiListIndex_ > ((int)uiList_.size() - 1)) return false;
 
 	if (uiList_.at(uiListIndex_)->GetParent() == parent) return true;

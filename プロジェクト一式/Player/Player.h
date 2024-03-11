@@ -4,7 +4,6 @@
 class SphereCollider;
 class Aim;
 class StateManager;
-class PlayerCommand;
 class PlayerWeapon;
 class AnimationController;
 
@@ -21,7 +20,6 @@ class Player : public Character
     SphereCollider* pCollider_[2];
     Aim* pAim_;
     StateManager* pStateManager_;
-    PlayerCommand* pCommand_;
     PlayerWeapon* pPlayerWeapon_;
     AnimationController* pAnimationController_;
 
@@ -59,7 +57,6 @@ public:
     int GetModelHandle() { return hModel_; }
     SphereCollider* GetSphereCollider(int i) { return pCollider_[i]; }
     Aim* GetAim() { return pAim_; }
-    PlayerCommand* GetCommand() { return pCommand_; }
     PlayerWeapon* GetPlayerWeapon() { return pPlayerWeapon_; }
     AnimationController* GetAnimationController() { return pAnimationController_; }
     StateManager* GetStateManager() { return pStateManager_; }

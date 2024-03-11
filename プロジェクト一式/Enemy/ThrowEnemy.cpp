@@ -159,18 +159,3 @@ void ThrowEnemy::SetItem()
 {
 	isHasItem_ = true;
 }
-
-void ThrowEnemy::SmallKnockBack()
-{
-	GetCombatStateManager()->ChangeState("Hear");
-}
-
-void ThrowEnemy::MediumKnockBack()
-{
-	GetCombatStateManager()->ChangeState("Hear");
-}
-
-void ThrowEnemy::LargetKnockBack()
-{
-	GetCombatStateManager()->ChangeState("Hear");
-}

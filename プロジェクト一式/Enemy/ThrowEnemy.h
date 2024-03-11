@@ -21,10 +21,6 @@ class ThrowEnemy : public EnemyBase
     RotateAction* pRotateAction_;
     VisionSearchAction* pVisionSearchAction_;
 
-    void SmallKnockBack() override;
-    void MediumKnockBack() override;
-    void LargetKnockBack() override;
-
 public:
     ThrowEnemy(GameObject* parent);
     ~ThrowEnemy() override;

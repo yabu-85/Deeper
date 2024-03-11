@@ -1,11 +1,11 @@
 #include "Warp.h"
+#include "../InputManager.h"
 #include "../GameManager/GameManager.h"
 #include "../Engine/BoxCollider.h"
 #include "../Engine/Model.h"
 #include "../Engine/Camera.h"
 #include "../Engine/TransitionEffect.h"
 #include "../Player/Player.h"
-#include "../Player/PlayerCommand.h"
 #include "../Player/LifeManager.h"
 #include "../Player/Aim.h"
 #include "../UI/Interaction.h"
@@ -97,8 +97,7 @@ void Warp::OnCollision(GameObject* pTarget)
 	//Player‚ÉÕ“Ë‚µn‚ß‚½
 	isPlayerHit_ = true;
 
-	if (GameManager::GetPlayer()->GetCommand()->CmdDownAction() && !LifeManager::IsDie()) {
-
+	if (InputManager::IsCmdDown(InputManager::ACTION) && !LifeManager::IsDie()) {
 		GameManager::GetPlayer()->GetStateManager()->ChangeState("DisAppear");
 		GameManager::GetPlayer()->GetAim()->SetValid(false);
 

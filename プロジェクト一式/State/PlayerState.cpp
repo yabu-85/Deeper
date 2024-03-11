@@ -2,11 +2,11 @@
 #include "StateManager.h"
 #include "../AnimationController.h"
 #include "../VFXManager.h"
+#include "../InputManager.h"
 #include "../GameManager/GameManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/SceneManager.h"
 #include "../Player/Player.h"
-#include "../Player/PlayerCommand.h"
 #include "../Player/Aim.h"
 #include "../Player/PlayerWeapon.h"
 #include "../Weapon/WeaponBase.h"
@@ -37,23 +37,23 @@ void PlayerWait::Update()
 	if (p->GetAim()->IsTarget()) p->AimTargetRotate();
 
 	//キー入力でステート切り替え
-	if (p->GetCommand()->CmdWalk()) {
+	if (InputManager::CmdWalk()) {
 		owner_->ChangeState("Walk");
 		return;
 	}
-	if (p->GetCommand()->CmdAvo()) {
+	if (InputManager::IsCmdDown(InputManager::AVO)) {
 		owner_->ChangeState("Avo");
 		return;
 	}
-	if (p->GetPlayerWeapon()->GetMainWeapon() && p->GetCommand()->CmdAtk()) {
+	if (p->GetPlayerWeapon()->GetMainWeapon() && InputManager::IsCmdDown(InputManager::MAIN_ATK)) {
 		owner_->ChangeState("Atk");
 		return;
 	}
-	if (p->GetPlayerWeapon()->GetSubWeapon() && p->GetCommand()->CmdSubAtk()) {
+	if (p->GetPlayerWeapon()->GetSubWeapon() && IsCmdDown(InputManager::SUB_ATK)) {
 		owner_->ChangeState("SubAtk");
 		return;
 	}
-	if (p->GetCommand()->CmdPushAction()) {
+	if (InputManager::IsCmdDown(InputManager::ACTION)) {
 		if (GameManager::GetWeaponObjectManager()->IsInPlayerRange()) {
 			owner_->ChangeState("Change");
 			return;
@@ -64,8 +64,7 @@ void PlayerWait::Update()
 void PlayerWait::OnEnter()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	float weight = 1.0f - Model::GetBlendFactor(p->GetModelHandle());
-	p->GetAnimationController()->SetNextAnime(0, weight, 0.1f);
+	p->GetAnimationController()->SetNextAnime(0, 0.1f);
 
 }
 
@@ -78,23 +77,23 @@ PlayerWalk::PlayerWalk(StateManager* owner) : StateBase(owner)
 void PlayerWalk::Update()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	if (!p->GetCommand()->CmdWalk()) {
+	if (!InputManager::CmdWalk()) {
 		owner_->ChangeState("Wait");
 		return;
 	}
-	if (p->GetCommand()->CmdAvo()) {
+	if (InputManager::IsCmdDown(InputManager::AVO)) {
 		owner_->ChangeState("Avo");
 		return;
 	}
-	if (p->GetPlayerWeapon()->GetMainWeapon() && p->GetCommand()->CmdAtk()) {
+	if (p->GetPlayerWeapon()->GetMainWeapon() && InputManager::IsCmdDown(InputManager::MAIN_ATK)) {
 		owner_->ChangeState("Atk");
 		return;
 	}
-	if (p->GetPlayerWeapon()->GetSubWeapon() && p->GetCommand()->CmdSubAtk()) {
+	if (p->GetPlayerWeapon()->GetSubWeapon() && InputManager::IsCmdDown(InputManager::SUB_ATK)) {
 		owner_->ChangeState("SubAtk");
 		return;
 	}
-	if (p->GetCommand()->CmdPushAction()) {
+	if (InputManager::IsCmdDown(InputManager::ACTION)) {
 		if (GameManager::GetWeaponObjectManager()->IsInPlayerRange()) {
 			owner_->ChangeState("Change");
 			return;
@@ -111,8 +110,7 @@ void PlayerWalk::Update()
 void PlayerWalk::OnEnter()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	float weight = 1.0f - Model::GetBlendFactor(p->GetModelHandle());
-	p->GetAnimationController()->SetNextAnime(1, weight, 0.05f);
+	p->GetAnimationController()->SetNextAnime(1, 0.05f);
 
 }
 
@@ -128,34 +126,23 @@ void PlayerWeaponChange::Update()
 	p->CalcNoMove();
 	p->Move();
 
-	if (p->GetCommand()->CmdPushAction()) {
-		time_++;
-
-		//切り替え時間までボタン押し続けた
-		if (time_ >= CHANGE_TIME) {
-			WeaponBase* weapon = GameManager::GetWeaponObjectManager()->PlayerWeaponSet();
-			if (weapon) {
-				p->GetPlayerWeapon()->SetWeapon(weapon);
-			}
-
-			owner_->ChangeState("Wait");
-			return;
-		}
-
-		//押してる
-		return;
-	}
-
 	//押してないからWaitへ
-	owner_->ChangeState("Wait");
+	if (!InputManager::IsCmd(InputManager::ACTION)) owner_->ChangeState("Wait");
+
+	//切り替え時間までボタン押し続けた
+	time_++;
+	if (time_ >= CHANGE_TIME) {
+		WeaponBase* weapon = GameManager::GetWeaponObjectManager()->PlayerWeaponSet();
+		if (weapon) p->GetPlayerWeapon()->SetWeapon(weapon);
+		owner_->ChangeState("Wait");
+	}
 }
 
 void PlayerWeaponChange::OnEnter()
 {
 	time_ = 0;
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	float weight = 1.0f - Model::GetBlendFactor(p->GetModelHandle());
-	p->GetAnimationController()->SetNextAnime(0, weight, 0.1f);
+	p->GetAnimationController()->SetNextAnime(0, 0.1f);
 
 }
 
@@ -178,9 +165,9 @@ void PlayerAvo::Update()
 	if (avoTime_ == INVINCIBLE_TIME) p->GetSphereCollider(0)->SetValid(true);
 	if (avoTime_ == UP_COLLIDER_ACTIVE) p->GetSphereCollider(1)->SetValid(true);
 
-	if (p->GetCommand()->CmdAvo()) nextCmd_ = 1;
-	if (p->GetCommand()->CmdAtk()) nextCmd_ = 2;
-	if (p->GetCommand()->CmdSubAtk()) nextCmd_ = 3;
+	if (InputManager::IsCmdDown(InputManager::AVO)) nextCmd_ = 1;
+	if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) nextCmd_ = 2;
+	if (InputManager::IsCmdDown(InputManager::SUB_ATK)) nextCmd_ = 3;
 
 	avoTime_++;
 	if (avoTime_ >= AVO_TIME) {
@@ -196,7 +183,7 @@ void PlayerAvo::Update()
 			owner_->ChangeState("SubAtk");
 			return;
 		}
-		if (p->GetCommand()->CmdWalk()) {
+		if (InputManager::CmdWalk()) {
 			owner_->ChangeState("Walk");
 			return;
 		}
@@ -233,9 +220,9 @@ void PlayerAtk::Update()
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
 	p->GetPlayerWeapon()->GetMainWeapon()->UpdateState();
 
-	if (p->GetCommand()->CmdAtk()) nextCmd_ = 0;
-	if (p->GetCommand()->CmdAvo()) nextCmd_ = 1;
-	if (p->GetCommand()->CmdSubAtk()) nextCmd_ = 2;
+	if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) nextCmd_ = 0;
+	if (InputManager::IsCmdDown(InputManager::AVO)) nextCmd_ = 1;
+	if (InputManager::IsCmdDown(InputManager::SUB_ATK)) nextCmd_ = 2;
 	
 	if (time_ < 10 && nextCmd_ == 1) {
 		owner_->ChangeState("Avo");
@@ -253,7 +240,7 @@ void PlayerAtk::Update()
 			owner_->ChangeState("SubAtk");
 			return;
 		}
-		if (p->GetCommand()->CmdWalk()) {
+		if (InputManager::CmdWalk()) {
 			owner_->ChangeState("Walk");
 			return;
 		}
@@ -291,9 +278,9 @@ void PlayerSubAtk::Update()
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
 	p->GetPlayerWeapon()->GetSubWeapon()->UpdateState();
 
-	if (p->GetCommand()->CmdSubAtk()) nextCmd_ = 0;
-	if (p->GetCommand()->CmdAvo()) nextCmd_ = 1;
-	if (p->GetCommand()->CmdAtk()) nextCmd_ = 2;
+	if (InputManager::IsCmdDown(InputManager::SUB_ATK)) nextCmd_ = 0;
+	if (InputManager::IsCmdDown(InputManager::AVO)) nextCmd_ = 1;
+	if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) nextCmd_ = 2;
 
 	//コンボ終了NextCmdのステートへ
 	if (p->GetPlayerWeapon()->GetSubWeapon()->IsAtkEnd()) {
@@ -305,7 +292,7 @@ void PlayerSubAtk::Update()
 			owner_->ChangeState("Atk");
 			return;
 		}
-		if (p->GetCommand()->CmdWalk()) {
+		if (InputManager::CmdWalk()) {
 			owner_->ChangeState("Walk");
 			return;
 		}

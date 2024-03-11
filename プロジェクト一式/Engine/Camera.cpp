@@ -15,7 +15,7 @@ void Camera::Initialize()
 	_target = XMFLOAT3( 0, 0, 0);	//カメラの焦点
 
 	//プロジェクション行列
-	_proj = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)Direct3D::screenWidth_ / (FLOAT)Direct3D::screenHeight_, 0.1f, 1000.0f);
+	_proj = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)Direct3D::screenWidth_ / (FLOAT)Direct3D::screenHeight_, 0.01f, 1000.0f);
 }
 
 //更新（ビュー行列作成）
@@ -55,31 +55,19 @@ XMMATRIX Camera::GetProjectionMatrix() { return _proj; }
 //ビルボード用回転行列を取得
 XMMATRIX Camera::GetBillboardMatrix(){	return _billBoard; }
 
-bool Camera::IsPositionWithinScreen(XMFLOAT3 pos)
+bool Camera::IsPositionWithinScreen(XMFLOAT3 pos, float size)
 {
-	XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&pos), Camera::GetViewMatrix());
-	v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
-	float x = XMVectorGetX(v2);
-	float y = XMVectorGetY(v2);
-	
-	if (x >= 1.0f || y >= 1.0f || x <= -1.0f || y <= -1.0f) return false;
+	pos = CalcScreenPosition(pos);
+	if (pos.x >= size || pos.y >= size || pos.z >= size || pos.x <= -size || pos.y <= -size || pos.z <= -size) return false;
 	return true;
 }
 
-bool Camera::IsPositionWithinVector(XMFLOAT3 pos)
+XMFLOAT3 Camera::CalcScreenPosition(XMFLOAT3 pos)
 {
-	XMFLOAT3 cPos = GetPosition();
-	XMFLOAT3 cTar = GetTarget();
-
-	//CameraPositionとCameraTargetの距離よりCameraPositionとposとの距離が短いなら範囲内とする
-	float dist1 = DistanceCalculation(cPos, cTar);
-	float dist2 = DistanceCalculation(cPos, pos);
-	if (dist2 <= dist1) return true;
-
-	//内積計算する
-	XMVECTOR vec = XMVector3Normalize(XMLoadFloat3(&cTar) - XMLoadFloat3(&cPos));
-	XMVECTOR tVec = XMVector3Normalize(XMLoadFloat3(&pos) - XMLoadFloat3(&cTar));
-	float dot = XMVectorGetX(XMVector3Dot(tVec, vec));
-	if (dot > 0.0f) return true;
-	return false;
+	XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&pos), Camera::GetViewMatrix());
+	v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
+	pos.x = XMVectorGetX(v2);
+	pos.y = XMVectorGetY(v2);
+	pos.z = XMVectorGetZ(v2);
+	return pos;
 }

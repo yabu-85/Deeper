@@ -33,9 +33,10 @@ namespace Camera
 	//ビルボード用回転行列を取得
 	XMMATRIX GetBillboardMatrix();
 
-	//引数の座標が画面内かどうか（反対側にいてもtrueになる
-	bool IsPositionWithinScreen(XMFLOAT3 pos);
+	//引数の座標が画面内かどうか
+	bool IsPositionWithinScreen(XMFLOAT3 pos, float size = 1.0f);
 
-	bool IsPositionWithinVector(XMFLOAT3 pos);
+	//画面のどこのポジションかどうか計算
+	XMFLOAT3 CalcScreenPosition(XMFLOAT3 pos);
 
 };

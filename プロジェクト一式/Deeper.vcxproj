@@ -140,6 +140,7 @@
     <ClCompile Include="Action\RotateAction.cpp" />
     <ClCompile Include="Action\SearchAction.cpp" />
     <ClCompile Include="BehaviorTree\BehaviourNode.cpp" />
+    <ClCompile Include="BehaviorTree\CameraConditionNode.cpp" />
     <ClCompile Include="BehaviorTree\ChangeStateNode.cpp" />
     <ClCompile Include="BehaviorTree\IsEnemyActionReadyNode.cpp" />
     <ClCompile Include="BehaviorTree\IsEnemyPermission.cpp" />
@@ -188,12 +189,12 @@
     <ClCompile Include="GameManager\DifficultyManager.cpp" />
     <ClCompile Include="GameManager\GameManager.cpp" />
     <ClCompile Include="GameManager\WaveManager.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Ornament\PlayerOrnament.cpp" />
     <ClCompile Include="Ornament\WeaponMainOrnament.cpp" />
     <ClCompile Include="Player\Aim.cpp" />
     <ClCompile Include="Player\LifeManager.cpp" />
     <ClCompile Include="Player\Player.cpp" />
-    <ClCompile Include="Player\PlayerCommand.cpp" />
     <ClCompile Include="Player\PlayerData.cpp" />
     <ClCompile Include="Player\PlayerWeapon.cpp" />
     <ClCompile Include="Scene\ResultScene.cpp" />
@@ -218,6 +219,7 @@
     <ClCompile Include="UI\ExitUIManager.cpp" />
     <ClCompile Include="UI\Interaction.cpp" />
     <ClCompile Include="UI\InteractionUI.cpp" />
+    <ClCompile Include="UI\PlayUIManager.cpp" />
     <ClCompile Include="UI\ResultUIManager.cpp" />
     <ClCompile Include="UI\TitleUIManager.cpp" />
     <ClCompile Include="UI\UIBase.cpp" />
@@ -239,6 +241,7 @@
     <ClInclude Include="Action\RotateAction.h" />
     <ClInclude Include="Action\SearchAction.h" />
     <ClInclude Include="BehaviorTree\BehaviourNode.h" />
+    <ClInclude Include="BehaviorTree\CameraConditionNode.h" />
     <ClInclude Include="BehaviorTree\ChangeStateNode.h" />
     <ClInclude Include="BehaviorTree\IsEnemyActionReadyNode.h" />
     <ClInclude Include="BehaviorTree\IsEnemyPermission.h" />
@@ -287,12 +290,12 @@
     <ClInclude Include="GameManager\DifficultyManager.h" />
     <ClInclude Include="GameManager\GameManager.h" />
     <ClInclude Include="GameManager\WaveManager.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="Ornament\PlayerOrnament.h" />
     <ClInclude Include="Ornament\WeaponMainOrnament.h" />
     <ClInclude Include="Player\Aim.h" />
     <ClInclude Include="Player\LifeManager.h" />
     <ClInclude Include="Player\Player.h" />
-    <ClInclude Include="Player\PlayerCommand.h" />
     <ClInclude Include="Player\PlayerData.h" />
     <ClInclude Include="Player\PlayerWeapon.h" />
     <ClInclude Include="Scene\ResultScene.h" />
@@ -318,6 +321,7 @@
     <ClInclude Include="UI\ExitUIManager.h" />
     <ClInclude Include="UI\Interaction.h" />
     <ClInclude Include="UI\InteractionUI.h" />
+    <ClInclude Include="UI\PlayUIManager.h" />
     <ClInclude Include="UI\ResultUIManager.h" />
     <ClInclude Include="UI\TitleUIManager.h" />
     <ClInclude Include="UI\UIBase.h" />

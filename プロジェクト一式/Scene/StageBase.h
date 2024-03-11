@@ -1,11 +1,11 @@
 #pragma once
-#include "../Engine/GameObject.h"
+#include "SceneBase.h"
 #include "../Engine/SceneManager.h"
 #include <vector>
 
 class Warp;
 
-class StageBase : public GameObject
+class StageBase : public SceneBase
 {
 	bool isCleared_;				//クリアしたかどうか
 	std::vector<Warp*> warpList_;	//ワープのリスト

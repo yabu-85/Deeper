@@ -1,7 +1,7 @@
 #include "PlayerWeapon.h"
 #include "Player.h"
-#include "PlayerCommand.h"
 #include "PlayerData.h"
+#include "../InputManager.h"
 #include "../Weapon/WeaponBase.h"
 #include "../Weapon/MainSwordWeapon.h"
 #include "../Weapon/NormalBulletWeapon.h"
@@ -41,6 +41,7 @@ void PlayerWeapon::DrawWeapon()
 void SceneTransitionInitialize() {
     pText = new Text();
     pText->Initialize();
+
 }
 
 void PlayerWeapon::SetPlayerDataWeapon()
@@ -73,24 +74,15 @@ void PlayerWeapon::SetWeapon(WeaponBase* weapon)
 
 void PlayerWeapon::WeaponChangeIndex()
 {
-    if (pPlayer_->GetCommand()->CmdCenterUp()) {
+    if (InputManager::IsCmd(InputManager::WEAPON_UP)) {
         currentSubIndex_ = 0;
         pMainWeapon_->Invisible();
-    }
-    if (pPlayer_->GetCommand()->CmdCenterDown()) {
-        currentSubIndex_ = 1;
-        pMainWeapon_->Invisible();
-    }
-
-    //C³‰ÓŠ
-    if (!pPlayer_->GetCommand()->CmdCenterUp() && !pPlayer_->GetCommand()->CmdCenterDown()) return;
-
-    //•Ší‚Ì•\Ž¦”ñ•\Ž¦
-    if (currentSubIndex_ == 0) {
         if (pSubWeapon_[0]) pSubWeapon_[0]->Visible();
         if (pSubWeapon_[1]) pSubWeapon_[1]->Invisible();
     }
-    else {
+    else if (InputManager::IsCmd(InputManager::WEAPON_DOWN)) {
+        currentSubIndex_ = 1;
+        pMainWeapon_->Invisible();
         if (pSubWeapon_[1]) pSubWeapon_[1]->Visible();
         if (pSubWeapon_[0]) pSubWeapon_[0]->Invisible();
     }

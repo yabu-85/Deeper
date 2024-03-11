@@ -1,11 +1,11 @@
 #include "StoneArmWeapon.h"
 #include "../VFXManager.h"
+#include "../InputManager.h"
 #include "../GameManager/GameManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/SphereCollider.h"
 #include "../State/StateManager.h"
 #include "../Player/Player.h"
-#include "../Player/PlayerCommand.h"
 #include "../Player/Aim.h"
 #include "../Enemy/EnemyBase.h"
 
@@ -133,7 +133,7 @@ void StoneArmWeaponCombo1::Update()
     if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
         float rRatio = (float)time_ / (float)ROTATE_FRAME[1];
         if (p->GetAim()->IsTarget()) p->AimTargetRotate(rRatio);
-        else if (p->GetCommand()->CmdWalk()) p->Rotate(rRatio);
+        else if (InputManager::CmdWalk()) p->Rotate(rRatio);
     }
 
     //”»’è

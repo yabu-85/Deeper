@@ -1,10 +1,10 @@
 #include "Player.h"
 #include "Aim.h"
-#include "PlayerCommand.h"
 #include "PlayerWeapon.h"
 #include "LifeManager.h"
 #include "PlayerData.h"
 #include "../VFXManager.h"
+#include "../InputManager.h"
 #include "../GameManager/GameManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
@@ -36,7 +36,7 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-    : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pCommand_(nullptr), pPlayerWeapon_(nullptr),
+    : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pPlayerWeapon_(nullptr),
     pAnimationController_(nullptr), pCollider_{nullptr, nullptr},
     moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), apperPos_(0,0,0), time_(0), gradually_(0.0f)
 {
@@ -45,7 +45,9 @@ Player::Player(GameObject* parent)
 Player::~Player()
 {
     SAFE_DELETE(pStateManager_);
-    SAFE_DELETE(pCommand_);
+    SAFE_DELETE(pPlayerWeapon_);
+    SAFE_DELETE(pAnimationController_);
+
 }
 
 void Player::Initialize()
@@ -77,7 +79,6 @@ void Player::Initialize()
     pAnimationController_->AddAnime(700, 800);  //StoneAttack
 
     pAim_ = Instantiate<Aim>(this);
-    pCommand_ = new PlayerCommand();
     pPlayerWeapon_ = new PlayerWeapon(this);
     pPlayerWeapon_->SetPlayerDataWeapon();
     LifeManager::SetLife(lifeMax - PlayerData::GetReceiveDamage(), lifeMax);
@@ -113,11 +114,10 @@ void Player::Update()
 {
     Character::Update();
 
-    pCommand_->Update();
     pAnimationController_->Update();
     pStateManager_->Update();
 
-    if (pCommand_->CmdTarget()) pAim_->SetTargetEnemy();
+    if (InputManager::IsCmdDown(InputManager::TARGET)) pAim_->SetTargetEnemy();
     if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f, GetBodyRange());
     ReflectCharacter();
 
@@ -175,23 +175,23 @@ void Player::AimTargetRotate(float ratio) {
 XMFLOAT3 Player::GetInputMove()
 {
     XMFLOAT3 fMove = { 0,0,0 };
-    if (pCommand_->CmdWalk()) {
+    if (InputManager::CmdWalk()) {
         gradually_ = moveGradually;
 
         XMFLOAT3 aimDirection = pAim_->GetAimDirection();
-        if (pCommand_->CmdUp()) {
+        if (InputManager::IsCmd(InputManager::MOVE_UP)) {
             fMove.x += aimDirection.x;
             fMove.z += aimDirection.z;
         }
-        if (pCommand_->CmdLeft()) {
+        if (InputManager::IsCmd(InputManager::MOVE_LEFT)) {
             fMove.x -= aimDirection.z;
             fMove.z += aimDirection.x;
         }
-        if (pCommand_->CmdDown()) {
+        if (InputManager::IsCmd(InputManager::MOVE_DOWN)) {
             fMove.x -= aimDirection.x;
             fMove.z -= aimDirection.z;
         }
-        if (pCommand_->CmdRight()) {
+        if (InputManager::IsCmd(InputManager::MOVE_RIGHT)) {
             fMove.x += aimDirection.z;
             fMove.z -= aimDirection.x;
         }
@@ -286,7 +286,7 @@ void Player::CalcNoMove()
 void Player::Avo()
 {
     //“®‚¢‚Ä‚¢‚éê‡
-    if (pCommand_->CmdWalk()) {
+    if (InputManager::CmdWalk()) {
         CalcMove();
         Rotate(avoRotateRatio);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);

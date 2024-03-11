@@ -15,6 +15,7 @@
 #include "../BehaviorTree/PlayerConditionNode.h"
 #include "../BehaviorTree/IsEnemyStateNode.h"
 #include "../BehaviorTree/IsEnemyPermission.h"
+#include "../BehaviorTree/CameraConditionNode.h"
 
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
@@ -151,7 +152,8 @@ ThrowCombat::ThrowCombat(StateManager* owner) : StateBase(owner), time_(0)
 	EnemyChangeCombatStateNode* action3 = new EnemyChangeCombatStateNode(e, "Attack");
 	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(action3, e);
 	IsPlayerInRangeNode* condition6 = new IsPlayerInRangeNode(condition5, e->GetAttackDistance(), e, GameManager::GetPlayer());
-	waitSelector->AddChildren(condition6);
+	IsEnemyWithinScreen* condition8 = new IsEnemyWithinScreen(condition6, e);
+	waitSelector->AddChildren(condition8);
 
 	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(e, "Move");
 	IsEnemyMovePermission* condition2 = new IsEnemyMovePermission(action1, e);
@@ -162,7 +164,8 @@ ThrowCombat::ThrowCombat(StateManager* owner) : StateBase(owner), time_(0)
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(e, "Attack");
 	IsEnemyAttackPermission* condition4 = new IsEnemyAttackPermission(action2, e);
 	IsPlayerInRangeNode* condition7 = new IsPlayerInRangeNode(condition4, e->GetAttackDistance(), e, GameManager::GetPlayer());
-	moveSelector->AddChildren(condition7);
+	IsEnemyWithinScreen* condition9 = new IsEnemyWithinScreen(condition7, e);
+	moveSelector->AddChildren(condition9);
 
 }
 

@@ -12,6 +12,7 @@
 #include "Audio.h"
 #include "VFX.h"
 #include "../GameManager/GameManager.h"
+#include "../InputManager.h"
 
 #pragma comment(lib,"Winmm.lib")
 
@@ -54,6 +55,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Audio::Initialize();
 
 	GameManager::Initialize();
+
+	InputManager::SetDefaultKeyConfig();
 
 	//ルートオブジェクト準備
 	//すべてのゲームオブジェクトの親となるオブジェクト

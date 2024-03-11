@@ -40,6 +40,8 @@ void Stage3::Initialize()
 
 void Stage3::Update()
 {
+	UIUpdate();
+	
 	if (IsClearStage()) {
 		OnStageCleared();
 
@@ -56,6 +58,7 @@ void Stage3::Update()
 void Stage3::Draw()
 {
 	GameManager::GetCreateStage()->Draw();
+	UIDraw();
 
 }
 

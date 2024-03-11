@@ -31,8 +31,6 @@ namespace CombatAI {
 		return dist1 < dist2;
 	}
 
-	bool IsEnemyWithinScreen(EnemyBase* e);
-
 	//unsigned calcTime_ = 0;
 	//static const unsigned CALC_RAND = 5;	//n‰ñ‚É‚P‰ñEnemy‚ÌŒvŽZ‚ð‚·‚éFŒy‚¢ˆ—‚É‚È‚Á‚½‚ç‚P‚Å‚à‚¢‚¢‚©‚à‚Ë
 
@@ -62,7 +60,7 @@ void CombatAI::Update() {
 	//ƒŠƒXƒg‚ÌÅ‰‚Ì’J’ÃƒXƒNƒŠ[ƒ““à‰ÈŽŽ‚·
 	if (!eList.empty()) {
 		XMFLOAT3 fPos = eList.at(0)->GetPosition();
-		Camera::IsPositionWithinVector(fPos);
+		//Camera::IsPositionWithinVector(fPos);
 		Camera::IsPositionWithinScreen(fPos);
 	}
 	
@@ -120,23 +118,4 @@ bool CombatAI::IsEnemyMovePermission(EnemyBase* enemy)
 
 	if (rand() % 3 == 0) return true;
 	return false;
-}
-
-bool CombatAI::IsEnemyWithinScreen(EnemyBase* e) {
-	XMFLOAT3 pos = e->GetPosition();
-
-	XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&pos), Camera::GetViewMatrix());
-	v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
-	float x = XMVectorGetX(v2);
-	float y = XMVectorGetY(v2);
-
-	OutputDebugStringA(std::to_string(XMVectorGetZ(v2)).c_str());
-	OutputDebugString("\n"); 
-
-	//”½‘Î•ûŒü‚É‚ ‚éê‡‚ÌðŒi‚Ý‚©‚ñ
-	if (XMVectorGetZ(v2) > 1.0f) return false;
-
-	//‰æŠp§ŒÀ‚·‚é
-	if (x >= 1.0f || y >= 1.0f || x <= -1.0f || y <= -1.0f) return false;
-	return true;
 }

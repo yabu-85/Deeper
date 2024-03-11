@@ -7,10 +7,13 @@
 #include "../Stage/SkyBox.h"
 #include "../Player/Player.h"
 #include "../Enemy/EnemyManager.h"
+#include "../UI/PlayUIManager.h"
 
 StageBase::StageBase(GameObject* parent, std::string name)
-	:GameObject(parent, name), isCleared_(false)
+	: SceneBase(parent, name), isCleared_(false)
 {
+	AddUIManager(new PlayUIManager(this));
+
 }
 
 void StageBase::Initialize()

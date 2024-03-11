@@ -1,8 +1,8 @@
 #include "MainSwordWeapon.h"
+#include "../InputManager.h"
 #include "../GameManager/GameManager.h"
 #include "../VFXManager.h"
 #include "../Player/Player.h"
-#include "../Player/PlayerCommand.h"
 #include "../Player/Aim.h"
 #include "../Engine/PolyLine.h"
 #include "../Engine/Global.h"
@@ -171,12 +171,12 @@ void MainSwordWeaponCombo1::Update()
     if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
         float rRatio = (float)time_ / (float)ROTATE_FRAME[1];
         if (p->GetAim()->IsTarget()) p->AimTargetRotate(rRatio);
-        else if (p->GetCommand()->CmdWalk()) p->Rotate(rRatio);
+        else if (InputManager::CmdWalk()) p->Rotate(rRatio);
     }
 
     p->CalcNoMove();
     p->FrontMove(MOVE_SPEED);
-    if (p->GetCommand()->CmdAtk()) next_ = true;
+    if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;
 
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetSegmentCollider()->SetValid(false);
@@ -221,12 +221,12 @@ void MainSwordWeaponCombo2::Update()
     if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
         float rRatio = (float)time_ / (float)ROTATE_FRAME[1];
         if (p->GetAim()->IsTarget()) p->AimTargetRotate(rRatio);
-        else if (p->GetCommand()->CmdWalk()) p->Rotate(rRatio);
+        else if (InputManager::CmdWalk()) p->Rotate(rRatio);
     }
 
     p->CalcNoMove();
     p->FrontMove(MOVE_SPEED);
-    if (p->GetCommand()->CmdAtk()) next_ = true;
+    if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;
 
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetSegmentCollider()->SetValid(false);
@@ -272,12 +272,12 @@ void MainSwordWeaponCombo3::Update()
     if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
         float rRatio = (float)time_ / (float)ROTATE_FRAME[1];
         if (p->GetAim()->IsTarget()) p->AimTargetRotate(rRatio);
-        else if (p->GetCommand()->CmdWalk()) p->Rotate(rRatio);
+        else if (InputManager::CmdWalk()) p->Rotate(rRatio);
     }
     
     p->CalcNoMove();
     p->FrontMove(MOVE_SPEED);
-    if (p->GetCommand()->CmdAtk()) next_ = true;
+    if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;
 
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetSegmentCollider()->SetValid(false);

@@ -1,7 +1,8 @@
 #include "Aim.h"
 #include "Player.h"
-#include "PlayerCommand.h"
+#include "../InputManager.h"
 #include "../Engine/Camera.h"
+#include "../Engine/Input.h"
 #include "../Stage/CollisionMap.h"
 #include "../Enemy/EnemyBase.h"
 #include "../Enemy/Enemymanager.h"
@@ -9,7 +10,6 @@
 #include <vector>
 
 //デバッグ用
-#include "../Engine/Input.h"
 #include "../Engine/Image.h"
 
 namespace {
@@ -99,12 +99,10 @@ void Aim::Update()
             //ちょっとAimTarget時の描画してみる
             XMFLOAT3 tarPos = pEnemyBase_->GetPosition();
             tarPos.y += pEnemyBase_->GetAimTargetPos();
-            XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&tarPos), Camera::GetViewMatrix());
-            v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
-            float x = XMVectorGetX(v2);
-            float y = XMVectorGetY(v2);
+            
+            XMFLOAT3 pos = Camera::CalcScreenPosition(tarPos);
             Transform foundTrans;
-            foundTrans.position_ = XMFLOAT3(x, y, 0.0f);
+            foundTrans.position_ = XMFLOAT3(pos.x, pos.y, 0.0f);
             foundTrans.scale_ = XMFLOAT3(0.2f, 0.2f, 0.0f);
             Image::SetAlpha(hPict_, 255);
             Image::SetTransform(hPict_, foundTrans);
@@ -477,7 +475,7 @@ void Aim::CalcCameraOffset(float _aimMove)
     XMVECTOR vTargetOffset = pPlayer_->GetMovementVector();
     vTargetOffset *= MAX_CAMERA_OFFSET * -1;
 
-    if (pPlayer_->GetCommand()->CmdWalk()) vCameraOffset += (vTargetOffset - vCameraOffset) * MOVE_SUPRESS;   //move
+    if (InputManager::CmdWalk()) vCameraOffset += (vTargetOffset - vCameraOffset) * MOVE_SUPRESS;   //move
     else vCameraOffset += (vTargetOffset - vCameraOffset) * STOP_SUPRESS;                     //stop
 
     XMStoreFloat3(&cameraOffset_, vCameraOffset);

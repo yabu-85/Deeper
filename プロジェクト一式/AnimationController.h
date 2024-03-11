@@ -21,6 +21,7 @@ public:
 
 	//redはblendFactorを１フレームごとに下げる値（整数で
 	void SetNextAnime(int id, float blendFactor, float red);
+	void SetNextAnime(int id, float red);
 
 	void Update();
 };

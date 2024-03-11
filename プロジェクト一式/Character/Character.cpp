@@ -1,8 +1,8 @@
 #include "Character.h"
 #include "CharacterManager.h"
-#include <vector>
 #include "../Engine/Global.h"
 #include "../Engine/Easing.h"
+#include <vector>
 
 Character::Character(GameObject* parent, std::string name)
 	: GameObject(parent, name), movement_(0,0,0), bodyWeight_(1.0f), bodyRange_(0.5f), knockBackTime_(0), knockBackTimeMax_(0), knockBackPower_(0.0f),

@@ -1,11 +1,13 @@
 #pragma once
 #include "../Engine/GameObject.h"
+#include "WeaponObjectManager.h"
 
 class StateManager;
 
 class WeaponBase : public GameObject
 {
 protected:
+	WeaponObjectManager::WEAPON_TYPE type_;
 	int hModel_;
 	int boneIndex_;
 	int partIndex_;
@@ -22,6 +24,7 @@ public:
 	virtual void Release() override = 0 {};
 	virtual void ResetState() = 0;
 
+	WeaponObjectManager::WEAPON_TYPE GetWeaponType() { return type_; }
 	void UpdateState();
 	void SetAtkEnd(bool b) { atkEnd_ = b; }
 	bool IsAtkEnd() { return atkEnd_; }

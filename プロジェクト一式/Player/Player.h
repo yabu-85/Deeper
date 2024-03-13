@@ -1,11 +1,40 @@
 #pragma once
 #include "../Character/Character.h"
+#include "../AnimationController.h"
 
 class SphereCollider;
 class Aim;
 class StateManager;
 class PlayerWeapon;
-class AnimationController;
+
+enum PLAYER_ANIMATION {
+    IDLE = 0,
+    RUN,
+    RORING,
+    BACK_STEP,
+    DAMAGE_SMALL,
+    DAMAGE_MID,
+    DEAD,
+    ATTACK1,
+    ATTACK2,
+    ATTACK3,
+    STONE_ATTACK,
+    MAX,
+};
+
+const AnimeData PLAYER_ANIMATION_DATA[PLAYER_ANIMATION::MAX]{
+    {0, 120},
+    {548, 590},
+    {120, 175},
+    {500, 546},
+    {175, 210},
+    {210, 260},
+    {260, 495},
+    {595, 650},
+    {650, 700},
+    {666, 700},
+    {700, 800},
+};
 
 class Player : public Character
 {

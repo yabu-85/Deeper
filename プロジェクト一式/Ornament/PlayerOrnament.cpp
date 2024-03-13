@@ -17,7 +17,7 @@ PlayerOrnament::~PlayerOrnament()
 
 void PlayerOrnament::Initialize()
 {
-    hModel_ = Model::Load("Model/Fiter3.fbx");
+    hModel_ = Model::Load("Model/Fiter.fbx");
     assert(hModel_ >= 0);
 }
 

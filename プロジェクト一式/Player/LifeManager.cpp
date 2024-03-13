@@ -16,8 +16,8 @@ namespace LifeManager {
 
 	int defInvincibleTime_ = 0;		//無敵時間
 	int invincibleTime_ = 0;		//ダメージ表示時間の計算用
-	int defPlayerLife_ = 0;			//今のHpMaxを入れる
-	int playerLife_ = 0;			//プレイヤーのライフ量
+	int defPlayerLife_ = 1;			//今のHpMaxを入れる
+	int playerLife_ = 1;			//プレイヤーのライフ量
 
 }
 
@@ -113,14 +113,14 @@ void LifeManager::Damage(int i)
 	//ダメージ計算したら、HPが０以下になった
 	if (LifeManager::IsDie()) {
 		pPlayer->GetStateManager()->ChangeState("Dead");
-		pPlayer->GetAnimationController()->SetNextAnime(6, 0.0f, 1.0f);
+		pPlayer->GetAnimationController()->SetNextAnime(6, 1.0f);
 		pPlayer->GetAim()->SetAimMove(false);
 		return;
 	}
 
 	pPlayer->GetStateManager()->ChangeState("Hear");
 	pPlayer->ResetMovement();
-	pPlayer->GetAnimationController()->SetNextAnime(5, 0.0f, 1.0f);
+	pPlayer->GetAnimationController()->SetNextAnime(5, 1.0f);
 
 }
 

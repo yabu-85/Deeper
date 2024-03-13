@@ -65,18 +65,9 @@ void Player::Initialize()
     bodyRange_ = 0.3f;
     time_ = APPER_TIME;
 
+    //アニメーションデータのセットフレームはヘッダに書いてる
     pAnimationController_ = new AnimationController(hModel_);
-    pAnimationController_->AddAnime(0, 120);    //待機
-    pAnimationController_->AddAnime(548, 590);  //走り
-    pAnimationController_->AddAnime(120, 175);  //ローリング
-    pAnimationController_->AddAnime(500, 546);  //バックステップ
-    pAnimationController_->AddAnime(175, 210);  //ダメージ小
-    pAnimationController_->AddAnime(210, 260);  //ダメージ中
-    pAnimationController_->AddAnime(260, 495);  //死亡
-    pAnimationController_->AddAnime(595, 650);  //攻撃1
-    pAnimationController_->AddAnime(650, 700);  //攻撃2
-    pAnimationController_->AddAnime(666, 700);  //攻撃3
-    pAnimationController_->AddAnime(700, 800);  //StoneAttack
+    for (int i = 0; i < PLAYER_ANIMATION::MAX; i++) pAnimationController_->AddAnime(PLAYER_ANIMATION_DATA[i].startFrame, PLAYER_ANIMATION_DATA[i].endFrame);
 
     pAim_ = Instantiate<Aim>(this);
     pPlayerWeapon_ = new PlayerWeapon(this);
@@ -290,7 +281,7 @@ void Player::Avo()
         CalcMove();
         Rotate(avoRotateRatio);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
-        GetAnimationController()->SetNextAnime(2, Model::GetBlendFactor(GetModelHandle()), 0.2f);
+        GetAnimationController()->SetNextAnime(2, 0.2f);
 
         GetSphereCollider(0)->SetValid(false);
         GetSphereCollider(1)->SetValid(false);
@@ -300,13 +291,13 @@ void Player::Avo()
     else if(pAim_->IsTarget()) {
         AimTargetRotate(1.0f);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0f);
-        GetAnimationController()->SetNextAnime(3, Model::GetBlendFactor(GetModelHandle()), 0.2f);
+        GetAnimationController()->SetNextAnime(3, 0.2f);
     
     }
     //動いていない・ターゲットもしていない
     else {
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
-        GetAnimationController()->SetNextAnime(2, Model::GetBlendFactor(GetModelHandle()), 0.2f);
+        GetAnimationController()->SetNextAnime(2, 0.2f);
 
         GetSphereCollider(0)->SetValid(false);
         GetSphereCollider(1)->SetValid(false);

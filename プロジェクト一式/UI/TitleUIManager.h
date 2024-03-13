@@ -3,7 +3,8 @@
 
 class TitleUIManager : public UIManager
 {
-	int hPict_[2];
+	int hPict_;
+	Transform titleTrans_;
 
 public:
 	TitleUIManager(SceneBase* parent);

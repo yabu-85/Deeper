@@ -1,18 +1,18 @@
 #pragma once
 #include <vector>
 
+struct AnimeData {
+	int startFrame;
+	int endFrame;
+};
+
 class AnimationController
 {
-	struct AnimeData {
-		int startFrame;
-		int endFrame;
-	};
-	std::vector<AnimeData> animeDatas_;
-
 	int modelNum_;
 	int currentAnime_;
 	float currentBlend_;
 	float blendRed_;
+	std::vector<AnimeData> animeDatas_;
 
 public:
 	AnimationController(int number);

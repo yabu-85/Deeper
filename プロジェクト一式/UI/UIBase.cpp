@@ -5,7 +5,8 @@
 #include "../AudioManager.h"
 
 namespace {
-	const int PNG_COUNT = 3;
+	XMFLOAT2 BUTTON_SIZE = { 0.5f, 0.5f };
+
 }
 
 UIBase::UIBase()
@@ -17,20 +18,20 @@ UIBase::~UIBase()
 {
 }
 
-void UIBase::Initialize(std::string name, XMFLOAT2 pos, std::function<void()> onClick)
+void UIBase::Initialize(std::string name, XMFLOAT2 pos, XMFLOAT2 size, std::function<void()> onClick)
 {
 	const std::string fileName[] = { "Image/ButtonFrame1.png", "Image/ButtonFrame2.png", "Image/" + name + ".png" };
-	for (int i = 0; i < PNG_COUNT; i++) {
+	for (int i = 0; i < 3; i++) {
 		hPict_[i] = Image::Load(fileName[i]);
 		assert(hPict_[i] >= 0);
 	}
 
-	transform_.scale_ = XMFLOAT3(0.5f, 0.5f, 0.0f);
+	transform_.scale_ = XMFLOAT3(BUTTON_SIZE.x * size.x, BUTTON_SIZE.y * size.y, 1.0f);
 	transform_.position_.x = pos.x;
 	transform_.position_.y = pos.y;
 
-	XMFLOAT3 size = Image::GetTextureSize(hPict_[0]);
-	frameSize_ = XMFLOAT2(size.x * transform_.scale_.x / 2.0f, size.y * transform_.scale_.y / 2.0f);
+	XMFLOAT3 txtSi = Image::GetTextureSize(hPict_[0]);
+	frameSize_ = XMFLOAT2(txtSi.x * transform_.scale_.x / 2.0f, txtSi.y * transform_.scale_.y / 2.0f);
 
 	float screenWidth = (float)Direct3D::screenWidth_;		//スクリーンの幅
 	float screenHeight = (float)Direct3D::screenHeight_;	//スクリーンの高さ
@@ -48,7 +49,10 @@ void UIBase::Draw()
 	Image::SetTransform(hPict_[isBound_], transform_);
 	Image::Draw(hPict_[isBound_], 0);
 
-	Image::SetTransform(hPict_[2], transform_);
+	//テキストの大きさは変えずに表示
+	Transform text = transform_;
+	text.scale_ = { BUTTON_SIZE.x, BUTTON_SIZE.y, 1.f };
+	Image::SetTransform(hPict_[2], text);
 	Image::Draw(hPict_[2], 0);
 
 }

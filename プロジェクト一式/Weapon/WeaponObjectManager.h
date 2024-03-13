@@ -15,7 +15,7 @@ class WeaponObjectManager
 	void CaclNearestObject();
 
 public:
-	enum class WEAPON_TYPE {
+	enum WEAPON_TYPE {
 		WT_STONE = 0,
 		WT_THROW,
 		WT_MELEE,

@@ -18,7 +18,7 @@ WeaponMainOrnament::~WeaponMainOrnament()
 
 void WeaponMainOrnament::Initialize()
 {
-    hModel_ = Model::Load("Model/BlueBox.fbx");
+    hModel_ = Model::Load("Model/Sword.fbx");
     assert(hModel_ >= 0);
 
     pPlayerOrnament_ = static_cast<PlayerOrnament*>(GetParent());

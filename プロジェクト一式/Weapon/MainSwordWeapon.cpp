@@ -47,7 +47,7 @@ MainSwordWeapon::~MainSwordWeapon()
 
 void MainSwordWeapon::Initialize()
 {
-    hModel_ = Model::Load("Model/BlueBox.fbx");
+    hModel_ = Model::Load("Model/Sword.fbx");
     assert(hModel_ >= 0);
 
     pPlayer_ = static_cast<Player*>(GetParent());

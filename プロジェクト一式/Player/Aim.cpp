@@ -1,17 +1,15 @@
 #include "Aim.h"
 #include "Player.h"
-#include "PlayerCommand.h"
+#include "../InputManager.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
+#include "../Engine/Global.h"
+#include "../Engine/Image.h"
 #include "../Stage/CollisionMap.h"
 #include "../Enemy/EnemyBase.h"
 #include "../Enemy/Enemymanager.h"
 #include "../GameManager/GameManager.h"
 #include <vector>
-
-//デバッグ用
-#include "../Engine/Input.h"
-#include "../Engine/Image.h"
 
 namespace {
     static const float UP_MOUSE_LIMIT = -60.0f;

@@ -17,7 +17,6 @@ PlayUIManager::~PlayUIManager()
 
 void PlayUIManager::Update()
 {
-
 	//CmdEscape
 
 }

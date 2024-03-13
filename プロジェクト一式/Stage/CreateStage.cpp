@@ -41,7 +41,7 @@ void CreateStage::Draw()
         trans.position_ = intersectDatas_.at(i).position;
         trans.scale_ = intersectDatas_.at(i).scale;
         Model::SetTransform(handle, trans);
-        Model::Draw(handle, 6);
+        Model::Draw(handle);
     }
 }
 
@@ -124,17 +124,14 @@ void CreateStage::CreateStageData(std::string name)
     mapData_.resize(mapSizeZ_);
     for (int i = 0; i < mapSizeZ_; i++) mapData_[i].resize(mapSizeX_, FLOAR);
 
+    //床のサイズをマップサイズに合わせて生成
+    intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3((float)mapSizeX_, 1.0f, (float)mapSizeZ_) });
+
     //CSVデータをテーブルに格納
     for (int x = 0; x < mapSizeX_; x++) {
         for (int z = 0; z < mapSizeZ_; z++) {
             int data = csv.GetValue(x, z);
             mapData_[z][x] = FLOAR;
-
-            //Floar
-            if (data == 1)
-            {
-                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3((float)x, 0.0f, (float)z) });
-            }
 
             //Wall
             if (data == 2)
@@ -146,7 +143,6 @@ void CreateStage::CreateStageData(std::string name)
             //PlayerStartPoint
             if (data == 10)
             {
-                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3((float)x, 0.0f, (float)z) });
                 StageBase* stage = static_cast<StageBase*>(GameManager::GetStage());
                 if(stage) stage->SetStartPosition( {(float)x + 0.5f, 0.0f, (float)z + 0.5f } );
             }
@@ -154,7 +150,6 @@ void CreateStage::CreateStageData(std::string name)
             //WarpPoint
             if (data == 11)
             {
-                intersectDatas_.push_back({ hModel_[FLOAR], hModel_[R_FLOAR], XMFLOAT3((float)x, 0.0f, (float)z) });
                 StageBase* stage = static_cast<StageBase*>(GameManager::GetStage());
                 if (!stage) continue;
 

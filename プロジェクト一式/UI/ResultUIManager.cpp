@@ -7,20 +7,21 @@
 #include "../AudioManager.h"
 #include "../Player/LifeManager.h"
 
-ResultUIManager::ResultUIManager(SceneBase* parent)
-	: UIManager(parent), hPict_{ -1, -1 }
-{
-	hPict_[0] = Image::Load("Image/Title.png");
-	assert(hPict_[0] >= 0);
-	
-	const char* fileName[] = { "Image/GameOver.png", "Image/Clear.png" };
-	if (LifeManager::IsDie()) hPict_[1] = Image::Load(fileName[0]);
-	else hPict_[1] = Image::Load(fileName[1]);
-	assert(hPict_[1] >= 0);
+namespace {
+	XMFLOAT2 RESULT_POSITION = { 0.f, 0.5f };
 
-	AddUi("Play", XMFLOAT2(0.0f, 0.0f), [this]() { GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE); });
-	AddUi("Option", XMFLOAT2(0.0f, -0.35f), [this]() { AudioManager::Play(); });
-	AddUi("Exit", XMFLOAT2(0.0f, -0.7f), [this]() { pParent_->AddUIManager(new ExitUIManager(pParent_)); });
+}
+
+ResultUIManager::ResultUIManager(SceneBase* parent) : UIManager(parent), hPict_(-1)
+{
+	resultTrans_.position_ = { RESULT_POSITION.x, RESULT_POSITION.y, 1.0f };
+
+	const char* fileName[] = { "Image/GameOver.png", "Image/Clear.png" };
+	if (LifeManager::IsDie()) hPict_ = Image::Load(fileName[0]);
+	else hPict_ = Image::Load(fileName[1]);
+	assert(hPict_ >= 0);
+
+	AddUi("ReturnToTitle", XMFLOAT2(0.0f, 0.0f), XMFLOAT2(1.6f, 1.0f), [this]() { GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE); });
 }
 
 ResultUIManager::~ResultUIManager()
@@ -29,13 +30,8 @@ ResultUIManager::~ResultUIManager()
 
 void ResultUIManager::Draw()
 {
-	Transform title;
-	title.position_.y = 0.5f;
-	Image::SetTransform(hPict_[0], title);
-	Image::Draw(hPict_[0]);
-
-	Image::SetFullScreenTransform(hPict_[1]);
-	Image::Draw(hPict_[1]);
+	Image::SetTransform(hPict_, resultTrans_);
+	Image::Draw(hPict_, 0);
 
 	UIManager::Draw();
 }

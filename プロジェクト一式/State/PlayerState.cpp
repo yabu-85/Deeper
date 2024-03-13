@@ -132,7 +132,7 @@ void PlayerWeaponChange::Update()
 	//Ø‚è‘Ö‚¦ŽžŠÔ‚Ü‚Åƒ{ƒ^ƒ“‰Ÿ‚µ‘±‚¯‚½
 	time_++;
 	if (time_ >= CHANGE_TIME) {
-		WeaponBase* weapon = GameManager::GetWeaponObjectManager()->PlayerWeaponSet();
+		WeaponBase* weapon = GameManager::GetWeaponObjectManager()->GetNearestWeapon();
 		if (weapon) p->GetPlayerWeapon()->SetWeapon(weapon);
 		owner_->ChangeState("Wait");
 	}

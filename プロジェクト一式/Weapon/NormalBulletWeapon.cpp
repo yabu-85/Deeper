@@ -29,6 +29,7 @@ void NormalBulletWeapon::Initialize()
     hModel_ = Model::Load("Model/RedBox.fbx");
     assert(hModel_ >= 0);
 
+    type_ = WeaponObjectManager::WEAPON_TYPE::WT_THROW;
     pPlayer_ = static_cast<Player*>(GetParent());
     transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
     durance_ = 5;
@@ -83,6 +84,9 @@ void NormalBulletWeapon::ChangeAttackState()
 
 void NormalBulletWeapon::ShotBullet()
 {
+    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
+    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_); 
+    
     Aim* pAim = pPlayer_->GetAim();
     XMFLOAT3 tar;
     if (pAim->IsTarget()) {
@@ -96,6 +100,7 @@ void NormalBulletWeapon::ShotBullet()
         tar = XMFLOAT3(pos.x + vec.x * 10.0f, pos.y + vec.y * 10.0f, pos.z + vec.z * 10.0f);
     }
     NormalBullet* b = Instantiate<NormalBullet>(pPlayer_->GetParent());
+    b->SetShotParent(pPlayer_);
     b->Shot(transform_.position_, tar);
 
 }

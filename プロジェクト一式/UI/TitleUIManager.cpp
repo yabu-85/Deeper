@@ -6,19 +6,21 @@
 #include "../GameManager/GameManager.h"
 #include "../AudioManager.h"
 
-TitleUIManager::TitleUIManager(SceneBase* parent)
-	: UIManager(parent), hPict_{ -1, -1 }
-{
-	const char* fileName[] = { "Image/Title.png", "Image/TitleBG.png" };
-	const int png = sizeof(fileName) / sizeof(fileName[0]);
-	for (int i = 0; i < png; i++) {
-		hPict_[i] = Image::Load(fileName[i]);
-		assert(hPict_[i] >= 0);
-	}
+namespace {
+	XMFLOAT2 TITLE_POSITION = { 0.f, 0.3f };
 
-	AddUi("Play", XMFLOAT2(0.0f, 0.0f), [this]() { GameManager::GetSceneManager()->ChangeScene(SCENE_ID_STAGE1); });
-	AddUi("Option", XMFLOAT2(0.0f, -0.35f), [this]() { AudioManager::Play(); });
-	AddUi("Exit", XMFLOAT2(0.0f, -0.7f), [this]() { pParent_->AddUIManager(new ExitUIManager(pParent_)); });
+}
+
+TitleUIManager::TitleUIManager(SceneBase* parent) : UIManager(parent), hPict_(-1)
+{
+	hPict_ = Image::Load("Image/DEEPER.png");
+	assert(hPict_ >= 0);
+
+	titleTrans_.position_ = { TITLE_POSITION.x, TITLE_POSITION.y, 1.0f };
+
+	AddUi("Play", XMFLOAT2(0.0f, -0.25f), [this]() { GameManager::GetSceneManager()->ChangeScene(SCENE_ID_STAGE1); });
+	AddUi("Exit", XMFLOAT2(0.0f, -0.6f), [this]() { pParent_->AddUIManager(new ExitUIManager(pParent_)); });
+	
 }
 
 TitleUIManager::~TitleUIManager()
@@ -27,13 +29,8 @@ TitleUIManager::~TitleUIManager()
 
 void TitleUIManager::Draw()
 {
-	Transform title;
-	title.position_.y = 0.5f;
-	Image::SetTransform(hPict_[0], title);
-	Image::Draw(hPict_[0]);
-
-	Image::SetFullScreenTransform(hPict_[1]);
-	Image::Draw(hPict_[1]);
+	Image::SetTransform(hPict_, titleTrans_);
+	Image::Draw(hPict_, 0);
 
 	UIManager::Draw();
 }

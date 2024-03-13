@@ -14,7 +14,7 @@ void AnimationController::AddAnime(int s, int e)
 	animeDatas_.push_back(data);
 }
 
-AnimationController::AnimeData AnimationController::GetAnim(int id)
+AnimeData AnimationController::GetAnim(int id)
 {
 	return animeDatas_[id];
 }
@@ -34,7 +34,7 @@ void AnimationController::SetNextAnime(int id, float red)
 	float weight = 1.0f - Model::GetBlendFactor(modelNum_);
 	if (currentAnime_ == id) weight = 1.0f - weight;
 	
-	SetNextAnime(0, weight, 0.1f);
+	SetNextAnime(id, weight, red);
 }
 
 void AnimationController::Update()

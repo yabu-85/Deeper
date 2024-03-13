@@ -25,7 +25,7 @@ class UIBase
 public:
 	UIBase();
 	~UIBase();
-	void Initialize(std::string name, XMFLOAT2 pos, std::function<void()> onClick);
+	void Initialize(std::string name, XMFLOAT2 pos, XMFLOAT2 size, std::function<void()> onClick);
 	void Draw();
 	bool IsWithinBound();
 	void OnClick();

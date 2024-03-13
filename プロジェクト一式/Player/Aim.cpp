@@ -69,9 +69,9 @@ void Aim::Update()
     if (!IsValid()) return;
 
     //デバッグ用
-    if (Input::IsKeyDown(DIK_R)) isMove_ = !isMove_;
-    if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
-    if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
+    //if (Input::IsKeyDown(DIK_R)) isMove_ = !isMove_;
+    //if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
+    //if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
 
     if (compulsionTime_ > 0) {
         //強制移動

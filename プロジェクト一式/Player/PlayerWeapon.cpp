@@ -11,8 +11,6 @@
 #include "../Engine/Text.h"
 
 namespace {
-    Text* pText;
-
     const XMFLOAT2 WEAPON_BOX_POSITION1 = { 0.5f, -0.7f };
     const XMFLOAT2 WEAPON_BOX_POSITION2 = { 0.8f, -0.7f };
 
@@ -21,9 +19,6 @@ namespace {
 PlayerWeapon::PlayerWeapon(Player* pPlayer)
     : pPlayer_(pPlayer), pMainWeapon_(nullptr), pSubWeapon_{nullptr, nullptr}, currentSubIndex_(0), drawPictWeapon_{-1, -1}
 {
-    pText = new Text();
-    pText->Initialize();
-
     const std::string fileName1[] = { "WeaponBoxSV", "WeaponBoxSIV", "WeaponBoxNSV", "WeaponBoxNSIV" };
     for (int i = 0; i < SELECT_MAX; i++) {
         hPictSelect_[i] = Image::Load("Image/" + fileName1[i] + ".png");
@@ -61,9 +56,6 @@ void PlayerWeapon::DrawWeapon()
 }
 
 void SceneTransitionInitialize() {
-    pText = new Text();
-    pText->Initialize();
-
 }
 
 void PlayerWeapon::SetPlayerDataWeapon()

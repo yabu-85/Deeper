@@ -31,7 +31,6 @@ namespace {
     const int APPER_TIME = 60;
 
     bool isCollider = true; //当たり判定するかどうか
-    Text* pText = new Text;
 
 }
 
@@ -97,8 +96,6 @@ void Player::Initialize()
     apperPos_ = transform_.position_;
     transform_.position_.y += (time_ * 0.5f);
 
-    pText->Initialize();
-
 }
 
 void Player::Update()
@@ -113,12 +110,7 @@ void Player::Update()
     ReflectCharacter();
 
     //デバッグ用
-    if (Input::IsKey(DIK_3)) { LifeManager::Damage(30); }
-    if (Input::IsKey(DIK_UPARROW)) transform_.position_.y += 0.1f;
-    if (Input::IsKey(DIK_DOWNARROW)) transform_.position_.y -= 0.1f;
-    if (Input::IsKeyDown(DIK_LEFTARROW)) transform_.position_.y = 0.0f;
-    if (Input::IsKeyDown(DIK_RIGHTARROW)) transform_.position_.y += 10.0f;
-    if (Input::IsKeyDown(DIK_T)) isCollider = !isCollider;
+    //if (Input::IsKeyDown(DIK_T)) isCollider = !isCollider;
 
 }
 
@@ -129,9 +121,6 @@ void Player::Draw()
     pPlayerWeapon_->DrawWeapon();
 
     //デバッグ用
-    pText->Draw(30, 30, (int)transform_.position_.x);
-    pText->Draw(30, 70, (int)transform_.position_.y);
-    pText->Draw(30, 110, (int)transform_.position_.z);
     CollisionDraw();
 }
 

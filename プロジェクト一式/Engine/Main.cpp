@@ -216,6 +216,9 @@ void ToggleFullscreen(HWND hwnd)
 		SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
 		// ウィンドウサイズをディスプレイの解像度に合わせる
 		SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+
+		Direct3D::screenWidth_ = GetSystemMetrics(SM_CXSCREEN);
+		Direct3D::screenHeight_ = GetSystemMetrics(SM_CYSCREEN);
 	}
 
 	else
@@ -224,6 +227,8 @@ void ToggleFullscreen(HWND hwnd)
 		SetWindowLong(hwnd, GWL_STYLE, (LONG)g_windowStyle);
 		// ウィンドウサイズを元に戻す
 		SetWindowPos(hwnd, HWND_NOTOPMOST, winRect.left, winRect.top, winRect.right - winRect.left, winRect.bottom - winRect.top, SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+		Direct3D::screenWidth_ = winRect.right - winRect.left;
+		Direct3D::screenHeight_ = winRect.bottom - winRect.top;
 	}
 }
 

@@ -1,6 +1,6 @@
 #include <Windows.h>
 #include "CsvReader.h"
-
+#include <fstream>
 
 //コンストラクタ
 CsvReader::CsvReader()
@@ -24,68 +24,63 @@ CsvReader::~CsvReader()
 //CSVファイルのロード
 bool CsvReader::Load(std::string fileName)
 {
-	//ファイルを開く
-	HANDLE hFile;
-	hFile = CreateFile(fileName.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	data_.clear();
 
-	//開けなかった
-	if (hFile == INVALID_HANDLE_VALUE)
-	{
-		std::string message = "「" + fileName + "」が開けません。\n開いている場合は閉じてください。";
-		MessageBox(NULL, message.c_str(), "BaseProjDx9エラー", MB_OK);
+	std::ifstream ifs(fileName);
+	if (!ifs) return false;
 
-		return false;
+	// BOM Skipする
+	unsigned char BOMS[] = { 0xEF, 0xBB, 0xBF };
+	bool found = true;
+	for (int i = 0; i < 3; i++) {
+		if (ifs.get() != BOMS[i]) {
+			found = false;
+			break;
+		}
 	}
+	if (!found)
+		ifs.seekg(std::ios_base::beg);
 
-	//ファイルのサイズ（文字数）を調べる
-	DWORD fileSize = GetFileSize(hFile, NULL);
-
-	//すべての文字を入れられる配列を用意
-	char* temp;
-	temp = new char[fileSize];
-
-	//ファイルの中身を配列に読み込む
-	DWORD dwBytes = 0;
-	ReadFile(hFile, temp, fileSize, &dwBytes, NULL);
-
-	//開いたファイルを閉じる
-	CloseHandle(hFile);
-
-	//1行のデータを入れる配列
-	std::vector<std::string>	line;
-
-	//調べる文字の位置
-	DWORD index = 0;
-
-	//最後の文字まで繰り返す
-	while (index < fileSize)
-	{
-		//index文字目から「,」か「改行」までの文字列を取得
-		std::string val;
-		GetToComma(&val, temp, &index);
-
-		//文字数が0だったということは行末
-		if (val.length() - 1 == 0)
-		{
-			//_dataに1行分追加
-			data_.push_back(line);
-
-			//1行データをクリア
-			line.clear();
-
-			//index++;
-			continue;
+	// データを読む
+	std::string lineStr;
+	while (getline(ifs, lineStr)) {
+		while (true) {
+			int dq = 0;
+			for (int i = 0; i < lineStr.size(); i++) {
+				if (lineStr[i] == '"')
+					dq++;
+			}
+			if (dq % 2 == 0)
+				break;
+			std::string s;
+			getline(ifs, s);
+			lineStr += "\n" + s;
+		}
+		for (auto it = lineStr.begin(); it != lineStr.end();) {
+			if (*it == '"')
+				it = lineStr.erase(it);
+			if (it != lineStr.end())
+				it++;
 		}
 
-		//1行分のデータに追加
-		line.push_back(val);
+		// 行内を,で切り分ける
+		std::vector<std::string> record;
+		int top = 0;
+		bool indq = false;
+		for (int n = 0; n < lineStr.size(); n++) {
+			if (lineStr[n] == ',') {
+				if (!indq) {
+					record.emplace_back(lineStr.substr(top, (size_t)(n - top)));
+					top = n + 1;
+				}
+			}
+			else if (lineStr[n] == '"')
+				indq = !indq;
+		}
+		record.emplace_back(lineStr.substr(top, lineStr.size() - top));
+		data_.emplace_back(record);
 	}
-
-	//読み込んだデータは開放する
-	delete[] temp;
-
-	//成功
-	return true;
+	ifs.close();
 }
 
 //「,」か「改行」までの文字列を取得

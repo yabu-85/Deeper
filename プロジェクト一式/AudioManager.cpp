@@ -15,6 +15,8 @@ namespace AudioManager
 	};
 	std::vector<AudioData> sceneTable;
 
+    float gameVolue_ = 1.0f;
+
 }
 
 void AudioManager::Initialize()
@@ -24,16 +26,35 @@ void AudioManager::Initialize()
 		{ "maou_game_battle27", false, 2 }
 	};
 
-	hSound_.resize(sceneTable.size()); //hSound_ベクターのサイズを設定
-	for (int i = 0; i < sceneTable.size(); i++) {
-		hSound_[i] = Audio::Load("Sound/" + sceneTable[i].name + ".wav", sceneTable[i].isLoop, sceneTable[i].max);
-		assert(hSound_[i] >= 0);
-	}
 }
 
 void AudioManager::Release()
 {
 	Audio::Release();
+}
+
+void AudioManager::SetSceneData(AUDIO_SCENE scene)
+{
+    switch (scene) {
+    case PLAY:
+        sceneTable = {
+            {"Sound/RobotHit.wav", false, 3},
+
+        };
+        break;
+    case OTHER:
+        sceneTable = {
+            {"Sound/RobotHit.wav", false, 3},
+        };
+        break;
+    }
+
+    //hSound_ベクターのサイズを設定
+    hSound_.resize(sceneTable.size());
+    for (int i = 0; i < sceneTable.size(); i++) {
+        hSound_[i] = Audio::Load(sceneTable[i].name, sceneTable[i].isLoop, sceneTable[i].max);
+        assert(hSound_[i] >= 0);
+    }
 }
 
 void AudioManager::Play()
@@ -48,3 +69,15 @@ void AudioManager::Play(XMFLOAT3 position, float range)
 	GameManager::GetEnemyManager()->PlayAtPosition(position, range);
 
 }
+
+/*
+void PlaySoundMa(TITLE_AUDIO i, float volume)
+{
+    Audio::Play(hSound_[i], volume * gameVolue_);
+}
+
+void StopSoundMa(PLAY_AUDIO i)
+{
+    Audio::Stop(hSound_[i]);
+}
+*/

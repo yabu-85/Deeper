@@ -22,9 +22,6 @@ namespace InputManager {
 		std::make_pair(KEY, DIK_E),
 	};
 	
-	//Pause‚Ìî•ñ
-	const int PAUSE_KEY = static_cast<int>(DIK_TAB);
-
 }
 
 void InputManager::SetDefaultKeyConfig()
@@ -95,8 +92,4 @@ bool InputManager::CmdWalk() {
 	else if (up && down && left && right) return false;
 	
 	return true;
-}
-
-bool InputManager::CmdPause() {
-	return Input::IsKeyDown(PAUSE_KEY);
 }

@@ -1,4 +1,4 @@
-#include "NormalBulletWeapon.h"
+#include "NormalGunWeapon.h"
 #include "NormalBullet.h"
 #include "../State/StateManager.h"
 #include "../Engine/Model.h"
@@ -13,18 +13,18 @@ namespace {
 
 }
 
-NormalBulletWeapon::NormalBulletWeapon(GameObject* parent)
-    : WeaponBase(parent, "NormalBulletWeapon"), pPlayer_(nullptr)
+NormalGunWeapon::NormalGunWeapon(GameObject* parent)
+    : WeaponBase(parent, "NormalGunWeapon"), pPlayer_(nullptr)
 {
     transform_.pParent_ = nullptr;
     Invisible();
 }
 
-NormalBulletWeapon::~NormalBulletWeapon()
+NormalGunWeapon::~NormalGunWeapon()
 {
 }
 
-void NormalBulletWeapon::Initialize()
+void NormalGunWeapon::Initialize()
 {
     hModel_ = Model::Load("Model/RedBox.fbx");
     assert(hModel_ >= 0);
@@ -38,17 +38,17 @@ void NormalBulletWeapon::Initialize()
     assert(boneIndex_ >= 0);
 
     pStateManager_ = new StateManager(this);
-    pStateManager_->AddState(new NormalBulletWeaponCombo1(pStateManager_));
+    pStateManager_->AddState(new NormalGunWeaponCombo1(pStateManager_));
     pStateManager_->ChangeState("");
     pStateManager_->Initialize();
 
 }
 
-void NormalBulletWeapon::Update()
+void NormalGunWeapon::Update()
 {
 }
 
-void NormalBulletWeapon::Draw()
+void NormalGunWeapon::Draw()
 {
     if (!IsVisibled()) return;
 
@@ -66,23 +66,23 @@ void NormalBulletWeapon::Draw()
 
 }
 
-void NormalBulletWeapon::Release()
+void NormalGunWeapon::Release()
 {
 }
 
-void NormalBulletWeapon::ResetState()
+void NormalGunWeapon::ResetState()
 {
     atkEnd_ = true;
     pStateManager_->ChangeState("");
 }
 
-void NormalBulletWeapon::ChangeAttackState()
+void NormalGunWeapon::ChangeAttackState()
 {
     pStateManager_->ChangeState("Combo1");
     atkEnd_ = false;
 }
 
-void NormalBulletWeapon::ShotBullet()
+void NormalGunWeapon::ShotBullet()
 {
     transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_); 
@@ -107,11 +107,11 @@ void NormalBulletWeapon::ShotBullet()
 
 //--------------------------state-----------------------------------
 
-NormalBulletWeaponCombo1::NormalBulletWeaponCombo1(StateManager* owner) : StateBase(owner), time_(0)
+NormalGunWeaponCombo1::NormalGunWeaponCombo1(StateManager* owner) : StateBase(owner), time_(0)
 {
 }
 
-void NormalBulletWeaponCombo1::Update()
+void NormalGunWeaponCombo1::Update()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     p->CalcMove();
@@ -119,23 +119,23 @@ void NormalBulletWeaponCombo1::Update()
 
     time_++;
     if (time_ >= COMBO_TIME1) {
-        NormalBulletWeapon* s = static_cast<NormalBulletWeapon*>(owner_->GetGameObject());
+        NormalGunWeapon* s = static_cast<NormalGunWeapon*>(owner_->GetGameObject());
         s->ResetState();
     }
 }
 
-void NormalBulletWeaponCombo1::OnEnter()
+void NormalGunWeaponCombo1::OnEnter()
 {
     time_ = 0;
-    NormalBulletWeapon* s = static_cast<NormalBulletWeapon*>(owner_->GetGameObject());
+    NormalGunWeapon* s = static_cast<NormalGunWeapon*>(owner_->GetGameObject());
     s->SetScale(XMFLOAT3(0.3f, 0.3f, 0.3f));
     s->ShotBullet();
 
 }
 
-void NormalBulletWeaponCombo1::OnExit()
+void NormalGunWeaponCombo1::OnExit()
 {
-    NormalBulletWeapon* s = static_cast<NormalBulletWeapon*>(owner_->GetGameObject());
+    NormalGunWeapon* s = static_cast<NormalGunWeapon*>(owner_->GetGameObject());
     s->SetScale(XMFLOAT3(0.1f, 0.1f, 0.1f));
     s->Endurance();
     if (s->IsBlockend()) {

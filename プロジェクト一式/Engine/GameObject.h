@@ -91,10 +91,20 @@ public:
 	//戻値：見つけたオブジェクトのアドレス（見つからなければnullptr）
 	GameObject* FindChildObject(const std::string& name);
 
+	///引数の文字列が含まれているオブジェクトを検索（対象は自分の子供以下）
+	//引数：name	検索する名前
+	//戻値：見つけたオブジェクトのアドレス（見つからなければnullptr）
+	GameObject* FindChildIncludeObject(const std::string& name);
+
 	//名前でオブジェクトを検索（対象は全体）
 	//引数：検索する名前
 	//戻値：見つけたオブジェクトのアドレス
 	GameObject* FindObject(const std::string& name) { return GetRootJob()->FindChildObject(name); }
+
+	//引数の文字列が含まれているオブジェクトを検索（対象は全体）
+	//引数：検索する名前
+	//戻値：見つけたオブジェクトのアドレス
+	GameObject* FindIncludeObject(const std::string& name) { return GetRootJob()->FindChildIncludeObject(name); }
 
 	//オブジェクトの名前を取得
 	//戻値：名前

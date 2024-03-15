@@ -117,6 +117,9 @@ namespace Model
 	//アニメーション停止
 	void SetAnimeStop(int handle, bool b);
 
+	//全てのモデルに対してアニメーション停止をセット
+	void SetAllAnimeStop(bool b);
+
 	//アニメーション止まっているか調べる
 	bool IsAnimeStop(int handle);
 

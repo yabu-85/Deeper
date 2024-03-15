@@ -16,12 +16,21 @@
 #include "../UI/Interaction.h"
 #include "../Scene/SceneBase.h"
 
-//デバッグ用
+//Pause
+#include "../Engine/Model.h"
 #include "../Engine/Input.h"
+#include "../Character/CharacterManager.h"
+#include "../Scene/StageBase.h"
+#include "../Player/Aim.h"
+
+//デバッグ用
 #include "../Enemy/EnemyBase.h"
 #include "../GameManager/CombatAI.h"
 
 namespace GameManager {
+	bool isPause_ = false;		//Pause状態かどうか
+	bool pauseClose_ = false;	//Keyで閉じる用のフラグ
+
 	EnemyManager* pEnemyManager_ = nullptr;
 	NavigationAI* pNavigationAI_ = nullptr;
 	WeaponObjectManager* pWeaponObjectManager_ = nullptr;
@@ -32,7 +41,6 @@ namespace GameManager {
 	SceneManager* pSceneManager_ = nullptr;
 
 }
-
 
 void GameManager::Initialize()
 {
@@ -52,6 +60,17 @@ void GameManager::Update()
 {
 	//ここタイトルシーン・リザルトシーンでのUpdateはいらないよDrawもね
 	if (!GameManager::GetStage()) return;
+
+	//Pause中ならUIをUpdate
+	if (isPause_) {
+		GetStage()->UIUpdate();
+		if (Input::IsKeyDown(DIK_ESCAPE)) {
+			pauseClose_ = true;
+		}
+	}
+
+	MouseLimitedChange();
+
 
 	DifficultyManager::Update();
 	CombatAI::Update();
@@ -89,6 +108,13 @@ void GameManager::Draw()
 		LifeManager::Draw();
 		PlayerData::Draw();
 		Interaction::Draw();
+
+		//Pause中ならUIをDraw
+		if (isPause_) {
+			GetStage()->UIDraw();
+
+		}
+
 	}
 
 	TransitionEffect::Draw();
@@ -109,6 +135,88 @@ void GameManager::SceneTransitionInitialize()
 
 	pEnemyManager_->SceneTransitionInitialize();
 	pWeaponObjectManager_->SceneTransitionInitialize();
+
+	isPause_ = false;
+
+}
+
+void GameManager::StartPause()
+{
+	isPause_ = true;
+	
+	//全てのキャラクターのUpdateを拒否
+	CharacterManager::SetAllCharacterLeave();
+
+	//全ての弾丸のUpdateを拒否
+	GameObject* obj = GetPlayer()->FindIncludeObject("Bullet");
+	while (obj && obj->IsEntered()) {
+		obj->Leave();
+		obj = GetPlayer()->FindIncludeObject("Bullet");
+	}
+
+	//アニメーション・Aim
+	Model::SetAllAnimeStop(true);
+	GetPlayer()->GetAim()->SetAimMove(false);
+}
+
+void GameManager::EndPause()
+{
+	isPause_ = false;
+
+	//全てのキャラクターのUpdateを許可
+	CharacterManager::SetAllCharacterEnter();
+
+	//全ての弾丸のUpdateを許可
+	GameObject* obj = GetPlayer()->FindIncludeObject("Bullet");
+	while (obj && !obj->IsEntered()) {
+		obj->Enter();
+		obj = GetPlayer()->FindIncludeObject("Bullet");
+	}
+
+	//アニメーション・Aim
+	Model::SetAllAnimeStop(false);
+	GetPlayer()->GetAim()->SetAimMove(true);
+}
+
+void GameManager::PauseClose()
+{
+	pauseClose_ = true;
+}
+
+bool GameManager::MouseLimitedChange()
+{
+	if (pauseClose_) {
+		EndPause();
+		pauseClose_ = false;
+		isPause_ = false;
+		return true;
+	}
+
+	//EscapeKeyで固定
+	if (!Input::IsKeyDown(DIK_ESCAPE)) return false;
+
+	//Pause開けるSceneじゃない時・エラーは終了
+	SCENE_ID cs = GetSceneManager()->GetNextSceneID();
+	if (cs == SCENE_ID_TITLE || cs == SCENE_ID_RESULT || !GameManager::GetStage()) return false;
+	
+	isPause_ = !isPause_;
+	if (isPause_) StartPause();
+	else EndPause();
+
+	return true;
+}
+
+bool GameManager::IsMouseLimitedScene()
+{
+	//プレイシーンじゃない時はリミット無し
+	SCENE_ID cs = GetSceneManager()->GetNextSceneID();
+	if (cs == SCENE_ID_TITLE || cs == SCENE_ID_RESULT || !GameManager::GetStage()) return false;
+
+	//プレイシーン中でPauseならリミット無し
+	if (isPause_) return false;
+
+	//プレイシーンでPauseじゃないならリミットあり
+	return true;
 }
 
 EnemyManager* GameManager::GetEnemyManager() { return pEnemyManager_; }
@@ -123,4 +231,3 @@ Player* GameManager::GetPlayer() { return pPlayer_; }
 void GameManager::SetPlayer(Player* player) { pPlayer_ = player; }
 StageBase* GameManager::GetStage() { return pStage_; }
 void GameManager::SetStage(StageBase* stage) { pStage_ = stage; }
-

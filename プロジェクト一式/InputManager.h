@@ -47,7 +47,4 @@ namespace InputManager {
 	//ˆÚ“®“ü—Í‚ğ‚µ‚Ä‚¢‚é‚©
 	bool CmdWalk();
 
-	//Pause“ü—ÍiŒÅ’èj
-	bool CmdPause();
-
 };

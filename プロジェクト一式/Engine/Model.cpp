@@ -174,6 +174,14 @@ namespace Model
 		_datas[handle]->isAimeStop = b;
 	}
 
+	void SetAllAnimeStop(bool b)
+	{
+		for (int i = 0; i < _datas.size(); i++)
+		{
+			if(_datas[i]) _datas[i]->isAimeStop = b;
+		}
+	}
+
 	bool IsAnimeStop(int handle)
 	{
 		return _datas[handle]->isAimeStop;

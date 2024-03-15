@@ -219,7 +219,7 @@
     <ClCompile Include="UI\ExitUIManager.cpp" />
     <ClCompile Include="UI\Interaction.cpp" />
     <ClCompile Include="UI\InteractionUI.cpp" />
-    <ClCompile Include="UI\PlayUIManager.cpp" />
+    <ClCompile Include="UI\PauseUIManager.cpp" />
     <ClCompile Include="UI\ResultUIManager.cpp" />
     <ClCompile Include="UI\TitleUIManager.cpp" />
     <ClCompile Include="UI\UIBase.cpp" />
@@ -228,7 +228,7 @@
     <ClCompile Include="Weapon\BulletBase.cpp" />
     <ClCompile Include="Weapon\MainSwordWeapon.cpp" />
     <ClCompile Include="Weapon\NormalBullet.cpp" />
-    <ClCompile Include="Weapon\NormalBulletWeapon.cpp" />
+    <ClCompile Include="Weapon\NormalGunWeapon.cpp" />
     <ClCompile Include="Weapon\StoneArmWeapon.cpp" />
     <ClCompile Include="Weapon\ThrowBullet.cpp" />
     <ClCompile Include="Weapon\WeaponBase.cpp" />
@@ -321,7 +321,7 @@
     <ClInclude Include="UI\ExitUIManager.h" />
     <ClInclude Include="UI\Interaction.h" />
     <ClInclude Include="UI\InteractionUI.h" />
-    <ClInclude Include="UI\PlayUIManager.h" />
+    <ClInclude Include="UI\PauseUIManager.h" />
     <ClInclude Include="UI\ResultUIManager.h" />
     <ClInclude Include="UI\TitleUIManager.h" />
     <ClInclude Include="UI\UIBase.h" />
@@ -330,7 +330,7 @@
     <ClInclude Include="Weapon\BulletBase.h" />
     <ClInclude Include="Weapon\MainSwordWeapon.h" />
     <ClInclude Include="Weapon\NormalBullet.h" />
-    <ClInclude Include="Weapon\NormalBulletWeapon.h" />
+    <ClInclude Include="Weapon\NormalGunWeapon.h" />
     <ClInclude Include="Weapon\StoneArmWeapon.h" />
     <ClInclude Include="Weapon\ThrowBullet.h" />
     <ClInclude Include="Weapon\WeaponBase.h" />

@@ -1,6 +1,6 @@
 #include "WeaponObjectManager.h"
 #include "WeaponObject.h"
-#include "NormalBulletWeapon.h"
+#include "NormalGunWeapon.h"
 #include "StoneArmWeapon.h"
 #include "../Engine/Model.h"
 #include "../Engine/Global.h"
@@ -78,8 +78,8 @@ WeaponBase* WeaponObjectManager::GetNearestWeapon()
 
 	WeaponBase* weapon = nullptr;
 	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_STONE) weapon = Instantiate<StoneArmWeapon>(GameManager::GetPlayer());
-	else if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_THROW) weapon = Instantiate<NormalBulletWeapon>(GameManager::GetPlayer());
-	else if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_MELEE) weapon = Instantiate<NormalBulletWeapon>(GameManager::GetPlayer());
+	else if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_THROW) weapon = Instantiate<NormalGunWeapon>(GameManager::GetPlayer());
+	else if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_MELEE) weapon = Instantiate<NormalGunWeapon>(GameManager::GetPlayer());
 	
 	//çÌèú
 	RemoveWeaponObject(nearestObject_);

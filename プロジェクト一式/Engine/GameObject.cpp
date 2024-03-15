@@ -157,6 +157,37 @@ GameObject * GameObject::FindChildObject(const std::string & name)
 	return nullptr;
 }
 
+GameObject* GameObject::FindChildIncludeObject(const std::string& name)
+{
+	//子供がいないなら終わり
+	if (childList_.empty())
+		return nullptr;
+
+	//イテレータ
+	auto it = childList_.begin();	//先頭
+	auto end = childList_.end();	//末尾
+
+	//子オブジェクトから探す
+	while (it != end) {
+		//同じ名前のオブジェクトを見つけたらそれを返す
+		if ((*it)->GetObjectName().find(name) != std::string::npos)
+			return *it;
+
+		//その子供（孫）以降にいないか探す
+		GameObject* obj = (*it)->FindChildIncludeObject(name);
+		if (obj != nullptr)
+		{
+			return obj;
+		}
+
+		//次の子へ
+		it++;
+	}
+
+	//見つからなかった
+	return nullptr;
+}
+
 //オブジェクトの名前を取得
 const std::string& GameObject::GetObjectName(void) const
 {
@@ -343,8 +374,8 @@ GameObject * GameObject::GetRootJob()
 
 void GameObject::UpdateSub()
 {
-	Update();
-	Transform();
+	//Updateを許可するなら
+	if (IsEntered()) Update();
 
 	for (auto it = childList_.begin(); it != childList_.end(); it++)
 	{

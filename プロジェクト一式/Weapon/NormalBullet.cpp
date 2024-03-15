@@ -34,7 +34,6 @@ void NormalBullet::Initialize()
 
 void NormalBullet::Update()
 {
-	LifeTime();
 	Move();
 
 	//CollisionMap‚Æ‚Ì”»’èi¡‚Íy<=0‚¾‚¯jC³‰ÓŠ
@@ -42,7 +41,10 @@ void NormalBullet::Update()
 		VFXManager::CreatVfxExplode1(transform_.position_);
 		AudioManager::Play(transform_.position_, 10.0f);
 		KillMe();
+		return;
 	}
+
+	LifeTime();
 
 }
 

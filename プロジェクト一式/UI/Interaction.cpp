@@ -9,18 +9,27 @@
 #include "../Weapon/WeaponObjectManager.h"
 #include <vector>
 
-namespace Interaction {
-	int time_ = 0;
-	int uiListIndex_ = -1;
-	Sprite* interactImage_ = nullptr;
-	std::vector<InteractionUI*> uiList_;
+//デバッグ用
+#include "../Engine/Input.h"
 
+namespace Interaction {
+	//計算用変数
+	int time_ = 0;
+
+	int uiListIndex_ = -1;					//一番近いUI付きオブジェクトのインデックス
+	std::vector<InteractionUI*> uiList_;	//UI付きオブジェクトのリスト
+	float parcent_ = 0.0f;					//Interactionのパーセント０～１
+
+	//画像データ色なし・色あり
+	Sprite* interactImage_ = nullptr;
+	Sprite* interactImageSelect_ = nullptr;
 }
 
 void Interaction::Initialize() {
 	interactImage_ = new Sprite();
 	interactImage_->Load("Image/KeyImage/E.jpg");
-
+	interactImageSelect_ = new Sprite();
+	interactImageSelect_->Load("Image/KeyImage/EYellow.png");
 }
 
 void Interaction::Draw() {
@@ -66,6 +75,13 @@ void Interaction::Draw() {
 		t.scale_ = { 1.0f, 1.0f, 1.0f };
 		t.Calclation();
 		interactImage_->Draw(t, rect, 1.0f, 0);
+
+		float ysub = ((float)rect.bottom / (float)Direct3D::screenHeight_);
+		t.position_.y -= ysub * (1.0f - parcent_);
+		t.Calclation();
+		rect.top = (LONG)((float)rect.bottom * (1.0f - parcent_));
+		rect.bottom = (LONG)((float)rect.bottom * parcent_);
+		interactImageSelect_->Draw(t, rect, 1.0f, 0);
 	}
 }
 
@@ -105,4 +121,10 @@ bool Interaction::IsMinDistance(GameObject* parent)
 
 	if (uiList_.at(uiListIndex_)->GetParent() == parent) return true;
 	return false;
+}
+
+void Interaction::SetParcent(float f)
+{
+	parcent_ = f;
+
 }

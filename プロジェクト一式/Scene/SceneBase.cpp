@@ -44,5 +44,6 @@ void SceneBase::UIUpdate()
 
 void SceneBase::UIDraw()
 {
-	if (!pUIManagerList_.empty()) pUIManagerList_.back()->Draw();
+	if (!pUIManagerList_.empty()) 
+		pUIManagerList_.back()->Draw();
 }

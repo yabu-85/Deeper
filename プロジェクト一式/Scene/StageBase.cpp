@@ -7,12 +7,12 @@
 #include "../Stage/SkyBox.h"
 #include "../Player/Player.h"
 #include "../Enemy/EnemyManager.h"
-#include "../UI/PlayUIManager.h"
+#include "../UI/PauseUIManager.h"
 
 StageBase::StageBase(GameObject* parent, std::string name)
-	: SceneBase(parent, name), isCleared_(false)
+	: SceneBase(parent, name), isCleared_(false), startPosition_{0.f,0.f,0.f}
 {
-	AddUIManager(new PlayUIManager(this));
+	AddUIManager(new PauseUIManager(this));
 
 }
 

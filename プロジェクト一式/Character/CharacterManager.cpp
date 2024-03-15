@@ -26,3 +26,17 @@ void CharacterManager::RemoveCharacter(Character* c) {
 	}
 }
 
+void CharacterManager::SetAllCharacterEnter()
+{
+	for (auto e : characterList_) {
+		e->Enter();
+	}
+}
+
+void CharacterManager::SetAllCharacterLeave()
+{
+	for (auto e : characterList_) {
+		e->Leave();
+	}
+}
+

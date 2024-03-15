@@ -37,8 +37,6 @@ void Stage1::Initialize()
 
 void Stage1::Update()
 {
-	UIUpdate();
-	
 	//デバッグ用
 	if (Input::IsKeyDown(DIK_C)) {
 		SceneManager* pSceneManager = GameManager::GetSceneManager();
@@ -50,7 +48,6 @@ void Stage1::Update()
 void Stage1::Draw()
 {
 	GameManager::GetCreateStage()->Draw();
-	UIDraw();
 
 }
 

@@ -53,6 +53,8 @@ void ThrowBullet::Initialize()
 
 void ThrowBullet::Update()
 {
+	this;
+	
 	if (isDeath_) {
 		pPolyLine_->AddPosition(deathPosition_);
 
@@ -67,7 +69,10 @@ void ThrowBullet::Update()
 	pPolyLine_->AddPosition(transform_.position_);
 
 	//CollisionMap‚Æ‚Ì”»’èi¡‚Íy<=0‚¾‚¯j
-	if (transform_.position_.y <= 0.0f) Hit();
+	if (transform_.position_.y <= 0.0f) {
+		Hit();
+		return;
+	}
 
 	time_--;
 }

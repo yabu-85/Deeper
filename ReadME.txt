@@ -1,5 +1,8 @@
 敵を倒して最奥を目指すゲーム
 
+-プレイ動画-
+https://drive.google.com/file/d/1mCfJoSJApa9zvhR2U6iR5XaEOvRHJkYE/view?usp=drive_link
+
 -操作方法-
 WASD移動
 左・右クリック攻撃

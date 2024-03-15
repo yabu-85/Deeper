@@ -18,14 +18,21 @@
 
 //定数宣言
 const char* WIN_CLASS_NAME = "SampleGame";	//ウィンドウクラス名
+
+//マウス
+bool isCursorVisible = TRUE;	// マウスポインタ―を表示するか
+bool isCursorLimited = TRUE;	// マウスポインターの制限
+
+//フルスクリーンようにグローバル
 bool isFullscreen = false;
-bool isCursorVisible = TRUE;
 LONG_PTR g_windowStyle;
 RECT winRect;
 
 //プロトタイプ宣言
 HWND InitApp(HINSTANCE hInstance, int screenWidth, int screenHeight, int nCmdShow);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+void LimitMousePointer(HWND hwnd);
+void ReleaseMousePointer();
 
 // エントリーポイント
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -116,6 +123,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 				GameManager::Update();
 
+				//Pauseなどでのウィンドウスタイル変更のため
+				if (GameManager::IsMouseLimitedScene() != isCursorLimited) {
+					isCursorLimited = !isCursorLimited;
+					if (isCursorLimited) LimitMousePointer(hWnd);
+					else ReleaseMousePointer();
+
+					isCursorVisible = !isCursorVisible;
+					ShowCursor(isCursorVisible);
+				}
+
 				//カメラを更新
 				Camera::Update();
 
@@ -186,21 +203,27 @@ HWND InitApp(HINSTANCE hInstance, int screenWidth, int screenHeight, int nCmdSho
 
 	//ウィンドウを作成
 	HWND hWnd = CreateWindow(
-		WIN_CLASS_NAME,					//ウィンドウクラス名
-		caption,						//タイトルバーに表示する内容
-		WS_OVERLAPPEDWINDOW,			//スタイル（普通のウィンドウ）
-		CW_USEDEFAULT,					//表示位置左（おまかせ）
-		CW_USEDEFAULT,					//表示位置上（おまかせ）
-		winRect.right - winRect.left,	//ウィンドウ幅
-		winRect.bottom - winRect.top,	//ウィンドウ高さ
-		nullptr,						//親ウインドウ（なし）
-		nullptr,						//メニュー（なし）
-		hInstance,						//インスタンス
-		nullptr							//パラメータ（なし）
+		WIN_CLASS_NAME,					            //ウィンドウクラス名
+		caption,						            //タイトルバーに表示する内容
+		WS_OVERLAPPEDWINDOW & ~(WS_THICKFRAME | WS_MAXIMIZEBOX),	//スタイル（通常のスタイル & 最大化不可 | サイズ変更不可）
+		CW_USEDEFAULT,					            //表示位置左（おまかせ）
+		CW_USEDEFAULT,					            //表示位置上（おまかせ）
+		winRect.right - winRect.left,	            //ウィンドウ幅
+		winRect.bottom - winRect.top,	            //ウィンドウ高さ
+		nullptr,						            //親ウインドウ（なし）
+		nullptr,						            //メニュー（なし）
+		hInstance,						            //インスタンス
+		nullptr							            //パラメータ（なし）
 	);
 
 	//ウィンドウを表示
 	ShowWindow(hWnd, nCmdShow);
+
+	//カーソルの描画設定
+	ShowCursor(isCursorVisible);
+
+	//マウス制限
+	if (isCursorLimited) LimitMousePointer(hWnd);
 
 	return hWnd;
 }
@@ -239,28 +262,64 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 	//ウィンドウを閉じた
 	case WM_DESTROY:
-		PostQuitMessage(0);	//プログラム終了
+		PostQuitMessage(0);		//プログラム終了
 		return 0;
 
 	//マウスが動いた
 	case WM_MOUSEMOVE:
 		Input::SetMousePosition(LOWORD(lParam), HIWORD(lParam));
-		return 0;
+		
+		if (isCursorLimited)
+		{
+			LimitMousePointer(hWnd);			// マウスカーソルをウィンドウの中心に移動
+		}
 
+		return 0; 
 	case WM_KEYDOWN:
 		// キーが押されたら、マウスカーソルの可視性を切り替える
 		if (wParam == VK_F3) {
 			isCursorVisible = !isCursorVisible;
 			ShowCursor(isCursorVisible);
 		}
-		if (wParam == VK_F11)ToggleFullscreen(hWnd);
+		
+		// フルスクリーンに切り替え
+		else if (wParam == VK_F11)ToggleFullscreen(hWnd);
 
-		if (wParam == VK_ESCAPE) {
-			if (MessageBox(NULL, "ゲームを終了しますか？", "終了", MB_YESNO) == IDYES)
-				PostQuitMessage(0);	//プログラム終了
+		// // マウスポインターの制限切り替え
+		else if (wParam == 'I')
+		{
+			isCursorLimited = !isCursorLimited;
+			if(isCursorLimited) LimitMousePointer(hWnd);
+			else ReleaseMousePointer();
 		}
-	}
-	
-	return DefWindowProc(hWnd, msg, wParam, lParam);
 
+		return 0;
+	}
+
+	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+// マウスポインターを中央に固定する関数
+void LimitMousePointer(HWND hwnd)
+{
+	RECT windowRect;
+	GetClientRect(hwnd, &windowRect);
+
+	// ウィンドウの中心座標を計算
+	POINT windowCenter = { Direct3D::screenWidth_ / 2, Direct3D::screenHeight_ / 2 };
+
+	// マウスポインターをウィンドウの中心に移動
+	SetCursorPos(windowCenter.x, windowCenter.y);
+
+	// ウィンドウの矩形領域をスクリーン座標に変換
+	MapWindowPoints(hwnd, nullptr, reinterpret_cast<POINT*>(&windowRect), 2);
+
+	// マウスポインターを制限
+	ClipCursor(&windowRect);
+}
+
+// マウスポインターの制限を解除する関数
+void ReleaseMousePointer()
+{
+	ClipCursor(nullptr);
 }

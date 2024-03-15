@@ -19,5 +19,7 @@ namespace Interaction {
 	//引数のGameObjectは一番近いUIObjectなのか
 	bool IsMinDistance(GameObject* parent);
 	
+	//Interactオブジェクトの取得率
+	void SetParcent(float f);
 }
 

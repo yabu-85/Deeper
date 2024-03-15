@@ -409,9 +409,6 @@
     <ClCompile Include="Weapon\MainSwordWeapon.cpp">
       <Filter>09Weapon\Weapons</Filter>
     </ClCompile>
-    <ClCompile Include="Weapon\NormalBulletWeapon.cpp">
-      <Filter>09Weapon\Weapons</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Easing.cpp">
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
@@ -421,10 +418,13 @@
     <ClCompile Include="BehaviorTree\CameraConditionNode.cpp">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClCompile>
-    <ClCompile Include="UI\PlayUIManager.cpp">
+    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Weapon\NormalGunWeapon.cpp">
+      <Filter>09Weapon\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\PauseUIManager.cpp">
       <Filter>04UI\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="InputManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -705,9 +705,6 @@
     <ClInclude Include="Weapon\MainSwordWeapon.h">
       <Filter>09Weapon\Weapons</Filter>
     </ClInclude>
-    <ClInclude Include="Weapon\NormalBulletWeapon.h">
-      <Filter>09Weapon\Weapons</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Easing.h">
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
@@ -717,10 +714,13 @@
     <ClInclude Include="BehaviorTree\CameraConditionNode.h">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClInclude>
-    <ClInclude Include="UI\PlayUIManager.h">
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Weapon\NormalGunWeapon.h">
+      <Filter>09Weapon\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\PauseUIManager.h">
       <Filter>04UI\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="InputManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

@@ -29,6 +29,7 @@ public:
 	const char* GetName() const override { return "Change"; }
 	void Update() override;
 	void OnEnter() override;
+	void OnExit() override;
 };
 
 class PlayerAvo : public StateBase

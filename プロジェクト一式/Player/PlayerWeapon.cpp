@@ -4,7 +4,7 @@
 #include "../InputManager.h"
 #include "../Weapon/WeaponBase.h"
 #include "../Weapon/MainSwordWeapon.h"
-#include "../Weapon/NormalBulletWeapon.h"
+#include "../Weapon/NormalGunWeapon.h"
 #include "../Weapon/StoneArmWeapon.h"
 #include "../Engine/Direct3D.h"
 
@@ -13,6 +13,7 @@
 namespace {
     const XMFLOAT2 WEAPON_BOX_POSITION1 = { 0.5f, -0.7f };
     const XMFLOAT2 WEAPON_BOX_POSITION2 = { 0.8f, -0.7f };
+    float WEAPON_PNG_SIZE = 0.8f;
 
 }
 
@@ -65,7 +66,7 @@ void PlayerWeapon::SetPlayerDataWeapon()
     for (int i = 0; i < 2; i++) {
         int type = PlayerData::GetWeaponData(i).type_;
         if(type == PlayerData::STONE_ARM_WEAPON) SetWeapon(Instantiate<StoneArmWeapon>(pPlayer_));
-        else if (type == PlayerData::NORMAL_BULLET_WEAPON) SetWeapon(Instantiate<NormalBulletWeapon>(pPlayer_));
+        else if (type == PlayerData::NORMAL_BULLET_WEAPON) SetWeapon(Instantiate<NormalGunWeapon>(pPlayer_));
     }
 }
 
@@ -135,6 +136,6 @@ void PlayerWeapon::SetWeaponData(int index, WeaponBase* weapon)
     XMFLOAT3 size2 = Image::GetTextureSize(hPictWeapon_[drawPictWeapon_[index]]);
     float size2Max = (size2.x > size2.y) ? size2.x : size2.y;
     weaponTrans_[index] = boxTrans_[index];
-    weaponTrans_[index].scale_ = { size1.x / size2Max, size1.y / size2Max, 1.0f };
+    weaponTrans_[index].scale_ = { size1.x / size2Max * WEAPON_PNG_SIZE, size1.y / size2Max * WEAPON_PNG_SIZE, 1.0f };
 
 }

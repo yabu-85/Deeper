@@ -11,6 +11,7 @@
 #include "../Player/PlayerWeapon.h"
 #include "../Weapon/WeaponBase.h"
 #include "../Weapon/WeaponObjectManager.h"
+#include "../UI/Interaction.h"
 
 namespace {
 	static const int AVO_TIME = 40;
@@ -53,7 +54,7 @@ void PlayerWait::Update()
 		owner_->ChangeState("SubAtk");
 		return;
 	}
-	if (InputManager::IsCmdDown(InputManager::ACTION)) {
+	if (InputManager::IsCmd(InputManager::ACTION)) {
 		if (GameManager::GetWeaponObjectManager()->IsInPlayerRange()) {
 			owner_->ChangeState("Change");
 			return;
@@ -93,7 +94,7 @@ void PlayerWalk::Update()
 		owner_->ChangeState("SubAtk");
 		return;
 	}
-	if (InputManager::IsCmdDown(InputManager::ACTION)) {
+	if (InputManager::IsCmd(InputManager::ACTION)) {
 		if (GameManager::GetWeaponObjectManager()->IsInPlayerRange()) {
 			owner_->ChangeState("Change");
 			return;
@@ -127,10 +128,16 @@ void PlayerWeaponChange::Update()
 	p->Move();
 
 	//‰Ÿ‚µ‚Ä‚È‚¢‚©‚çWait‚Ö
-	if (!InputManager::IsCmd(InputManager::ACTION)) owner_->ChangeState("Wait");
+	if (!InputManager::IsCmd(InputManager::ACTION)) {
+		owner_->ChangeState("Wait");
+		return;
+	}
+
+	time_++;
+	float par = (float)time_ / CHANGE_TIME;
+	Interaction::SetParcent(par);
 
 	//Ø‚è‘Ö‚¦ŽžŠÔ‚Ü‚Åƒ{ƒ^ƒ“‰Ÿ‚µ‘±‚¯‚½
-	time_++;
 	if (time_ >= CHANGE_TIME) {
 		WeaponBase* weapon = GameManager::GetWeaponObjectManager()->GetNearestWeapon();
 		if (weapon) p->GetPlayerWeapon()->SetWeapon(weapon);
@@ -143,6 +150,12 @@ void PlayerWeaponChange::OnEnter()
 	time_ = 0;
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
 	p->GetAnimationController()->SetNextAnime(0, 0.1f);
+
+}
+
+void PlayerWeaponChange::OnExit()
+{
+	Interaction::SetParcent(0.0f);
 
 }
 

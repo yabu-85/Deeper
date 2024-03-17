@@ -127,6 +127,23 @@ void PlayerWeaponChange::Update()
 	p->CalcNoMove();
 	p->Move();
 
+	if (!InputManager::CmdWalk()) {
+		owner_->ChangeState("Wait");
+		return;
+	}
+	if (InputManager::IsCmdDown(InputManager::AVO)) {
+		owner_->ChangeState("Avo");
+		return;
+	}
+	if (p->GetPlayerWeapon()->GetMainWeapon() && InputManager::IsCmdDown(InputManager::MAIN_ATK)) {
+		owner_->ChangeState("Atk");
+		return;
+	}
+	if (p->GetPlayerWeapon()->GetSubWeapon() && InputManager::IsCmdDown(InputManager::SUB_ATK)) {
+		owner_->ChangeState("SubAtk");
+		return;
+	}
+
 	//‰Ÿ‚µ‚Ä‚È‚¢‚©‚çWait‚Ö
 	if (!InputManager::IsCmd(InputManager::ACTION)) {
 		owner_->ChangeState("Wait");

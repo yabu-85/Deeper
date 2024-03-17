@@ -7,20 +7,26 @@
 #include "../AudioManager.h"
 
 namespace {
-	XMFLOAT2 PAUSE_POSITION = { 0.f, 0.f };
+	XMFLOAT2 PAUSE_POSITION = { 0.f, 0.5f };
 
 }
 
 PauseUIManager::PauseUIManager(SceneBase* parent)
-	: UIManager(parent), hPict_(-1)
+	: UIManager(parent), hPict_{-1, -1}
 {
-	hPict_ = Image::Load("Image/Pause.png");
-	assert(hPict_ >= 0);
+	const char* fileName[] = { "Image/Pause.png", "Image/WhiteFade.png" };
+	for (int i = 0; i < 2; i++) {
+		hPict_[i] = Image::Load(fileName[i]);
+		assert(hPict_[i] >= 0);
+	}
 
 	pauseTrans_.position_ = { PAUSE_POSITION.x, PAUSE_POSITION.y, 1.0f };
 
-	AddUi("ReturnGame", XMFLOAT2(0.0f, -0.25f), XMFLOAT2(1.5f, 1.0f), [this]() { GameManager::PauseClose(); });
-	AddUi("Exit", XMFLOAT2(0.0f, -0.6f), [this]() { pParent_->AddUIManager(new ExitUIManager(pParent_)); });
+	AddUi("ReturnGame", XMFLOAT2(0.0f, 0.1f), XMFLOAT2(1.5f, 1.0f), [this]() { GameManager::PauseClose(); });
+	AddUi("ReturnToTitle", XMFLOAT2(0.0f, -0.2f), XMFLOAT2(1.6f, 1.0f), [this]() { 
+		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE); }
+	);
+	AddUi("Exit", XMFLOAT2(0.0f, -0.5f), [this]() { pParent_->AddUIManager(new ExitUIManager(pParent_)); });
 
 }
 
@@ -30,8 +36,12 @@ PauseUIManager::~PauseUIManager()
 
 void PauseUIManager::Draw()
 {
-	Image::SetTransform(hPict_, pauseTrans_);
-	Image::Draw(hPict_, 0);
+	Image::SetFullScreenTransform(hPict_[1]);
+	Image::SetAlpha(hPict_[1], 200);
+	Image::Draw(hPict_[1], 0);
+
+	Image::SetTransform(hPict_[0], pauseTrans_);
+	Image::Draw(hPict_[0], 0);
 
 	UIManager::Draw();
 }

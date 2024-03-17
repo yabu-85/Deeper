@@ -18,14 +18,8 @@ namespace GameManager
 	void Draw();
 	void SceneTransitionInitialize();
 
-	//ポーズメニュー関数
-	void StartPause();
-	void EndPause();
-
+	//ポーズメニュー閉じる
 	void PauseClose();
-
-	//マウスの制限を切り替えるときのフラグ
-	bool MouseLimitedChange();
 
 	//今マウス制限を掛けるべきか
 	bool IsMouseLimitedScene();

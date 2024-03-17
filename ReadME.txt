@@ -4,11 +4,12 @@
 https://drive.google.com/file/d/1mCfJoSJApa9zvhR2U6iR5XaEOvRHJkYE/view?usp=drive_link
 
 -操作方法-
-WASD移動
-左・右クリック攻撃
-マウスホイールでサブ武器の選択
-Eキーアクション（拾う・ワープの使用など
-Qキーターゲット（敵をターゲット状態に
+WASD　　　　　：移動
+左・右クリック：攻撃
+マウスホイール：サブ武器の選択
+Eキー　　　　 ：アクション（拾う・ワープの使用など
+Qキー　　　　 ：ターゲット（敵をターゲット状態に
+ESCAPEキー　　：Pauseメニュー
 
 -アピールポイント-
 プレイヤーの操作感

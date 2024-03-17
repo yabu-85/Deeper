@@ -3,7 +3,7 @@
 
 class PauseUIManager : public UIManager
 {
-	int hPict_;
+	int hPict_[2];
 	Transform pauseTrans_;
 
 public:

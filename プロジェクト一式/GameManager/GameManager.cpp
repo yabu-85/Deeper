@@ -28,6 +28,10 @@
 #include "../GameManager/CombatAI.h"
 
 namespace GameManager {
+	void MouseLimitedChange();
+	void StartPause();
+	void EndPause();
+
 	bool isPause_ = false;		//Pause状態かどうか
 	bool pauseClose_ = false;	//Keyで閉じる用のフラグ
 
@@ -62,15 +66,9 @@ void GameManager::Update()
 	if (!GameManager::GetStage()) return;
 
 	//Pause中ならUIをUpdate
-	if (isPause_) {
-		GetStage()->UIUpdate();
-		if (Input::IsKeyDown(DIK_ESCAPE)) {
-			pauseClose_ = true;
-		}
-	}
+	if (isPause_) GetStage()->UIUpdate();
 
 	MouseLimitedChange();
-
 
 	DifficultyManager::Update();
 	CombatAI::Update();
@@ -89,8 +87,8 @@ void GameManager::Update()
 			std::vector<EnemyBase*> eList = pEnemyManager_->GetAllEnemy();
 			for (auto e : eList) e->ApplyDamage(1000000);
 		}
-
 	}
+
 	if (Input::IsKeyDown(DIK_TAB)) {
 		OutputDebugString("entity : ");
 		int count = (int)pEnemyManager_->GetAllEnemy().size();
@@ -110,10 +108,7 @@ void GameManager::Draw()
 		Interaction::Draw();
 
 		//Pause中ならUIをDraw
-		if (isPause_) {
-			GetStage()->UIDraw();
-
-		}
+		if (isPause_) GetStage()->UIDraw();
 
 	}
 
@@ -123,6 +118,9 @@ void GameManager::Draw()
 
 void GameManager::SceneTransitionInitialize()
 {
+	pauseClose_ = false;
+	isPause_ = false;
+
 	pCollisionMap_ = nullptr;
 	pPlayer_ = nullptr;
 	pStage_ = nullptr;
@@ -135,15 +133,13 @@ void GameManager::SceneTransitionInitialize()
 
 	pEnemyManager_->SceneTransitionInitialize();
 	pWeaponObjectManager_->SceneTransitionInitialize();
-
-	isPause_ = false;
-
 }
 
 void GameManager::StartPause()
 {
+	pauseClose_ = false;
 	isPause_ = true;
-	
+
 	//全てのキャラクターのUpdateを拒否
 	CharacterManager::SetAllCharacterLeave();
 
@@ -161,6 +157,7 @@ void GameManager::StartPause()
 
 void GameManager::EndPause()
 {
+	pauseClose_ = false;
 	isPause_ = false;
 
 	//全てのキャラクターのUpdateを許可
@@ -183,27 +180,30 @@ void GameManager::PauseClose()
 	pauseClose_ = true;
 }
 
-bool GameManager::MouseLimitedChange()
+void GameManager::MouseLimitedChange()
 {
-	if (pauseClose_) {
-		EndPause();
-		pauseClose_ = false;
-		isPause_ = false;
-		return true;
-	}
-
-	//EscapeKeyで固定
-	if (!Input::IsKeyDown(DIK_ESCAPE)) return false;
-
 	//Pause開けるSceneじゃない時・エラーは終了
 	SCENE_ID cs = GetSceneManager()->GetNextSceneID();
-	if (cs == SCENE_ID_TITLE || cs == SCENE_ID_RESULT || !GameManager::GetStage()) return false;
-	
+	if (cs == SCENE_ID_TITLE || cs == SCENE_ID_RESULT || !GameManager::GetStage()) return;
+
+	//pauseCloseフラグtrueなら閉じる
+	if (pauseClose_) {
+		EndPause();
+		return;
+	}
+
+	//EscapeKeyで固定で押してないなら終わり
+	if (!Input::IsKeyDown(DIK_ESCAPE)) return;
+
+	//ポーズ中にEscape押したから閉じる
+	if (isPause_) {
+		EndPause();
+		return;
+	}
+
 	isPause_ = !isPause_;
 	if (isPause_) StartPause();
 	else EndPause();
-
-	return true;
 }
 
 bool GameManager::IsMouseLimitedScene()

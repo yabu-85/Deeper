@@ -31,6 +31,8 @@ RECT winRect;
 //プロトタイプ宣言
 HWND InitApp(HINSTANCE hInstance, int screenWidth, int screenHeight, int nCmdShow);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+void ToggleFullscreen(HWND hwnd);
+void ToggleMouseVisible();
 void LimitMousePointer(HWND hwnd);
 void ReleaseMousePointer();
 
@@ -130,7 +132,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					else ReleaseMousePointer();
 
 					isCursorVisible = !isCursorVisible;
-					ShowCursor(isCursorVisible);
+					ToggleMouseVisible();
 				}
 
 				//カメラを更新
@@ -220,7 +222,7 @@ HWND InitApp(HINSTANCE hInstance, int screenWidth, int screenHeight, int nCmdSho
 	ShowWindow(hWnd, nCmdShow);
 
 	//カーソルの描画設定
-	ShowCursor(isCursorVisible);
+	ToggleMouseVisible();
 
 	//マウス制限
 	if (isCursorLimited) LimitMousePointer(hWnd);
@@ -255,6 +257,12 @@ void ToggleFullscreen(HWND hwnd)
 	}
 }
 
+void ToggleMouseVisible()
+{
+	if (isCursorVisible) while (ShowCursor(FALSE) >= 0);
+	else while (ShowCursor(TRUE) < 0);
+}
+
 //ウィンドウプロシージャ（何かあった時によばれる関数）
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -262,36 +270,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 	//ウィンドウを閉じた
 	case WM_DESTROY:
+		ReleaseMousePointer();
 		PostQuitMessage(0);		//プログラム終了
 		return 0;
 
 	//マウスが動いた
 	case WM_MOUSEMOVE:
 		Input::SetMousePosition(LOWORD(lParam), HIWORD(lParam));
-		
-		if (isCursorLimited)
-		{
-			LimitMousePointer(hWnd);			// マウスカーソルをウィンドウの中心に移動
-		}
+		// マウスカーソルをウィンドウの中心に移動
+		if (isCursorLimited) LimitMousePointer(hWnd);
 
 		return 0; 
 	case WM_KEYDOWN:
 		// キーが押されたら、マウスカーソルの可視性を切り替える
 		if (wParam == VK_F3) {
 			isCursorVisible = !isCursorVisible;
-			ShowCursor(isCursorVisible);
+			ToggleMouseVisible();
 		}
-		
-		// フルスクリーンに切り替え
-		else if (wParam == VK_F11)ToggleFullscreen(hWnd);
 
-		// // マウスポインターの制限切り替え
-		else if (wParam == 'I')
-		{
-			isCursorLimited = !isCursorLimited;
-			if(isCursorLimited) LimitMousePointer(hWnd);
-			else ReleaseMousePointer();
-		}
+		// フルスクリーンに切り替え
+		else if (wParam == VK_F11) ToggleFullscreen(hWnd);
 
 		return 0;
 	}
@@ -305,17 +303,20 @@ void LimitMousePointer(HWND hwnd)
 	RECT windowRect;
 	GetClientRect(hwnd, &windowRect);
 
-	// ウィンドウの中心座標を計算
-	POINT windowCenter = { Direct3D::screenWidth_ / 2, Direct3D::screenHeight_ / 2 };
-
-	// マウスポインターをウィンドウの中心に移動
-	SetCursorPos(windowCenter.x, windowCenter.y);
-
-	// ウィンドウの矩形領域をスクリーン座標に変換
+	// ウィンドウの矩形領域をスクリーン座標に変換（閉じるボタン押せないようにするため少し小さく
 	MapWindowPoints(hwnd, nullptr, reinterpret_cast<POINT*>(&windowRect), 2);
+	windowRect.left++;
+	windowRect.top++;
+	windowRect.right--;
+	windowRect.bottom--;
 
 	// マウスポインターを制限
 	ClipCursor(&windowRect);
+
+	// ウィンドウの中心座標を計算してセット
+	POINT windowCenter = { Direct3D::screenWidth_ / 2, Direct3D::screenHeight_ / 2 };
+	SetCursorPos(windowRect.left + windowCenter.x , windowRect.top + windowCenter.y);
+
 }
 
 // マウスポインターの制限を解除する関数

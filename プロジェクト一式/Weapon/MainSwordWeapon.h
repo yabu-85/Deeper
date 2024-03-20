@@ -5,14 +5,15 @@
 class Player;
 class SegmentCollider;
 class PolyLine;
+class DamageController;
 
 class MainSwordWeapon : public WeaponBase
 {
-    int damage_;
     XMFLOAT3 wandPos_;
     Player* pPlayer_;
     SegmentCollider* seg_;
     PolyLine* pPolyLine_;
+    DamageController* pDamageController_;
 
 public:
     MainSwordWeapon(GameObject* parent);
@@ -25,7 +26,12 @@ public:
     void ChangeAttackState() override;
 
     void ResetState() override;
-    void CalcDamage();
+    void CalcSwordTrans();
+
+    void DamageInfoReset();
+    void SetDamageInfoCombo1();
+    void SetDamageInfoCombo2();
+    void SetDamageInfoCombo3();
 
     PolyLine* GetPolyLine() { return pPolyLine_; }
     SegmentCollider* GetSegmentCollider() { return seg_; }

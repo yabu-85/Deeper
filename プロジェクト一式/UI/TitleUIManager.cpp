@@ -1,10 +1,10 @@
 #include "TitleUIManager.h"
 #include "ExitUIManager.h"
+#include "../AudioManager.h"
 #include "../Engine/Image.h"
 #include "../Engine/Direct3D.h"
 #include "../Engine/SceneManager.h"
 #include "../GameManager/GameManager.h"
-#include "../AudioManager.h"
 
 namespace {
 	XMFLOAT2 TITLE_POSITION = { 0.f, 0.3f };

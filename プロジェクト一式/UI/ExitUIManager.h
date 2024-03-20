@@ -3,7 +3,7 @@
 
 class ExitUIManager : public UIManager
 {
-	int hPict_;
+	int hPict_[2];
 	Transform exitTrans_;
 
 public:

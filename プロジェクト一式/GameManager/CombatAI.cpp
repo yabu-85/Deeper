@@ -15,15 +15,6 @@ using std::vector;
 using std::priority_queue;
 
 namespace CombatAI {
-	float FuzzyGrade(float value, float x0, float x1) {
-		//エラー
-		if (x0 <= x1) return 0.0f;
-		if (value < x0) return 0.0f;
-		if (value >= x1) return 1.0f;
-		if (x0 <= value && value < x1) return (value - x0) / (x1 - x0);
-		return 0.0f;
-	}
-
 	bool compare(EnemyBase* e1, EnemyBase* e2) {
 		XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
 		float dist1 = DistanceCalculation(e1->GetPosition(), plaPos);
@@ -31,8 +22,8 @@ namespace CombatAI {
 		return dist1 < dist2;
 	}
 
-	//unsigned calcTime_ = 0;
-	//static const unsigned CALC_RAND = 5;	//n回に１回Enemyの計算をする：軽い処理になったら１でもいいかもね
+	unsigned calcTime_ = 0;
+	static const unsigned CALC_RAND = 10;
 
 	//設計を見直していく
 	//考えられる大枠の条件
@@ -49,71 +40,40 @@ void CombatAI::Initialize()
 }
 
 void CombatAI::Update() {
+	//CALC_RANDの時間になったら計算する
+	if (CALC_RAND > calcTime_++) return;
+	calcTime_ = 0;
 
-	//AimTargetにされているエネミー
-	EnemyBase* pAimEnemy = GameManager::GetPlayer()->GetAim()->GetTargetEnemy();
-	
 	//プレイヤーと比較して近い順のリスト
 	vector<EnemyBase*> eList = GameManager::GetEnemyManager()->GetAllEnemy();
+	if (eList.empty()) return;
 	std::sort(eList.begin(), eList.end(), compare);
 
-	//リストの最初の谷津スクリーン内科試す
-	if (!eList.empty()) {
-		XMFLOAT3 fPos = eList.at(0)->GetPosition();
-		//Camera::IsPositionWithinVector(fPos);
-		Camera::IsPositionWithinScreen(fPos);
+	//個数求める
+	int random = rand() % 100;
+	int count = 0;
+	if (random > 80) count = 2;
+	else if (random > 40) count = 1;
+	else if (random > 0) count = 0;
+
+	//エネミーの数より多いなら抑制
+	if (eList.size() < count) count = (int)eList.size();
+
+	//近い数分フラグをセット
+	for (int i = 0; i < count; i++) {
+		eList[i]->SetCombatReady(true);
 	}
 	
-	//AimTarget以外で一番近いやつ
-	if (!eList.empty() && rand() % 10 == 0) {
-		if (!pAimEnemy) {
-			int random = rand() % 100;
-			int count = 0;
-
-			//個数求める
-			if (random > 90) count = 3;
-			else if (random > 80) count = 2;
-			else if (random > 30) count = 1;
-			else if (random > 0) count = 0;
-
-			//エネミーの数より多いなら抑制
-			if (eList.size() < count) count = (int)eList.size();
-
-			//近い数分フラグをセット
-			for (int i = 0; i < count; i++) {
-				eList[i]->SetCombatReady(true);
-			}
-		}
-		else {
-			int random = rand() % 100;
-			int count = 0;
-
-			//個数求める
-			if (random > 80) count = 2;
-			else if (random > 40) count = 1;
-			else if (random > 0) count = 0;
-
-			//エネミーの数より多いなら抑制
-			if (eList.size() < count) count = (int)eList.size();
-
-			//近い数分フラグをセット
-			for (int i = 0; i < count; i++) {
-				eList[i]->SetCombatReady(true);
-			}
-		}
-	}
 }
 
 bool CombatAI::IsEnemyAttackPermission(EnemyBase* enemy)
 {
-	if (DifficultyManager::AttackPermission() && enemy->GetCombatReady())
-		return true;
-	return false;
+	return (DifficultyManager::AttackPermission() && enemy->GetCombatReady());
 }
 
 bool CombatAI::IsEnemyMovePermission(EnemyBase* enemy)
 {
-	//とりあえずのrand	//修正箇所
+	//修正箇所 //とりあえずのrand
 	if (enemy == GameManager::GetPlayer()->GetAim()->GetTargetEnemy()) return true;
 
 	if (rand() % 3 == 0) return true;

@@ -7,6 +7,7 @@
 
 using namespace DirectX;
 class UIBase;
+class Cursor;
 
 class UIManager
 {
@@ -20,6 +21,7 @@ protected:
 	std::vector<UIBase*> uiList_;
 	UI_STATE state_;
 	SceneBase* pParent_;
+	Cursor* pCursor_;
 
 public:
 	UIManager(SceneBase* parent);

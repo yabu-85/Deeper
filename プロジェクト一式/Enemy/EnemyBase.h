@@ -7,9 +7,10 @@ class StateManager;
 
 class EnemyBase : public Character
 {
+    void Damage() override;
+    void Dead() override;
+
 protected:
-    int hp_;                //HP
-    int maxHp_;             //HPMAX
     float aimTargetPos_;    //AimTarget‚ÌY²‚Ì‰ÁZ’l
     bool isAimTarget_;      //AimTarget‚É‚µ‚Ä‚¢‚¢‚©‚Ç‚¤‚©
     ENEMY_TYPE type_;
@@ -32,13 +33,9 @@ public:
     virtual void Update() override;
     virtual void Draw() override = 0;
     virtual void Release();
-    virtual void ApplyDamage(int da);
 
-    //DeadState‚É“ü‚Á‚½‚Ìˆ—
-    void DeadEnter();
-
-    //Š®‘S‚É€–S
-    void Dead();
+    virtual void DeadEnter();
+    virtual void DeadExit();
 
     //UŒ‚‚Ì€”õ‚ª‚Å‚«‚Ä‚¢‚é‚©
     bool IsAttackReady();

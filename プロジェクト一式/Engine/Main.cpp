@@ -20,7 +20,6 @@
 const char* WIN_CLASS_NAME = "SampleGame";	//ウィンドウクラス名
 
 //マウス
-bool isCursorVisible = TRUE;	// マウスポインタ―を表示するか
 bool isCursorLimited = TRUE;	// マウスポインターの制限
 
 //フルスクリーンようにグローバル
@@ -32,7 +31,6 @@ RECT winRect;
 HWND InitApp(HINSTANCE hInstance, int screenWidth, int screenHeight, int nCmdShow);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 void ToggleFullscreen(HWND hwnd);
-void ToggleMouseVisible();
 void LimitMousePointer(HWND hwnd);
 void ReleaseMousePointer();
 
@@ -130,9 +128,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					isCursorLimited = !isCursorLimited;
 					if (isCursorLimited) LimitMousePointer(hWnd);
 					else ReleaseMousePointer();
-
-					isCursorVisible = !isCursorVisible;
-					ToggleMouseVisible();
 				}
 
 				//カメラを更新
@@ -222,7 +217,7 @@ HWND InitApp(HINSTANCE hInstance, int screenWidth, int screenHeight, int nCmdSho
 	ShowWindow(hWnd, nCmdShow);
 
 	//カーソルの描画設定
-	ToggleMouseVisible();
+	while (ShowCursor(FALSE) >= 0);
 
 	//マウス制限
 	if (isCursorLimited) LimitMousePointer(hWnd);
@@ -257,12 +252,6 @@ void ToggleFullscreen(HWND hwnd)
 	}
 }
 
-void ToggleMouseVisible()
-{
-	if (isCursorVisible) while (ShowCursor(FALSE) >= 0);
-	else while (ShowCursor(TRUE) < 0);
-}
-
 //ウィンドウプロシージャ（何かあった時によばれる関数）
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -282,14 +271,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		return 0; 
 	case WM_KEYDOWN:
-		// キーが押されたら、マウスカーソルの可視性を切り替える
-		if (wParam == VK_F3) {
-			isCursorVisible = !isCursorVisible;
-			ToggleMouseVisible();
-		}
-
 		// フルスクリーンに切り替え
-		else if (wParam == VK_F11) ToggleFullscreen(hWnd);
+		if (wParam == VK_F11) ToggleFullscreen(hWnd);
 
 		return 0;
 	}

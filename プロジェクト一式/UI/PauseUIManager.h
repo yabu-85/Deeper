@@ -9,7 +9,6 @@ class PauseUIManager : public UIManager
 public:
 	PauseUIManager(SceneBase* parent);
 	~PauseUIManager() override;
- 	//void Update() override;
  	void Draw() override;
 
 };

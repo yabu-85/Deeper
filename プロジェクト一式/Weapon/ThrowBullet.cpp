@@ -98,25 +98,12 @@ void ThrowBullet::OnAttackCollision(GameObject* pTarget)
 {
 	//Œ‚‚Á‚½–{l‚É“–‚½‚Á‚½ê‡‚ÍI—¹
 	if (GetShotParent() == pTarget) return;
-	
-	if (objectName_ == "ThrowEBullet") {
-		if (pTarget->GetObjectName() == "Player") {
-			Hit();
-			GameManager::GetPlayer()->TargetRotate(GetPosition());
-			LifeManager::Damage(damage_);
-		}
-		else if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
-			Hit();
-			EnemyBase* e = static_cast<EnemyBase*>(pTarget);
-			e->ApplyDamage(damage_);
-		}
-	}
-	else {
-		if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
-			Hit();
-			EnemyBase* e = static_cast<EnemyBase*>(pTarget);
-			e->ApplyDamage(damage_);
-		}
+
+	if (pTarget->GetObjectName() == "Player" || pTarget->GetObjectName().find("Enemy") != std::string::npos) {
+		Character* tar = static_cast<Character*>(pTarget);
+		DamageInfo damage(damage_);
+		tar->ApplyDamageDirectly(damage);
+		Hit();
 	}
 }
 

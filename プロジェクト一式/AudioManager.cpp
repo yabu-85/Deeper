@@ -22,7 +22,7 @@ namespace AudioManager
 void AudioManager::Initialize()
 {
     sceneTable = {
-        { "JumpingEnd", false, 5 },
+        { "bulletHit", false, 5 },
         { "maou_game_battle27", false, 2 }
     };
 

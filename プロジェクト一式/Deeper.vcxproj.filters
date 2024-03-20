@@ -425,6 +425,9 @@
     <ClCompile Include="UI\PauseUIManager.cpp">
       <Filter>04UI\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Cursor.cpp">
+      <Filter>04UI\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -720,6 +723,9 @@
     </ClInclude>
     <ClInclude Include="UI\PauseUIManager.h">
       <Filter>04UI\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Cursor.h">
+      <Filter>04UI\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

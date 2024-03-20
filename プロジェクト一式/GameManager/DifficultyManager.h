@@ -11,7 +11,6 @@ namespace DifficultyManager
 	void SceneTransitionInitialize();
 	
 	bool AttackPermission();
-	void SetMaxDifficulty(std::vector<ENEMY_TYPE> elist);
 
 };
 

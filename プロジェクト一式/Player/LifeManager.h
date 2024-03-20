@@ -7,15 +7,11 @@ namespace LifeManager {
 	void Release();
 
 	void SetLife(int current, int max);
-	void SetInvincible(int i);
-	void DirectDamage(int i);
 	void Damage(int i);
 	void DamageEffectDraw();
 	
 	int GetReceiveDamage();
 	float GetLifeParcent();
-
-	bool IsInvincible();
 	bool IsDie();
 
 };

@@ -105,9 +105,9 @@ void StoneArmWeapon::OnAttackCollision(GameObject* pTarget)
 {
     if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
-        e->ApplyDamage(ATTACK_DAMAGE);
-        e->SetAllColliderValid(false);
-        e->SetKnockBack(Character::MEDIUM, 30, 0.3f, pPlayer_->GetPosition());
+        DamageInfo damage(ATTACK_DAMAGE);
+        KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 30, 0.3f, pPlayer_->GetPosition());
+        e->ApplyDamageDirectly(damage, knock);
     }
 }
 
@@ -165,7 +165,6 @@ void StoneArmWeaponCombo1::OnEnter()
 
 void StoneArmWeaponCombo1::OnExit()
 {
-    GameManager::GetEnemyManager()->ResetAllEnemyCollider();
     StoneArmWeapon* s = static_cast<StoneArmWeapon*>(owner_->GetGameObject());
     s->Endurance();
     if (s->IsBlockend()) {

@@ -1,10 +1,13 @@
 #include "UIManager.h"
 #include "UIBase.h"
+#include "Cursor.h"
 #include "../Engine/Input.h"
 
 UIManager::UIManager(SceneBase* parent)
-	: state_(UI_STATE::DRAW), pParent_(parent)
+	: state_(UI_STATE::DRAW), pParent_(parent), pCursor_(nullptr)
 {
+	pCursor_ = new Cursor();
+
 }
 
 UIManager::~UIManager()
@@ -14,6 +17,8 @@ UIManager::~UIManager()
 		delete u;
 	}
 	uiList_.clear();
+
+	delete pCursor_;
 }
 
 void UIManager::Update()
@@ -36,6 +41,7 @@ void UIManager::Draw()
 		u->Draw();
 	}
 
+	pCursor_->Draw();
 }
 
 void UIManager::AddUi(std::string name, XMFLOAT2 pos, std::function<void()> onClick)

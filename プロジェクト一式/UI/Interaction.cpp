@@ -58,10 +58,7 @@ void Interaction::Draw() {
 	//表示するオブジェクトがあるから計算して表示
 	if (uiListIndex_ >= 0) {
 		XMFLOAT3 pos = Float3Add(uiList_.at(uiListIndex_)->GetParent()->GetPosition(), uiList_.at(uiListIndex_)->GetOffset());
-		XMVECTOR v2 = XMVector3TransformCoord(XMLoadFloat3(&pos), Camera::GetViewMatrix());
-		v2 = XMVector3TransformCoord(v2, Camera::GetProjectionMatrix());
-		float x = XMVectorGetX(v2);
-		float y = XMVectorGetY(v2);
+		pos = Camera::CalcScreenPosition(pos);
 
 		XMFLOAT3 size = interactImage_->GetTextureSize();
 		RECT rect;
@@ -71,7 +68,7 @@ void Interaction::Draw() {
 		rect.bottom = (long)size.y;
 
 		Transform t;
-		t.position_ = { x, y, 1.0f };
+		t.position_ = { pos.x, pos.y, 1.0f };
 		t.scale_ = { 1.0f, 1.0f, 1.0f };
 		t.Calclation();
 		interactImage_->Draw(t, rect, 1.0f, 0);

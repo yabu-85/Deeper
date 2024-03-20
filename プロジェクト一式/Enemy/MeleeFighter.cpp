@@ -35,12 +35,13 @@ void MeleeFighter::Initialize()
 	transform_.position_ = startPos;
 	transform_.rotate_.y = (float)(rand() % 360);
 
+	SetHP(100);
+	SetMaxHP(100);
+	SetBodyWeight(100.0f);
+	SetBodyRange(0.7f);
+
 	type_ = ENEMY_MELEE;
-	maxHp_ = 100;
-	hp_ = maxHp_;
 	aimTargetPos_ = 1.3f;
-	bodyWeight_ = 100.0f;
-	bodyRange_ = 0.7f;
 	attackDamage_ = 1;
 	combatDistance_ = 5.0f;
 
@@ -129,22 +130,6 @@ void MeleeFighter::Release()
 
 }
 
-void MeleeFighter::ApplyDamage(int da)
-{
-	EnemyBase::ApplyDamage(da);
-	//Ž€‚ñ‚Å‚½‚çI‚í‚è
-	if (pStateManager_->GetName() == "Dead") return;
-
-	if (pStateManager_->GetName() != "Combat") {
-		pStateManager_->ChangeState("Combat");
-	}
-
-}
-
 void MeleeFighter::OnAttackCollision(GameObject* pTarget)
 {
-	if (pTarget->GetObjectName() == "Player") {
-		GameManager::GetPlayer()->TargetRotate(GetPosition());
-		LifeManager::Damage(GetAttackDamage());
-	}
 }

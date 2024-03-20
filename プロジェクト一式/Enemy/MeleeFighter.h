@@ -28,11 +28,9 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
-    void ApplyDamage(int da) override;
     void OnAttackCollision(GameObject* pTarget) override;
 
     int GetModelHandle() { return hModel_; }
-    SphereCollider* GetSphereCollider(int i) { return pHandCollider_[i]; }
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }
     OrientedMoveAction* GetOrientedMoveAction() { return pOrientedMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }

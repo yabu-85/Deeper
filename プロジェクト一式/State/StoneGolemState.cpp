@@ -95,7 +95,7 @@ void StoneGolemDead::Update()
 	s = (1.0f - s) * 0.8f;
 	e->SetScale({ s, s, s });
 
-	if (time_ >= DEAD_TIME) e->Dead();
+	if (time_ >= DEAD_TIME) e->DeadExit();
 }
 
 void StoneGolemDead::OnEnter()
@@ -336,7 +336,7 @@ void StoneGolemAttack::Update()
 {
 	time_++;
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
-	
+
 	//攻撃を続けるか計算
 	if (time_ == 100 || time_ == 150) {
 		XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
@@ -355,17 +355,19 @@ void StoneGolemAttack::Update()
 	}
 
 	//攻撃フラグの制御
-	if (time_ == CALC_FRAME1[0]) e->SetAllHandColliderValid(true);
-	else if (time_ == CALC_FRAME1[1]) e->SetAllHandColliderValid(false);
-	else if (time_ == CALC_FRAME2[0]) e->SetAllHandColliderValid(true);
-	else if (time_ == CALC_FRAME2[1]) e->SetAllHandColliderValid(false);
-	else if (time_ == CALC_FRAME3[0]) e->SetAllHandColliderValid(true);
-	else if (time_ == CALC_FRAME3[1]) e->SetAllHandColliderValid(false);
+	if (time_ == CALC_FRAME1[0]) { e->SetDamageInfoCombo1(); }
+	else if (time_ == CALC_FRAME1[1]) { e->DamageInfoReset(); }
+	
+	else if (time_ == CALC_FRAME2[0]) { e->SetDamageInfoCombo2(); }
+	else if (time_ == CALC_FRAME2[1]) { e->DamageInfoReset(); }
+	
+	else if (time_ == CALC_FRAME3[0]) { e->SetDamageInfoCombo3(); }
+	else if (time_ == CALC_FRAME3[1]) { e->DamageInfoReset(); }
 
 	//エフェクト
 	if (time_ >= ATTACK_EFFECT_TIME[0] && time_ <= ATTACK_EFFECT_TIME[1]) {
 		XMFLOAT3 pos = e->GetPosition();
-		XMFLOAT3 cP = e->GetSphereCollider(0)->GetCenter();
+		XMFLOAT3 cP = e->GetAttackColliderList().front()->GetCenter();
 		pos = { pos.x + cP.x, 0.0f , pos.z + cP.z };
 		VFXManager::CreatVfxSmoke(pos);
 
@@ -406,10 +408,13 @@ void StoneGolemAttack::OnEnter()
 void StoneGolemAttack::OnExit()
 {
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
+	Model::SetAnimFrame(e->GetModelHandle(), 0, 0, 1.0f);
 	e->GetOrientedMoveAction()->SetMoveSpeed(MOVESPEED_FRAME3);
 	e->GetRotateAction()->SetRatio(ROTATE_RATIO);
 	e->SetAttackCoolDown(rand() % 100);
-	Model::SetAnimFrame(e->GetModelHandle(), 0, 0, 1.0f);
+	e->SetAllAttackColliderValid(false);
+	e->GetDamageController()->ResetAttackList();
+
 }
 
 //--------------------------------------------------------------------------------

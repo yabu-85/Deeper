@@ -127,10 +127,6 @@ void PlayerWeaponChange::Update()
 	p->CalcNoMove();
 	p->Move();
 
-	if (!InputManager::CmdWalk()) {
-		owner_->ChangeState("Wait");
-		return;
-	}
 	if (InputManager::IsCmdDown(InputManager::AVO)) {
 		owner_->ChangeState("Avo");
 		return;
@@ -146,7 +142,8 @@ void PlayerWeaponChange::Update()
 
 	//‰Ÿ‚µ‚Ä‚È‚¢‚©‚çWait‚Ö
 	if (!InputManager::IsCmd(InputManager::ACTION)) {
-		owner_->ChangeState("Wait");
+		if (InputManager::CmdWalk()) owner_->ChangeState("Walk");
+		else owner_->ChangeState("Wait");
 		return;
 	}
 
@@ -235,7 +232,7 @@ void PlayerAvo::OnEnter()
 void PlayerAvo::OnExit()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->ResetKeyMovement();
+	p->ResetMovement();
 
 }
 
@@ -361,6 +358,11 @@ PlayerHear::PlayerHear(StateManager* owner) : StateBase(owner), time_(0), nextCm
 void PlayerHear::Update()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
+	if (p->GetKnockBackTime() > 0) return;
+
+	if (InputManager::CmdWalk()) owner_->ChangeState("Walk");
+	else owner_->ChangeState("Wait");
+
 	float speed = 1.0f - ((float)time_ / (float)HEAR_TIME);
 	p->BackMove(speed);
 

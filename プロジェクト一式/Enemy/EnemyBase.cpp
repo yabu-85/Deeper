@@ -10,7 +10,7 @@
 
 EnemyBase::EnemyBase(GameObject* parent, std::string name)
 	: Character(parent, name), pEnemyUi_(nullptr), pStateManager_(nullptr), pCombatStateManager_(nullptr),
-	type_(ENEMY_MAX), aimTargetPos_(0.0f), attackCoolDown_(0), hp_(0), maxHp_(0), attackDamage_(0), 
+	type_(ENEMY_MAX), aimTargetPos_(0.0f), attackCoolDown_(0), attackDamage_(0), 
 	combatDistance_(0.0f), isCombatReady_(false), attackDistance_(0.0f), actionCoolDown_(0), isAimTarget_(true)
 {
 }
@@ -35,21 +35,11 @@ void EnemyBase::Release()
 	SAFE_DELETE(pEnemyUi_);
 }
 
-void EnemyBase::ApplyDamage(int da)
-{
-	hp_ -= da;
-	
-	if(pEnemyUi_) pEnemyUi_->SetParcent((float)(hp_) / (float)(maxHp_));
-	
-	if (hp_ <= 0) {
-		StateManager* ma = GetStateManager();
-		std::string name = ma->GetName();
-		if(name != "Dead") GetStateManager()->ChangeState("Dead");
-	}
-}
-
 void EnemyBase::DeadEnter()
 {
+	SetAllColliderValid(false);
+	SetAllAttackColliderValid(false);
+
 	DropTable::DropItem(type_, transform_.position_);
 	GetEnemyUi()->SetIsDraw(false);
 
@@ -57,7 +47,7 @@ void EnemyBase::DeadEnter()
 	GameManager::GetPlayer()->GetAim()->TargetIsDead(this);
 }
 
-void EnemyBase::Dead()
+void EnemyBase::DeadExit()
 {
 	VFXManager::CreatVfxSmoke(transform_.position_);
 	GameManager::GetEnemyManager()->KillEnemy(this);
@@ -67,4 +57,20 @@ bool EnemyBase::IsAttackReady()
 {
 	if (attackCoolDown_ <= 0) return true;
 	return false;
+}
+
+void EnemyBase::Dead()
+{
+	if (GetStateManager()->GetName() != "Dead") GetStateManager()->ChangeState("Dead");
+}
+
+void EnemyBase::Damage()
+{
+	if (pEnemyUi_) pEnemyUi_->SetParcent((float)(GetHP()) / (float)(GetMaxHP()));
+
+	if (pStateManager_->GetName() == "Dead") return;
+
+	if (pStateManager_->GetName() != "Combat") {
+		pStateManager_->ChangeState("Combat");
+	}
 }

@@ -75,7 +75,7 @@ void ThrowDead::Update()
 	s = (1.0f - s) * 0.8f;
 	e->SetScale({ s, s, s });
 
-	if (time_ >= DEAD_TIME) e->Dead();
+	if (time_ >= DEAD_TIME) e->DeadExit();
 }
 
 void ThrowDead::OnEnter()

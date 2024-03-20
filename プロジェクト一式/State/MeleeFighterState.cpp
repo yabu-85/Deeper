@@ -93,7 +93,7 @@ void MeleeFighterDead::Update()
 	s = 1.0f - s;
 	e->SetScale({ s, s, s });
 
-	if (time_ >= DEAD_TIME) e->Dead();
+	if (time_ >= DEAD_TIME) e->DeadExit();
 }
 
 void MeleeFighterDead::OnEnter()
@@ -324,30 +324,6 @@ void MeleeFighterAttack::Update()
 		e->GetRotateAction()->Update();
 		e->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
 		e->GetOrientedMoveAction()->Update();
-	}
-
-	//攻撃フラグの制御
-	//if (time_ == CALC_FRAME1[0]) e->SetAllHandColliderValid(true);
-
-	//エフェクト
-	if (time_ >= ATTACK_EFFECT_TIME[0] && time_ <= ATTACK_EFFECT_TIME[1]) {
-		XMFLOAT3 pos = e->GetPosition();
-		XMFLOAT3 cP = e->GetSphereCollider(0)->GetCenter();
-		pos = { pos.x + cP.x, 0.0f , pos.z + cP.z };
-		VFXManager::CreatVfxSmoke(pos);
-
-		//カメラシェイク
-		if (time_ == ATTACK_EFFECT_TIME[0]) {
-			const float maxRange = 8.0f;
-			XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
-			pos = { pPos.x - pos.x, 0.0f, pPos.z - pos.z };
-			float range = sqrt(pos.x * pos.x + pos.z * pos.z);
-			if (range <= maxRange) {
-				range = (1.0f - (range / maxRange));
-				GameManager::GetPlayer()->GetAim()->SetCameraShakeDirection(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f });
-				GameManager::GetPlayer()->GetAim()->SetCameraShake(7, 0.3f * range, 0.7f, 0.3f, 0.8f);
-			}
-		}
 	}
 
 	if (time_ >= ATTACK_FRAME[1]) {

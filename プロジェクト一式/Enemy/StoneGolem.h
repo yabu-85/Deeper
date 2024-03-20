@@ -13,9 +13,8 @@ class StoneGolem : public EnemyBase
     int hModel_;
     int boneIndex_[2];
     int partIndex_[2];
-    SphereCollider* pHandCollider_[2];
 
-    //Action
+    DamageController* pDamageController_;
     AstarMoveAction* pMoveAction_;
     OrientedMoveAction* pOrientedMoveAction_;
     RotateAction* pRotateAction_;
@@ -28,15 +27,19 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
-    void ApplyDamage(int da) override;
     void OnAttackCollision(GameObject* pTarget) override;
+    void DeadEnter() override;
 
-    void SetAllHandColliderValid(bool b);
     int GetModelHandle() { return hModel_; }
-    SphereCollider* GetSphereCollider(int i) { return pHandCollider_[i]; }
+    DamageController* GetDamageController() { return pDamageController_; }
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }
     OrientedMoveAction* GetOrientedMoveAction() { return pOrientedMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }
     VisionSearchAction* GetVisionSearchAction() { return pVisionSearchAction_; }
+
+    void DamageInfoReset();
+    void SetDamageInfoCombo1();
+    void SetDamageInfoCombo2();
+    void SetDamageInfoCombo3();
 
 };

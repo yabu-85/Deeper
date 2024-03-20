@@ -85,7 +85,8 @@ void GameManager::Update()
 		if (Input::IsKeyDown(DIK_B)) pWeaponObjectManager_->AllKillWeaponObject();
 		if (Input::IsKeyDown(DIK_V)) {
 			std::vector<EnemyBase*> eList = pEnemyManager_->GetAllEnemy();
-			for (auto e : eList) e->ApplyDamage(1000000);
+			DamageInfo damage(10000000);
+			for (auto e : eList) e->ApplyDamageDirectly(damage);
 		}
 	}
 
@@ -152,7 +153,7 @@ void GameManager::StartPause()
 
 	//アニメーション・Aim
 	Model::SetAllAnimeStop(true);
-	GetPlayer()->GetAim()->SetAimMove(false);
+	GetPlayer()->GetAim()->SetValid(false);
 }
 
 void GameManager::EndPause()
@@ -172,7 +173,7 @@ void GameManager::EndPause()
 
 	//アニメーション・Aim
 	Model::SetAllAnimeStop(false);
-	GetPlayer()->GetAim()->SetAimMove(true);
+	GetPlayer()->GetAim()->SetValid(true);
 }
 
 void GameManager::PauseClose()

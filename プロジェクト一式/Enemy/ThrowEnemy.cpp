@@ -41,12 +41,13 @@ void ThrowEnemy::Initialize()
 	transform_.scale_ = { 0.5f, 0.5f, 0.5f };
 	itemTransform_.scale_ = { 0.2f, 0.2f, 0.2f };
 
+	SetHP(30);
+	SetMaxHP(30);
+	SetBodyWeight(10.0f);
+	SetBodyRange(0.3f);
+
 	type_ = ENEMY_THROW;
-	maxHp_ = 30;
-	hp_ = maxHp_;
 	aimTargetPos_ = 1.1f;
-	bodyWeight_ = 10.0f;
-	bodyRange_ = 0.3f;
 	attackDamage_ = 1;
 	combatDistance_ = 7.0f;
 	attackDistance_ = 8.0f;
@@ -121,26 +122,6 @@ void ThrowEnemy::Release()
 	EnemyBase::Release();
 	Model::Release(hModel_);
 
-}
-
-void ThrowEnemy::ApplyDamage(int da)
-{
-	EnemyBase::ApplyDamage(da);
-	//Ž€‚ñ‚Å‚½‚çI‚í‚è
-	if (pStateManager_->GetName() == "Dead") return;
-
-	if (pStateManager_->GetName() != "Combat") {
-		pStateManager_->ChangeState("Combat");
-	}
-
-}
-
-void ThrowEnemy::OnAttackCollision(GameObject* pTarget)
-{
-	if (pTarget->GetObjectName() == "Player") {
-		GameManager::GetPlayer()->TargetRotate(GetPosition());
-		LifeManager::Damage(GetAttackDamage());
-	}
 }
 
 void ThrowEnemy::ThrowItem()

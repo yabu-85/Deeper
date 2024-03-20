@@ -10,13 +10,14 @@
 #include "../Stage/CollisionMap.h"
 #include "../Player/Player.h"
 #include "../Player/LifeManager.h"
+#include "../Character/Character.h"
 
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
 #include "../Action/SearchAction.h"
 
 StoneGolem::StoneGolem(GameObject* parent)
-	: EnemyBase(parent, "StoneGolemEnemy"), hModel_(-1), pHandCollider_{ nullptr, nullptr }, pMoveAction_(nullptr), pRotateAction_(nullptr),
+	: EnemyBase(parent, "StoneGolemEnemy"), hModel_(-1), pMoveAction_(nullptr), pRotateAction_(nullptr), pDamageController_(nullptr),
 	pVisionSearchAction_(nullptr), pOrientedMoveAction_(nullptr), boneIndex_{ -1,-1 }, partIndex_{ -1,-1 }
 {
 }
@@ -35,12 +36,13 @@ void StoneGolem::Initialize()
 	transform_.position_ = startPos;
 	transform_.rotate_.y = (float)(rand() % 360);
 
+	SetHP(200);
+	SetMaxHP(200);
+	SetBodyWeight(100.0f);
+	SetBodyRange(0.7f);
+	
 	type_ = ENEMY_STONEGOLEM;
-	maxHp_ = 200;
-	hp_ = maxHp_;
 	aimTargetPos_ = 1.1f;
-	bodyWeight_ = 100.0f;
-	bodyRange_ = 0.7f;
 	attackDamage_ = 1;
 	attackDistance_ = 2.0f;
 	combatDistance_ = 5.0f;
@@ -48,14 +50,13 @@ void StoneGolem::Initialize()
 	//Colliderの設定
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5, 0), 0.75f);
 	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 1.5, 0), 0.75f);
-	pHandCollider_[0] = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
-	pHandCollider_[1] = new SphereCollider(XMFLOAT3(0, 0, 0), 0.3f);
-	for (int i = 0; i < 2; i++) {
-		pHandCollider_[i]->SetValid(false);
-		AddAttackCollider(pHandCollider_[i]);
-	}
+	SphereCollider* collision3 = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
+	SphereCollider* collision4 = new SphereCollider(XMFLOAT3(0, 0, 0), 0.3f);
 	AddCollider(collision1);
 	AddCollider(collision2);
+	AddAttackCollider(collision3);
+	AddAttackCollider(collision4);
+	SetAllAttackColliderValid(false);
 
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize(3.0f);
@@ -66,6 +67,8 @@ void StoneGolem::Initialize()
 	pRotateAction_ = new RotateAction(this, 0.0f);
 	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f, 90.0f);
 	pRotateAction_->Initialize();
+	
+	pDamageController_ = new DamageController();
 
 	//ステートの設定
 	pStateManager_ = new StateManager(this);
@@ -104,12 +107,15 @@ void StoneGolem::Draw()
 {
 	pEnemyUi_->Draw();
 
-	//ColliderPosition
+	std::list<Collider*> list = GetAttackColliderList();
+	auto it = list.begin();
 	for (int i = 0; i < 2; i++) {
 		XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, boneIndex_[i], partIndex_[i]);
 		center = XMFLOAT3(center.x - transform_.position_.x, center.y - transform_.position_.y, center.z - transform_.position_.z);
-		pHandCollider_[i]->SetCenter(center);
-	}	
+		
+		(*it)->SetCenter(center);
+		it++;
+	}
 
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
@@ -124,34 +130,63 @@ void StoneGolem::Release()
 	SAFE_DELETE(pVisionSearchAction_);
 	SAFE_DELETE(pRotateAction_);
 	SAFE_DELETE(pMoveAction_);
+	SAFE_DELETE(pDamageController_);
 
 	EnemyBase::Release();
 	Model::Release(hModel_);
 
 }
 
-void StoneGolem::ApplyDamage(int da)
-{
-	EnemyBase::ApplyDamage(da);
-	//死んでたら終わり
-	if (pStateManager_->GetName() == "Dead") return;
-
-	if (pStateManager_->GetName() != "Combat") {
-		pStateManager_->ChangeState("Combat");
-	}
-
-}
-
 void StoneGolem::OnAttackCollision(GameObject* pTarget)
 {
 	if (pTarget->GetObjectName() == "Player") {
-		GameManager::GetPlayer()->TargetRotate(GetPosition());
-		LifeManager::Damage(GetAttackDamage());
+		Character* p = static_cast<Character*>(pTarget);
+		DamageInfo damage(GetDamageController()->GetCurrentDamage());
+		KnockBackInfo knock(GetDamageController()->GetCurrentKnockBackInfo());
+		knock.pos = this->GetPosition();
+
+		//攻撃入ったらリストに追加
+		if (p->ApplyDamageWithList(damage, knock)) {
+			GetDamageController()->AddAttackList(p);
+		}
 	}
 }
 
-void StoneGolem::SetAllHandColliderValid(bool b)
+void StoneGolem::DeadEnter()
 {
-	pHandCollider_[0]->SetValid(b);
-	pHandCollider_[1]->SetValid(b);
+	GetDamageController()->ResetAttackList();
+	EnemyBase::DeadEnter();
+}
+
+void StoneGolem::DamageInfoReset()
+{
+	SetAllAttackColliderValid(false);
+	GetDamageController()->ResetAttackList();
+}
+
+void StoneGolem::SetDamageInfoCombo1()
+{
+	DamageInfo damage(this, "StoneArm", 3);
+	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 5, 0.1f, transform_.position_);
+	SetAllAttackColliderValid(true);
+	GetDamageController()->SetCurrentDamage(damage);
+	GetDamageController()->SetCurrentKnockBackInfo(knockBack);
+}
+
+void StoneGolem::SetDamageInfoCombo2()
+{
+	DamageInfo damage(this, "StoneArm", 3);
+	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 5, 0.1f, transform_.position_);
+	SetAllAttackColliderValid(true);
+	GetDamageController()->SetCurrentDamage(damage);
+	GetDamageController()->SetCurrentKnockBackInfo(knockBack);
+}
+
+void StoneGolem::SetDamageInfoCombo3()
+{
+	DamageInfo damage(this, "StoneArm", 5);
+	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 30, 0.3f, { 0.f, 0.f, 0.f });
+	SetAllAttackColliderValid(true);
+	GetDamageController()->SetCurrentDamage(damage);
+	GetDamageController()->SetCurrentKnockBackInfo(knockBack);
 }

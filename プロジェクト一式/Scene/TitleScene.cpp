@@ -35,7 +35,7 @@ void TitleScene::Initialize()
 	po->SetRotateY(230.0f);
 	InstantiateFront<WeaponMainOrnament>(po);
 	Model::SetAnimFrame(po->GetModelHandle(), 
-		PLAYER_ANIMATION_DATA[PLAYER_ANIMATION::IDLE].startFrame, PLAYER_ANIMATION_DATA[PLAYER_ANIMATION::IDLE].endFrame, 1.0f);
+		PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::IDLE].startFrame, PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::IDLE].endFrame, 1.0f);
 
 }
 

@@ -7,7 +7,7 @@ class Aim;
 class StateManager;
 class PlayerWeapon;
 
-enum PLAYER_ANIMATION {
+enum class PLAYER_ANIMATION {
     IDLE = 0,
     RUN,
     RORING,
@@ -22,7 +22,7 @@ enum PLAYER_ANIMATION {
     MAX,
 };
 
-const AnimeData PLAYER_ANIMATION_DATA[PLAYER_ANIMATION::MAX]{
+const AnimeData PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::MAX]{
     {0, 120},
     {548, 590},
     {120, 175},
@@ -52,6 +52,8 @@ class Player : public Character
     PlayerWeapon* pPlayerWeapon_;
     AnimationController* pAnimationController_;
 
+    void Damage() override;
+    void Dead() override;
     void CalcRotate(XMFLOAT3 pos, float ratio);
 
 public:
@@ -77,7 +79,6 @@ public:
     void CalcMove();                //Inputを考慮したやつ
     void CalcNoMove();              //Input考慮してない、滑るやつとかの計算用
     XMVECTOR GetDirectionVec();     //向いている方向（正規化済み
-    void ResetKeyMovement() { movement_ = XMFLOAT3(0.0f, 0.0f, 0.0f); }
     void ResetMovement() override;
 
     //回避

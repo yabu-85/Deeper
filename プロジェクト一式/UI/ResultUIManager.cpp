@@ -1,10 +1,9 @@
 #include "ResultUIManager.h"
 #include "ExitUIManager.h"
+#include "../AudioManager.h"
 #include "../Engine/Image.h"
-#include "../Engine/Direct3D.h"
 #include "../Engine/SceneManager.h"
 #include "../GameManager/GameManager.h"
-#include "../AudioManager.h"
 #include "../Player/LifeManager.h"
 
 namespace {

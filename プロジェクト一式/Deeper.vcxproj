@@ -216,6 +216,7 @@
     <ClCompile Include="State\StateManager.cpp" />
     <ClCompile Include="State\StoneGolemState.cpp" />
     <ClCompile Include="State\ThrowState.cpp" />
+    <ClCompile Include="UI\Cursor.cpp" />
     <ClCompile Include="UI\ExitUIManager.cpp" />
     <ClCompile Include="UI\Interaction.cpp" />
     <ClCompile Include="UI\InteractionUI.cpp" />
@@ -318,6 +319,7 @@
     <ClInclude Include="State\StateManager.h" />
     <ClInclude Include="State\StoneGolemState.h" />
     <ClInclude Include="State\ThrowState.h" />
+    <ClInclude Include="UI\Cursor.h" />
     <ClInclude Include="UI\ExitUIManager.h" />
     <ClInclude Include="UI\Interaction.h" />
     <ClInclude Include="UI\InteractionUI.h" />

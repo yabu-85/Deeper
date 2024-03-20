@@ -15,6 +15,10 @@ namespace {
     static const float WEAPON_SIZE = 1.2f;
     static const float MOVE_SPEED = 0.3f;
     static const float ROTATE_RATIO = 0.2f;
+
+    static const int ATTACK_DAMAGE1 = 20;
+    static const int ATTACK_DAMAGE2 = 20;
+    static const int ATTACK_DAMAGE3 = 20;
     
     //‰ñ“]ƒtƒŒ[ƒ€
     static const int ROTATE_FRAME[2] = { 3, 10 };
@@ -36,7 +40,7 @@ namespace {
 }
 
 MainSwordWeapon::MainSwordWeapon(GameObject* parent)
-	: WeaponBase(parent, "MainSwordWeapon"), pPlayer_(nullptr), seg_(nullptr), damage_(0), wandPos_(0,0,0), pPolyLine_(nullptr)
+	: WeaponBase(parent, "MainSwordWeapon"), pPlayer_(nullptr), seg_(nullptr), wandPos_(0,0,0), pPolyLine_(nullptr), pDamageController_(nullptr)
 {
     transform_.pParent_ = nullptr;
 }
@@ -54,8 +58,6 @@ void MainSwordWeapon::Initialize()
     Model::GetBoneIndex(pPlayer_->GetModelHandle(), "Weapon", &boneIndex_, &partIndex_);
     assert(boneIndex_ >= 0);
 
-    damage_ = 20;
-
     pStateManager_ = new StateManager(this);
     pStateManager_->AddState(new MainSwordWeaponCombo1(pStateManager_));
     pStateManager_->AddState(new MainSwordWeaponCombo2(pStateManager_));
@@ -69,6 +71,8 @@ void MainSwordWeapon::Initialize()
 
     pPolyLine_ = new PolyLine;
     pPolyLine_->Load("PolyImage/Sword.png");
+
+    pDamageController_ = new DamageController();
 }
 
 void MainSwordWeapon::Update()
@@ -103,6 +107,7 @@ void MainSwordWeapon::Release()
 {
     SAFE_RELEASE(pPolyLine_);
     SAFE_DELETE(pPolyLine_);
+    SAFE_DELETE(pDamageController_);
 
 }
 
@@ -110,10 +115,15 @@ void MainSwordWeapon::OnAttackCollision(GameObject* pTarget)
 {
     if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
-        e->ApplyDamage(damage_);
-        e->SetAllColliderValid(false);
-        e->SetKnockBack(Character::MEDIUM, 3, 0.2f, pPlayer_->GetPosition());
-        VFXManager::CreatVfxExplode1(wandPos_);
+        DamageInfo damage(pDamageController_->GetCurrentDamage());
+        KnockBackInfo knock(pDamageController_->GetCurrentKnockBackInfo());
+        knock.pos = pPlayer_->GetPosition();
+
+        //UŒ‚“ü‚Á‚½‚çƒŠƒXƒg‚É’Ç‰Á
+        if (e->ApplyDamageWithList(damage, knock)) {
+            VFXManager::CreatVfxExplode1(wandPos_);
+            pDamageController_->AddAttackList(e);
+        }
     }
 }
 
@@ -128,12 +138,11 @@ void MainSwordWeapon::ResetState()
 {
     atkEnd_ = true;
     pStateManager_->ChangeState("");
-    GameManager::GetEnemyManager()->ResetAllEnemyCollider();
     seg_->SetValid(false);
 
 }
 
-void MainSwordWeapon::CalcDamage()
+void MainSwordWeapon::CalcSwordTrans()
 {
     XMFLOAT3 tar = XMFLOAT3(transform_.rotate_.x, transform_.rotate_.y, 0.0f);
     XMFLOAT3 target;
@@ -159,6 +168,35 @@ void MainSwordWeapon::CalcDamage()
 
 }
 
+void MainSwordWeapon::DamageInfoReset()
+{
+    pDamageController_->ResetAttackList();
+}
+
+void MainSwordWeapon::SetDamageInfoCombo1()
+{
+    DamageInfo damage(pPlayer_, "Sword", ATTACK_DAMAGE1);
+    KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 3, 0.2f, XMFLOAT3());
+    pDamageController_->SetCurrentDamage(damage);
+    pDamageController_->SetCurrentKnockBackInfo(knock);
+}
+
+void MainSwordWeapon::SetDamageInfoCombo2()
+{
+    DamageInfo damage(pPlayer_, "Sword", ATTACK_DAMAGE2);
+    KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 3, 0.2f, XMFLOAT3());
+    pDamageController_->SetCurrentDamage(damage);
+    pDamageController_->SetCurrentKnockBackInfo(knock);
+}
+
+void MainSwordWeapon::SetDamageInfoCombo3()
+{
+    DamageInfo damage(pPlayer_, "Sword", ATTACK_DAMAGE3);
+    KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 6, 0.3f, XMFLOAT3());
+    pDamageController_->SetCurrentDamage(damage);
+    pDamageController_->SetCurrentKnockBackInfo(knock);
+}
+
 //--------------------state---------------------------------------------------
 
 MainSwordWeaponCombo1::MainSwordWeaponCombo1(StateManager* owner) : StateBase(owner), time_(0), next_(false)
@@ -181,12 +219,11 @@ void MainSwordWeaponCombo1::Update()
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetSegmentCollider()->SetValid(false);
     if(time_ >= ANIM_ATTACK_FRAME1[0] && time_ <= ANIM_ATTACK_FRAME1[1])
-    m->CalcDamage();
+    m->CalcSwordTrans();
     
     time_++;
     if (time_ >= COMBO_TIME1) {
         if (next_ == true) {
-            GameManager::GetEnemyManager()->ResetAllEnemyCollider();
             owner_->ChangeState("Combo2");
         }
         else m->ResetState();
@@ -199,13 +236,16 @@ void MainSwordWeaponCombo1::OnEnter()
     next_ = false;
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     Model::SetAnimFrame(p->GetModelHandle(), ANIM_FRAME1[0], ANIM_FRAME1[1], 1.0f);
-
+    
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
+    m->SetDamageInfoCombo1();
 }
 
 void MainSwordWeaponCombo1::OnExit()
 {
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetPolyLine()->ResetPosition();
+    m->DamageInfoReset();
 
 }
 
@@ -231,13 +271,11 @@ void MainSwordWeaponCombo2::Update()
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetSegmentCollider()->SetValid(false);
     if (time_ >= ANIM_ATTACK_FRAME2[0] && time_ <= ANIM_ATTACK_FRAME2[1])
-    m->CalcDamage();
+    m->CalcSwordTrans();
 
     time_++;
     if (time_ >= COMBO_TIME2) {
-        GameManager::GetEnemyManager()->ResetAllEnemyCollider();
         if (next_ == true) {
-            GameManager::GetEnemyManager()->ResetAllEnemyCollider();
             owner_->ChangeState("Combo3");
         }
         else m->ResetState();
@@ -251,12 +289,15 @@ void MainSwordWeaponCombo2::OnEnter()
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     Model::SetAnimFrame(p->GetModelHandle(), ANIM_FRAME2[0], ANIM_FRAME2[1], 1.0f);
 
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
+    m->SetDamageInfoCombo2();
 }
 
 void MainSwordWeaponCombo2::OnExit()
 {
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetPolyLine()->ResetPosition();
+    m->DamageInfoReset();
 
 }
 
@@ -282,13 +323,11 @@ void MainSwordWeaponCombo3::Update()
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetSegmentCollider()->SetValid(false);
     if (time_ >= ANIM_ATTACK_FRAME3[0] && time_ <= ANIM_ATTACK_FRAME3[1])
-    m->CalcDamage();
+    m->CalcSwordTrans();
 
     time_++;
     if (time_ >= COMBO_TIME3) {
-        GameManager::GetEnemyManager()->ResetAllEnemyCollider();
         if (next_ == true) {
-            GameManager::GetEnemyManager()->ResetAllEnemyCollider();
             owner_->ChangeState("Combo1");
         }
         else m->ResetState();
@@ -302,11 +341,14 @@ void MainSwordWeaponCombo3::OnEnter()
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     Model::SetAnimFrame(p->GetModelHandle(), ANIM_FRAME3[0], ANIM_FRAME3[1], 1.0f);
 
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
+    m->SetDamageInfoCombo3();
 }
 
 void MainSwordWeaponCombo3::OnExit()
 {
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->GetPolyLine()->ResetPosition();
+    m->DamageInfoReset();
 
 }

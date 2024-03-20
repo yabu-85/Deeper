@@ -1,10 +1,9 @@
 #include "PauseUIManager.h"
 #include "ExitUIManager.h"
+#include "../AudioManager.h"
 #include "../Engine/Image.h"
-#include "../Engine/Direct3D.h"
 #include "../Engine/SceneManager.h"
 #include "../GameManager/GameManager.h"
-#include "../AudioManager.h"
 
 namespace {
 	XMFLOAT2 PAUSE_POSITION = { 0.f, 0.5f };
@@ -37,7 +36,7 @@ PauseUIManager::~PauseUIManager()
 void PauseUIManager::Draw()
 {
 	Image::SetFullScreenTransform(hPict_[1]);
-	Image::SetAlpha(hPict_[1], 200);
+	Image::SetAlpha(hPict_[1], 150);
 	Image::Draw(hPict_[1], 0);
 
 	Image::SetTransform(hPict_[0], pauseTrans_);

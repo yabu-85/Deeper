@@ -74,11 +74,6 @@ void LifeManager::SetLife(int current, int max)
 	playerLife_ = current;
 }
 
-void LifeManager::SetInvincible(int i)
-{
-	defInvincibleTime_ = i;
-}
-
 void LifeManager::DamageEffectDraw()
 {
 	XMFLOAT3 size = pSprite_[2]->GetTextureSize();
@@ -95,20 +90,10 @@ void LifeManager::DamageEffectDraw()
 
 }
 
-void LifeManager::DirectDamage(int i)
-{
-	invincibleTime_ = defInvincibleTime_;
-	playerLife_ -= i;
-}
-
 void LifeManager::Damage(int i)
 {
-	if (IsInvincible() || IsDie()) return;
-
-	DirectDamage(i);
-
 	Player* pPlayer = GameManager::GetPlayer();
-	pPlayer->GetAim()->SetCameraShake(4, 0.1f, 0.7f, 0.3f, 0.8f);
+	playerLife_ = pPlayer->GetHP();
 
 	//ダメージ計算したら、HPが０以下になった
 	if (LifeManager::IsDie()) {
@@ -117,14 +102,8 @@ void LifeManager::Damage(int i)
 		pPlayer->GetAim()->SetAimMove(false);
 		return;
 	}
-
-	pPlayer->GetStateManager()->ChangeState("Hear");
-	pPlayer->ResetMovement();
-	pPlayer->GetAnimationController()->SetNextAnime(5, 1.0f);
-
 }
 
 int LifeManager::GetReceiveDamage() { return (defPlayerLife_ - playerLife_); }
 float LifeManager::GetLifeParcent() { return ((float)playerLife_ / (float)defPlayerLife_); }
-bool LifeManager::IsInvincible() { return (invincibleTime_ > 0.0f); }
 bool LifeManager::IsDie() { return playerLife_ <= 0; }

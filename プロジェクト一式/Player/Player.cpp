@@ -26,9 +26,8 @@ namespace {
     const float moveGradually = 0.09f;      //移動スピードの加減の値移動時
     const float maxMoveSpeed = 0.7f;        //最大移動スピード
     const float avoRotateRatio = 1.0f;      //回避時のRotateRatio
-    const int lifeMax = 50;
-    const int invincible = 60;
     const int APPER_TIME = 60;
+    const int DEF_LIFE_MAX = 50;
 
     bool isCollider = true; //当たり判定するかどうか
 
@@ -60,19 +59,21 @@ void Player::Initialize()
 
     moveSpeed_ = 0.08f;
     rotateRatio_ = 0.2f;
-    bodyWeight_ = 0.1f;
-    bodyRange_ = 0.3f;
     time_ = APPER_TIME;
+    
+    LifeManager::SetLife(DEF_LIFE_MAX - PlayerData::GetReceiveDamage(), DEF_LIFE_MAX);
+    SetHP(DEF_LIFE_MAX - PlayerData::GetReceiveDamage());
+    SetMaxHP(DEF_LIFE_MAX);
+    SetBodyWeight(0.1f);
+    SetBodyRange(0.3f);
 
     //アニメーションデータのセットフレームはヘッダに書いてる
     pAnimationController_ = new AnimationController(hModel_);
-    for (int i = 0; i < PLAYER_ANIMATION::MAX; i++) pAnimationController_->AddAnime(PLAYER_ANIMATION_DATA[i].startFrame, PLAYER_ANIMATION_DATA[i].endFrame);
+    for (int i = 0; i < (int)PLAYER_ANIMATION::MAX; i++) pAnimationController_->AddAnime(PLAYER_ANIMATION_DATA[i].startFrame, PLAYER_ANIMATION_DATA[i].endFrame);
 
     pAim_ = Instantiate<Aim>(this);
     pPlayerWeapon_ = new PlayerWeapon(this);
     pPlayerWeapon_->SetPlayerDataWeapon();
-    LifeManager::SetLife(lifeMax - PlayerData::GetReceiveDamage(), lifeMax);
-    LifeManager::SetInvincible(invincible);
 
     pStateManager_ = new StateManager(this);
     pStateManager_->AddState(new PlayerWait(pStateManager_));
@@ -109,6 +110,8 @@ void Player::Update()
     if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f, GetBodyRange());
     ReflectCharacter();
 
+    OutputDebugStringA((std::to_string(GetHP()) + "\n").c_str());
+
     //デバッグ用
     //if (Input::IsKeyDown(DIK_T)) isCollider = !isCollider;
 
@@ -126,6 +129,26 @@ void Player::Draw()
 
 void Player::Release()
 {
+}
+
+void Player::Damage()
+{
+    if (pStateManager_->GetName() == "Dead") return;
+
+    int kTime = GetKnockBackTime();
+    std::string stName = pStateManager_->GetName();
+    if (stName != "Hear" && kTime > 0) {
+        pStateManager_->ChangeState("Hear");
+    }
+
+    LifeManager::Damage(0);
+
+}
+
+void Player::Dead()
+{
+    if (GetStateManager()->GetName() != "Dead") GetStateManager()->ChangeState("Dead");
+
 }
 
 //private関数：Rotateの計算する--------------------------------
@@ -232,7 +255,7 @@ XMVECTOR Player::GetDirectionVec()
 
 void Player::ResetMovement()
 {
-    movement_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
+    Character::ResetMovement();
     playerMovement_ = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 

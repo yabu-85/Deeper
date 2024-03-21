@@ -1,19 +1,14 @@
 #include "Stage2.h"
-#include "../GameManager/GameManager.h"
-#include "../GameManager/WaveManager.h"
-#include "../Player/Player.h"
-#include "../Stage/CollisionMap.h"
-#include "../Stage/CreateStage.h"
-#include "../Stage/Warp.h"
-#include "../Stage/SkyBox.h"
 #include "../AudioManager.h"
 #include "../Engine/TransitionEffect.h"
-#include "../Engine/Input.h"
-#include "../Engine/SceneManager.h"
-#include "../Engine/Model.h"
+#include "../GameManager/GameManager.h"
+#include "../Stage/CreateStage.h"
+#include "../Stage/Warp.h"
 
 //デバッグ用
 #include "../Weapon/WeaponObjectManager.h"
+#include "../Engine/SceneManager.h"
+#include "../Engine/Input.h"
 
 Stage2::Stage2(GameObject* parent)
 	: StageBase(parent, "Stage2")
@@ -22,9 +17,6 @@ Stage2::Stage2(GameObject* parent)
 
 void Stage2::Initialize()
 {
-	Model::Load("DebugCollision/SphereCollider.fbx");
-	Model::Load("Model/stoneGolem.fbx");
-
 	AudioManager::Initialize();
 	TransitionEffect::SetFade(TRANSITION_TYPE::TYPE_ALPHA);
 	TransitionEffect::SetAlphaDecrease(0.01f);

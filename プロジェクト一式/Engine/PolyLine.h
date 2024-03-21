@@ -15,6 +15,7 @@ class PolyLine
 	int LENGTH_;		//長さ
 	int smooth_;		//滑らかさ
 	int size_;			//座標の数
+	bool first_;		//最初のデータか
 
 	ID3D11Buffer* pVertexBuffer_;	//頂点バッファ
 	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ

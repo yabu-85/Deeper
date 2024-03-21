@@ -87,6 +87,8 @@ void Character::ApplyDamageDirectly(const DamageInfo& damageinfo, const KnockBac
 {
 	ApplyDamageDirectly(damageinfo);
 
+	//時間とパワーがあるならノックバックさせる
+	if (knockinfo.time == 0 || knockinfo.power == 0.0f) return;
 	knockBackTime_ = knockinfo.time;
 	knockBackTimeMax_ = knockinfo.time;
 	knockBackDirection_ = Float3Multiply(Float3Normalize(Float3Sub(transform_.position_, knockinfo.pos)), knockinfo.power);

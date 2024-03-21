@@ -2,7 +2,6 @@
 #include "../AudioManager.h"
 #include "../GameManager/GameManager.h"
 #include "../Engine/TransitionEffect.h"
-#include "../Engine/Model.h"
 #include "../Stage/CreateStage.h"
 
 //デバッグ用
@@ -16,10 +15,7 @@ Stage1::Stage1(GameObject* parent)
 }
 
 void Stage1::Initialize()
-{
-	Model::Load("DebugCollision/SphereCollider.fbx");
-	Model::Load("Model/stoneGolem.fbx");
-	
+{	
 	AudioManager::Initialize();
 	TransitionEffect::SetFade(TRANSITION_TYPE::TYPE_ALPHA);
 	TransitionEffect::SetAlphaDecrease(0.01f);

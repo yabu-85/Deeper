@@ -33,7 +33,7 @@ namespace {
 	static const float ROTATE_RATIO = 0.07f;
 
 	//攻撃１の情報
-	static const int ROTATE_FRAME = 30;
+	static const int ROTATE_FRAME = 45;
 	static const float ATTACK_READY_DISTANCE = 2.0f;
 
 	/*
@@ -328,13 +328,13 @@ void MeleeFighterAttack::Update()
 	int endT2 = e->GetAnimationController()->GetAnim((int)MELEE_ANIMATION::RUN_ATTACK).endFrame;
 	int time2 = time1 + (endT2 - startT2);
 
+	if (time_ >= time1 && time_ < time1 + 10) {
+		e->CalcPoly();
+	}
+
 	//攻撃フラグの制御
 	if (time_ == time1 + 8) { e->SetDamageInfoCombo1(); }
 	else if (time_ == time1 + 10) { e->DamageInfoReset(); }
-
-	if (time_ >= time1 && time_ <= time1 + 30) {
-		e->CalcPoly();
-	}
 
 	//エフェクト
 	if(time_ == time1 + 10) {
@@ -342,16 +342,6 @@ void MeleeFighterAttack::Update()
 		XMFLOAT3 cP = e->GetAttackColliderList().front()->GetCenter();
 		pos = { pos.x + cP.x, 0.0f , pos.z + cP.z };
 		VFXManager::CreatVfxSmoke(pos);
-		
-		const float maxRange = 8.0f;
-		XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
-		pos = { pPos.x - pos.x, 0.0f, pPos.z - pos.z };
-		float range = sqrt(pos.x * pos.x + pos.z * pos.z);
-		if (range <= maxRange) {
-			range = (1.0f - (range / maxRange));
-			GameManager::GetPlayer()->GetAim()->SetCameraShakeDirection(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f });
-			GameManager::GetPlayer()->GetAim()->SetCameraShake(7, 0.3f * range, 0.7f, 0.3f, 0.8f);
-		}
 	}
 
 	if (time_ >= time2) {

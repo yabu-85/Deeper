@@ -127,7 +127,12 @@ void ThrowEnemy::ThrowItem()
 	XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
 	plaPos.y += 0.75f;
 
+#if 0
 	NormalBullet* bullet = Instantiate<NormalBullet>(GetParent());
+#else
+	ThrowBullet* bullet = Instantiate<ThrowBullet>(GetParent());
+#endif
+
 	bullet->Shot(itemTransform_.position_, plaPos);
 	bullet->SetShotParent(this);
 	bullet->SetObjectName("NormalEBullet");

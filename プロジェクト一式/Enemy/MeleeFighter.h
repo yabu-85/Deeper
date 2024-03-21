@@ -4,7 +4,6 @@
 
 class PolyLine;
 class AnimationController;
-class SphereCollider;
 class AstarMoveAction;
 class OrientedMoveAction;
 class RotateAction;
@@ -32,9 +31,8 @@ class MeleeFighter : public EnemyBase
     int hModel_;
     int boneIndex_[2];
     int partIndex_[2];
-    SphereCollider* pHandCollider_[2];
 
-    PolyLine* pPolyLine_;
+    PolyLine* pPolyLine_[2];
     AnimationController* pAnimationController_;
     DamageController* pDamageController_;
     AstarMoveAction* pMoveAction_;

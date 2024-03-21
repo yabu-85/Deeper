@@ -8,6 +8,7 @@
 #include "../Player/Player.h"
 #include "../Enemy/EnemyManager.h"
 #include "../UI/PauseUIManager.h"
+#include "../Engine/Model.h"
 
 StageBase::StageBase(GameObject* parent, std::string name)
 	: SceneBase(parent, name), isCleared_(false), startPosition_{0.f,0.f,0.f}
@@ -34,6 +35,11 @@ void StageBase::Release()
 
 void StageBase::InitializeStage(std::string csv, std::string sky)
 {
+	Model::Load("DebugCollision/SphereCollider.fbx");
+	Model::Load("Model/stoneGolem.fbx");
+	Model::Load("Model/walf.fbx");
+	Model::Load("Model/RedBox.fbx");
+
 	GameManager::SetStage(this);
 	GameManager::GetEnemyManager()->SetParent(this);
 	GameManager::GetCreateStage()->CreateStageData(csv);

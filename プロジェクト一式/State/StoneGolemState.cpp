@@ -372,7 +372,7 @@ void StoneGolemAttack::Update()
 			if (range <= maxRange) {
 				range = (1.0f - (range / maxRange));
 				GameManager::GetPlayer()->GetAim()->SetCameraShakeDirection(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f });
-				GameManager::GetPlayer()->GetAim()->SetCameraShake(7, 0.3f * range, 0.7f, 0.3f, 0.8f);
+				GameManager::GetPlayer()->GetAim()->SetCameraShake(7, 0.25f * range, 0.7f, 0.3f, 0.8f);
 			}
 		}
 	}

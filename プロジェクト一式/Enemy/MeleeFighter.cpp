@@ -17,9 +17,9 @@
 #include "../Engine/Input.h"
 
 MeleeFighter::MeleeFighter(GameObject* parent)
-	: EnemyBase(parent, "MeleeFighterEnemy"), hModel_(-1), pHandCollider_{ nullptr, nullptr }, pMoveAction_(nullptr), pRotateAction_(nullptr),
-	pVisionSearchAction_(nullptr), pOrientedMoveAction_(nullptr), boneIndex_{ -1,-1 }, partIndex_{ -1,-1 }, pDamageController_(nullptr),
-	pAnimationController_(nullptr), pPolyLine_(nullptr)
+	: EnemyBase(parent, "MeleeFighterEnemy"), hModel_(-1), pMoveAction_(nullptr), pRotateAction_(nullptr), pVisionSearchAction_(nullptr),
+	pOrientedMoveAction_(nullptr), boneIndex_{ -1,-1 }, partIndex_{ -1,-1 }, pDamageController_(nullptr), pAnimationController_(nullptr), 
+	pPolyLine_{ nullptr, nullptr }
 {
 }
 
@@ -39,8 +39,8 @@ void MeleeFighter::Initialize()
 
 	SetHP(100);
 	SetMaxHP(100);
-	SetBodyWeight(100.0f);
-	SetBodyRange(0.7f);
+	SetBodyWeight(10.0f);
+	SetBodyRange(0.4f);
 
 	type_ = ENEMY_MELEE;
 	aimTargetPos_ = 1.3f;
@@ -52,19 +52,18 @@ void MeleeFighter::Initialize()
 	for (int i = 0; i < (int)MELEE_ANIMATION::MAX; i++) pAnimationController_->AddAnime(MELEE_ANIMATION_DATA[i].startFrame, MELEE_ANIMATION_DATA[i].endFrame);
 
 	//ColliderÇÃê›íË
-	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5, 0), 0.5f);
-	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 1.5, 0), 0.5f);
-	pHandCollider_[0] = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
-	pHandCollider_[1] = new SphereCollider(XMFLOAT3(0, 0, 0), 0.3f);
-	for (int i = 0; i < 2; i++) {
-		pHandCollider_[i]->SetValid(false);
-		AddAttackCollider(pHandCollider_[i]);
-	}
+	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5f, 0), 0.35f);
+	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 1.1f, 0), 0.35f);
+	SphereCollider* collision3 = new SphereCollider(XMFLOAT3(0, 0, 0), 0.25f);
+	SphereCollider* collision4 = new SphereCollider(XMFLOAT3(0, 0, 0), 0.25f);
 	AddCollider(collision1);
 	AddCollider(collision2);
+	AddAttackCollider(collision3);
+	AddAttackCollider(collision4);
+	SetAllAttackColliderValid(false);
 
 	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize(3.0f);
+	pEnemyUi_->Initialize(2.0f);
 
 	//ActionÇÃê›íË
 	pMoveAction_ = new AstarMoveAction(this, 0.0f, 0.3f);
@@ -94,19 +93,15 @@ void MeleeFighter::Initialize()
 	
 	Model::GetBoneIndex(hModel_, "attack_Hand.R", &boneIndex_[0], &partIndex_[0]);
 	assert(boneIndex_[0] >= 0);
-	Model::GetBoneIndex(hModel_, "forearm.R", &boneIndex_[1], &partIndex_[1]);
+	Model::GetBoneIndex(hModel_, "attack_Hand.L", &boneIndex_[1], &partIndex_[1]);
 	assert(boneIndex_[1] >= 0);
 
-	pPolyLine_ = new PolyLine;
-	pPolyLine_->Load("PolyImage/Sword.png");
-	pPolyLine_->SetLength(30);
-
-	DamageInfo damage(this, "MeleeAttack", 3);
-	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 3, 0.1f, transform_.position_);
-	SetAllAttackColliderValid(true);
-	GetDamageController()->SetCurrentDamage(damage);
-	GetDamageController()->SetCurrentKnockBackInfo(knockBack);
-
+	for (int i = 0; i < 2; i++) {
+		pPolyLine_[i] = new PolyLine;
+		pPolyLine_[i]->Load("PolyImage/Burger.png");
+		pPolyLine_[i]->SetLength(30);
+		pPolyLine_[i]->SetSmooth(0);
+	}
 }
 
 void MeleeFighter::Update()
@@ -119,27 +114,22 @@ void MeleeFighter::Update()
 
 void MeleeFighter::Draw()
 {
-	pPolyLine_->Draw();
-
-	//ColliderPosition
-	for (int i = 0; i < 2; i++) {
-		XMFLOAT3 center = Model::GetBoneAnimPosition(hModel_, boneIndex_[i], partIndex_[i]);
-		center = XMFLOAT3(center.x - transform_.position_.x, center.y - transform_.position_.y, center.z - transform_.position_.z);
-		pHandCollider_[i]->SetCenter(center);
-	}	
-
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 
 	CollisionDraw();
 	pEnemyUi_->Draw();
-
+	
+	for (int i = 0; i < 2; i++) pPolyLine_[i]->Draw();
 }
 
 void MeleeFighter::Release()
 {
-	SAFE_RELEASE(pPolyLine_);
-	SAFE_DELETE(pPolyLine_); 
+	for (int i = 0; i < 2; i++) {
+		SAFE_RELEASE(pPolyLine_[i]);
+		SAFE_DELETE(pPolyLine_[i]);
+	}
+	
 	SAFE_DELETE(pVisionSearchAction_);
 	SAFE_DELETE(pRotateAction_);
 	SAFE_DELETE(pMoveAction_);
@@ -166,43 +156,32 @@ void MeleeFighter::OnAttackCollision(GameObject* pTarget)
 
 void MeleeFighter::CalcPoly()
 {
-	XMFLOAT3 wandPos_ = Model::GetBoneAnimPosition(hModel_, boneIndex_[0], partIndex_[0]);
-	XMFLOAT3 rotate_ = Model::GetBoneAnimRotate(hModel_, boneIndex_[0], partIndex_[0]);
-	
-	XMFLOAT3 tar = XMFLOAT3(rotate_.x, rotate_.y, 0.0f);
-	XMFLOAT3 target;
-	target.x = (float)sin(XMConvertToRadians(tar.y));
-	target.y = -(float)tan(XMConvertToRadians(tar.x));
-	target.z = (float)cos(XMConvertToRadians(tar.y));
+	std::list<Collider*> list = GetAttackColliderList();
+	auto it = list.begin();
+	for (int i = 0; i < 2; i++) {
+		XMFLOAT3 wandPos = Model::GetBoneAnimPosition(hModel_, boneIndex_[i], partIndex_[i]);
+		pPolyLine_[i]->AddPosition(wandPos);
 
-	if (tar.x >= 90.0f || tar.x <= -90.0f) {
-		target.x *= -1.0f;
-		target.y *= -1.0f;
-		target.z *= -1.0f;
+		//AttackÉRÉäÉWÉáÉìÇÃç¿ïWê›íË
+		XMFLOAT3 center = XMFLOAT3(wandPos.x - transform_.position_.x, wandPos.y - transform_.position_.y, wandPos.z - transform_.position_.z);
+		(*it)->SetCenter(center);
 	}
-
-	XMFLOAT3 vec = target;
-	XMVECTOR vVec = XMLoadFloat3(&vec);
-	vVec = XMVector3Normalize(vVec);
-	XMStoreFloat3(&vec, vVec);
-
-	vec = XMFLOAT3(wandPos_.x + vec.x, wandPos_.y + vec.y, wandPos_.z + vec.z);
-	pPolyLine_->AddPosition(wandPos_, vec);
 }
 
 void MeleeFighter::DamageInfoReset()
 {
-	pPolyLine_->ResetPosition();
-
 	SetAllAttackColliderValid(false);
 	GetDamageController()->ResetAttackList();
 }
 
 void MeleeFighter::SetDamageInfoCombo1()
 {
-	DamageInfo damage(this, "StoneArm", 3);
-	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 5, 0.1f, transform_.position_);
-	SetAllAttackColliderValid(true);
+	DamageInfo damage(this, "MeleeAttack", 3);
+	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 0, 0.0f, transform_.position_);
 	GetDamageController()->SetCurrentDamage(damage);
 	GetDamageController()->SetCurrentKnockBackInfo(knockBack);
+	SetAllAttackColliderValid(true);
+	
+	for(int i = 0;i < 2;i++) pPolyLine_[i]->ResetPosition();
+
 }

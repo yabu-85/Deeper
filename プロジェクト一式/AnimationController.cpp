@@ -31,9 +31,12 @@ void AnimationController::SetNextAnime(int id, float blendFactor, float red)
 void AnimationController::SetNextAnime(int id, float red)
 {
 	//“¯‚¶ID‚Ìê‡‚ÍblendFactor‚ğŒvZ‚·‚é
-	float weight = 1.0f - Model::GetBlendFactor(modelNum_);
-	if (currentAnime_ == id) weight = 1.0f - weight;
-	
+	float curent = Model::GetBlendFactor(modelNum_);
+	float weight = 1.0f - curent;
+	if (currentAnime_ == id) {
+		weight = 1.0f;
+	}
+
 	SetNextAnime(id, weight, red);
 }
 

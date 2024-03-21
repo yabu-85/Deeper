@@ -8,10 +8,9 @@
 #include "../State/StateManager.h"
 #include "../Stage/CreateStage.h"
 #include "../Stage/CollisionMap.h"
-#include "../Player/Player.h"
-#include "../Player/LifeManager.h"
 #include "../Weapon/ThrowBullet.h"
 #include "../Weapon/NormalBullet.h"
+#include "../Player/Player.h"
 
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
@@ -48,7 +47,6 @@ void ThrowEnemy::Initialize()
 
 	type_ = ENEMY_THROW;
 	aimTargetPos_ = 1.1f;
-	attackDamage_ = 1;
 	combatDistance_ = 7.0f;
 	attackDistance_ = 8.0f;
 
@@ -97,8 +95,6 @@ void ThrowEnemy::Update()
 
 void ThrowEnemy::Draw()
 {
-	pEnemyUi_->Draw();
-
 	if (isHasItem_) {
 		itemTransform_.position_ = Model::GetBoneAnimPosition(hModel_, boneIndex_, partIndex_);
 		Model::SetTransform(hItemModel_, itemTransform_);
@@ -108,8 +104,8 @@ void ThrowEnemy::Draw()
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 
-	//デバッグ用
 	CollisionDraw();
+	pEnemyUi_->Draw();
 
 }
 

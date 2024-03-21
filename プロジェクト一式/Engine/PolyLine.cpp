@@ -10,9 +10,10 @@ namespace {
 
 PolyLine::PolyLine() :
 	WIDTH_(0.3f),	   //太さ
-	LENGTH_(60),	   //長さ（あくまで位置を記憶する数で、実際の長さは移動速度によって変わる）
+	LENGTH_(100),	   //長さ（あくまで位置を記憶する数で、実際の長さは移動速度によって変わる）
 	alpha_(1.0f),      //透明度 (最初は透明にしないでおく)
 	moveAlpha_(false), //徐々に透明にしてく
+	smooth_(2),
 
 	pVertexBuffer_(nullptr), pConstantBuffer_(nullptr), pTexture_(nullptr)
 {
@@ -60,30 +61,28 @@ void PolyLine::AddPosition(XMFLOAT3 pos1, XMFLOAT3 pos2)
 		first = false;
 	}
 
-	positions_.push_front(pos1);
-	polyList_.push_front({ pos1, pos2 });
+	positions_.push_back(pos1);
+	polyList_.push_back({ pos1, pos2 });
 
 	//指定の長さを超えてたら終端のデータを削除
 	if (positions_.size() > LENGTH_)
 	{
-		positions_.pop_back();
-		polyList_.pop_back();
+		positions_.pop_front();
+		polyList_.pop_front();
 	}
 
 	//頂点バッファをクリア（今から作るから）
 	SAFE_RELEASE(pVertexBuffer_);
 
 	//頂点データを作るための配列を準備
-	VERTEX* vertices = new VERTEX[LENGTH_ * 2];
+	int length = LENGTH_ / smooth_;
+	VERTEX* vertices = new VERTEX[length * 2];
 
 	//頂点データを作る
 	int index = 0;
 	auto itr = polyList_.begin();
-	for (int i = 0; i < LENGTH_; i++)
+	for (int i = 0; i < length; i++)
 	{
-		itr++;
-		if (itr == polyList_.end())	break;
-
 		//記憶してた位置
 		XMVECTOR vPos1 = XMLoadFloat3(&(*itr).position1);
 		XMVECTOR vPos2 = XMLoadFloat3(&(*itr).position2);
@@ -91,20 +90,32 @@ void PolyLine::AddPosition(XMFLOAT3 pos1, XMFLOAT3 pos2)
 		//頂点情報を入れていく
 		XMFLOAT3 pos;
 		XMStoreFloat3(&pos, vPos1);
-		VERTEX vertex1 = { pos, XMFLOAT3((float)i / LENGTH_, 1, 0) };
+		VERTEX vertex1 = { pos, XMFLOAT3((float)i / length, 1, 0) };
 
 		XMStoreFloat3(&pos, vPos2);
-		VERTEX vertex2 = { pos, XMFLOAT3((float)i / LENGTH_, 0, 0) };
+		VERTEX vertex2 = { pos, XMFLOAT3((float)i / length, 0, 0) };
 
 		vertices[index] = vertex1;
 		index++;
 		vertices[index] = vertex2;
 		index++;
+		
+		//
+		bool flag = false;
+		for (int i = 0; i < smooth_; i++) {
+			itr++;
+			if (itr == polyList_.end()) {
+				flag = true;
+				break;
+			}
+		}
+		if (flag) break;
+
 	}
 
 	// 頂点データ用バッファの設定
 	D3D11_BUFFER_DESC bd_vertex;
-	bd_vertex.ByteWidth = sizeof(VERTEX) * LENGTH_ * 2;
+	bd_vertex.ByteWidth = sizeof(VERTEX) * length;
 	bd_vertex.Usage = D3D11_USAGE_DEFAULT;
 	bd_vertex.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd_vertex.CPUAccessFlags = 0;
@@ -132,14 +143,9 @@ void PolyLine::AddPosition(XMFLOAT3 pos)
 	SAFE_RELEASE(pVertexBuffer_);
 
 	//ベクトルを求める
-	//XMFLOAT3 camPos = Camera::GetPosition();
 	XMVECTOR vPVec = XMLoadFloat3(&positions_.back());
 	XMVECTOR vPre = XMLoadFloat3(&pos);
 	vPVec = XMVector3NormalizeEst(vPVec - vPre);
-	//90度回転
-	//XMMATRIX rotate = XMMatrixRotationY(XMConvertToRadians(90.0f));
-	//vPVec = XMVector3Transform(vPVec, rotate);
-
 	XMFLOAT3 camPos = XMFLOAT3(0, 1, 0);
 	vPVec = XMLoadFloat3(&camPos);
 
@@ -257,7 +263,7 @@ void PolyLine::Draw()
 	Direct3D::pContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	//描画（インデックスバッファいらないタイプ）
-	Direct3D::pContext_->Draw(((int)positions_.size() - 1) * 2, 0);
+	Direct3D::pContext_->Draw((((int)positions_.size() - 1) / smooth_) * 2, 0);
 
 	//頂点データの並び方を指定を戻す
 	Direct3D::pContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

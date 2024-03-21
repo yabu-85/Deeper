@@ -16,7 +16,6 @@ protected:
     ENEMY_TYPE type_;
 
     int actionCoolDown_;    //Moveとかの切り替え時間用の変数
-    int attackDamage_;      //攻撃のダメージ
     int attackCoolDown_;    //攻撃のクールダウン
     float attackDistance_;  //攻撃に移れるTargetとの距離
     bool isCombatReady_;    //CombatStateに移っていいかどうか
@@ -46,8 +45,6 @@ public:
     int GetActionCoolDown() { return actionCoolDown_; }
     void SetActionCoolDown(int i) { actionCoolDown_ = i; }
     float GetAimTargetPos() { return aimTargetPos_; }
-    void SetAttackDamage(int i) { attackDamage_ = i; }
-    int GetAttackDamage() { return attackDamage_; }
     void SetAttackCoolDown(int i) { attackCoolDown_ = i; }
     float GetAttackDistance() { return attackDistance_; }
     void SetEnemyType(ENEMY_TYPE type) { type_ = type; }

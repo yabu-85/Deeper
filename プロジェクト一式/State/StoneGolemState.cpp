@@ -272,10 +272,6 @@ void StoneGolemWait::OnEnter()
 		if (rand() % 2 == 0) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 1, 0, 0, 0 });
 		else e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ -1, 0, 0, 0 });
 	}
-
-	float size = 0.8f;
-	e->SetScale(XMFLOAT3(size, size, size));
-
 }
 
 //------------------------------------Move--------------------------------------------
@@ -314,10 +310,6 @@ void StoneGolemMove::OnEnter()
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
 	time_ = FPS * MIN_MOVE_TIME + rand() % MAX_MOVE_TIME * FPS;
-
-	float size = 0.6f;
-	e->SetScale(XMFLOAT3(size, size, size));
-
 }
 
 void StoneGolemMove::OnExit()
@@ -399,10 +391,6 @@ void StoneGolemAttack::OnEnter()
 	e->GetOrientedMoveAction()->SetMoveSpeed(MOVESPEED_FRAME3);
 	e->GetRotateAction()->SetRatio(ATTACK_ROTATE_RATIO);
 	e->SetCombatReady(false);
-
-	float size = 0.8f;
-	e->SetScale(XMFLOAT3(size, size, size));
-
 }
 
 void StoneGolemAttack::OnExit()
@@ -412,8 +400,7 @@ void StoneGolemAttack::OnExit()
 	e->GetOrientedMoveAction()->SetMoveSpeed(MOVESPEED_FRAME3);
 	e->GetRotateAction()->SetRatio(ROTATE_RATIO);
 	e->SetAttackCoolDown(rand() % 100);
-	e->SetAllAttackColliderValid(false);
-	e->GetDamageController()->ResetAttackList();
+	e->DamageInfoReset();
 
 }
 

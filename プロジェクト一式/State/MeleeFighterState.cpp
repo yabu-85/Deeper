@@ -32,19 +32,22 @@ namespace {
 	static const float SLOW_SPEED = 0.01f;
 	static const float ROTATE_RATIO = 0.07f;
 
-	//攻撃Stateの情報
-	static const int ATTACK_FRAME[2] = { 0, 300 };
-	static const float ATTACK_ROTATE_RATIO = 0.05f;
-	static const int CALC_FRAME1[2] = { 65, 85 };
-	static const int CALC_FRAME2[2] = { 120, 140 };
-	static const int CALC_FRAME3[2] = { 235, 247 };
 	//攻撃１の情報
 	static const int ROTATE_FRAME = 30;
 	static const float ATTACK_READY_DISTANCE = 2.0f;
+
+	/*
+	//攻撃Stateの情報
+	static const int ATTACK_FRAME[2] = { 0, 260 };
+	static const float ATTACK_ROTATE_RATIO = 0.05f;
+	static const int CALC_FRAME2[2] = { 120, 140 };
+	static const int CALC_FRAME3[2] = { 235, 247 };
+
 	//攻撃３の情報
 	static const int ROTATE_FRAME3[2] = { 140, 230 };
 	static const int ATTACK_EFFECT_TIME[2] = { 244, 247 };
 	static const float MOVESPEED_FRAME3 = 0.03f;
+	*/
 
 }
 
@@ -66,6 +69,8 @@ void MeleeFighterAppear::Update()
 void MeleeFighterAppear::OnEnter()
 {
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
+	e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::IDLE, 0.1f);
+
 	XMFLOAT3 pos = e->GetPosition();
 	VFXManager::CreatVfxEnemySpawn(pos, APPER_TIME);
 
@@ -100,6 +105,8 @@ void MeleeFighterDead::OnEnter()
 {
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->DeadEnter();
+	e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::IDLE, 0.1f);
+
 	time_ = 0;
 }
 
@@ -140,6 +147,7 @@ void MeleeFighterPatrol::OnEnter()
 	e->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
 	e->GetRotateAction()->SetTarget(nullptr);
 	e->GetRotateAction()->SetRatio(ROTATE_RATIO);
+	e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::WALK, 0.1f);
 
 }
 
@@ -157,13 +165,12 @@ MeleeFighterCombat::MeleeFighterCombat(StateManager* owner) : StateBase(owner), 
 	
 	//----------ビヘイビアツリーの設定------------
 	root_ = new Root();
-	
+
 	Selector* selector1 = new Selector();
 	root_->SetRootNode(selector1);
 
 	Selector* waitSelector = new Selector();
 	Selector* moveSelector = new Selector();
-	Selector* attackSelector = new Selector();
 	IsEnemyCombatState* wCon = new IsEnemyCombatState(waitSelector, "Wait", e);
 	IsEnemyCombatState* mCon = new IsEnemyCombatState(moveSelector, "Move", e);
 	selector1->AddChildren(wCon);
@@ -171,18 +178,20 @@ MeleeFighterCombat::MeleeFighterCombat(StateManager* owner) : StateBase(owner), 
 
 	//-------------------------------------Wait--------------------------------------
 	EnemyChangeCombatStateNode* action3 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsPlayerInRangeNode* condition5 = new IsPlayerInRangeNode(action3, ATTACK_READY_DISTANCE, e, GameManager::GetPlayer());
-	waitSelector->AddChildren(condition5);
+	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(action3, e);
+	IsPlayerInRangeNode* condition6 = new IsPlayerInRangeNode(condition5, e->GetAttackDistance(), e, GameManager::GetPlayer());
+	waitSelector->AddChildren(condition6);
 
 	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(e, "Move");
-	IsEnemyAttackPermission* condition2 = new IsEnemyAttackPermission(action1, e);
-	IsEnemyAttackReady* condition3 = new IsEnemyAttackReady(condition2, e);
+	IsEnemyMovePermission* condition2 = new IsEnemyMovePermission(action1, e);
+	IsEnemyActionReady* condition3 = new IsEnemyActionReady(condition2, e);
 	waitSelector->AddChildren(condition3);
 
 	//-------------------------------------Move--------------------------------------
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsPlayerInRangeNode* condition4 = new IsPlayerInRangeNode(action2, ATTACK_READY_DISTANCE, e, GameManager::GetPlayer());
-	moveSelector->AddChildren(condition4);
+	IsEnemyAttackPermission* condition4 = new IsEnemyAttackPermission(action2, e);
+	IsPlayerInRangeNode* condition7 = new IsPlayerInRangeNode(condition4, e->GetAttackDistance(), e, GameManager::GetPlayer());
+	moveSelector->AddChildren(condition7);
 
 	//-------------------------------------Attack--------------------------------------
 
@@ -238,6 +247,7 @@ void MeleeFighterWait::OnEnter()
 {
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
+	e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::IDLE, 0.1f);
 
 	//プレイヤーから指定の範囲内で
 	//ゲーム参考にしてから作る
@@ -251,10 +261,6 @@ void MeleeFighterWait::OnEnter()
 		if(r == 0) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 1, 0, 0, 0 });
 		else if (r == 1) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ -1, 0, 0, 0 });
 	}
-
-	float size = 1.0f;
-	e->SetScale(XMFLOAT3(size, size, size));
-
 }
 
 //------------------------------------Move--------------------------------------------
@@ -282,12 +288,10 @@ void MeleeFighterMove::Update()
 
 void MeleeFighterMove::OnEnter()
 {
+	time_ = FPS * MIN_MOVE_TIME + rand() % MAX_MOVE_TIME * FPS;
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
-	time_ = FPS * MIN_MOVE_TIME + rand() % MAX_MOVE_TIME * FPS;
-
-	float size = 0.8f;
-	e->SetScale(XMFLOAT3(size, size, size));
+	e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::WALK, 0.1f);
 
 }
 
@@ -307,26 +311,50 @@ void MeleeFighterAttack::Update()
 {
 	time_++;
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
-	
-	//攻撃を続けるか計算
-	if (time_ == 100 || time_ == 150) {
-		XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
-		XMFLOAT3 ePos = e->GetPosition();
-		XMFLOAT3 vec = { pPos.x - ePos.x, 0.0f, pPos.z - ePos.z };
-		float dist = sqrt(vec.x * vec.x + vec.z * vec.z);
-		const float ATTACK_DIST = 2.5f;
-		if (dist > ATTACK_DIST) owner_->ChangeState("Wait");
-	}
 
 	//回転やら移動やら
-	if (time_ < ROTATE_FRAME) e->GetRotateAction()->Update();
-	else if (time_ >= ROTATE_FRAME3[0] && time_ <= ROTATE_FRAME3[1]) {
+	if (time_ < ROTATE_FRAME) {
 		e->GetRotateAction()->Update();
 		e->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
 		e->GetOrientedMoveAction()->Update();
 	}
 
-	if (time_ >= ATTACK_FRAME[1]) {
+	int startT = e->GetAnimationController()->GetAnim((int)MELEE_ANIMATION::PRE_RUN_ATTACK).startFrame;
+	int endT = e->GetAnimationController()->GetAnim((int)MELEE_ANIMATION::PRE_RUN_ATTACK).endFrame;
+	int time1 = (endT - startT);
+	if (time_ == time1) e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::RUN_ATTACK, 0.1f);
+
+	int startT2 = e->GetAnimationController()->GetAnim((int)MELEE_ANIMATION::RUN_ATTACK).startFrame;
+	int endT2 = e->GetAnimationController()->GetAnim((int)MELEE_ANIMATION::RUN_ATTACK).endFrame;
+	int time2 = time1 + (endT2 - startT2);
+
+	//攻撃フラグの制御
+	if (time_ == time1 + 8) { e->SetDamageInfoCombo1(); }
+	else if (time_ == time1 + 10) { e->DamageInfoReset(); }
+
+	if (time_ >= time1 && time_ <= time1 + 30) {
+		e->CalcPoly();
+	}
+
+	//エフェクト
+	if(time_ == time1 + 10) {
+		XMFLOAT3 pos = e->GetPosition();
+		XMFLOAT3 cP = e->GetAttackColliderList().front()->GetCenter();
+		pos = { pos.x + cP.x, 0.0f , pos.z + cP.z };
+		VFXManager::CreatVfxSmoke(pos);
+		
+		const float maxRange = 8.0f;
+		XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
+		pos = { pPos.x - pos.x, 0.0f, pPos.z - pos.z };
+		float range = sqrt(pos.x * pos.x + pos.z * pos.z);
+		if (range <= maxRange) {
+			range = (1.0f - (range / maxRange));
+			GameManager::GetPlayer()->GetAim()->SetCameraShakeDirection(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f });
+			GameManager::GetPlayer()->GetAim()->SetCameraShake(7, 0.3f * range, 0.7f, 0.3f, 0.8f);
+		}
+	}
+
+	if (time_ >= time2) {
 		owner_->ChangeState("Wait");
 	}
 }
@@ -335,19 +363,17 @@ void MeleeFighterAttack::OnEnter()
 {
 	time_ = 0;
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
-	Model::SetAnimFrame(e->GetModelHandle(), ATTACK_FRAME[0], ATTACK_FRAME[1], 1.0f);
+	e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::PRE_RUN_ATTACK, 0.1f);
 	e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
-	e->GetOrientedMoveAction()->SetMoveSpeed(MOVESPEED_FRAME3);
-	e->GetRotateAction()->SetRatio(ATTACK_ROTATE_RATIO);
+	e->SetCombatReady(false);
 }
 
 void MeleeFighterAttack::OnExit()
 {
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
-	e->GetOrientedMoveAction()->SetMoveSpeed(MOVESPEED_FRAME3);
 	e->GetRotateAction()->SetRatio(ROTATE_RATIO);
 	e->SetAttackCoolDown(rand() % 100);
-	Model::SetAnimFrame(e->GetModelHandle(), 0, 0, 1.0f);
+	e->DamageInfoReset();
 }
 
 //--------------------------------------------------------------------------------

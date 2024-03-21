@@ -8,9 +8,6 @@
 #include "../State/StoneGolemState.h"
 #include "../Stage/CreateStage.h"
 #include "../Stage/CollisionMap.h"
-#include "../Player/Player.h"
-#include "../Player/LifeManager.h"
-#include "../Character/Character.h"
 
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
@@ -43,7 +40,6 @@ void StoneGolem::Initialize()
 	
 	type_ = ENEMY_STONEGOLEM;
 	aimTargetPos_ = 1.1f;
-	attackDamage_ = 1;
 	attackDistance_ = 2.0f;
 	combatDistance_ = 5.0f;
 
@@ -105,8 +101,6 @@ void StoneGolem::Update()
 
 void StoneGolem::Draw()
 {
-	pEnemyUi_->Draw();
-
 	std::list<Collider*> list = GetAttackColliderList();
 	auto it = list.begin();
 	for (int i = 0; i < 2; i++) {
@@ -120,8 +114,8 @@ void StoneGolem::Draw()
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 
-	//デバッグ用
 	CollisionDraw();
+	pEnemyUi_->Draw();
 
 }
 

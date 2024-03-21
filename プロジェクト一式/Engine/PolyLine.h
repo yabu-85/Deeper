@@ -13,6 +13,8 @@ class PolyLine
 {
 	float WIDTH_;		//太さ
 	int LENGTH_;		//長さ
+	int smooth_;		//滑らかさ
+	int size_;			//座標の数
 
 	ID3D11Buffer* pVertexBuffer_;	//頂点バッファ
 	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ
@@ -53,7 +55,8 @@ public:
 	//徐々に透明になるように設定
 	void SetMoveAlphaFlag() { moveAlpha_ = true; }
 	void SetLength(int leng) { LENGTH_ = leng; }
-	void SetLength(float width) { WIDTH_ = width; }
+	void SetWidth(float width) { WIDTH_ = width; }
+	void SetSmooth(int smooth) { smooth_ = smooth; }
 
 	//解放
 	void Release();

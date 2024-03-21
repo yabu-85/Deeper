@@ -14,9 +14,6 @@
 #include "../State/PlayerState.h"
 #include "../Stage/CreateStage.h"
 #include "../Stage/CollisionMap.h"
-#include "../AnimationController.h"
-#include "../Weapon/BulletBase.h"
-#include "../Character/CharacterManager.h"
 #include "../Scene/StageBase.h"
 
 #include "../Engine/Text.h"
@@ -110,10 +107,8 @@ void Player::Update()
     if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f, GetBodyRange());
     ReflectCharacter();
 
-    OutputDebugStringA((std::to_string(GetHP()) + "\n").c_str());
-
     //デバッグ用
-    //if (Input::IsKeyDown(DIK_T)) isCollider = !isCollider;
+    if (Input::IsKeyDown(DIK_T)) isCollider = !isCollider;
 
 }
 

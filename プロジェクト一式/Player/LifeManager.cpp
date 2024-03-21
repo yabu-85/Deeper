@@ -14,8 +14,9 @@ namespace LifeManager {
 	Transform pic0Pos;
 	Transform pic1Pos;
 
-	int defInvincibleTime_ = 0;		//無敵時間
-	int invincibleTime_ = 0;		//ダメージ表示時間の計算用
+	int DEFAULF_DAMAGE_TIME = 30;	//無敵時間
+	int damageTime_ = 0;			//ダメージ表示時間の計算用
+
 	int defPlayerLife_ = 1;			//今のHpMaxを入れる
 	int playerLife_ = 1;			//プレイヤーのライフ量
 
@@ -38,7 +39,7 @@ void LifeManager::Initialize()
 
 void LifeManager::Update()
 {
-	invincibleTime_--;
+	damageTime_--;
 
 }
 
@@ -61,7 +62,7 @@ void LifeManager::Draw()
 	pSprite_[1]->Draw(pic1Pos, rect, 1.0f, 0);
 
 	//ダメージ画像の表示
-	if (invincibleTime_ > 0) DamageEffectDraw();
+	if (damageTime_ > 0) DamageEffectDraw();
 }
 
 void LifeManager::Release()
@@ -83,7 +84,7 @@ void LifeManager::DamageEffectDraw()
 	rect.right = (long)size.x;
 	rect.bottom = (long)size.y;
 	Transform trans;
-	float a = (float)invincibleTime_ / (float)defInvincibleTime_;
+	float a = (float)damageTime_ / (float)DEFAULF_DAMAGE_TIME;
 
 	pic0Pos.Calclation();
 	pSprite_[2]->Draw(trans, rect, a, 0);
@@ -94,6 +95,7 @@ void LifeManager::Damage(int i)
 {
 	Player* pPlayer = GameManager::GetPlayer();
 	playerLife_ = pPlayer->GetHP();
+	damageTime_ = DEFAULF_DAMAGE_TIME;
 
 	//ダメージ計算したら、HPが０以下になった
 	if (LifeManager::IsDie()) {

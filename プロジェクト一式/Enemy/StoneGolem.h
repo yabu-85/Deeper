@@ -1,6 +1,5 @@
 #pragma once
 #include "EnemyBase.h"
-#include "../State/StateBase.h"
 
 class SphereCollider;
 class AstarMoveAction;

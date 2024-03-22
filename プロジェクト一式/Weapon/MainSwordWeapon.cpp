@@ -1,7 +1,8 @@
 #include "MainSwordWeapon.h"
 #include "../InputManager.h"
-#include "../GameManager/GameManager.h"
+#include "../AudioManager.h"
 #include "../VFXManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Player/Player.h"
 #include "../Player/Aim.h"
 #include "../Engine/PolyLine.h"
@@ -23,19 +24,15 @@ namespace {
     //回転フレーム
     static const int ROTATE_FRAME[2] = { 3, 10 };
 
-    //攻撃アニメーションのフレーム
-    static const int ANIM_FRAME1[2] = { 595, 650 };
-    static const int ANIM_FRAME2[2] = { 650, 680 };
-    static const int ANIM_FRAME3[2] = { 665, 680 };
-    
-    //10から～30フレームまでが攻撃フレーム
+    //攻撃Audio再生フレーム
+    static const int ANIM_AUDIO_FRAME1 = 20;
+    static const int ANIM_AUDIO_FRAME2 = 20;
+    static const int ANIM_AUDIO_FRAME3 = 0;
+
+    //攻撃判定フレーム
     static const int ANIM_ATTACK_FRAME1[2] = { 17, 33 };
     static const int ANIM_ATTACK_FRAME2[2] = { 15, 25 };
-    static const int ANIM_ATTACK_FRAME3[2] = { 0, 25 };
-
-    static const int COMBO_TIME1 = ANIM_FRAME1[1] - ANIM_FRAME1[0];
-    static const int COMBO_TIME2 = ANIM_FRAME2[1] - ANIM_FRAME2[0];
-    static const int COMBO_TIME3 = ANIM_FRAME3[1] - ANIM_FRAME3[0];
+    static const int ANIM_ATTACK_FRAME3[2] = { 3, 12 };
 
 }
 
@@ -221,8 +218,12 @@ void MainSwordWeaponCombo1::Update()
     if(time_ >= ANIM_ATTACK_FRAME1[0] && time_ <= ANIM_ATTACK_FRAME1[1])
     m->CalcSwordTrans();
     
+    if (time_ == ANIM_AUDIO_FRAME1) AudioManager::Play(AUDIO_ID::SWORD_WIELD_1);
+
     time_++;
-    if (time_ >= COMBO_TIME1) {
+    int comboTime = p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK1).endFrame -
+                    p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK1).startFrame;
+    if (time_ >= comboTime) {
         if (next_ == true) {
             owner_->ChangeState("Combo2");
         }
@@ -235,8 +236,8 @@ void MainSwordWeaponCombo1::OnEnter()
     time_ = 0;
     next_ = false;
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    Model::SetAnimFrame(p->GetModelHandle(), ANIM_FRAME1[0], ANIM_FRAME1[1], 1.0f);
-    
+    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK1, 0.3f);
+
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->SetDamageInfoCombo1();
 }
@@ -273,8 +274,12 @@ void MainSwordWeaponCombo2::Update()
     if (time_ >= ANIM_ATTACK_FRAME2[0] && time_ <= ANIM_ATTACK_FRAME2[1])
     m->CalcSwordTrans();
 
+    if (time_ == ANIM_AUDIO_FRAME2) AudioManager::Play(AUDIO_ID::SWORD_WIELD_2);
+
     time_++;
-    if (time_ >= COMBO_TIME2) {
+    int comboTime = p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK2).endFrame -
+        p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK2).startFrame;
+    if (time_ >= comboTime) {
         if (next_ == true) {
             owner_->ChangeState("Combo3");
         }
@@ -287,7 +292,7 @@ void MainSwordWeaponCombo2::OnEnter()
     time_ = 0;
     next_ = false;
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    Model::SetAnimFrame(p->GetModelHandle(), ANIM_FRAME2[0], ANIM_FRAME2[1], 1.0f);
+    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK2, 0.3f);
 
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->SetDamageInfoCombo2();
@@ -325,8 +330,12 @@ void MainSwordWeaponCombo3::Update()
     if (time_ >= ANIM_ATTACK_FRAME3[0] && time_ <= ANIM_ATTACK_FRAME3[1])
     m->CalcSwordTrans();
 
+    if (time_ == ANIM_AUDIO_FRAME3) AudioManager::Play(AUDIO_ID::SWORD_WIELD_3);
+
     time_++;
-    if (time_ >= COMBO_TIME3) {
+    int comboTime = p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK3).endFrame -
+        p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK3).startFrame; 
+    if (time_ >= comboTime) {
         if (next_ == true) {
             owner_->ChangeState("Combo1");
         }
@@ -339,7 +348,7 @@ void MainSwordWeaponCombo3::OnEnter()
     time_ = 0;
     next_ = false;
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    Model::SetAnimFrame(p->GetModelHandle(), ANIM_FRAME3[0], ANIM_FRAME3[1], 1.0f);
+    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK3, 1.0f, 1.0f);
 
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->SetDamageInfoCombo3();

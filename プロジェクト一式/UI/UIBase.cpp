@@ -64,6 +64,9 @@ bool UIBase::IsWithinBound()
 	if (mouse.y < widePos_.y + frameSize_.y && mouse.y > widePos_.y - frameSize_.y &&
 		mouse.x < widePos_.x + frameSize_.x && mouse.x > widePos_.x - frameSize_.x) 
 	{
+		//”ÍˆÍ“à‚É“ü‚èn‚ß‚½‚ç‰¹Ä¶
+		if (!isBound_) AudioManager::Play(AUDIO_ID::BUTTON_WITHIN);
+
 		isBound_ = true;
 		return true;
 	}
@@ -75,6 +78,7 @@ bool UIBase::IsWithinBound()
 void UIBase::OnClick()
 {
 	if (onClick_) {
+		AudioManager::Play(AUDIO_ID::BUTTON_PUSH);
 		onClick_();
 	}
 }

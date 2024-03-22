@@ -40,7 +40,7 @@ void Stage3::Update()
 	}
 	
 	//デバッグ用
-	if (Input::IsKeyDown(DIK_C)) {
+	if (Input::IsKeyDown(DIK_X)) {
 		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE);
 	}
 }

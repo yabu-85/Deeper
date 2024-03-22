@@ -34,7 +34,7 @@ void Stage1::Initialize()
 void Stage1::Update()
 {
 	//デバッグ用
-	if (Input::IsKeyDown(DIK_C)) {
+	if (Input::IsKeyDown(DIK_X)) {
 		SceneManager* pSceneManager = GameManager::GetSceneManager();
 		pSceneManager->ChangeScene(SCENE_ID_TITLE);
 	}

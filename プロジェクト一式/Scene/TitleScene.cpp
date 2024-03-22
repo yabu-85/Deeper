@@ -41,7 +41,7 @@ void TitleScene::Initialize()
 
 void TitleScene::Update()
 {
-	if (Input::IsKeyDown(DIK_C)) {
+	if (Input::IsKeyDown(DIK_Z)) {
 		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_RESULT);
 		return;
 	}

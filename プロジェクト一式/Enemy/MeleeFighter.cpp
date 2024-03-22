@@ -40,7 +40,7 @@ void MeleeFighter::Initialize()
 	SetHP(100);
 	SetMaxHP(100);
 	SetBodyWeight(10.0f);
-	SetBodyRange(0.4f);
+	SetBodyRange(0.35f);
 
 	type_ = ENEMY_MELEE;
 	aimTargetPos_ = 1.3f;
@@ -63,7 +63,7 @@ void MeleeFighter::Initialize()
 	SetAllAttackColliderValid(false);
 
 	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize(2.0f);
+	pEnemyUi_->Initialize(1.9f);
 
 	//Action‚ÌÝ’è
 	pMoveAction_ = new AstarMoveAction(this, 0.0f, 0.3f);
@@ -92,8 +92,8 @@ void MeleeFighter::Initialize()
 	pCombatStateManager_->Initialize();
 	
 	Model::GetBoneIndex(hModel_, "attack_Hand.R", &boneIndex_[0], &partIndex_[0]);
-	assert(boneIndex_[0] >= 0);
 	Model::GetBoneIndex(hModel_, "attack_Hand.L", &boneIndex_[1], &partIndex_[1]);
+	assert(boneIndex_[0] >= 0);
 	assert(boneIndex_[1] >= 0);
 
 	for (int i = 0; i < 2; i++) {

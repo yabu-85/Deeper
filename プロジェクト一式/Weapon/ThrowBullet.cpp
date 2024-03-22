@@ -11,7 +11,7 @@
 #include "../Player/LifeManager.h"
 
 namespace {
-	static const int DAMAGE = 1;
+	static const int DAMAGE = 5;
 	static const int DEATH_TIME = 30;
 	static const float DEF_TIME = 60.0f;
 	static const float MAX_HEIGHT = 8.0f;
@@ -151,7 +151,7 @@ void ThrowBullet::Hit()
 	Move();
 
 	VFXManager::CreatVfxExplode1(transform_.position_);
-	AudioManager::Play(transform_.position_, AUDIO_DISTANCE);
+	AudioManager::Play(AUDIO_ID::BULLET_HIT1, transform_.position_, 10.0f);
 	deathPosition_ = transform_.position_;
 	time_ = DEATH_TIME;
 	isDeath_ = true;

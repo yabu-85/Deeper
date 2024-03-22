@@ -86,7 +86,7 @@ void PolyLine::AddPosition(XMFLOAT3 pos1, XMFLOAT3 pos2)
 		if (smooth_ >= 1) {
 			int firstI = i - smooth_;
 			int endI = i + smooth_;
-			int max = (polyList_.size());
+			int max = (int)polyList_.size();
 			if (firstI >= 0 && endI < max) {
 				//smoothの数でイテレータを計算
 				auto it = itr;

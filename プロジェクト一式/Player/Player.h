@@ -31,8 +31,8 @@ const AnimeData PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::MAX]{
     {210, 260},
     {260, 495},
     {595, 650},
-    {650, 700},
-    {666, 700},
+    {650, 690},
+    {665, 690},
     {700, 800},
 };
 

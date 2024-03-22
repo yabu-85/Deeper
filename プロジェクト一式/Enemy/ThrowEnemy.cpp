@@ -55,7 +55,7 @@ void ThrowEnemy::Initialize()
 	AddCollider(collision1);
 
 	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize(1.0f);
+	pEnemyUi_->Initialize(1.8f);
 
 	//Action‚ÌÝ’è
 	pMoveAction_ = new AstarMoveAction(this, 0.0f, 0.3f);
@@ -127,7 +127,7 @@ void ThrowEnemy::ThrowItem()
 	XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
 	plaPos.y += 0.75f;
 
-#if 0
+#if 1
 	NormalBullet* bullet = Instantiate<NormalBullet>(GetParent());
 #else
 	ThrowBullet* bullet = Instantiate<ThrowBullet>(GetParent());

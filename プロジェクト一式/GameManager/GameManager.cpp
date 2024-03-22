@@ -1,5 +1,6 @@
 #include "GameManager.h"
 #include "WaveManager.h"
+#include "CombatAI.h"
 #include "DifficultyManager.h"
 #include "../VFXManager.h"
 #include "../Enemy/EnemyManager.h"
@@ -9,6 +10,7 @@
 #include "../Weapon/WeaponObjectManager.h"
 #include "../Engine/TransitionEffect.h"
 #include "../Engine/GameObject.h"
+#include "../Engine/Model.h"
 #include "../Engine/SceneManager.h"
 #include "../Player/LifeManager.h"
 #include "../Player/Player.h"
@@ -17,15 +19,14 @@
 #include "../Scene/SceneBase.h"
 
 //Pause
-#include "../Engine/Model.h"
 #include "../Engine/Input.h"
 #include "../Character/CharacterManager.h"
 #include "../Scene/StageBase.h"
 #include "../Player/Aim.h"
+#include "../AudioManager.h"
 
 //デバッグ用
 #include "../Enemy/EnemyBase.h"
-#include "../GameManager/CombatAI.h"
 
 namespace GameManager {
 	void MouseLimitedChange();
@@ -90,13 +91,17 @@ void GameManager::Update()
 			DamageInfo damage(10000000);
 			for (auto e : eList) e->ApplyDamageDirectly(damage);
 		}
-	}
-
-	if (Input::IsKeyDown(DIK_TAB)) {
-		OutputDebugString("entity : ");
-		int count = (int)pEnemyManager_->GetAllEnemy().size();
-		OutputDebugStringA(std::to_string(count).c_str());
-		OutputDebugString("\n");
+		if (Input::IsKey(DIK_C)) {
+			std::vector<EnemyBase*> eList = pEnemyManager_->GetAllEnemy();
+			DamageInfo damage(1);
+			for (auto e : eList) e->ApplyDamageDirectly(damage);
+		}
+		if (Input::IsKeyDown(DIK_TAB)) {
+			OutputDebugString("entity : ");
+			int count = (int)pEnemyManager_->GetAllEnemy().size();
+			OutputDebugStringA(std::to_string(count).c_str());
+			OutputDebugString("\n");
+		}
 	}
 }
 
@@ -142,6 +147,7 @@ void GameManager::StartPause()
 {
 	pauseClose_ = false;
 	isPause_ = true;
+	AudioManager::Play(AUDIO_ID::PAUSE_OPEN);
 
 	//全てのキャラクターのUpdateを拒否
 	CharacterManager::SetAllCharacterLeave();
@@ -200,6 +206,7 @@ void GameManager::MouseLimitedChange()
 
 	//ポーズ中にEscape押したから閉じる
 	if (isPause_) {
+		AudioManager::Play(AUDIO_ID::PAUSE_CLOSE);
 		EndPause();
 		return;
 	}

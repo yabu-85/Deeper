@@ -51,7 +51,6 @@ void ResultScene::Initialize()
 		Model::SetAnimFrame(po->GetModelHandle(), 
 			PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::IDLE].startFrame, PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::IDLE].endFrame, 1.0f);
 	}
-
 }
 
 void ResultScene::Update()

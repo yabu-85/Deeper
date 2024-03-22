@@ -23,9 +23,9 @@ void NormalBullet::Initialize()
 	assert(hModel_ >= 0);
 
 	transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
-	velocity_ = 0.7f;
+	velocity_ = 0.4f;
 	lifeTime_ = 30;
-	damage_ = 10;
+	damage_ = 4;
 
 	SphereCollider* collision = new SphereCollider(XMFLOAT3(0, 0, 0), 0.5f);
 	AddAttackCollider(collision);
@@ -38,9 +38,7 @@ void NormalBullet::Update()
 
 	//CollisionMapÇ∆ÇÃîªíËÅiç°ÇÕy<=0ÇæÇØÅjèCê≥â”èä
 	if (transform_.position_.y <= 0.0f) {
-		VFXManager::CreatVfxExplode1(transform_.position_);
-		AudioManager::Play(transform_.position_, 10.0f);
-		KillMe();
+		Hit();
 		return;
 	}
 
@@ -75,6 +73,6 @@ void NormalBullet::OnAttackCollision(GameObject* pTarget)
 void NormalBullet::Hit()
 {
 	VFXManager::CreatVfxExplode1(transform_.position_);
-	AudioManager::Play(transform_.position_, 10.0f);
+	AudioManager::Play(AUDIO_ID::BULLET_HIT1, transform_.position_, 10.0f);
 	KillMe();
 }

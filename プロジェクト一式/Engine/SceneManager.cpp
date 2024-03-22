@@ -20,7 +20,7 @@ SceneManager::SceneManager(GameObject * parent)
 void SceneManager::Initialize()
 {
 	//Å‰‚ÌƒV[ƒ“‚ğ€”õ
-#if 1
+#if 0
 	currentSceneID_ = SCENE_ID_STAGE1;
 	nextSceneID_ = currentSceneID_;
 	Instantiate<Stage1>(this);

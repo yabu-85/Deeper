@@ -55,7 +55,7 @@ void StoneGolem::Initialize()
 	SetAllAttackColliderValid(false);
 
 	pEnemyUi_ = new EnemyUi(this);
-	pEnemyUi_->Initialize(3.0f);
+	pEnemyUi_->Initialize(2.8f);
 
 	//Action‚Ìİ’è
 	pMoveAction_ = new AstarMoveAction(this, 0.0f, 0.3f);

@@ -15,6 +15,8 @@
 #include "../Player/LifeManager.h"
 #include "../Player/Player.h"
 #include "../Player/PlayerData.h"
+#include "../State/PlayerState.h"
+#include "../State/StateManager.h"
 #include "../UI/Interaction.h"
 #include "../Scene/SceneBase.h"
 
@@ -211,9 +213,15 @@ void GameManager::MouseLimitedChange()
 		return;
 	}
 
-	isPause_ = !isPause_;
-	if (isPause_) StartPause();
-	else EndPause();
+	//開ける状況ならPause開く：Appear＆DisAppear以外なら開ける
+	if (GetPlayer() &&
+		GetPlayer()->GetStateManager()->GetName() != "Appear" &&
+		GetPlayer()->GetStateManager()->GetName() != "DisAppear") {
+
+		isPause_ = !isPause_;
+		if (isPause_) StartPause();
+		else EndPause();
+	}
 }
 
 bool GameManager::IsMouseLimitedScene()

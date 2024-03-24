@@ -3,6 +3,7 @@
 #include "../AnimationController.h"
 #include "../Engine/Transform.h"
 #include "../Engine/Sprite.h"
+#include "../Engine/Direct3D.h"
 #include "../Player/Player.h"
 #include "../Player/Aim.h"
 #include "../State/StateManager.h"
@@ -83,7 +84,12 @@ void LifeManager::DamageEffectDraw()
 	rect.top = 0;
 	rect.right = (long)size.x;
 	rect.bottom = (long)size.y;
+
 	Transform trans;
+	trans.scale_.x = (float)Direct3D::screenWidth_ / size.x;
+	trans.scale_.y = (long)Direct3D::screenHeight_ / size.y;
+	trans.Calclation();
+
 	float a = (float)damageTime_ / (float)DEFAULF_DAMAGE_TIME;
 
 	pic0Pos.Calclation();

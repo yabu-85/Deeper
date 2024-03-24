@@ -43,7 +43,7 @@ void MeleeFighter::Initialize()
 	SetBodyRange(0.35f);
 
 	type_ = ENEMY_MELEE;
-	aimTargetPos_ = 1.3f;
+	aimTargetPos_ = 0.8f;
 	attackDistance_ = 2.0f;
 	combatDistance_ = 5.0f;
 

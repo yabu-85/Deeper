@@ -46,7 +46,7 @@ void ThrowEnemy::Initialize()
 	SetBodyRange(0.3f);
 
 	type_ = ENEMY_THROW;
-	aimTargetPos_ = 1.1f;
+	aimTargetPos_ = 1.0f;
 	combatDistance_ = 7.0f;
 	attackDistance_ = 8.0f;
 

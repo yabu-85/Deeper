@@ -39,7 +39,7 @@ void StoneGolem::Initialize()
 	SetBodyRange(0.7f);
 	
 	type_ = ENEMY_STONEGOLEM;
-	aimTargetPos_ = 1.1f;
+	aimTargetPos_ = 1.0f;
 	attackDistance_ = 2.0f;
 	combatDistance_ = 5.0f;
 
@@ -161,7 +161,7 @@ void StoneGolem::DamageInfoReset()
 void StoneGolem::SetDamageInfoCombo1()
 {
 	DamageInfo damage(this, "StoneArm", 3);
-	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 5, 0.1f, transform_.position_);
+	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 6, 0.2f, transform_.position_);
 	SetAllAttackColliderValid(true);
 	GetDamageController()->SetCurrentDamage(damage);
 	GetDamageController()->SetCurrentKnockBackInfo(knockBack);
@@ -170,7 +170,7 @@ void StoneGolem::SetDamageInfoCombo1()
 void StoneGolem::SetDamageInfoCombo2()
 {
 	DamageInfo damage(this, "StoneArm", 3);
-	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 5, 0.1f, transform_.position_);
+	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 6, 0.2f, transform_.position_);
 	SetAllAttackColliderValid(true);
 	GetDamageController()->SetCurrentDamage(damage);
 	GetDamageController()->SetCurrentKnockBackInfo(knockBack);
@@ -179,7 +179,7 @@ void StoneGolem::SetDamageInfoCombo2()
 void StoneGolem::SetDamageInfoCombo3()
 {
 	DamageInfo damage(this, "StoneArm", 5);
-	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 30, 0.3f, { 0.f, 0.f, 0.f });
+	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 20, 0.3f, { 0.f, 0.f, 0.f });
 	SetAllAttackColliderValid(true);
 	GetDamageController()->SetCurrentDamage(damage);
 	GetDamageController()->SetCurrentKnockBackInfo(knockBack);

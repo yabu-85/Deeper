@@ -173,7 +173,7 @@ void MainSwordWeapon::DamageInfoReset()
 void MainSwordWeapon::SetDamageInfoCombo1()
 {
     DamageInfo damage(pPlayer_, "Sword", ATTACK_DAMAGE1);
-    KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 3, 0.2f, XMFLOAT3());
+    KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 2, 0.1f, XMFLOAT3());
     pDamageController_->SetCurrentDamage(damage);
     pDamageController_->SetCurrentKnockBackInfo(knock);
 }
@@ -181,7 +181,7 @@ void MainSwordWeapon::SetDamageInfoCombo1()
 void MainSwordWeapon::SetDamageInfoCombo2()
 {
     DamageInfo damage(pPlayer_, "Sword", ATTACK_DAMAGE2);
-    KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 3, 0.2f, XMFLOAT3());
+    KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 2, 0.1f, XMFLOAT3());
     pDamageController_->SetCurrentDamage(damage);
     pDamageController_->SetCurrentKnockBackInfo(knock);
 }
@@ -189,7 +189,7 @@ void MainSwordWeapon::SetDamageInfoCombo2()
 void MainSwordWeapon::SetDamageInfoCombo3()
 {
     DamageInfo damage(pPlayer_, "Sword", ATTACK_DAMAGE3);
-    KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 6, 0.3f, XMFLOAT3());
+    KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 2, 0.2f, XMFLOAT3());
     pDamageController_->SetCurrentDamage(damage);
     pDamageController_->SetCurrentKnockBackInfo(knock);
 }

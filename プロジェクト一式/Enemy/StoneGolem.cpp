@@ -13,6 +13,11 @@
 #include "../Action/RotateAction.h"
 #include "../Action/SearchAction.h"
 
+namespace {
+	KnockBackInfo knockBack1(KNOCK_TYPE::MEDIUM, 6, 0.2f, XMFLOAT3());
+
+}
+
 StoneGolem::StoneGolem(GameObject* parent)
 	: EnemyBase(parent, "StoneGolemEnemy"), hModel_(-1), pMoveAction_(nullptr), pRotateAction_(nullptr), pDamageController_(nullptr),
 	pVisionSearchAction_(nullptr), pOrientedMoveAction_(nullptr), boneIndex_{ -1,-1 }, partIndex_{ -1,-1 }

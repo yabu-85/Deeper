@@ -1,7 +1,7 @@
 敵を倒して最奥を目指すゲーム
 
 -プレイ動画-
-https://drive.google.com/file/d/1mCfJoSJApa9zvhR2U6iR5XaEOvRHJkYE/view?usp=drive_link
+https://drive.google.com/file/d/15Yfn5iiS2OmcSI4bcQasoQlXAzMgJOb2/view?usp=drive_link
 
 -操作方法-
 WASD　　　　　：移動
@@ -15,8 +15,16 @@ ESCAPEキー　　：Pauseメニュー
 プレイヤーの操作感
 敵の行動AI
 
+-今後-
+3ステージ目がクリア目標で、敵をすべて倒したらクリアとなっていますが
+ボスを制作し、それを倒したらクリアにするのが最終目標です
+
+ステージの順番は固定になっていますが、ボス以外のステージは
+ステージのギミックやステージ自体の種類を増やし
+ランダムな順番で出したいと考えています
+
+
 -フォルダ構成-
-D:.
 │  AnimationController.cpp
 │  AnimationController.h
 │  AudioManager.cpp

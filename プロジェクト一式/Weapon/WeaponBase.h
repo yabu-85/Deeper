@@ -31,6 +31,7 @@ public:
 	virtual void ChangeAttackState() {};
 	void Endurance(int val = 1) { durance_ -= val; }
 	unsigned GetDurability() { return durance_; }
+	void SetDurability(int i) { durance_ = i; }
 	bool IsBlockend();
 
 };

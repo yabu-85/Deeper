@@ -13,8 +13,10 @@
 namespace {
     const XMFLOAT2 WEAPON_BOX_POSITION1 = { 0.5f, -0.7f };
     const XMFLOAT2 WEAPON_BOX_POSITION2 = { 0.8f, -0.7f };
-    float WEAPON_PNG_SIZE = 0.8f;
+    const XMFLOAT2 WEAPON_DURANCE_POSITION = { 0.03f, 0.08f };
+    const float WEAPON_PNG_SIZE = 0.8f;
 
+    Text* pText = nullptr;
 }
 
 PlayerWeapon::PlayerWeapon(Player* pPlayer)
@@ -39,6 +41,9 @@ PlayerWeapon::PlayerWeapon(Player* pPlayer)
     boxTrans_[0].position_ = {WEAPON_BOX_POSITION1.x, WEAPON_BOX_POSITION1.y, 0.f};
     boxTrans_[1].position_ = {WEAPON_BOX_POSITION2.x, WEAPON_BOX_POSITION2.y, 0.f};
 
+    pText = new Text();
+    pText->Initialize();
+
 }
 
 void PlayerWeapon::DrawWeapon()
@@ -52,11 +57,22 @@ void PlayerWeapon::DrawWeapon()
         if (drawPictWeapon_[i] != -1) {
             Image::SetTransform(hPictWeapon_[drawPictWeapon_[i]], weaponTrans_[i]);
             Image::Draw(hPictWeapon_[drawPictWeapon_[i]], 0);
+            
+            XMFLOAT2 pos = { weaponTrans_[i].position_.x, weaponTrans_[i].position_.y };
+            pos.x = (pos.x + 1.0f) / 2.0f;
+            pos.y = 1.0f - (pos.y + 1.0f) / 2.0f;
+            pos.x += WEAPON_DURANCE_POSITION.x;
+            pos.y += WEAPON_DURANCE_POSITION.y;
+            pos.x = (pos.x * (float)Direct3D::screenWidth_);
+            pos.y = (pos.y * (float)Direct3D::screenHeight_);
+            pText->Draw((int)pos.x, (int)pos.y, pSubWeapon_[i]->GetDurability(), 0);
         }
     }
 }
 
 void SceneTransitionInitialize() {
+    pText = new Text();
+    pText->Initialize();
 }
 
 void PlayerWeapon::SetPlayerDataWeapon()
@@ -64,9 +80,14 @@ void PlayerWeapon::SetPlayerDataWeapon()
     pMainWeapon_ = Instantiate<MainSwordWeapon>(pPlayer_);
 
     for (int i = 0; i < 2; i++) {
+        //どの武器かを読み込む
         int type = PlayerData::GetWeaponData(i).type_;
-        if(type == PlayerData::STONE_ARM_WEAPON) SetWeapon(Instantiate<StoneArmWeapon>(pPlayer_));
-        else if (type == PlayerData::NORMAL_BULLET_WEAPON) SetWeapon(Instantiate<NormalGunWeapon>(pPlayer_));
+        WeaponBase* weapon = nullptr;
+        if(type == PlayerData::STONE_ARM_WEAPON) SetWeapon(weapon = Instantiate<StoneArmWeapon>(pPlayer_));
+        else if (type == PlayerData::NORMAL_BULLET_WEAPON) SetWeapon(weapon = Instantiate<NormalGunWeapon>(pPlayer_));
+        
+        //耐久地の読み込み
+        if (weapon) weapon->SetDurability(PlayerData::GetWeaponData(i).durability_);
     }
 }
 
@@ -130,6 +151,7 @@ void PlayerWeapon::SetWeaponData(int index, WeaponBase* weapon)
     //表示する画像をセット
     if (weapon->GetWeaponType() == WeaponObjectManager::WEAPON_TYPE::WT_STONE) drawPictWeapon_[index] = (int)WeaponObjectManager::WEAPON_TYPE::WT_STONE;
     else if(weapon->GetWeaponType() == WeaponObjectManager::WEAPON_TYPE::WT_THROW) drawPictWeapon_[index] = (int)WeaponObjectManager::WEAPON_TYPE::WT_THROW;
+    else if(weapon->GetWeaponType() == WeaponObjectManager::WEAPON_TYPE::WT_MELEE) drawPictWeapon_[index] = (int)WeaponObjectManager::WEAPON_TYPE::WT_MELEE;
 
     //boxのサイズに合わせる
     XMFLOAT3 size1 = Image::GetTextureSize(hPictSelect_[0]);

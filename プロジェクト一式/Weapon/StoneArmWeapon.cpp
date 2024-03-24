@@ -37,7 +37,7 @@ void StoneArmWeapon::Initialize()
 
     type_ = WeaponObjectManager::WEAPON_TYPE::WT_STONE;
     pPlayer_ = GameManager::GetPlayer();
-    durance_ = 100;
+    durance_ = 3;
     float size = 1.0f;
     transform_.scale_ = { size, size, size };
     

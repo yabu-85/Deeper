@@ -34,7 +34,7 @@ HRESULT Text::Initialize(const char* fileName, const unsigned int charWidth, con
 
 
 //描画（文字列）
-void Text::Draw(int x, int y, const char* str)
+void Text::Draw(int x, int y, const char* str, int type)
 {
 	//表示位置（左上）を計算
 	//Spriteクラスは中心が(0,0)、右上が(1,1)という座標だが、ここの引数は左上を(0,0)、ドット単位で指定している
@@ -69,7 +69,7 @@ void Text::Draw(int x, int y, const char* str)
 		Image::SetRect(hPict_, width_ * x, height_ * y, width_, height_);
 		
 		//表示
-		Image::Draw(hPict_);
+		Image::Draw(hPict_, type);
 
 		//次の位置にずらす
 		px += width_ / (float)(Direct3D::screenWidth_ / 2.0f);
@@ -77,13 +77,13 @@ void Text::Draw(int x, int y, const char* str)
 }
 
 //描画（整数値）
-void Text::Draw(int x, int y, int value)
+void Text::Draw(int x, int y, int value, int type)
 {
 	//文字列に変換
 	char str[256];
 	sprintf_s(str, "%d", value);
 
-	Draw(x, y, str);
+	Draw(x, y, str, type);
 }
 
 //解放

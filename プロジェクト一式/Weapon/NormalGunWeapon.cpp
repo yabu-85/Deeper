@@ -32,7 +32,7 @@ void NormalGunWeapon::Initialize()
     type_ = WeaponObjectManager::WEAPON_TYPE::WT_THROW;
     pPlayer_ = static_cast<Player*>(GetParent());
     transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
-    durance_ = 5;
+    durance_ = 6;
     
     Model::GetBoneIndex(pPlayer_->GetModelHandle(), "Weapon", &boneIndex_, &partIndex_);
     assert(boneIndex_ >= 0);

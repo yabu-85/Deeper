@@ -6,7 +6,7 @@
 
 PolyLine::PolyLine() :
 	WIDTH_(0.3f),	   //太さ
-	LENGTH_(60),	   //長さ（あくまで位置を記憶する数で、実際の長さは移動速度によって変わる）
+	LENGTH_(50),	   //長さ（あくまで位置を記憶する数で、実際の長さは移動速度によって変わる）
 	alpha_(1.0f),      //透明度 (最初は透明にしないでおく)
 	moveAlpha_(false), //徐々に透明にしてく
 	smooth_(2),
@@ -22,9 +22,9 @@ void PolyLine::ResetPosition()
 {
 	//リストの先頭に現在位置を追加
 	positions_.clear();
-	polyList_.clear();
+	positionsSub_.clear();
 	positions_.push_front(XMFLOAT3(0,0,0));
-	polyList_.push_front({ XMFLOAT3(0, 0, 0), XMFLOAT3(0, 0, 0 )});
+	positionsSub_.push_front(XMFLOAT3(0, 0, 0));
 	
 	alpha_ = 1.0f;
 	first_ = true;
@@ -50,22 +50,21 @@ void PolyLine::ResetPosition()
 	delete vertices;
 }
 
-void PolyLine::AddPosition(XMFLOAT3 pos1, XMFLOAT3 pos2)
+void PolyLine::ClearLastPositions()
 {
-	if (first_) {
-		positions_.clear();
-		polyList_.clear();
-		first_ = false;
-	}
+	//firstならListに値内から終わる
+	if (first_) return;
 
-	positions_.push_back(pos1);
-	polyList_.push_back({ pos1, pos2 });
+	//データの後ろから消してく
+	positions_.pop_back();
+	positionsSub_.pop_back();
 
-	//指定の長さを超えてたら終端のデータを削除
-	if (positions_.size() > LENGTH_)
+	//データなくなったらfirstをtureに
+	if (positions_.size() <= 0)
 	{
-		positions_.pop_front();
-		polyList_.pop_front();
+		positions_.push_front(XMFLOAT3(0, 0, 0));
+		positionsSub_.push_front(XMFLOAT3(0, 0, 0));
+		first_ = true;
 	}
 
 	//頂点バッファをクリア（今から作るから）
@@ -76,29 +75,102 @@ void PolyLine::AddPosition(XMFLOAT3 pos1, XMFLOAT3 pos2)
 
 	//頂点データを作る
 	int index = 0;
-	auto itr = polyList_.begin();
+	auto itr = positions_.begin();
+	auto itrSub = positionsSub_.begin();
 	for (int i = 0; i < LENGTH_; i++)
 	{
-		//記憶してた位置
-		XMVECTOR vPos1 = XMLoadFloat3(&(*itr).position1);
-		XMVECTOR vPos2 = XMLoadFloat3(&(*itr).position2);
+		//記憶してた位置取得
+		XMVECTOR vPos1 = XMLoadFloat3(&(*itr));
+		XMVECTOR vPos2 = XMLoadFloat3(&(*itrSub));
+
+		itr++;
+		itrSub++;
+		if (itr == positions_.end()) break;
+
+		//頂点情報を入れていく
+		XMFLOAT3 pos;
+		XMStoreFloat3(&pos, vPos1);
+		VERTEX vertex1 = { pos, XMFLOAT3((float)i / (float)LENGTH_, 1, 0) };
+
+		XMStoreFloat3(&pos, vPos2);
+		VERTEX vertex2 = { pos, XMFLOAT3((float)i / (float)LENGTH_, 0, 0) };
+
+		vertices[index] = vertex1;
+		index++;
+		vertices[index] = vertex2;
+		index++;
+	}
+
+	// 頂点データ用バッファの設定
+	D3D11_BUFFER_DESC bd_vertex;
+	bd_vertex.ByteWidth = sizeof(VERTEX) * LENGTH_ * 2;
+	bd_vertex.Usage = D3D11_USAGE_DEFAULT;
+	bd_vertex.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd_vertex.CPUAccessFlags = 0;
+	bd_vertex.MiscFlags = 0;
+	bd_vertex.StructureByteStride = 0;
+	D3D11_SUBRESOURCE_DATA data_vertex;
+	data_vertex.pSysMem = vertices;
+	Direct3D::pDevice_->CreateBuffer(&bd_vertex, &data_vertex, &pVertexBuffer_);
+
+	delete[] vertices;
+}
+
+void PolyLine::AddPosition(XMFLOAT3 pos1, XMFLOAT3 pos2)
+{
+	if (first_) {
+		positions_.clear();
+		positionsSub_.clear();
+		first_ = false;
+	}
+
+	positions_.push_front(pos1);
+	positionsSub_.push_front(pos2);
+
+	//指定の長さを超えてたら終端のデータを削除
+	if (positions_.size() > LENGTH_)
+	{
+		positions_.pop_back();
+		positionsSub_.pop_back();
+	}
+
+	//頂点バッファをクリア（今から作るから）
+	SAFE_RELEASE(pVertexBuffer_);
+
+	//頂点データを作るための配列を準備
+	VERTEX* vertices = new VERTEX[LENGTH_ * 2];
+
+	//頂点データを作る
+	int index = 0;
+	auto itr = positions_.begin();
+	auto itrSub = positionsSub_.begin();
+	for (int i = 0; i < LENGTH_; i++)
+	{
+		//記憶してた位置取得
+		XMVECTOR vPos1 = XMLoadFloat3(&(*itr));
+		XMVECTOR vPos2 = XMLoadFloat3(&(*itrSub));
 
 		if (smooth_ >= 1) {
 			int firstI = i - smooth_;
 			int endI = i + smooth_;
-			int max = (int)polyList_.size();
+			int max = (int)positions_.size();
 			if (firstI >= 0 && endI < max) {
 				//smoothの数でイテレータを計算
 				auto it = itr;
-				for (int i = 0; i < smooth_; i++) it--;
+				auto itSub = itrSub;
+				for (int i = 0; i < smooth_; i++) {
+					it--;
+					itSub--;
+				}
 
 				//smooth＊２＋１の平均を求める
 				XMVECTOR addVec1 = XMVectorZero();
 				XMVECTOR addVec2 = XMVectorZero();
 				for (int j = firstI; j <= endI; j++) {
-					addVec1 += XMLoadFloat3(&(*it).position1);
-					addVec2 += XMLoadFloat3(&(*it).position2);
+					addVec1 += XMLoadFloat3(&(*it));
+					addVec2 += XMLoadFloat3(&(*itSub));
 					it++;
+					itSub++;
 				}
 				vPos1 = addVec1 * (1.0f / ((float)smooth_ * 2.0f + 1.0f));
 				vPos2 = addVec2 * (1.0f / ((float)smooth_ * 2.0f + 1.0f));
@@ -117,15 +189,16 @@ void PolyLine::AddPosition(XMFLOAT3 pos1, XMFLOAT3 pos2)
 		index++;
 		vertices[index] = vertex2;
 		index++;
-		
+
 		itr++;
-		if (itr == polyList_.end()) break;
+		itrSub++;
+		if (itr == positions_.end()) break;
 
 	}
 
 	// 頂点データ用バッファの設定
 	D3D11_BUFFER_DESC bd_vertex;
-	bd_vertex.ByteWidth = sizeof(VERTEX) * LENGTH_;
+	bd_vertex.ByteWidth = sizeof(VERTEX) * LENGTH_ * 2;
 	bd_vertex.Usage = D3D11_USAGE_DEFAULT;
 	bd_vertex.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd_vertex.CPUAccessFlags = 0;
@@ -283,4 +356,5 @@ void PolyLine::Release()
 	SAFE_RELEASE(pConstantBuffer_);
 	SAFE_RELEASE(pVertexBuffer_);
 	positions_.clear();
+	positionsSub_.clear();
 }

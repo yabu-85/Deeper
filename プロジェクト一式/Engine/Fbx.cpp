@@ -1,8 +1,5 @@
 #include "Fbx.h"
-#include "Direct3D.h"
 #include "FbxParts.h"
-
-
 
 Fbx::Fbx():_animSpeed(0)
 {
@@ -156,10 +153,10 @@ XMFLOAT3 Fbx::GetBoneAniBlendRotate(int index, int partIndex, int frame1, int fr
 	return parts_[partIndex]->GetBoneRotate(index, time1, time2, blendFactor);
 }
 
-void Fbx::Draw(Transform& transform, int type, int frame1, int frame2, float blendFactor)
+void Fbx::Draw(Transform& transform, Direct3D::SHADER_TYPE shader, int frame1, int frame2, float blendFactor)
 {
 	Direct3D::SetBlendMode(Direct3D::BLEND_DEFAULT);
-	Direct3D::SetShader((Direct3D::SHADER_TYPE)type);
+	Direct3D::SetShader(shader);
 
 	//パーツを1個ずつ描画
 	for (int k = 0; k < parts_.size(); k++)
@@ -178,10 +175,10 @@ void Fbx::Draw(Transform& transform, int type, int frame1, int frame2, float ble
 	}
 }
 
-void Fbx::Draw(Transform& transform, int type, int frame)
+void Fbx::Draw(Transform& transform, Direct3D::SHADER_TYPE shader, int frame)
 {
 	Direct3D::SetBlendMode(Direct3D::BLEND_DEFAULT);
-	Direct3D::SetShader((Direct3D::SHADER_TYPE)type);
+	Direct3D::SetShader(shader);
 
 	//パーツを1個ずつ描画
 	for (int k = 0; k < parts_.size(); k++)

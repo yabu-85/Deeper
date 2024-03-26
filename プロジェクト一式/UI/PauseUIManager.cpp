@@ -37,10 +37,10 @@ void PauseUIManager::Draw()
 {
 	Image::SetFullScreenTransform(hPict_[1]);
 	Image::SetAlpha(hPict_[1], 150);
-	Image::Draw(hPict_[1], 0);
+	Image::Draw(hPict_[1]);
 
 	Image::SetTransform(hPict_[0], pauseTrans_);
-	Image::Draw(hPict_[0], 0);
+	Image::Draw(hPict_[0]);
 
 	UIManager::Draw();
 }

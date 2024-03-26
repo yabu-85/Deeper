@@ -9,7 +9,9 @@ class DamageController;
 
 class MainSwordWeapon : public WeaponBase
 {
-    XMFLOAT3 wandPos_;
+    int polyCreatTime_;     //ポリゴンの作成時間
+    XMFLOAT3 wandPos_;      //プレイヤーの手のポジション
+
     Player* pPlayer_;
     SegmentCollider* seg_;
     PolyLine* pPolyLine_;
@@ -27,13 +29,13 @@ public:
 
     void ResetState() override;
     void CalcSwordTrans();
+    void SetPolyCreatTime(int time) { polyCreatTime_ = time; }
 
     void DamageInfoReset();
     void SetDamageInfoCombo1();
     void SetDamageInfoCombo2();
     void SetDamageInfoCombo3();
 
-    PolyLine* GetPolyLine() { return pPolyLine_; }
     SegmentCollider* GetSegmentCollider() { return seg_; }
 };
 

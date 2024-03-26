@@ -30,7 +30,7 @@ TitleUIManager::~TitleUIManager()
 void TitleUIManager::Draw()
 {
 	Image::SetTransform(hPict_, titleTrans_);
-	Image::Draw(hPict_, 0);
+	Image::Draw(hPict_);
 
 	UIManager::Draw();
 }

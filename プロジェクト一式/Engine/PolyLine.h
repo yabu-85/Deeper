@@ -21,12 +21,8 @@ class PolyLine
 	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ
 	Texture* pTexture_;	            //画像
 
-	struct PolyList {
-		XMFLOAT3 position1;
-		XMFLOAT3 position2;
-	};
-	list<PolyList> polyList_;
 	list<XMFLOAT3> positions_;	    //過去length_回分の位置
+	list<XMFLOAT3> positionsSub_;	//座標を指定したバージョンで使用
 
 	float alpha_;                   //透明度
 	bool  moveAlpha_;               //徐々に透明にしておく
@@ -35,7 +31,11 @@ public:
 	//コンストラクタ
 	PolyLine();
 
+	//全てのポジションをリセット
 	void ResetPosition();
+
+	//一番後ろのデータを消す
+	void ClearLastPositions();
 
 	//現在の位置を記憶させる
 	//引数：pos1, pos2 記憶させる位置

@@ -26,7 +26,7 @@ namespace TransitionEffect {
 	void Draw() {
 		if (type_ == TYPE_MAX) return;
 		
-		pSprite_[(int)type_]->Draw(transform_, rect_, alpha_, 0);
+		pSprite_[(int)type_]->Draw(transform_, rect_, alpha_);
 		alpha_ -= alphaDecrease_;
 	}
 

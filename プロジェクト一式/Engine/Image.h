@@ -38,6 +38,7 @@ namespace Image
 		ImageData() : pSprite(nullptr)
 		{
 			fileName = "";
+			rect = RECT();
 			alpha = 1.0f;
 			pSprite = nullptr;
 		}
@@ -54,7 +55,7 @@ namespace Image
 
 	//描画
 	//引数：handle	描画したい画像の番号
-	void Draw(int handle, int type = 1);
+	void Draw(int handle, Direct3D::BLEND_MODE blend = Direct3D::BLEND_MODE::BLEND_DEFAULT);
 
 	//任意の画像を開放
 	//引数：handle	開放したいモデルの番号

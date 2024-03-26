@@ -30,7 +30,7 @@ ResultUIManager::~ResultUIManager()
 void ResultUIManager::Draw()
 {
 	Image::SetTransform(hPict_, resultTrans_);
-	Image::Draw(hPict_, 0);
+	Image::Draw(hPict_);
 
 	UIManager::Draw();
 }

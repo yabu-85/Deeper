@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include "Direct3D.h"
 #include "Text.h"
 
 Text::Text() : hPict_(-1), width_(16), height_(32), fileName_("Text/char.png"), rowLength_(16)
@@ -34,7 +33,7 @@ HRESULT Text::Initialize(const char* fileName, const unsigned int charWidth, con
 
 
 //描画（文字列）
-void Text::Draw(int x, int y, const char* str, int type)
+void Text::Draw(int x, int y, const char* str, Direct3D::BLEND_MODE blend)
 {
 	//表示位置（左上）を計算
 	//Spriteクラスは中心が(0,0)、右上が(1,1)という座標だが、ここの引数は左上を(0,0)、ドット単位で指定している
@@ -69,7 +68,7 @@ void Text::Draw(int x, int y, const char* str, int type)
 		Image::SetRect(hPict_, width_ * x, height_ * y, width_, height_);
 		
 		//表示
-		Image::Draw(hPict_, type);
+		Image::Draw(hPict_, blend);
 
 		//次の位置にずらす
 		px += width_ / (float)(Direct3D::screenWidth_ / 2.0f);
@@ -77,13 +76,13 @@ void Text::Draw(int x, int y, const char* str, int type)
 }
 
 //描画（整数値）
-void Text::Draw(int x, int y, int value, int type)
+void Text::Draw(int x, int y, int value, Direct3D::BLEND_MODE blend)
 {
 	//文字列に変換
 	char str[256];
 	sprintf_s(str, "%d", value);
 
-	Draw(x, y, str, type);
+	Draw(x, y, str, blend);
 }
 
 //解放

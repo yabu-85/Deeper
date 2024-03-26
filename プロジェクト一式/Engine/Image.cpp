@@ -73,14 +73,14 @@ namespace Image
 
 
 	//•`‰æ
-	void Draw(int handle, int type)
+	void Draw(int handle, Direct3D::BLEND_MODE blend)
 	{
 		if (handle < 0 || handle >= _datas.size() || _datas[handle] == nullptr)
 		{
 			return;
 		}
 		_datas[handle]->transform.Calclation();
-		_datas[handle]->pSprite->Draw(_datas[handle]->transform, _datas[handle]->rect, _datas[handle]->alpha, type);
+		_datas[handle]->pSprite->Draw(_datas[handle]->transform, _datas[handle]->rect, _datas[handle]->alpha, blend);
 	}
 
 

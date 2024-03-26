@@ -58,9 +58,9 @@ void LifeManager::Draw()
 	rect.bottom = (long)size.y;
 
 	pic0Pos.Calclation();
-	pSprite_[0]->Draw(pic0Pos, rect, 1.0f, 0);
+	pSprite_[0]->Draw(pic0Pos, rect, 1.0f);
 	pic1Pos.Calclation();
-	pSprite_[1]->Draw(pic1Pos, rect, 1.0f, 0);
+	pSprite_[1]->Draw(pic1Pos, rect, 1.0f);
 
 	//ダメージ画像の表示
 	if (damageTime_ > 0) DamageEffectDraw();
@@ -93,7 +93,7 @@ void LifeManager::DamageEffectDraw()
 	float a = (float)damageTime_ / (float)DEFAULF_DAMAGE_TIME;
 
 	pic0Pos.Calclation();
-	pSprite_[2]->Draw(trans, rect, a, 0);
+	pSprite_[2]->Draw(trans, rect, a);
 
 }
 

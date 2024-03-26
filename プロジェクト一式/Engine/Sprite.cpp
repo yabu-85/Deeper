@@ -101,11 +101,11 @@ void Sprite::InitIndex()
 
 
 
-void Sprite::Draw(Transform& transform, RECT rect, float alpha, int type)
+void Sprite::Draw(Transform& transform, RECT rect, float alpha, Direct3D::BLEND_MODE blend)
 {
 	//Ç¢ÇÎÇ¢ÇÎê›íË
 	Direct3D::SetShader(Direct3D::SHADER_2D);
-	Direct3D::SetBlendMode(Direct3D::BLEND_MODE(type));
+	Direct3D::SetBlendMode(blend);
 
 	UINT stride = sizeof(VERTEX);
 	UINT offset = 0;

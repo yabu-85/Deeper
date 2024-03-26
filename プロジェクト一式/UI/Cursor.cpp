@@ -30,6 +30,6 @@ void Cursor::Draw()
 	cPos = { cPos.x / Direct3D::screenWidth_, cPos.y / Direct3D::screenHeight_, 1.0f };
 	t.position_ = { (cPos.x + scale_.x) * 2.0f - 1.0f, (cPos.y + scale_.y) * -2.0f + 1.0f, 1.0f };
 	Image::SetTransform(hPict_, t);
-	Image::Draw(hPict_, 0);
+	Image::Draw(hPict_);
 
 }

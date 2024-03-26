@@ -6,6 +6,7 @@
 #include "string"
 #include "Texture.h"
 #include "Transform.h"
+#include "Direct3D.h"
 
 using namespace DirectX;
 
@@ -71,7 +72,7 @@ public:
 	//引数：matrix	変換行列（ワールド行列）
 	//引数：rect	画像の切り抜き範囲
 	//引数：alpha	アルファ値（不透明度）
-	void Draw(Transform& transform, RECT rect, float alpha, int type);
+	void Draw(Transform& transform, RECT rect, float alpha, Direct3D::BLEND_MODE blend = Direct3D::BLEND_MODE::BLEND_DEFAULT);
 
 
 	//画像サイズの取得

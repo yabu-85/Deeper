@@ -13,8 +13,12 @@
 #include "../Enemy/EnemyManager.h"
 
 namespace {
+    static const int POLY_DRAW_TIME = 10;
+    static const int POLY_SMOOTH = 2;
+
     static const float WEAPON_SIZE = 1.2f;
-    static const float MOVE_SPEED = 0.3f;
+    static const float BLEND_= 1.2f;
+    static const float MOVE_SPEED = 0.4f;
     static const float ROTATE_RATIO = 0.2f;
 
     static const int ATTACK_DAMAGE1 = 20;
@@ -37,7 +41,8 @@ namespace {
 }
 
 MainSwordWeapon::MainSwordWeapon(GameObject* parent)
-	: WeaponBase(parent, "MainSwordWeapon"), pPlayer_(nullptr), seg_(nullptr), wandPos_(0,0,0), pPolyLine_(nullptr), pDamageController_(nullptr)
+	: WeaponBase(parent, "MainSwordWeapon"), polyCreatTime_(0), wandPos_(0, 0, 0),
+    pPlayer_(nullptr), seg_(nullptr), pPolyLine_(nullptr), pDamageController_(nullptr)
 {
     transform_.pParent_ = nullptr;
 }
@@ -68,12 +73,19 @@ void MainSwordWeapon::Initialize()
 
     pPolyLine_ = new PolyLine;
     pPolyLine_->Load("PolyImage/Sword.png");
+    pPolyLine_->SetLength(POLY_DRAW_TIME);
+    pPolyLine_->SetSmooth(POLY_SMOOTH);
 
     pDamageController_ = new DamageController();
 }
 
 void MainSwordWeapon::Update()
 {
+    //ƒ|ƒŠƒSƒ“‚ðŒã‚ë‚©‚çÁ‚µ‚Ä‚­
+    if (polyCreatTime_ > 0) {
+        polyCreatTime_--;
+        pPolyLine_->ClearLastPositions();
+    }
 
 }
 
@@ -203,6 +215,11 @@ MainSwordWeaponCombo1::MainSwordWeaponCombo1(StateManager* owner) : StateBase(ow
 void MainSwordWeaponCombo1::Update()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
+    int comboTime = p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK1).endFrame -
+                    p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK1).startFrame;
+    time_++;
+
     if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
         float rRatio = (float)time_ / (float)ROTATE_FRAME[1];
         if (p->GetAim()->IsTarget()) p->AimTargetRotate(rRatio);
@@ -210,19 +227,14 @@ void MainSwordWeaponCombo1::Update()
     }
 
     p->CalcNoMove();
-    p->FrontMove(MOVE_SPEED);
+    p->FrontMove((1.0f - float(time_) / (float)comboTime) * MOVE_SPEED);
+    m->GetSegmentCollider()->SetValid(false);
+    
+    if(time_ >= ANIM_ATTACK_FRAME1[0] && time_ <= ANIM_ATTACK_FRAME1[1]) m->CalcSwordTrans();
+    if (time_ == ANIM_ATTACK_FRAME1[1]) m->SetPolyCreatTime(POLY_DRAW_TIME);
+    if (time_ == ANIM_AUDIO_FRAME1) AudioManager::Play(AUDIO_ID::SWORD_WIELD_1);
     if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;
 
-    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    m->GetSegmentCollider()->SetValid(false);
-    if(time_ >= ANIM_ATTACK_FRAME1[0] && time_ <= ANIM_ATTACK_FRAME1[1])
-    m->CalcSwordTrans();
-    
-    if (time_ == ANIM_AUDIO_FRAME1) AudioManager::Play(AUDIO_ID::SWORD_WIELD_1);
-
-    time_++;
-    int comboTime = p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK1).endFrame -
-                    p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK1).startFrame;
     if (time_ >= comboTime) {
         if (next_ == true) {
             owner_->ChangeState("Combo2");
@@ -233,19 +245,18 @@ void MainSwordWeaponCombo1::Update()
 
 void MainSwordWeaponCombo1::OnEnter()
 {
+    Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
+    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK1, 0.3f);
+    m->SetDamageInfoCombo1();
     time_ = 0;
     next_ = false;
-    Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK1, 0.3f);
 
-    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    m->SetDamageInfoCombo1();
 }
 
 void MainSwordWeaponCombo1::OnExit()
 {
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    m->GetPolyLine()->ResetPosition();
     m->DamageInfoReset();
 
 }
@@ -259,6 +270,11 @@ MainSwordWeaponCombo2::MainSwordWeaponCombo2(StateManager* owner) : StateBase(ow
 void MainSwordWeaponCombo2::Update()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
+    int comboTime = p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK2).endFrame -
+                    p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK2).startFrame;
+    time_++;
+
     if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
         float rRatio = (float)time_ / (float)ROTATE_FRAME[1];
         if (p->GetAim()->IsTarget()) p->AimTargetRotate(rRatio);
@@ -266,19 +282,14 @@ void MainSwordWeaponCombo2::Update()
     }
 
     p->CalcNoMove();
-    p->FrontMove(MOVE_SPEED);
+    p->FrontMove((1.0f - float(time_) / (float)comboTime) * MOVE_SPEED);
+    m->GetSegmentCollider()->SetValid(false);
+    
+    if (time_ >= ANIM_ATTACK_FRAME2[0] && time_ <= ANIM_ATTACK_FRAME2[1]) m->CalcSwordTrans();
+    if (time_ == ANIM_ATTACK_FRAME2[1]) m->SetPolyCreatTime(POLY_DRAW_TIME);
+    if (time_ == ANIM_AUDIO_FRAME2) AudioManager::Play(AUDIO_ID::SWORD_WIELD_2);
     if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;
 
-    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    m->GetSegmentCollider()->SetValid(false);
-    if (time_ >= ANIM_ATTACK_FRAME2[0] && time_ <= ANIM_ATTACK_FRAME2[1])
-    m->CalcSwordTrans();
-
-    if (time_ == ANIM_AUDIO_FRAME2) AudioManager::Play(AUDIO_ID::SWORD_WIELD_2);
-
-    time_++;
-    int comboTime = p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK2).endFrame -
-        p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK2).startFrame;
     if (time_ >= comboTime) {
         if (next_ == true) {
             owner_->ChangeState("Combo3");
@@ -289,19 +300,18 @@ void MainSwordWeaponCombo2::Update()
 
 void MainSwordWeaponCombo2::OnEnter()
 {
+    Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
+    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK2, 0.3f);
+    m->SetDamageInfoCombo2();
     time_ = 0;
     next_ = false;
-    Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK2, 0.3f);
 
-    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    m->SetDamageInfoCombo2();
 }
 
 void MainSwordWeaponCombo2::OnExit()
 {
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    m->GetPolyLine()->ResetPosition();
     m->DamageInfoReset();
 
 }
@@ -315,6 +325,11 @@ MainSwordWeaponCombo3::MainSwordWeaponCombo3(StateManager* owner) : StateBase(ow
 void MainSwordWeaponCombo3::Update()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
+    int comboTime = p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK3).endFrame -
+                    p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK3).startFrame;
+    time_++;
+
     if (time_ >= ROTATE_FRAME[0] && time_ <= ROTATE_FRAME[1]) {
         float rRatio = (float)time_ / (float)ROTATE_FRAME[1];
         if (p->GetAim()->IsTarget()) p->AimTargetRotate(rRatio);
@@ -322,19 +337,14 @@ void MainSwordWeaponCombo3::Update()
     }
     
     p->CalcNoMove();
-    p->FrontMove(MOVE_SPEED);
+    p->FrontMove((1.0f - float(time_) / (float)comboTime) * MOVE_SPEED);
+    m->GetSegmentCollider()->SetValid(false);
+    
+    if (time_ >= ANIM_ATTACK_FRAME3[0] && time_ <= ANIM_ATTACK_FRAME3[1]) m->CalcSwordTrans();
+    if (time_ == ANIM_ATTACK_FRAME3[1]) m->SetPolyCreatTime(POLY_DRAW_TIME);
+    if (time_ == ANIM_AUDIO_FRAME3) AudioManager::Play(AUDIO_ID::SWORD_WIELD_3);
     if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;
 
-    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    m->GetSegmentCollider()->SetValid(false);
-    if (time_ >= ANIM_ATTACK_FRAME3[0] && time_ <= ANIM_ATTACK_FRAME3[1])
-    m->CalcSwordTrans();
-
-    if (time_ == ANIM_AUDIO_FRAME3) AudioManager::Play(AUDIO_ID::SWORD_WIELD_3);
-
-    time_++;
-    int comboTime = p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK3).endFrame -
-        p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::ATTACK3).startFrame; 
     if (time_ >= comboTime) {
         if (next_ == true) {
             owner_->ChangeState("Combo1");
@@ -345,19 +355,18 @@ void MainSwordWeaponCombo3::Update()
 
 void MainSwordWeaponCombo3::OnEnter()
 {
+    Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
+    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
+    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK3, 1.0f, 1.0f);
+    m->SetDamageInfoCombo3();
     time_ = 0;
     next_ = false;
-    Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK3, 1.0f, 1.0f);
 
-    MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    m->SetDamageInfoCombo3();
 }
 
 void MainSwordWeaponCombo3::OnExit()
 {
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    m->GetPolyLine()->ResetPosition();
     m->DamageInfoReset();
 
 }

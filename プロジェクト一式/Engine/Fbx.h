@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "Transform.h"
+#include "Direct3D.h"
 
 class FbxParts;
 
@@ -79,11 +80,11 @@ public:
 
 	//描画
 	//引数：World	ワールド行列
-	void    Draw(Transform& transform, int type, int frame1, int frame2, float blendFactor);
+	void    Draw(Transform& transform, Direct3D::SHADER_TYPE shader, int frame1, int frame2, float blendFactor);
 
 	//描画
 	//引数：World	ワールド行列
-	void    Draw(Transform& transform, int type, int frame);
+	void    Draw(Transform& transform, Direct3D::SHADER_TYPE shader, int frame);
 
 	//解放
 	void    Release();

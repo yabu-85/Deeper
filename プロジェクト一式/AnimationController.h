@@ -8,21 +8,25 @@ struct AnimeData {
 
 class AnimationController
 {
-	int modelNum_;
-	int currentAnime_;
-	float currentBlend_;
-	float blendRed_;
-	std::vector<AnimeData> animeDatas_;
+	int modelNum_;			//担当してるモデル番号
+	int currentAnime_;		//今再生しているAnimationのId
+	float currentBlend_;	//今のBlendの強さ
+	float blendDecrease_;	//currentBlendを1フレームで下げる値
+	std::vector<AnimeData> animeDatas_;	//全てのデータを保存
 
 public:
 	AnimationController(int number);
+	void Update();
+
+	//アニメーションデータを追加
 	void AddAnime(int s, int e);
+
+	//アニメーションデータの取得
 	AnimeData GetAnim(int id);
 
-	//redはblendFactorを１フレームごとに下げる値（整数で
-	void SetNextAnime(int id, float blendFactor, float red);
-	void SetNextAnime(int id, float red);
+	//次のアニメーションを設定（BlendFactorを手動で設定
+	void SetNextAnime(int id, float blendFactor, float decrease);
 
-	void Update();
+	//次のアニメーションを設定（BlendFactorを自動で設定
+	void SetNextAnime(int id, float decrease);
 };
-

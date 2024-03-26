@@ -51,12 +51,12 @@ void PlayerWeapon::DrawWeapon()
     for (int i = 0; i < 2; i++) {
         //セレクトボックスの表示
         Image::SetTransform(hPictSelect_[drawPictSelect_[i]], boxTrans_[i]);
-        Image::Draw(hPictSelect_[drawPictSelect_[i]], 0);
+        Image::Draw(hPictSelect_[drawPictSelect_[i]]);
 
         //持ってる武器のImageの表示
         if (drawPictWeapon_[i] != -1) {
             Image::SetTransform(hPictWeapon_[drawPictWeapon_[i]], weaponTrans_[i]);
-            Image::Draw(hPictWeapon_[drawPictWeapon_[i]], 0);
+            Image::Draw(hPictWeapon_[drawPictWeapon_[i]]);
             
             XMFLOAT2 pos = { weaponTrans_[i].position_.x, weaponTrans_[i].position_.y };
             pos.x = (pos.x + 1.0f) / 2.0f;
@@ -65,7 +65,7 @@ void PlayerWeapon::DrawWeapon()
             pos.y += WEAPON_DURANCE_POSITION.y;
             pos.x = (pos.x * (float)Direct3D::screenWidth_);
             pos.y = (pos.y * (float)Direct3D::screenHeight_);
-            pText->Draw((int)pos.x, (int)pos.y, pSubWeapon_[i]->GetDurability(), 0);
+            pText->Draw((int)pos.x, (int)pos.y, pSubWeapon_[i]->GetDurability());
         }
     }
 }

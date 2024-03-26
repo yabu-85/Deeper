@@ -71,14 +71,14 @@ void Interaction::Draw() {
 		t.position_ = { pos.x, pos.y, 1.0f };
 		t.scale_ = { 1.0f, 1.0f, 1.0f };
 		t.Calclation();
-		interactImage_->Draw(t, rect, 1.0f, 0);
+		interactImage_->Draw(t, rect, 1.0f);
 
 		float ysub = ((float)rect.bottom / (float)Direct3D::screenHeight_);
 		t.position_.y -= ysub * (1.0f - parcent_);
 		t.Calclation();
 		rect.top = (LONG)((float)rect.bottom * (1.0f - parcent_));
 		rect.bottom = (LONG)((float)rect.bottom * parcent_);
-		interactImageSelect_->Draw(t, rect, 1.0f, 0);
+		interactImageSelect_->Draw(t, rect, 1.0f);
 	}
 }
 

@@ -41,7 +41,7 @@ void CreateStage::Draw()
         trans.position_ = intersectDatas_.at(i).position;
         trans.scale_ = intersectDatas_.at(i).scale;
         Model::SetTransform(handle, trans);
-        Model::Draw(handle);
+        Model::Draw(handle, Direct3D::SHADER_SKYBOX);
     }
 }
 

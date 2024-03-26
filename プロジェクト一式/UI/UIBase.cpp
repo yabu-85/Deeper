@@ -47,13 +47,13 @@ void UIBase::Draw()
 
 	//押してない時はfalse(0)だから１が表示される
 	Image::SetTransform(hPict_[isBound_], transform_);
-	Image::Draw(hPict_[isBound_], 0);
+	Image::Draw(hPict_[isBound_]);
 
 	//テキストの大きさは変えずに表示
 	Transform text = transform_;
 	text.scale_ = { BUTTON_SIZE.x, BUTTON_SIZE.y, 1.f };
 	Image::SetTransform(hPict_[2], text);
-	Image::Draw(hPict_[2], 0);
+	Image::Draw(hPict_[2]);
 
 }
 

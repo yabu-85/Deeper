@@ -1,5 +1,6 @@
 #pragma once
 #include "Image.h"
+#include "Direct3D.h"
 
 class Text
 {
@@ -29,12 +30,12 @@ public:
 	//描画（文字列）
 	//引数：x, y	表示位置（左上）
 	//引数：str		表示したい文字列
-	void Draw(int x, int y, const char* str, int type = 1);
+	void Draw(int x, int y, const char* str, Direct3D::BLEND_MODE blend = Direct3D::BLEND_MODE::BLEND_DEFAULT);
 
 	//描画（整数値）
 	//引数：x, y	表示位置（左上）
 	//引数：value	表示したい値
-	void Draw(int x, int y, int value, int type = 1);
+	void Draw(int x, int y, int value, Direct3D::BLEND_MODE blend = Direct3D::BLEND_MODE::BLEND_DEFAULT);
 
 	//解放
 	void Release();

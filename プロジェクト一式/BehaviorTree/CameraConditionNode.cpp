@@ -11,7 +11,7 @@ IsEnemyWithinScreen::Status IsEnemyWithinScreen::Update()
     XMFLOAT3 pos = pEnemyBase_->GetPosition();
     float height = pEnemyBase_->GetAimTargetPos();
     pos.y += height;
-    if (Camera::IsPositionWithinScreen(pos, 1.0f)) {
+    if (Camera::IsWorldPositionWithinScreen(pos, 1.0f)) {
         return child_->Tick();
     }
 

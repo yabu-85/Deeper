@@ -91,14 +91,14 @@ void StoneArmWeapon::Release()
 
 void StoneArmWeapon::ResetState()
 {
-    atkEnd_ = true;
+    isAtkEnd_ = true;
     pStateManager_->ChangeState("");
 }
 
 void StoneArmWeapon::ChangeAttackState()
 {
     pStateManager_->ChangeState("Combo1");
-    atkEnd_ = false;
+    isAtkEnd_ = false;
 }
 
 void StoneArmWeapon::OnAttackCollision(GameObject* pTarget)
@@ -159,7 +159,7 @@ void StoneArmWeaponCombo1::OnEnter()
 {
     time_ = 0;
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    Model::SetAnimFrame(p->GetModelHandle(), 700, 800, 1.0f);
+    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::STONE_ATTACK, 0.2f);
 
 }
 

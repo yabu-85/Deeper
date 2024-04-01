@@ -119,7 +119,9 @@ void MeleeFighter::Draw()
 
 	CollisionDraw();
 	pEnemyUi_->Draw();
-	
+
+	pMoveAction_->Draw();
+
 	for (int i = 0; i < 2; i++) pPolyLine_[i]->Draw();
 }
 

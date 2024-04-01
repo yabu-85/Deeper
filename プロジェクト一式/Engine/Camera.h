@@ -34,7 +34,9 @@ namespace Camera
 	XMMATRIX GetBillboardMatrix();
 
 	//引数の座標が画面内かどうか
-	bool IsPositionWithinScreen(XMFLOAT3 pos, float size = 1.0f);
+	bool IsWorldPositionWithinScreen(XMFLOAT3 pos, float size = 1.0f);
+	//引数の座標が画面内かどうか
+	bool IsScreenPositionWithinScreen(XMFLOAT3 pos, float size = 1.0f);
 
 	//画面のどこのポジションかどうか計算
 	XMFLOAT3 CalcScreenPosition(XMFLOAT3 pos);

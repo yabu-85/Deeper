@@ -107,6 +107,7 @@ void ThrowEnemy::Draw()
 	CollisionDraw();
 	pEnemyUi_->Draw();
 
+	pMoveAction_->Draw();
 }
 
 void ThrowEnemy::Release()

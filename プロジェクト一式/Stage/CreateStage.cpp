@@ -23,7 +23,7 @@ CreateStage::~CreateStage()
 
 void CreateStage::Initialize()
 {
-    std::string fileName[MAX] = { "StageT1", "StageT2", "RayStageT1", "RayStageT2"};
+    std::string fileName[MAX] = { "StageT1", "StageT2", "StageT3", "RayStageT1", "RayStageT2", "RayStageT3" };
     for (int i = 0; i < MAX; i++) {
         if (fileName[i] != "none") {
             hModel_[i] = Model::Load("Model/Stage/" + fileName[i] + ".fbx");
@@ -45,12 +45,14 @@ void CreateStage::Draw()
     }
 }
 
-XMFLOAT3 CreateStage::GetRandomFloarPosition()
+XMFLOAT3 CreateStage::GetRandomFloarPosition(float size)
 {
     std::vector<Cell> posList;
+    std::vector<std::vector<float>> mapS = GameManager::GetNavigationAI()->GetMapSize();
+    
     for (int x = 0; x < mapSizeX_; x++) {
         for (int z = 0; z < mapSizeZ_; z++) {
-            if (mapData_[z][x] == CreateStage::MAP::M_FLOAR) {
+            if (mapData_[z][x] == MAP::M_FLOAR && mapS[x][z] > size) {
                 Cell cell;
                 cell.x = x;
                 cell.z = z;
@@ -58,6 +60,8 @@ XMFLOAT3 CreateStage::GetRandomFloarPosition()
             }
         }
     }
+
+    if (posList.empty()) return XMFLOAT3((float)mapSizeX_ / 2.0f + 0.5f, (float)mapSizeZ_ / 2.0f + 0.5f, 0.0f);
 
     int index = rand() % posList.size();
     return XMFLOAT3((float)posList.at(index).x + 0.5f, 0.0f, (float)posList.at(index).z + 0.5f);
@@ -85,7 +89,7 @@ XMFLOAT3 CreateStage::GetPositionPlayerDirection(XMFLOAT3 position, float range)
                 if (i < 0 || i >= (int)mapData_[0].size() || j < 0 || j >= (int)mapData_.size())
                     continue;
 
-                if (mapData_[j][i] == CreateStage::MAP::M_FLOAR) {
+                if (mapData_[j][i] == MAP::M_FLOAR) {
                     Cell c(i, j);
                     cellList.push_back(c);
                 }
@@ -138,6 +142,13 @@ void CreateStage::CreateStageData(std::string name)
             {
                 mapData_[z][x] = WALL;
                 intersectDatas_.push_back({ hModel_[WALL], hModel_[R_WALL], XMFLOAT3((float)x, 0.0f, (float)z), XMFLOAT3(1.0f, 1.0f, 1.0f) });
+            }
+            
+            //SmallWall
+            if (data == 3)
+            {
+                mapData_[z][x] = WALL;
+                intersectDatas_.push_back({ hModel_[SMALL_WALL], hModel_[R_SMALL_WALL], XMFLOAT3((float)x, 0.0f, (float)z), XMFLOAT3(1.0f, 1.0f, 1.0f) });
             }
 
             //PlayerStartPoint

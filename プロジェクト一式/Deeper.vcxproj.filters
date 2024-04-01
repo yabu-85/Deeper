@@ -132,6 +132,9 @@
     <Filter Include="14Character">
       <UniqueIdentifier>{d58b2a94-1d06-4230-b086-4db5cd8acf23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="15Item">
+      <UniqueIdentifier>{96265a74-62f7-435f-bd0b-f73a0cba2012}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -427,6 +430,9 @@
     </ClCompile>
     <ClCompile Include="UI\Cursor.cpp">
       <Filter>04UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Item\RecoveryItem.cpp">
+      <Filter>15Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -726,6 +732,9 @@
     </ClInclude>
     <ClInclude Include="UI\Cursor.h">
       <Filter>04UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Item\RecoveryItem.h">
+      <Filter>15Item</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

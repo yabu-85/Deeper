@@ -106,7 +106,7 @@ void LifeManager::Damage(int i)
 	//ダメージ計算したら、HPが０以下になった
 	if (LifeManager::IsDie()) {
 		pPlayer->GetStateManager()->ChangeState("Dead");
-		pPlayer->GetAnimationController()->SetNextAnime(6, 1.0f);
+		pPlayer->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::DEAD, 1.0f);
 		pPlayer->GetAim()->SetAimMove(false);
 		return;
 	}

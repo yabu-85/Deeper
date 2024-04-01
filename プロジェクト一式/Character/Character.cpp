@@ -76,26 +76,26 @@ void Character::ReflectCharacter() {
 void Character::ApplyDamageDirectly(const DamageInfo& damageinfo)
 {
 	hp_ -= damageinfo.damage;
-
 	Damage();
-	if (hp_ <= 0) {
-		Dead();
-	}
+
+	//死亡した場合Dead関数呼ぶ
+	if (hp_ <= 0) Dead();
 }
 
 void Character::ApplyDamageDirectly(const DamageInfo& damageinfo, const KnockBackInfo& knockinfo)
 {
+	//時間かパワー情報あるならノックバックさせる
+	if (knockinfo.time != 0 || knockinfo.power != 0.0f) {
+		knockBackTime_ = knockinfo.time;
+		knockBackTimeMax_ = knockinfo.time;
+		knockBackDirection_ = Float3Multiply(Float3Normalize(Float3Sub(transform_.position_, knockinfo.pos)), knockinfo.power);
+
+		if (knockinfo.type == KNOCK_TYPE::SMALL) SmallKnockBack();
+		else if (knockinfo.type == KNOCK_TYPE::MEDIUM) MediumKnockBack();
+		else if (knockinfo.type == KNOCK_TYPE::LARGE) LargeKnockBack();
+	}
+	
 	ApplyDamageDirectly(damageinfo);
-
-	//時間とパワーがあるならノックバックさせる
-	if (knockinfo.time == 0 || knockinfo.power == 0.0f) return;
-	knockBackTime_ = knockinfo.time;
-	knockBackTimeMax_ = knockinfo.time;
-	knockBackDirection_ = Float3Multiply(Float3Normalize(Float3Sub(transform_.position_, knockinfo.pos)), knockinfo.power);
-
- 	if (knockinfo.type == KNOCK_TYPE::SMALL) SmallKnockBack();
-	else if (knockinfo.type == KNOCK_TYPE::MEDIUM) MediumKnockBack();
-	else if (knockinfo.type == KNOCK_TYPE::LARGE) LargetKnockBack();
 }
 
 bool Character::ApplyDamageWithList(const DamageInfo& daamgeinfo)

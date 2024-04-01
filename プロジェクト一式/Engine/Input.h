@@ -117,9 +117,6 @@ namespace Input
 	//U“®‚³‚¹‚é
 	void SetPadVibration(int l, int r, int padID = 0);
 
-	//‘½•ª‰Æ‚É‚ ‚é‰Ÿ‚µ‚½Input‚ÌKeyCode•Ô‚·ŠÖ”‚±‚±‚É
-
-
 	//ŠJ•ú
 	void Release();
 };

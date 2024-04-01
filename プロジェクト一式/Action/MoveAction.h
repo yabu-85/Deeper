@@ -36,6 +36,8 @@ class AstarMoveAction : public MoveAction {
     std::vector<XMFLOAT3> targetList_;  //今の経路
     XMFLOAT3 lastTarget_;               //今のTargetCharaのポジション
 
+    int handle_;
+
 public:
     AstarMoveAction(Character* obj, float speed, float range);
     ~AstarMoveAction() override {};
@@ -53,6 +55,8 @@ public:
 
     //新しく経路を求める
     void UpdatePath(XMFLOAT3 target);
+
+    void Draw();
 
 };
 

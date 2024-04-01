@@ -2,6 +2,11 @@
 #include "../Engine/GameObject.h"
 #include <vector>
 
+enum MAP {
+    M_FLOAR,
+    M_WALL,
+};
+
 struct IntersectData {
     int hModelNum;
 	int hRayModelNum;
@@ -19,15 +24,17 @@ public:
     enum StageNum {
         FLOAR = 0,
         WALL,
+        SMALL_WALL,
 		R_FLOAR,
 		R_WALL,
+		R_SMALL_WALL,
 		MAX,
     };
 
 private:
     int hModel_[MAX];
     int mapSizeX_;
-    int mapSizeZ_; 
+    int mapSizeZ_;
     
     std::vector<IntersectData> intersectDatas_; //ローポリのデータ集
     std::vector<std::vector<int>> mapData_;
@@ -39,11 +46,6 @@ private:
 	};
 
 public:
-    enum MAP {
-        M_FLOAR,
-        M_WALL,
-    };
-
     CreateStage();
     ~CreateStage();
 	void Initialize();
@@ -56,7 +58,7 @@ public:
 	std::vector<std::vector<int>> GetMapData() { return mapData_; };
     
     //完全にランダムな床のポジションを取得する
-    XMFLOAT3 GetRandomFloarPosition();
+    XMFLOAT3 GetRandomFloarPosition(float size = 0.0f);
     
     //プレイヤーから見た引数:Position方向にrangeの距離で最適な場所を取得する
     XMFLOAT3 GetPositionPlayerDirection(XMFLOAT3 position, float range);

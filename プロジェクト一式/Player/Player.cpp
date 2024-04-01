@@ -23,7 +23,6 @@ namespace {
     const float moveGradually = 0.09f;      //移動スピードの加減の値移動時
     const float maxMoveSpeed = 0.7f;        //最大移動スピード
     const float avoRotateRatio = 1.0f;      //回避時のRotateRatio
-    const int APPER_TIME = 60;
     const int DEF_LIFE_MAX = 50;
 
     bool isCollider = true; //当たり判定するかどうか
@@ -33,7 +32,7 @@ namespace {
 Player::Player(GameObject* parent)
     : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pPlayerWeapon_(nullptr),
     pAnimationController_(nullptr), pCollider_{nullptr, nullptr},
-    moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), apperPos_(0,0,0), time_(0), gradually_(0.0f)
+    moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), gradually_(0.0f)
 {
 }
 
@@ -56,13 +55,15 @@ void Player::Initialize()
 
     moveSpeed_ = 0.08f;
     rotateRatio_ = 0.2f;
-    time_ = APPER_TIME;
     
     LifeManager::SetLife(DEF_LIFE_MAX - PlayerData::GetReceiveDamage(), DEF_LIFE_MAX);
     SetHP(DEF_LIFE_MAX - PlayerData::GetReceiveDamage());
     SetMaxHP(DEF_LIFE_MAX);
     SetBodyWeight(0.1f);
     SetBodyRange(0.3f);
+    
+    SetHP(1);
+    LifeManager::Damage(0);
 
     //アニメーションデータのセットフレームはヘッダに書いてる
     pAnimationController_ = new AnimationController(hModel_);
@@ -91,15 +92,11 @@ void Player::Initialize()
     AddCollider(pCollider_[0]);
     AddCollider(pCollider_[1]);
 
-    apperPos_ = transform_.position_;
-    transform_.position_.y += (time_ * 0.5f);
-
 }
 
 void Player::Update()
 {
     Character::Update();
-
     pAnimationController_->Update();
     pStateManager_->Update();
 
@@ -129,20 +126,25 @@ void Player::Release()
 void Player::Damage()
 {
     if (pStateManager_->GetName() == "Dead") return;
-
-    int kTime = GetKnockBackTime();
-    std::string stName = pStateManager_->GetName();
-    if (stName != "Hear" && kTime > 0) {
-        pStateManager_->ChangeState("Hear");
-    }
-
     LifeManager::Damage(0);
-
 }
 
 void Player::Dead()
 {
     if (GetStateManager()->GetName() != "Dead") GetStateManager()->ChangeState("Dead");
+}
+
+void Player::SmallKnockBack()
+{
+}
+
+void Player::MediumKnockBack()
+{
+}
+
+void Player::LargeKnockBack()
+{
+    if (GetStateManager()->GetName() != "Hear") GetStateManager()->ChangeState("Hear");
 
 }
 
@@ -288,7 +290,7 @@ void Player::Avo()
         CalcMove();
         Rotate(avoRotateRatio);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
-        GetAnimationController()->SetNextAnime(2, 0.2f);
+        GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::RORING, 0.2f);
 
         GetSphereCollider(0)->SetValid(false);
         GetSphereCollider(1)->SetValid(false);
@@ -298,13 +300,13 @@ void Player::Avo()
     else if(pAim_->IsTarget()) {
         AimTargetRotate(1.0f);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0f);
-        GetAnimationController()->SetNextAnime(3, 0.2f);
+        GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::BACK_STEP, 0.2f);
     
     }
     //動いていない・ターゲットもしていない
     else {
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
-        GetAnimationController()->SetNextAnime(2, 0.2f);
+        GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::RORING, 0.2f);
 
         GetSphereCollider(0)->SetValid(false);
         GetSphereCollider(1)->SetValid(false);

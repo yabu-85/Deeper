@@ -15,3 +15,8 @@ float Easing::InOutQuint(float x)
 {
 	return (x < 0.5f) ? 16.0f * x * x * x * x * x : 1.0f - pow(-2.0f * x + 2.0f, 5.0f) / 2.0f;
 }
+
+float Easing::Leap(float start, float end, float value)
+{
+	return start + value * (end - start);
+}

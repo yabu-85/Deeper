@@ -31,12 +31,17 @@ namespace {
     //攻撃Audio再生フレーム
     static const int ANIM_AUDIO_FRAME1 = 20;
     static const int ANIM_AUDIO_FRAME2 = 20;
-    static const int ANIM_AUDIO_FRAME3 = 0;
+    static const int ANIM_AUDIO_FRAME3 = 5;
 
     //攻撃判定フレーム
     static const int ANIM_ATTACK_FRAME1[2] = { 17, 33 };
     static const int ANIM_ATTACK_FRAME2[2] = { 15, 25 };
     static const int ANIM_ATTACK_FRAME3[2] = { 3, 12 };
+
+    //キャンセルフレーム / 後ろのデータはReadyNextでも使う
+    static const int ANIM_CHANGE_FRAME1[2] = { 12, 40 };
+    static const int ANIM_CHANGE_FRAME2[2] = { 10, 30 };
+    static const int ANIM_CHANGE_FRAME3[2] = { 1, 20 };
 
 }
 
@@ -138,17 +143,17 @@ void MainSwordWeapon::OnAttackCollision(GameObject* pTarget)
 
 void MainSwordWeapon::ChangeAttackState()
 {
-    atkEnd_ = false;
+    isAtkEnd_ = false;
+    isCancellable_ = false;
     pStateManager_->ChangeState("Combo1");
-
 }
 
 void MainSwordWeapon::ResetState()
 {
-    atkEnd_ = true;
+    isAtkEnd_ = true;
+    isCancellable_ = false;
     pStateManager_->ChangeState("");
     seg_->SetValid(false);
-
 }
 
 void MainSwordWeapon::CalcSwordTrans()
@@ -230,15 +235,34 @@ void MainSwordWeaponCombo1::Update()
     p->FrontMove((1.0f - float(time_) / (float)comboTime) * MOVE_SPEED);
     m->GetSegmentCollider()->SetValid(false);
     
+    //攻撃判定
     if(time_ >= ANIM_ATTACK_FRAME1[0] && time_ <= ANIM_ATTACK_FRAME1[1]) m->CalcSwordTrans();
+    //攻撃終了判定
     if (time_ == ANIM_ATTACK_FRAME1[1]) m->SetPolyCreatTime(POLY_DRAW_TIME);
+    //Audio再生
     if (time_ == ANIM_AUDIO_FRAME1) AudioManager::Play(AUDIO_ID::SWORD_WIELD_1);
+    
+    //入力
     if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;
+    if (InputManager::IsCmdDown(InputManager::AVO)) next_ = false;
+
+    //キャンセルとReadyNext
+    m->SetCancellable(false);
+    m->SetNextReady(false); 
+    if (time_ <= ANIM_CHANGE_FRAME1[0]) m->SetCancellable(true);
+    else if (time_ >= ANIM_CHANGE_FRAME1[1]) {
+        if (next_) {
+            owner_->ChangeState("Combo2");
+            return;
+        }
+        else {
+            m->SetCancellable(true);
+            m->SetNextReady(true);
+        }
+    }
 
     if (time_ >= comboTime) {
-        if (next_ == true) {
-            owner_->ChangeState("Combo2");
-        }
+        if (next_ == true) owner_->ChangeState("Combo2");
         else m->ResetState();
     }
 }
@@ -251,14 +275,12 @@ void MainSwordWeaponCombo1::OnEnter()
     m->SetDamageInfoCombo1();
     time_ = 0;
     next_ = false;
-
 }
 
 void MainSwordWeaponCombo1::OnExit()
 {
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->DamageInfoReset();
-
 }
 
 //---------------------------------------------
@@ -285,15 +307,34 @@ void MainSwordWeaponCombo2::Update()
     p->FrontMove((1.0f - float(time_) / (float)comboTime) * MOVE_SPEED);
     m->GetSegmentCollider()->SetValid(false);
     
+    //攻撃判定
     if (time_ >= ANIM_ATTACK_FRAME2[0] && time_ <= ANIM_ATTACK_FRAME2[1]) m->CalcSwordTrans();
+    //攻撃終了判定
     if (time_ == ANIM_ATTACK_FRAME2[1]) m->SetPolyCreatTime(POLY_DRAW_TIME);
+    //Audio再生
     if (time_ == ANIM_AUDIO_FRAME2) AudioManager::Play(AUDIO_ID::SWORD_WIELD_2);
-    if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;
 
-    if (time_ >= comboTime) {
-        if (next_ == true) {
+    //入力
+    if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;
+    if (InputManager::IsCmdDown(InputManager::AVO)) next_ = false;
+
+    //キャンセルとReadyNext
+    m->SetCancellable(false);
+    m->SetNextReady(false);
+    if (time_ <= ANIM_CHANGE_FRAME2[0]) m->SetCancellable(true);
+    else if (time_ >= ANIM_CHANGE_FRAME2[1]) {
+        if (next_) {
             owner_->ChangeState("Combo3");
+            return;
         }
+        else {
+            m->SetCancellable(true);
+            m->SetNextReady(true);
+        }
+    }
+   
+    if (time_ >= comboTime) {
+        if (next_ == true) owner_->ChangeState("Combo3");
         else m->ResetState();
     }
 }
@@ -306,14 +347,12 @@ void MainSwordWeaponCombo2::OnEnter()
     m->SetDamageInfoCombo2();
     time_ = 0;
     next_ = false;
-
 }
 
 void MainSwordWeaponCombo2::OnExit()
 {
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->DamageInfoReset();
-
 }
 
 //---------------------------------------------
@@ -340,15 +379,34 @@ void MainSwordWeaponCombo3::Update()
     p->FrontMove((1.0f - float(time_) / (float)comboTime) * MOVE_SPEED);
     m->GetSegmentCollider()->SetValid(false);
     
+    //攻撃判定
     if (time_ >= ANIM_ATTACK_FRAME3[0] && time_ <= ANIM_ATTACK_FRAME3[1]) m->CalcSwordTrans();
+    //攻撃終了判定
     if (time_ == ANIM_ATTACK_FRAME3[1]) m->SetPolyCreatTime(POLY_DRAW_TIME);
+    //Audio再生
     if (time_ == ANIM_AUDIO_FRAME3) AudioManager::Play(AUDIO_ID::SWORD_WIELD_3);
+    
+    //入力
     if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;
+    if (InputManager::IsCmdDown(InputManager::AVO)) next_ = false;
+
+    //キャンセルとReadyNext
+    m->SetCancellable(false);
+    m->SetNextReady(false);
+    if (time_ <= ANIM_CHANGE_FRAME3[0]) m->SetCancellable(true);
+    else if (time_ >= ANIM_CHANGE_FRAME3[1]) {
+        if (next_) {
+            owner_->ChangeState("Combo1");
+            return;
+        }
+        else {
+            m->SetCancellable(true);
+            m->SetNextReady(true);
+        }
+    }
 
     if (time_ >= comboTime) {
-        if (next_ == true) {
-            owner_->ChangeState("Combo1");
-        }
+        if (next_ == true) owner_->ChangeState("Combo1");
         else m->ResetState();
     }
 }
@@ -361,12 +419,10 @@ void MainSwordWeaponCombo3::OnEnter()
     m->SetDamageInfoCombo3();
     time_ = 0;
     next_ = false;
-
 }
 
 void MainSwordWeaponCombo3::OnExit()
 {
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
     m->DamageInfoReset();
-
 }

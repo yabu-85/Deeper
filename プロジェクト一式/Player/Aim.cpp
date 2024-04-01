@@ -19,9 +19,9 @@ namespace {
     static const float TARGET_CHANGE_VALUE = 40.0f;                 //どのくらいマウス動かせばいいか
 
     static const int COMPULSION_TIME_DEFAULT = 60;                  //強制から戻る時間
-    static const float HEIGHT_DISTANCE = 1.5f;                      //Aimの高さ
     static const float MOUSE_SPEED = 0.05f;                         //感度
     static const float HEIGHT_RAY = 0.1f;                           //RayCastの値にプラスする高さ
+    float HEIGHT_DISTANCE = 1.5f;                      //Aimの高さ
 
     static const float MAX_CAMERA_OFFSET = 5.0f;                    //cameraOffsetの最大距離
     static const float SUPRESS = 0.002f;                            //AimMove時のOffsetの値を抑制する値
@@ -29,7 +29,7 @@ namespace {
     static const float STOP_SUPRESS = 0.25f;                        //止まる時の抑制の値
     
     static const float TARGET_RANGE = 25.0f;                        //ターゲットの有効範囲
-    static const float FOV_RADIAN = XMConvertToRadians(120) / 2.0f;  //ターゲットの有効範囲
+    static const float FOV_RADIAN = XMConvertToRadians(120) / 2.0f; //ターゲットの有効範囲
     static const float TARGET_RATIO = 0.2f;                         //ターゲット時の回転率
 }
 
@@ -69,9 +69,10 @@ void Aim::Update()
     if (!IsValid()) return;
 
     //デバッグ用
-    //if (Input::IsKeyDown(DIK_R)) isMove_ = !isMove_;
-    //if (Input::IsKey(DIK_X)) defPerspectDistance_ += 0.1f;
-    //if (Input::IsKey(DIK_Z)) defPerspectDistance_ -= 0.1f;
+    if (Input::IsKey(DIK_1)) HEIGHT_DISTANCE += 0.1f;
+    if (Input::IsKey(DIK_2)) HEIGHT_DISTANCE -= 0.1f;
+    if (Input::IsKey(DIK_3)) defPerspectDistance_ += 0.1f;
+    if (Input::IsKey(DIK_4)) defPerspectDistance_ -= 0.1f;
 
     if (compulsionTime_ > 0) {
         //強制移動

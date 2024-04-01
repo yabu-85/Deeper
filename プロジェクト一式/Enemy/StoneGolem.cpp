@@ -34,7 +34,7 @@ void StoneGolem::Initialize()
 	assert(hModel_ >= 0);
 
 	CreateStage* pCreateStage = GameManager::GetCreateStage();
-	XMFLOAT3 startPos = pCreateStage->GetRandomFloarPosition();
+	XMFLOAT3 startPos = pCreateStage->GetRandomFloarPosition(0.7f);
 	transform_.position_ = startPos;
 	transform_.rotate_.y = (float)(rand() % 360);
 
@@ -119,6 +119,8 @@ void StoneGolem::Draw()
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 
+	pMoveAction_->Draw();
+
 	CollisionDraw();
 	pEnemyUi_->Draw();
 
@@ -184,7 +186,7 @@ void StoneGolem::SetDamageInfoCombo2()
 void StoneGolem::SetDamageInfoCombo3()
 {
 	DamageInfo damage(this, "StoneArm", 5);
-	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 20, 0.3f, { 0.f, 0.f, 0.f });
+	KnockBackInfo knockBack(KNOCK_TYPE::LARGE, 20, 0.3f, { 0.f, 0.f, 0.f });
 	SetAllAttackColliderValid(true);
 	GetDamageController()->SetCurrentDamage(damage);
 	GetDamageController()->SetCurrentKnockBackInfo(knockBack);

@@ -30,7 +30,7 @@ namespace {
 
 	static const float FAST_SPEED = 0.03f;
 	static const float SLOW_SPEED = 0.02f;
-	static const float ROTATE_RATIO = 0.07f;
+	static const float ROTATE_RATIO = 0.03f;
 
 	//UŒ‚State‚Ìî•ñ
 	static const int ATTACK_FRAME[2] = { 0, 300 };

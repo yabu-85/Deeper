@@ -4,9 +4,12 @@
 #include "../Player/Player.h"
 #include "../Stage/CollisionMap.h"
 #include "../Enemy/EnemyManager.h"
+#include "../Enemy/EnemyBase.h"
 #include "../Stage/NavigationAI.h"
 #include "../Stage/CreateStage.h"
-#include "../Enemy/EnemyBase.h"
+
+//デバッグ用
+#include "../Engine/Model.h"
 
 MoveAction::MoveAction(Character* obj, float speed, float range)
 	: BaseAction(obj), isInRange_(false), moveSpeed_(speed), moveRange_(range), targetPos_(0, 0, 0)
@@ -35,8 +38,10 @@ void MoveAction::Update()
 
 //------------------------------Astar----------------------
 
-AstarMoveAction::AstarMoveAction(Character* obj, float speed, float range) : MoveAction(obj, speed, range), lastTarget_(0,0,0)
+AstarMoveAction::AstarMoveAction(Character* obj, float speed, float range) : MoveAction(obj, speed, range), lastTarget_(0,0,0), handle_(-1)
 {
+	handle_ = Model::Load("Model/Mas.fbx");
+	assert(handle_ >= 0);
 }
 
 void AstarMoveAction::Update()
@@ -117,9 +122,20 @@ bool AstarMoveAction::IsOutTarget(float range)
 
 void AstarMoveAction::UpdatePath(XMFLOAT3 target)
 {
-	targetList_ = GameManager::GetNavigationAI()->Navi(target, pCharacter_->GetPosition());
+	targetList_ = GameManager::GetNavigationAI()->Navi(target, pCharacter_->GetPosition(), pCharacter_->GetBodyRange());
 	if(!targetList_.empty()) targetPos_ = targetList_.front();
 
+}
+
+void AstarMoveAction::Draw()
+{
+	Transform t;
+	for (int i = 0; i < targetList_.size(); i++) {
+		t.position_ = targetList_.at(i);
+		t.position_.y += 0.01f;
+		Model::SetTransform(handle_, t);
+		Model::Draw(handle_);
+	}
 }
 
 //------------------------------Oriented----------------------

@@ -32,8 +32,8 @@ struct KnockBackInfo {
 
 class Character : public GameObject
 {
-    int hp_;
-    int maxHp_;
+    int hp_;            //HP
+    int maxHp_;         //最大HP
     float bodyWeight_;  //めり込み時に使う重さ
     float bodyRange_;   //めり込み時に使う範囲
     XMFLOAT3 movement_; //移動量を保存するためのやつ
@@ -42,14 +42,14 @@ class Character : public GameObject
     int knockBackTimeMax_;          //ノックバックの時間保存用
     XMFLOAT3 knockBackDirection_;   //ノックバックさせる方向
 
-    virtual void SmallKnockBack() {};
-    virtual void MediumKnockBack() {};
-    virtual void LargetKnockBack() {};
+    virtual void SmallKnockBack() {};   //ノックバックされたときSmalの場合呼ばれる関数
+    virtual void MediumKnockBack() {};  //ノックバックされたときMediumの場合呼ばれる関数
+    virtual void LargeKnockBack() {};   //ノックバックされたときLargeの場合呼ばれる関数
+    void KnockBack(float speed);        //実際にノックバックさせる関数
 
-    std::vector<DamageInfo> damageInfoList_;
-    virtual void Damage() {};
-    virtual void Dead() {};
-    void KnockBack(float speed);
+    std::vector<DamageInfo> damageInfoList_;    //ダメージを与えられた情報のリスト
+    virtual void Damage() {};                   //ダメージを与えられたときに呼ばれる
+    virtual void Dead() {};                     //死亡した場合に呼ばれる
 
 public:
     Character(GameObject* parent, std::string name);
@@ -85,6 +85,7 @@ public:
     void SetMaxHP(int i) { maxHp_ = i; }
     int GetHP() { return hp_; }
     int GetMaxHP() { return maxHp_; }
+
     float GetBodyRange() { return bodyRange_; }
     float GetBodyWeight() { return bodyWeight_; }
     void SetBodyWeight(float f) { bodyWeight_ = f; }
@@ -103,15 +104,16 @@ public:
 };
 
 class DamageController {
-    DamageInfo currentDamage;
-    KnockBackInfo currentKnockBack;
-    std::vector<Character*> attackList;
+    DamageInfo currentDamage;           //今設定されているダメージの情報
+    KnockBackInfo currentKnockBack;     //今設定されているノックバックの情報
+    std::vector<Character*> attackList; //攻撃を与えたCharacterのリスト
+
 public:
+    void AddAttackList(Character* chara);
+    void ResetAttackList();
+
     void SetCurrentDamage(const DamageInfo& info) { currentDamage = info; }
     DamageInfo& GetCurrentDamage() { return currentDamage; }
     void SetCurrentKnockBackInfo(const KnockBackInfo& info) { currentKnockBack = info; }
     KnockBackInfo& GetCurrentKnockBackInfo() { return currentKnockBack; }
-
-    void AddAttackList(Character* chara);
-    void ResetAttackList();
 };

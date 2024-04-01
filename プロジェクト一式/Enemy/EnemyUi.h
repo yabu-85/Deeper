@@ -12,16 +12,17 @@ class EnemyUi
 		MAX,
 	};
 
-	int hPict_[MAX];
-	int gageAlpha_;			//ゲージの透明度
+	int hPict_[MAX];		//画像ハンドル
+	int gaugeAlpha_;		//ゲージの透明度
 	float height_;			//uiの高さ
 	float parcent;			//hpのパーセント
 	float foundParcent_;	//FoundのパAlphaーセント
 	bool isDraw_;			//表示するかどうか
 	Transform transform_[2];//HpとHPBack用のTransform
-	EnemyBase* pParent_;
+	EnemyBase* pParent_;	//親
 
-	void SetGageAlpha(int value);
+	//Gaugeの透明度計算する
+	void SetGaugeAlpha(int value);
 
 public:
 	EnemyUi(EnemyBase* parent);

@@ -23,28 +23,26 @@ enum class PLAYER_ANIMATION {
 };
 
 const AnimeData PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::MAX]{
-    {0, 120},
-    {548, 590},
-    {120, 175},
-    {500, 546},
-    {175, 210},
-    {210, 260},
-    {260, 495},
-    {595, 650},
-    {650, 690},
-    {665, 690},
-    {700, 800},
+    {0, 120},     //Idle
+    { 548, 590 }, //Run
+    { 120, 175 }, //Roring
+    { 500, 546 }, //Back
+    { 175, 210 }, //DamageSmall
+    { 210, 260 }, //DamageMid
+    { 260, 495 }, //Dead
+    { 595, 650 }, //Attack1
+    { 650, 690 }, //Attack2
+    { 660, 690 }, //Attack3
+    { 700, 800 }, //Stone
 };
 
 class Player : public Character
 {
     int hModel_;
-    int time_;
     float moveSpeed_;           //移動スピード
     float gradually_;           //移動スピードの加減の値
     float rotateRatio_;         //回転の比率
     XMFLOAT3 playerMovement_;   //Normalizeの移動量を保存する用
-    XMFLOAT3 apperPos_;
 
     SphereCollider* pCollider_[2];
     Aim* pAim_;
@@ -54,7 +52,12 @@ class Player : public Character
 
     void Damage() override;
     void Dead() override;
+    void SmallKnockBack() override;
+    void MediumKnockBack() override;
+    void LargeKnockBack() override;
+
     void CalcRotate(XMFLOAT3 pos, float ratio);
+
 
 public:
     Player(GameObject* parent);

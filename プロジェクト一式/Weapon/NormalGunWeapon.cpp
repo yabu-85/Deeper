@@ -72,14 +72,14 @@ void NormalGunWeapon::Release()
 
 void NormalGunWeapon::ResetState()
 {
-    atkEnd_ = true;
+    isAtkEnd_ = true;
     pStateManager_->ChangeState("");
 }
 
 void NormalGunWeapon::ChangeAttackState()
 {
     pStateManager_->ChangeState("Combo1");
-    atkEnd_ = false;
+    isAtkEnd_ = false;
 }
 
 void NormalGunWeapon::ShotBullet()

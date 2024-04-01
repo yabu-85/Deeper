@@ -28,8 +28,8 @@ namespace {
 	static const int MIN_MOVE_TIME = 6;
 	static const int MAX_MOVE_TIME = 5; 
 
-	static const float FAST_SPEED = 0.03f;
-	static const float SLOW_SPEED = 0.01f;
+	static const float FAST_SPEED = 0.06f;
+	static const float SLOW_SPEED = 0.04f;
 	static const float ROTATE_RATIO = 0.07f;
 
 	//çUåÇÇPÇÃèÓïÒ

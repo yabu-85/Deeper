@@ -46,7 +46,6 @@ public:
 
 class PlayerAtk : public StateBase
 {
-	int time_;
 	int nextCmd_;
 public:
 	PlayerAtk(StateManager* owner);
@@ -69,8 +68,6 @@ public:
 
 class PlayerHear : public StateBase
 {
-	int time_;
-	int nextCmd_;
 public:
 	PlayerHear(StateManager* owner);
 	const char* GetName() const override { return "Hear"; }
@@ -101,10 +98,8 @@ public:
 
 class PlayerDisAppear : public StateBase
 {
-	int time_;
 public:
 	PlayerDisAppear(StateManager* owner);
 	const char* GetName() const override { return "DisAppear"; }
 	void Update() override;
-	void OnEnter() override;
 };

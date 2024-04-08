@@ -1,5 +1,6 @@
 #include "VFXManager.h"
 #include "Engine/VFX.h"
+#include "Engine/Easing.h"
 
 namespace VFXManager
 {
@@ -7,6 +8,7 @@ namespace VFXManager
 	EmitterData explode;
 	EmitterData smoke;
 	EmitterData enemySpawn;
+	EmitterData swordSlash;
 
 }
 
@@ -17,9 +19,6 @@ void VFXManager::Initialize()
 	sparks.delay = 0;
 	sparks.number = 20;
 	sparks.lifeTime = 50;
-	sparks.position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	sparks.positionRnd = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	sparks.direction = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	sparks.directionRnd = XMFLOAT3(90.0f, 90.0f, 90.0f);
 	sparks.speed = 0.2f;
 	sparks.speedRnd = 1.0f;
@@ -71,26 +70,38 @@ void VFXManager::Initialize()
 	enemySpawn.textureFileName = "Particle/Red.png";
 	enemySpawn.delay = 0;
 	enemySpawn.number = 1;
-	enemySpawn.position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	enemySpawn.positionRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	enemySpawn.direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	enemySpawn.directionRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	enemySpawn.speed = 0.0f;
 	enemySpawn.speedRnd = 0.0f;
-	enemySpawn.accel = 0.0f;
 	enemySpawn.size = XMFLOAT2(2.0f, 2.0f);
-	enemySpawn.sizeRnd = XMFLOAT2(0.0f, 0.0f);
-	enemySpawn.scale = XMFLOAT2(1.0f, 1.0f);
-	enemySpawn.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	enemySpawn.rotate = XMFLOAT3(90.0f, 0.0f, 0.0f);
-	enemySpawn.rotateRnd = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	enemySpawn.spin = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	enemySpawn.gravity = 0.0f;
 	enemySpawn.isBillBoard = false;
 
+	//Œ•‚ÌƒXƒ‰ƒbƒVƒ…
+	swordSlash.textureFileName = "Particle/Burger.png";
+	swordSlash.delay = 0;
+	swordSlash.number = 1;
+	swordSlash.lifeTime = 10;
+	swordSlash.speed = 0.03f;
+	swordSlash.accel = 0.9f;
+	swordSlash.size = XMFLOAT2(3.0f, 1.0f);
+	swordSlash.deltaColor = XMFLOAT4(1.0f, 1.0f, 1.0f, -0.1f);
+
 }
 
-void VFXManager::CreatVfxExplode1(XMFLOAT3 &pos)
+void VFXManager::CreatVfxSwordSlash(XMFLOAT3 pos, XMFLOAT3 dir)
+{
+	swordSlash.position = pos;
+	swordSlash.direction = dir;
+
+	float rotation = XMConvertToDegrees(atan2f(dir.y, (dir.x + dir.z)));
+	swordSlash.rotate.z = rotation;
+	
+	VFX::Start(swordSlash);
+}
+
+void VFXManager::CreatVfxExplode1(XMFLOAT3 pos)
 {
 	//‰Î‚Ì•²
 	sparks.position = pos;
@@ -102,7 +113,7 @@ void VFXManager::CreatVfxExplode1(XMFLOAT3 &pos)
 
 }
 
-void VFXManager::CreatVfxEnemySpawn(XMFLOAT3& pos, int lifeTime)
+void VFXManager::CreatVfxEnemySpawn(XMFLOAT3 pos, int lifeTime)
 {
 	enemySpawn.position = pos;
 	enemySpawn.position.y += 0.01f;
@@ -112,7 +123,7 @@ void VFXManager::CreatVfxEnemySpawn(XMFLOAT3& pos, int lifeTime)
 	
 }
 
-void VFXManager::CreatVfxSmoke(XMFLOAT3& pos)
+void VFXManager::CreatVfxSmoke(XMFLOAT3 pos)
 {
 	smoke.position = pos;
 	smoke.position.y -= 0.25f;

@@ -4,6 +4,7 @@
 #include "../GameManager/GameManager.h"
 #include "../Stage/CreateStage.h"
 #include "../Stage/Warp.h"
+#include "../Enemy/EnemyManager.h"
 
 //デバッグ用
 #include "../Weapon/WeaponObjectManager.h"
@@ -24,6 +25,7 @@ void Stage2::Initialize()
 	InitializeStage("Csv/Map2.csv", "Model/Stage/SkyBox.fbx");
 	SCENE_ID WARP_STAGE[] = { SCENE_ID_STAGE3, SCENE_ID_STAGE1 };
 	SetWarpStage(WARP_STAGE);
+	GameManager::GetEnemyManager()->SpawnEnemyTable(ETABLE_NORMAL);
 
 	//デバッグ用
 	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_STONE, GameManager::GetStage()->GetStartPosition());
@@ -34,11 +36,6 @@ void Stage2::Update()
 {
 	if (IsClearStage()) {
 		OnStageCleared();
-	}
-
-	//デバッグ用
-	if (Input::IsKeyDown(DIK_X)) {
-		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE);
 	}
 }
 

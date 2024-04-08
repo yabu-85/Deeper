@@ -34,9 +34,9 @@ namespace {
     static const int ANIM_AUDIO_FRAME3 = 5;
 
     //攻撃判定フレーム
-    static const int ANIM_ATTACK_FRAME1[2] = { 17, 33 };
+    static const int ANIM_ATTACK_FRAME1[2] = { 17, 30 };
     static const int ANIM_ATTACK_FRAME2[2] = { 15, 25 };
-    static const int ANIM_ATTACK_FRAME3[2] = { 3, 12 };
+    static const int ANIM_ATTACK_FRAME3[2] = { 3, 20 };
 
     //キャンセルフレーム / 後ろのデータはReadyNextでも使う
     static const int ANIM_CHANGE_FRAME1[2] = { 12, 40 };
@@ -46,7 +46,7 @@ namespace {
 }
 
 MainSwordWeapon::MainSwordWeapon(GameObject* parent)
-	: WeaponBase(parent, "MainSwordWeapon"), polyCreatTime_(0), wandPos_(0, 0, 0),
+	: WeaponBase(parent, "MainSwordWeapon"), polyCreatTime_(0), wandPos_(0, 0, 0), direction_(0,0,0), swordTip_(0,0,0),
     pPlayer_(nullptr), seg_(nullptr), pPolyLine_(nullptr), pDamageController_(nullptr)
 {
     transform_.pParent_ = nullptr;
@@ -98,21 +98,29 @@ void MainSwordWeapon::Draw()
 {
     if (!IsVisibled()) return;
    
+    //座標の取得と剣先のDirection計算
+    XMFLOAT3 preWandPos = wandPos_;
     wandPos_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
+    direction_ = Float3Sub(wandPos_, preWandPos);
+    direction_ = Float3Normalize(direction_);
+
+    //回転軸を取得
     transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
-    
-    XMFLOAT3 pPos = pPlayer_->GetPosition();
-    seg_->SetCenter({ wandPos_.x - pPos.x, wandPos_.y - pPos.y, wandPos_.z - pPos.z });
+    transform_.rotate_.y += pPlayer_->GetRotate().y;
+    while (transform_.rotate_.y > 180.0f) transform_.rotate_.y -= 360.0f;
+    while (transform_.rotate_.y < -180.0f) transform_.rotate_.y += 360.0f;
 
     if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
         transform_.rotate_.y *= -1.0f;
     }
-    transform_.rotate_.y += pPlayer_->GetRotate().y;
 
     Transform t = transform_;
     t.position_ = wandPos_;
     Model::SetTransform(hModel_, t);
     Model::Draw(hModel_);
+
+    XMFLOAT3 pPos = pPlayer_->GetPosition();
+    seg_->SetCenter({ wandPos_.x - pPos.x, wandPos_.y - pPos.y, wandPos_.z - pPos.z });
 
     pPolyLine_->Draw();
 }
@@ -135,8 +143,11 @@ void MainSwordWeapon::OnAttackCollision(GameObject* pTarget)
 
         //攻撃入ったらリストに追加
         if (e->ApplyDamageWithList(damage, knock)) {
-            VFXManager::CreatVfxExplode1(wandPos_);
             pDamageController_->AddAttackList(e);
+            
+            VFXManager::CreatVfxSwordSlash(wandPos_, direction_);
+            pPlayer_->GetAim()->SetCameraShakeDirection(XMLoadFloat3(&direction_));
+            pPlayer_->GetAim()->SetCameraShake(2, 0.3f, 1.0f, 0.3f, 1.0f);
         }
     }
 }
@@ -177,8 +188,8 @@ void MainSwordWeapon::CalcSwordTrans()
     seg_->SetValid(true);
 
     XMStoreFloat3(&vec, vVec);
-    vec = XMFLOAT3(wandPos_.x + vec.x, wandPos_.y + vec.y, wandPos_.z + vec.z);
-    pPolyLine_->AddPosition(wandPos_, vec);
+    swordTip_ = XMFLOAT3(wandPos_.x + vec.x, wandPos_.y + vec.y, wandPos_.z + vec.z);
+    pPolyLine_->AddPosition(wandPos_, swordTip_);
 
 }
 

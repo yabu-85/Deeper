@@ -5,6 +5,17 @@
 #include "ThrowEnemy.h"
 #include "MeleeFighter.h"
 
+namespace {
+	static const std::vector<std::vector<ENEMY_TYPE>> spawnEnemyTable[ETABLE_MAX] = {
+		{
+			{ ENEMY_MELEE, ENEMY_MELEE, ENEMY_THROW, ENEMY_THROW},
+			{ ENEMY_STONEGOLEM, ENEMY_STONEGOLEM, ENEMY_MELEE, ENEMY_MELEE },
+			{ ENEMY_STONEGOLEM, ENEMY_MELEE, ENEMY_THROW, ENEMY_THROW},
+			{ ENEMY_STONEGOLEM, ENEMY_STONEGOLEM, ENEMY_THROW, ENEMY_THROW},
+		}
+	};
+}
+
 EnemyManager::EnemyManager() : pParent_(nullptr)
 {
 }
@@ -41,7 +52,21 @@ void EnemyManager::SpawnEnemy(ENEMY_TYPE type)
 	if (type == ENEMY_STONEGOLEM) AddEnemyList(InstantiateFront<StoneGolem>(pParent_), type);
 	else if (type == ENEMY_THROW) AddEnemyList(InstantiateFront<ThrowEnemy>(pParent_), type);
 	else if (type == ENEMY_MELEE) AddEnemyList(InstantiateFront<MeleeFighter>(pParent_), type);
-	
+}
+
+void EnemyManager::SpawnEnemyTable(ENEMY_TABLE type)
+{
+	//spawnEnemyTableÇÃíÜÇ©ÇÁspawnTableÇÃèÍèäÇ©ÇÁÇ∆Ç¡ÇƒÇªÇÃvectorÇÃsizeÇéÊìæ
+	int randMax = (int)spawnEnemyTable[type].size();
+	if (randMax <= 0) return;
+
+	//Ç±Ç±ìÔà’ìxÇ…ÇÊÇ¡ÇƒëIÇ‘ämó¶êßå‰Ç∆Ç©ÇµÇΩÇ¢
+	int r = rand() % randMax;
+
+	int max = (int)spawnEnemyTable[type][r].size();
+	for (int i = 0; i < max; i++) {
+		SpawnEnemy(spawnEnemyTable[type][r].at(i));
+	}
 }
 
 std::vector<EnemyBase*>& EnemyManager::GetAllEnemy()

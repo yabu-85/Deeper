@@ -116,10 +116,54 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 				//入力（キーボード、マウス、コントローラー）情報を更新
 				Input::Update();
+
+				if (Input::IsKey(DIK_F)) {
+
+				}
 				
-				if (!Input::IsKey(DIK_F)) {
+				else if (Input::IsKey(DIK_G)) {
+					if (nowTime % 10 == 0) {
+						pRootObject->UpdateSub();
+
+						GameManager::Update();
+
+						//Pauseなどでのウィンドウスタイル変更のため
+						if (GameManager::IsMouseLimitedScene() != isCursorLimited) {
+							isCursorLimited = !isCursorLimited;
+							if (isCursorLimited) LimitMousePointer(hWnd);
+							else ReleaseMousePointer();
+						}
+
+						//カメラを更新
+						Camera::Update();
+
+						//エフェクトの更新
+						VFX::Update();
+
+						//このフレームの描画開始
+						Direct3D::BeginDraw();
+
+						//全オブジェクトを描画
+						//ルートオブジェクトのDrawを呼んだあと、自動的に子、孫のUpdateが呼ばれる
+						pRootObject->DrawSub();
+
+						//エフェクトの描画
+						VFX::Draw();
+
+						GameManager::Draw();
+
+						//描画終了
+						Direct3D::EndDraw();
+
+						//ちょっと休ませる
+						Sleep(1);
+					}
+				}
+
+				else if (true || !Input::IsKey(DIK_F)) {
+					
 					//全オブジェクトの更新処理
-						//ルートオブジェクトのUpdateを呼んだあと、自動的に子、孫のUpdateが呼ばれる
+					//ルートオブジェクトのUpdateを呼んだあと、自動的に子、孫のUpdateが呼ばれる
 					pRootObject->UpdateSub();
 
 					GameManager::Update();

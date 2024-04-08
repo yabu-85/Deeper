@@ -11,6 +11,8 @@ class MainSwordWeapon : public WeaponBase
 {
     int polyCreatTime_;     //ポリゴンの作成時間
     XMFLOAT3 wandPos_;      //プレイヤーの手のポジション
+    XMFLOAT3 swordTip_;     //剣先のポジション
+    XMFLOAT3 direction_;    //剣先の進行方向
 
     Player* pPlayer_;
     SegmentCollider* seg_;

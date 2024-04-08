@@ -30,10 +30,10 @@ const AnimeData PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::MAX]{
     { 175, 210 }, //DamageSmall
     { 210, 260 }, //DamageMid
     { 260, 495 }, //Dead
-    { 595, 650 }, //Attack1
-    { 650, 690 }, //Attack2
-    { 660, 690 }, //Attack3
-    { 700, 800 }, //Stone
+    { 595, 665 }, //Attack1
+    { 665, 720 }, //Attack2
+    { 675, 720 }, //Attack3
+    { 725, 825 }, //Stone
 };
 
 class Player : public Character

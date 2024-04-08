@@ -188,7 +188,6 @@
     <ClCompile Include="GameManager\CombatAI.cpp" />
     <ClCompile Include="GameManager\DifficultyManager.cpp" />
     <ClCompile Include="GameManager\GameManager.cpp" />
-    <ClCompile Include="GameManager\WaveManager.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Item\RecoveryItem.cpp" />
     <ClCompile Include="Ornament\PlayerOrnament.cpp" />
@@ -291,7 +290,6 @@
     <ClInclude Include="GameManager\CombatAI.h" />
     <ClInclude Include="GameManager\DifficultyManager.h" />
     <ClInclude Include="GameManager\GameManager.h" />
-    <ClInclude Include="GameManager\WaveManager.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Item\RecoveryItem.h" />
     <ClInclude Include="Ornament\PlayerOrnament.h" />

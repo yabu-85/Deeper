@@ -394,9 +394,6 @@
     <ClCompile Include="GameManager\GameManager.cpp">
       <Filter>13GameManager</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager\WaveManager.cpp">
-      <Filter>13GameManager</Filter>
-    </ClCompile>
     <ClCompile Include="Character\Character.cpp">
       <Filter>14Character</Filter>
     </ClCompile>
@@ -694,9 +691,6 @@
       <Filter>13GameManager</Filter>
     </ClInclude>
     <ClInclude Include="GameManager\GameManager.h">
-      <Filter>13GameManager</Filter>
-    </ClInclude>
-    <ClInclude Include="GameManager\WaveManager.h">
       <Filter>13GameManager</Filter>
     </ClInclude>
     <ClInclude Include="Character\Character.h">

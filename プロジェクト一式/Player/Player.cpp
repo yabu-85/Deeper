@@ -61,9 +61,6 @@ void Player::Initialize()
     SetMaxHP(DEF_LIFE_MAX);
     SetBodyWeight(0.1f);
     SetBodyRange(0.3f);
-    
-    SetHP(1);
-    LifeManager::Damage(0);
 
     //アニメーションデータのセットフレームはヘッダに書いてる
     pAnimationController_ = new AnimationController(hModel_);

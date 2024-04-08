@@ -7,10 +7,15 @@ class EnemyBase;
 class GameObject;
 
 enum ENEMY_TYPE {
-	ENEMY_STONEGOLEM,
+	ENEMY_STONEGOLEM = 0,
 	ENEMY_THROW,
 	ENEMY_MELEE,
 	ENEMY_MAX,
+};
+
+enum ENEMY_TABLE {
+	ETABLE_NORMAL = 0,
+	ETABLE_MAX,
 };
 
 class EnemyManager
@@ -23,11 +28,18 @@ class EnemyManager
 public:
 	EnemyManager();
 	void SetParent(GameObject* parent) { pParent_ = parent; }
+	std::vector<EnemyBase*>& GetAllEnemy();
+
+	//“G“|‚·
 	void AllKillEnemy();
 	void KillEnemy(EnemyBase* enemy);
+
+	//w’è‚µ‚½“G
 	void SpawnEnemy(ENEMY_TYPE type);
-	std::vector<EnemyBase*>& GetAllEnemy();
-	
+
+	//Table‚©‚çw’è‚µ‚Ä“Go‚·
+	void SpawnEnemyTable(ENEMY_TABLE type);
+
 	//‰¹‚Ì”ÍˆÍ“à‚ÌPatrolState‚ÌEnemy‚Ìó‘Ô‚ğ•ÏX
 	void PlayAtPosition(XMFLOAT3 position, float range);
 	

@@ -1,5 +1,4 @@
 #include "GameManager.h"
-#include "WaveManager.h"
 #include "CombatAI.h"
 #include "DifficultyManager.h"
 #include "../VFXManager.h"
@@ -75,7 +74,6 @@ void GameManager::Update()
 
 	DifficultyManager::Update();
 	CombatAI::Update();
-	WaveManager::Update();
 	LifeManager::Update();
 
 	//デバッグ用
@@ -138,7 +136,6 @@ void GameManager::SceneTransitionInitialize()
 	PlayerData::SceneTransitionInitialize();
 	Interaction::SceneTransitionInitialize();
 	DifficultyManager::SceneTransitionInitialize();
-	WaveManager::SceneTransitionInitialize();
 	TransitionEffect::SceneTransitionInitialize();
 
 	pEnemyManager_->SceneTransitionInitialize();

@@ -1,5 +1,4 @@
 #include "StageBase.h"
-#include "../GameManager/WaveManager.h"
 #include "../GameManager/GameManager.h"
 #include "../Stage/Warp.h"
 #include "../Stage/CollisionMap.h"
@@ -66,7 +65,7 @@ void StageBase::SetWarpStage(SCENE_ID* list)
 
 bool StageBase::IsClearStage()
 {
-	if (!isCleared_ && WaveManager::IsClearStage()) {
+	if (!isCleared_ && GameManager::GetEnemyManager()->IsEnemyListEmpty()) {
 		isCleared_ = true;
 		return true;
 	}

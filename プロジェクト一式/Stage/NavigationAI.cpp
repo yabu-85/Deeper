@@ -118,24 +118,25 @@ std::vector<XMFLOAT3> NavigationAI::Navi(int sx, int sz, int tx, int tz)
 	std::vector<std::vector<int>> parentZ(stageWidth, std::vector<int>(stageHeight, -1));			//そのノードの親ノードの座標Z
 
 	while (!open.empty()) {
+		//OpenListの優先度高いやつを取得
 		Node current = open.top();
 		open.pop();
-
 		int x = current.x;
 		int z = current.z;
 
-		// 目標に到達したか確認して・Path返答
-		if (x == tx && z == tz) {
-			return CreatePath(x, z, parentX, parentZ);
-		}
-
+		//閉じる
 		closedList[x][z] = true;
 
-		// 隣接するノードを生成
+		//回りのノード計算
 		for (int i = -1; i <= 1; ++i) {
 			for (int j = -1; j <= 1; ++j) {
 				int newX = x + i;
 				int newZ = z + j;
+
+				// 目標に到達したか確認して・Path返答
+				if (x == tx && z == tz) {
+					return CreatePath(x, z, parentX, parentZ);
+				}
 
 				// 隣接ノードが範囲内かつ通行可能か確認
 				if (!IsPositionOnMap(newX, newZ) || closedList[newX][newZ] || mapData_[newZ][newX] == M_WALL) continue;
@@ -183,24 +184,23 @@ std::vector<XMFLOAT3> NavigationAI::Navi(int sx, int sz, int tx, int tz, float s
 	std::vector<std::vector<int>> parentZ(stageWidth, std::vector<int>(stageHeight, -1));			//そのノードの親ノードの座標Z
 
 	while (!open.empty()) {
+		//OpenListの優先度高いやつを取得
 		Node current = open.top();
 		open.pop();
-
 		int x = current.x;
 		int z = current.z;
 
-		// 目標に到達したか確認
-		if (x == tx && z == tz) {
-			return CreatePath(x, z, parentX, parentZ);
-		}
-
+		//閉じる
 		closedList[x][z] = true;
 
-		// 隣接するノードを生成
+		//回りのノード計算
 		for (int i = -1; i <= 1; ++i) {
 			for (int j = -1; j <= 1; ++j) {
 				int newX = x + i;
 				int newZ = z + j;
+				
+				//目標に到達した場合
+				if (newX == tx && newZ == tz) return CreatePath(x, z, parentX, parentZ);
 
 				// 隣接ノードが範囲内かつ通行可能か確認
 				if (!IsPositionOnMap(newX, newZ) || closedList[newX][newZ] ||

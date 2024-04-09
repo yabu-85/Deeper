@@ -78,26 +78,24 @@ void Interaction::Draw() {
 		t.Calclation();
 		interactImage_->Draw(t, rect, 1.0f);
 
-		if ((uiList_.at(uiListIndex_)->GetLongPress())) {
-			XMFLOAT3 size = interactLongImage_->GetTextureSize();
-			RECT rect;
-			rect.left = 0;
-			rect.top = 0;
-			rect.right = (long)size.x;
-			rect.bottom = (long)size.y;
-
-			Transform tra = t;
-			tra.position_.x += 0.5f;
-			tra.position_.y += 0.5f;
-			interactLongImage_->Draw(tra, rect, 1.0f);
-		}
-
 		float ysub = ((float)rect.bottom / (float)Direct3D::screenHeight_);
 		t.position_.y -= ysub * (1.0f - parcent_);
 		t.Calclation();
 		rect.top = (LONG)((float)rect.bottom * (1.0f - parcent_));
 		rect.bottom = (LONG)((float)rect.bottom * parcent_);
 		interactImageSelect_->Draw(t, rect, 1.0f);
+
+		if ((uiList_.at(uiListIndex_)->GetLongPress())) {
+			size = interactLongImage_->GetTextureSize();
+			rect.left = 0;
+			rect.top = 0;
+			rect.right = (long)size.x;
+			rect.bottom = (long)size.y;
+
+			t.position_.x += 0.2f;
+			t.Calclation();
+			interactLongImage_->Draw(t, rect, 1.0f);
+		}
 	}
 }
 

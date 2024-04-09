@@ -9,7 +9,7 @@ namespace VFXManager
 	EmitterData smoke;
 	EmitterData enemySpawn;
 	EmitterData swordSlash;
-
+	EmitterData recovery;
 }
 
 void VFXManager::Initialize()
@@ -88,6 +88,20 @@ void VFXManager::Initialize()
 	swordSlash.size = XMFLOAT2(3.0f, 1.0f);
 	swordSlash.deltaColor = XMFLOAT4(1.0f, 1.0f, 1.0f, -0.1f);
 
+	//‰ñ•œ
+	recovery.textureFileName = "Particle/cloudA.png";
+	recovery.delay = 0;
+	recovery.number = 3;
+	recovery.lifeTime = 10;
+	recovery.position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	recovery.positionRnd = XMFLOAT3(0.3f, 0.3f, 0.3f);
+	recovery.direction = XMFLOAT3(0.0f, 0.5f, 0.0f);
+	recovery.speed = 0.1f;
+	recovery.size = XMFLOAT2(2.0f, 2.0f);
+	recovery.scale = XMFLOAT2(0.9f, 0.9f);
+	recovery.color = XMFLOAT4(0.0f, 1.0f, 0.1f, 1.0f);
+	recovery.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+
 }
 
 void VFXManager::CreatVfxSwordSlash(XMFLOAT3 pos, XMFLOAT3 dir)
@@ -99,6 +113,12 @@ void VFXManager::CreatVfxSwordSlash(XMFLOAT3 pos, XMFLOAT3 dir)
 	swordSlash.rotate.z = rotation;
 	
 	VFX::Start(swordSlash);
+}
+
+void VFXManager::CreatVfxRecovery(XMFLOAT3 pos)
+{
+	recovery.position = pos;
+	VFX::Start(recovery);
 }
 
 void VFXManager::CreatVfxExplode1(XMFLOAT3 pos)

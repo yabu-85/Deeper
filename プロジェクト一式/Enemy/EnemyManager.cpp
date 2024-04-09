@@ -49,9 +49,9 @@ void EnemyManager::KillEnemy(EnemyBase* enemy)
 
 void EnemyManager::SpawnEnemy(ENEMY_TYPE type)
 {
-	if (type == ENEMY_STONEGOLEM) AddEnemyList(Instantiate<StoneGolem>(pParent_), type);
-	else if (type == ENEMY_THROW) AddEnemyList(Instantiate<ThrowEnemy>(pParent_), type);
-	else if (type == ENEMY_MELEE) AddEnemyList(Instantiate<MeleeFighter>(pParent_), type);
+	if (type == ENEMY_STONEGOLEM) AddEnemyList(InstantiateFront<StoneGolem>(pParent_), type);
+	else if (type == ENEMY_THROW) AddEnemyList(InstantiateFront<ThrowEnemy>(pParent_), type);
+	else if (type == ENEMY_MELEE) AddEnemyList(InstantiateFront<MeleeFighter>(pParent_), type);
 }
 
 void EnemyManager::SpawnEnemyTable(ENEMY_TABLE type)

@@ -11,6 +11,7 @@ namespace VFXManager
 	void CreatVfxEnemySpawn(XMFLOAT3 pos, int lifeTime);
 	void CreatVfxSmoke(XMFLOAT3 pos);
 	void CreatVfxSwordSlash(XMFLOAT3 pos, XMFLOAT3 dir);
+	void CreatVfxRecovery(XMFLOAT3 pos);
 
 };
 

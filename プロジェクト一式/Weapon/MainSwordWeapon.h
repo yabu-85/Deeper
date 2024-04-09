@@ -28,10 +28,13 @@ public:
     void Release() override;
     void OnAttackCollision(GameObject* pTarget) override;
     void ChangeAttackState() override;
-
     void ResetState() override;
+
+    //攻撃判定コライダーの計算
     void CalcSwordTrans();
-    void SetPolyCreatTime(int time) { polyCreatTime_ = time; }
+
+    //PolyLineを段々消すように
+    void SetPolyCreatTime();
 
     void DamageInfoReset();
     void SetDamageInfoCombo1();

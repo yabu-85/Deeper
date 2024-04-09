@@ -174,6 +174,7 @@ void MeleeFighter::DamageInfoReset()
 {
 	SetAllAttackColliderValid(false);
 	GetDamageController()->ResetAttackList();
+	for (int i = 0; i < 2; i++) pPolyLine_[i]->ResetPosition();
 }
 
 void MeleeFighter::SetDamageInfoCombo1()
@@ -183,7 +184,4 @@ void MeleeFighter::SetDamageInfoCombo1()
 	GetDamageController()->SetCurrentDamage(damage);
 	GetDamageController()->SetCurrentKnockBackInfo(knockBack);
 	SetAllAttackColliderValid(true);
-	
-	for(int i = 0;i < 2;i++) pPolyLine_[i]->ResetPosition();
-
 }

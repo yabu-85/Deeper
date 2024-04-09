@@ -23,6 +23,8 @@ namespace Interaction {
 	//画像データ色なし・色あり
 	Sprite* interactImage_ = nullptr;
 	Sprite* interactImageSelect_ = nullptr;
+	Sprite* interactLongImage_ = nullptr;
+
 }
 
 void Interaction::Initialize() {
@@ -30,6 +32,9 @@ void Interaction::Initialize() {
 	interactImage_->Load("Image/KeyImage/E.jpg");
 	interactImageSelect_ = new Sprite();
 	interactImageSelect_->Load("Image/KeyImage/EYellow.png");
+	interactLongImage_ = new Sprite();
+	interactLongImage_->Load("Image/LongPress.png");
+
 }
 
 void Interaction::Draw() {
@@ -72,6 +77,20 @@ void Interaction::Draw() {
 		t.scale_ = { 1.0f, 1.0f, 1.0f };
 		t.Calclation();
 		interactImage_->Draw(t, rect, 1.0f);
+
+		if ((uiList_.at(uiListIndex_)->GetLongPress())) {
+			XMFLOAT3 size = interactLongImage_->GetTextureSize();
+			RECT rect;
+			rect.left = 0;
+			rect.top = 0;
+			rect.right = (long)size.x;
+			rect.bottom = (long)size.y;
+
+			Transform tra = t;
+			tra.position_.x += 0.5f;
+			tra.position_.y += 0.5f;
+			interactLongImage_->Draw(tra, rect, 1.0f);
+		}
 
 		float ysub = ((float)rect.bottom / (float)Direct3D::screenHeight_);
 		t.position_.y -= ysub * (1.0f - parcent_);

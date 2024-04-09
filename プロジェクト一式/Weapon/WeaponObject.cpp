@@ -16,6 +16,7 @@ void WeaponObject::Initialize()
 {
 	pInteractionUI_ = new InteractionUI(this);
 	pInteractionUI_->Initialize();
+	pInteractionUI_->SetLongPress(true);
 
 }
 

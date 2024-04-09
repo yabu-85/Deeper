@@ -3,7 +3,7 @@
 #include "../Engine/GameObject.h"
 
 InteractionUI::InteractionUI(GameObject* parent)
-	: isValid_(true), offset_{ 0.0f, 1.0f, 0.0f }, pParent_(parent)
+	: isValid_(true), longPress_(false), offset_{ 0.0f, 1.0f, 0.0f }, pParent_(parent)
 {
 }
 

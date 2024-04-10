@@ -5,7 +5,8 @@
 #include <vector>
 
 Character::Character(GameObject* parent, std::string name)
-	: GameObject(parent, name), movement_(0,0,0), bodyWeight_(1.0f), bodyRange_(0.5f), knockBackTime_(0), knockBackTimeMax_(0), knockBackDirection_{0,0,0}
+	: GameObject(parent, name), hp_(0), maxHp_(0), movement_(0,0,0), bodyWeight_(1.0f), bodyRange_(0.5f), knockBackTime_(0), knockBackTimeMax_(0), 
+	knockBackDirection_{0,0,0}
 {
 	CharacterManager::AddCharacter(this);
 }

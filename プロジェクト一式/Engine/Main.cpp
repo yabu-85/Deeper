@@ -46,6 +46,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int fpsLimit = GetPrivateProfileInt("GAME", "Fps", 60, ".\\setup.ini");				//FPS（画面更新速度）
 	int isDrawFps = GetPrivateProfileInt("DEBUG", "ViewFps", 0, ".\\setup.ini");		//キャプションに現在のFPSを表示するかどうか
 
+	screenWidth = 400;
+	screenHeight = 300;
+
 	//ウィンドウを作成
 	HWND hWnd = InitApp(hInstance, screenWidth, screenHeight, nCmdShow);
 
@@ -248,7 +251,10 @@ HWND InitApp(HINSTANCE hInstance, int screenWidth, int screenHeight, int nCmdSho
 	HWND hWnd = CreateWindow(
 		WIN_CLASS_NAME,					            //ウィンドウクラス名
 		caption,						            //タイトルバーに表示する内容
-		WS_OVERLAPPEDWINDOW & ~(WS_THICKFRAME | WS_MAXIMIZEBOX),	//スタイル（通常のスタイル & 最大化不可 | サイズ変更不可）
+		
+		//WS_OVERLAPPEDWINDOW & ~(WS_THICKFRAME | WS_MAXIMIZEBOX),	//スタイル（通常のスタイル & 最大化不可 | サイズ変更不可）
+		WS_OVERLAPPEDWINDOW,
+		
 		CW_USEDEFAULT,					            //表示位置左（おまかせ）
 		CW_USEDEFAULT,					            //表示位置上（おまかせ）
 		winRect.right - winRect.left,	            //ウィンドウ幅

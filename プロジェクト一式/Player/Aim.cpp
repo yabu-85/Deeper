@@ -210,14 +210,14 @@ EnemyBase* Aim::CalcTargetEnemy()
 
 }
 
-void Aim::SetCameraShake(int iterat, float range, float range_decrease, float speed, float speed_decrease)
+void Aim::SetCameraShake(const CameraShakeInfo& info)
 {
-    iterations_ = iterat;
-    range_ = range;
-    moveDistance_ = range;
-    shakeSpeed_ = speed;
-    distanceDecrease_ = speed_decrease;
-    rangeDecrease_ = range_decrease;
+    iterations_ = info.iterat;
+    range_ = info.range;
+    moveDistance_ = info.range;
+    shakeSpeed_ = info.speed;
+    distanceDecrease_ = info.speed_decrease;
+    rangeDecrease_ = info.range_decrease;
     
     center_ = XMVectorZero();
     sign_ = 1.0f;

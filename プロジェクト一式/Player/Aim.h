@@ -2,6 +2,18 @@
 #include "../Engine/GameObject.h"
 #include "../Enemy/EnemyBase.h"
 
+struct CameraShakeInfo {
+    int iterat;             //反復回数
+    float range;            //移動距離
+    float range_decrease;   //移動距離減衰（1.0fの場合変化しない
+    float speed;            //移動スピード
+    float speed_decrease;   //移動スピード減衰（1.0fの場合変化しない
+
+    CameraShakeInfo() : iterat(0), range(0.0f), range_decrease(1.0f), speed(0.0f), speed_decrease(1.0f) {};
+    CameraShakeInfo(int ite, float ran, float spe) : iterat(ite), range(ran), range_decrease(1.0f), speed(spe), speed_decrease(1.0f) {};
+    CameraShakeInfo(int ite, float ran, float ranD, float spe, float speD) : iterat(ite), range(ran), range_decrease(ranD), speed(spe), speed_decrease(speD) {};
+};
+
 class Player;
 class CollisionMap;
 
@@ -68,16 +80,15 @@ public:
     void SetAimMove(bool b) { isMove_ = b; };
     bool IsAimMove() { return isMove_; }
 
-    float GetMouseSensitivity() { return mouseSensitivity; };
-    void SetMouseSensitivity(float f) { mouseSensitivity = f; };
-
     //進行方向ベクトルのAim情報を取得
     XMFLOAT3 GetAimDirection() { return aimDirection_; }
 
     //死んだ敵のポインタを渡してTargetだったらの関数
-    void TargetIsDead(EnemyBase* target);       
+    void TargetIsDead(EnemyBase* target);
+
     //Targetを更新する
     void SetTargetEnemy();
+    
     //視野内・近い敵を取得する
     EnemyBase* CalcTargetEnemy();
 
@@ -90,7 +101,7 @@ public:
     bool IsCompulsion() { return isCompulsion_; }
 
     //反復回数、反復する距離、スピードの減衰地、スピード
-    void SetCameraShake(int iterat, float range, float range_decrease, float speed, float speed_decrease);
+    void SetCameraShake(const CameraShakeInfo& info);
     void SetCameraShakeDirection(XMVECTOR v) { shakeDirection_ = v; }
 
 };

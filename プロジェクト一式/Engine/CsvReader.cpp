@@ -81,6 +81,7 @@ bool CsvReader::Load(std::string fileName)
 		data_.emplace_back(record);
 	}
 	ifs.close();
+	return true;
 }
 
 //「,」か「改行」までの文字列を取得

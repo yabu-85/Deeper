@@ -7,14 +7,12 @@ using namespace DirectX;
 class GameObject;
 class BoxCollider;
 class SphereCollider;
-class SegmentCollider;
 
 //あたり判定のタイプ
 enum ColliderType
 {
 	COLLIDER_BOX,		//箱型
 	COLLIDER_CIRCLE,	//球体
-	COLLIDER_SEGMENT,	//線分
 	COLLIDER_MAX,		
 };
 
@@ -26,7 +24,6 @@ class Collider
 	//それぞれのクラスのprivateメンバにアクセスできるようにする
 	friend class BoxCollider;
 	friend class SphereCollider;
-	friend class SegmentCollider;
 
 protected:
 	GameObject*		pGameObject_;		//この判定をつけたゲームオブジェクト
@@ -65,12 +62,6 @@ public:
 	//戻値：接触していればtrue
 	bool IsHitBoxVsCircle(BoxCollider* box, SphereCollider* sphere);
 
-	//箱型と直線の衝突判定
-	//引数：box	箱型判定
-	//引数：seg 線分判定
-	//戻値：接触していればtrue
-	bool IsHitBoxVsSegment(BoxCollider* box, SegmentCollider* seg);
-
 	//-------------------------------------------------------
 
 	//球体同士の衝突判定
@@ -78,12 +69,6 @@ public:
 	//引数：circleB	２つ目の球体判定
 	//戻値：接触していればtrue
 	bool IsHitCircleVsCircle(SphereCollider* circleA, SphereCollider* circleB);
-
-	//球体と線分衝突判定
-	//引数：circle	１つ目の球体判定
-	//引数：seg	    ２つ目の直線判定
-	//戻値：接触していればtrue
-	bool IsHitCircleVsSegment(SphereCollider* circle, SegmentCollider* seg);
 
 	//-------------------------------------------------------
 

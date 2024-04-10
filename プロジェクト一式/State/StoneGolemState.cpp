@@ -32,6 +32,9 @@ namespace {
 	static const float SLOW_SPEED = 0.02f;
 	static const float ROTATE_RATIO = 0.03f;
 
+	XMVECTOR shakeDirection{ 0.0f, 1.0f, 0.0f, 0.0f };
+	CameraShakeInfo shakeInfo(7, 0.25f, 0.7f, 0.3f, 0.8f);
+
 	//çUåÇStateÇÃèÓïÒ
 	static const int ATTACK_FRAME[2] = { 0, 300 };
 	static const float ATTACK_ROTATE_RATIO = 0.05f;
@@ -371,8 +374,9 @@ void StoneGolemAttack::Update()
 			float range = sqrt(pos.x * pos.x + pos.z * pos.z);
 			if (range <= maxRange) {
 				range = (1.0f - (range / maxRange));
-				GameManager::GetPlayer()->GetAim()->SetCameraShakeDirection(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f });
-				GameManager::GetPlayer()->GetAim()->SetCameraShake(7, 0.25f * range, 0.7f, 0.3f, 0.8f);
+				shakeInfo.range *= range;
+				GameManager::GetPlayer()->GetAim()->SetCameraShakeDirection(shakeDirection);
+				GameManager::GetPlayer()->GetAim()->SetCameraShake(shakeInfo);
 			}
 		}
 	}

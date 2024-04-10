@@ -3,7 +3,7 @@
 #include "../State/StateBase.h"
 
 class Player;
-class SegmentCollider;
+class SphereCollider;
 class PolyLine;
 class DamageController;
 
@@ -11,11 +11,10 @@ class MainSwordWeapon : public WeaponBase
 {
     int polyCreatTime_;     //ポリゴンの作成時間
     XMFLOAT3 wandPos_;      //プレイヤーの手のポジション
-    XMFLOAT3 swordTip_;     //剣先のポジション
     XMFLOAT3 direction_;    //剣先の進行方向
 
     Player* pPlayer_;
-    SegmentCollider* seg_;
+    SphereCollider* sphere_[2];
     PolyLine* pPolyLine_;
     DamageController* pDamageController_;
 
@@ -40,8 +39,6 @@ public:
     void SetDamageInfoCombo1();
     void SetDamageInfoCombo2();
     void SetDamageInfoCombo3();
-
-    SegmentCollider* GetSegmentCollider() { return seg_; }
 };
 
 //-------------------State----------------------

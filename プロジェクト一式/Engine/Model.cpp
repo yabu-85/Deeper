@@ -228,10 +228,12 @@ namespace Model
 	{
 		//相対座標（ボーンの中心からの位置）
 		//ブレンド中ならそれ用の
-		if(_datas[handle]->isBlending) 
-			return _datas[handle]->pFbx->GetBoneAniBlendRotate(boneIndex, partIndex, (int)_datas[handle]->nowFrame, (int)_datas[handle]->blendFrame, _datas[handle]->blendWeight);
-		
-		return _datas[handle]->pFbx->GetBoneAnimRotate(boneIndex, partIndex, (int)_datas[handle]->nowFrame);
+		XMFLOAT3 rot = XMFLOAT3();
+		if(_datas[handle]->isBlending) rot = _datas[handle]->pFbx->GetBoneAniBlendRotate(boneIndex, partIndex, (int)_datas[handle]->nowFrame, (int)_datas[handle]->blendFrame, _datas[handle]->blendWeight);
+		else rot = _datas[handle]->pFbx->GetBoneAnimRotate(boneIndex, partIndex, (int)_datas[handle]->nowFrame);
+	
+		if (rot.x >= 90.0f || rot.x <= -90.0f) rot.y *= -1.0f;
+		return rot;
 	}
 
 	//ワールド行列を設定

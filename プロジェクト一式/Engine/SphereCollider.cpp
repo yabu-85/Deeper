@@ -1,6 +1,5 @@
 #include "SphereCollider.h"
 #include "BoxCollider.h"
-#include "SegmentCollider.h"
 #include "Model.h"
 
 //コンストラクタ（当たり判定の作成）
@@ -26,8 +25,5 @@ bool SphereCollider::IsHit(Collider* target)
 {
 	if (target->type_ == COLLIDER_BOX)
 		return IsHitBoxVsCircle((BoxCollider*)target, this);
-	else if (target->type_ == COLLIDER_CIRCLE)
-		return IsHitCircleVsCircle((SphereCollider*)target, this);
-	else
-		return IsHitCircleVsSegment(this, (SegmentCollider*)target);
+	else return IsHitCircleVsCircle((SphereCollider*)target, this);
 }

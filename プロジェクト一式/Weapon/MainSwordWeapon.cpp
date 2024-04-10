@@ -7,7 +7,7 @@
 #include "../Player/Aim.h"
 #include "../Engine/PolyLine.h"
 #include "../Engine/Global.h"
-#include "../Engine/SegmentCollider.h"
+#include "../Engine/SphereCollider.h"
 #include "../Engine/Model.h"
 #include "../State/StateManager.h"
 #include "../Enemy/EnemyManager.h"
@@ -21,10 +21,17 @@ namespace {
     static const float MOVE_SPEED = 0.4f;
     static const float ROTATE_RATIO = 0.2f;
 
-    static const int ATTACK_DAMAGE1 = 20;
-    static const int ATTACK_DAMAGE2 = 20;
-    static const int ATTACK_DAMAGE3 = 20;
-    
+    DamageInfo damage1(nullptr, "Sword", 20);
+    DamageInfo damage2(nullptr, "Sword", 20);
+    DamageInfo damage3(nullptr, "Sword", 30);
+    KnockBackInfo knock1(KNOCK_TYPE::MEDIUM, 2, 0.1f, XMFLOAT3());
+    KnockBackInfo knock2(KNOCK_TYPE::MEDIUM, 2, 0.1f, XMFLOAT3());
+    KnockBackInfo knock3(KNOCK_TYPE::MEDIUM, 2, 0.2f, XMFLOAT3());
+    CameraShakeInfo shakeInfo(2, 0.3f, 1.0f, 0.3f, 1.0f);
+
+    //ブレンドを下げる値
+    static const float ANIMATION_DECREASE = 0.3f;
+
     //回転フレーム
     static const int ROTATE_FRAME[2] = { 3, 10 };
 
@@ -46,8 +53,8 @@ namespace {
 }
 
 MainSwordWeapon::MainSwordWeapon(GameObject* parent)
-	: WeaponBase(parent, "MainSwordWeapon"), polyCreatTime_(0), wandPos_(0, 0, 0), direction_(0,0,0), swordTip_(0,0,0),
-    pPlayer_(nullptr), seg_(nullptr), pPolyLine_(nullptr), pDamageController_(nullptr)
+	: WeaponBase(parent, "MainSwordWeapon"), polyCreatTime_(0), wandPos_(0, 0, 0), direction_(0,0,0),
+    pPlayer_(nullptr), pPolyLine_(nullptr), pDamageController_(nullptr), sphere_{ nullptr, nullptr }
 {
     transform_.pParent_ = nullptr;
 }
@@ -65,6 +72,11 @@ void MainSwordWeapon::Initialize()
     Model::GetBoneIndex(pPlayer_->GetModelHandle(), "Weapon", &boneIndex_, &partIndex_);
     assert(boneIndex_ >= 0);
 
+    pDamageController_ = new DamageController();
+    damage1.owner = pPlayer_;
+    damage2.owner = pPlayer_;
+    damage3.owner = pPlayer_;
+
     pStateManager_ = new StateManager(this);
     pStateManager_->AddState(new MainSwordWeaponCombo1(pStateManager_));
     pStateManager_->AddState(new MainSwordWeaponCombo2(pStateManager_));
@@ -72,16 +84,17 @@ void MainSwordWeapon::Initialize()
     pStateManager_->ChangeState("");
     pStateManager_->Initialize();
 
-    seg_ = new SegmentCollider(XMFLOAT3(), XMVECTOR());
-    seg_->SetValid(false);
-    AddAttackCollider(seg_);
+    for (int i = 0; i < 2; i++) {
+        sphere_[i] = new SphereCollider(XMFLOAT3(), 0.25f);
+        sphere_[i]->SetValid(false);
+        AddAttackCollider(sphere_[i]);
+    }
+    
 
     pPolyLine_ = new PolyLine;
     pPolyLine_->Load("PolyImage/Sword.png");
     pPolyLine_->SetLength(POLY_DRAW_TIME);
     pPolyLine_->SetSmooth(POLY_SMOOTH);
-
-    pDamageController_ = new DamageController();
 }
 
 void MainSwordWeapon::Update()
@@ -107,22 +120,14 @@ void MainSwordWeapon::Draw()
     //回転軸を取得
     transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     transform_.rotate_.y += pPlayer_->GetRotate().y;
-    while (transform_.rotate_.y > 180.0f) transform_.rotate_.y -= 360.0f;
-    while (transform_.rotate_.y < -180.0f) transform_.rotate_.y += 360.0f;
-
-    if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
-        transform_.rotate_.y *= -1.0f;
-    }
 
     Transform t = transform_;
     t.position_ = wandPos_;
     Model::SetTransform(hModel_, t);
     Model::Draw(hModel_);
-
-    XMFLOAT3 pPos = pPlayer_->GetPosition();
-    seg_->SetCenter({ wandPos_.x - pPos.x, wandPos_.y - pPos.y, wandPos_.z - pPos.z });
-
+   
     pPolyLine_->Draw();
+    CollisionDraw();
 }
 
 void MainSwordWeapon::Release()
@@ -147,7 +152,7 @@ void MainSwordWeapon::OnAttackCollision(GameObject* pTarget)
             
             VFXManager::CreatVfxSwordSlash(wandPos_, direction_);
             pPlayer_->GetAim()->SetCameraShakeDirection(XMLoadFloat3(&direction_));
-            pPlayer_->GetAim()->SetCameraShake(2, 0.3f, 1.0f, 0.3f, 1.0f);
+            pPlayer_->GetAim()->SetCameraShake(shakeInfo);
         }
     }
 }
@@ -164,34 +169,41 @@ void MainSwordWeapon::ResetState()
     isAtkEnd_ = true;
     isCancellable_ = false;
     pStateManager_->ChangeState("");
-    seg_->SetValid(false);
+    SetAllAttackColliderValid(false);
     SetPolyCreatTime();
 }
 
 void MainSwordWeapon::CalcSwordTrans()
 {
-    XMFLOAT3 tar = XMFLOAT3(transform_.rotate_.x, transform_.rotate_.y, 0.0f);
     XMFLOAT3 target;
-    target.x = (float)sin(XMConvertToRadians(tar.y));
-    target.y = -(float)tan(XMConvertToRadians(tar.x));
-    target.z = (float)cos(XMConvertToRadians(tar.y));
-
-    if (tar.x >= 90.0f || tar.x <= -90.0f) {
+    target.x = (float)sin(XMConvertToRadians(transform_.rotate_.y));
+    target.y = -(float)tan(XMConvertToRadians(transform_.rotate_.x));
+    target.z = (float)cos(XMConvertToRadians(transform_.rotate_.y));
+    if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
         target.x *= -1.0f;
         target.y *= -1.0f;
         target.z *= -1.0f;
     }
 
-    XMFLOAT3 vec = target;
-    XMVECTOR vVec = XMLoadFloat3(&vec);
-    vVec = XMVector3Normalize(vVec) * WEAPON_SIZE;
-    seg_->SetVector(vVec);
-    seg_->SetValid(true);
+    SetAllAttackColliderValid(true);
+    XMFLOAT3 vec = Float3Multiply(Float3Normalize(target), WEAPON_SIZE);
 
-    XMStoreFloat3(&vec, vVec);
-    swordTip_ = XMFLOAT3(wandPos_.x + vec.x, wandPos_.y + vec.y, wandPos_.z + vec.z);
-    pPolyLine_->AddPosition(wandPos_, swordTip_);
+    //剣先の座標計算ワールド
+    XMFLOAT3 swordTip = Float3Add(wandPos_, vec);
+    
+    //ワールドの座標をPolyに
+    pPolyLine_->AddPosition(wandPos_, swordTip);
 
+    //ローカルにしてCollider設定
+    XMFLOAT3 pPos = pPlayer_->GetPosition();
+    swordTip = Float3Sub(swordTip, pPos);
+    sphere_[0]->SetCenter(swordTip);
+
+    //中間のCollider
+    vec = Float3Multiply(Float3Normalize(target), WEAPON_SIZE * 0.5f);
+    swordTip = Float3Add(wandPos_, vec);
+    swordTip = Float3Sub(swordTip, pPos);
+    sphere_[1]->SetCenter(swordTip);
 }
 
 void MainSwordWeapon::SetPolyCreatTime()
@@ -206,26 +218,20 @@ void MainSwordWeapon::DamageInfoReset()
 
 void MainSwordWeapon::SetDamageInfoCombo1()
 {
-    DamageInfo damage(pPlayer_, "Sword", ATTACK_DAMAGE1);
-    KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 2, 0.1f, XMFLOAT3());
-    pDamageController_->SetCurrentDamage(damage);
-    pDamageController_->SetCurrentKnockBackInfo(knock);
+    pDamageController_->SetCurrentDamage(damage1);
+    pDamageController_->SetCurrentKnockBackInfo(knock1);
 }
 
 void MainSwordWeapon::SetDamageInfoCombo2()
 {
-    DamageInfo damage(pPlayer_, "Sword", ATTACK_DAMAGE2);
-    KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 2, 0.1f, XMFLOAT3());
-    pDamageController_->SetCurrentDamage(damage);
-    pDamageController_->SetCurrentKnockBackInfo(knock);
+    pDamageController_->SetCurrentDamage(damage2);
+    pDamageController_->SetCurrentKnockBackInfo(knock2);
 }
 
 void MainSwordWeapon::SetDamageInfoCombo3()
 {
-    DamageInfo damage(pPlayer_, "Sword", ATTACK_DAMAGE3);
-    KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 2, 0.2f, XMFLOAT3());
-    pDamageController_->SetCurrentDamage(damage);
-    pDamageController_->SetCurrentKnockBackInfo(knock);
+    pDamageController_->SetCurrentDamage(damage3);
+    pDamageController_->SetCurrentKnockBackInfo(knock3);
 }
 
 //--------------------state---------------------------------------------------
@@ -250,7 +256,7 @@ void MainSwordWeaponCombo1::Update()
 
     p->CalcNoMove();
     p->FrontMove((1.0f - float(time_) / (float)comboTime) * MOVE_SPEED);
-    m->GetSegmentCollider()->SetValid(false);
+    m->SetAllAttackColliderValid(false);
     
     //攻撃判定
     if(time_ >= ANIM_ATTACK_FRAME1[0] && time_ <= ANIM_ATTACK_FRAME1[1]) m->CalcSwordTrans();
@@ -288,7 +294,7 @@ void MainSwordWeaponCombo1::OnEnter()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK1, 0.3f);
+    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK1, ANIMATION_DECREASE);
     m->SetDamageInfoCombo1();
     time_ = 0;
     next_ = false;
@@ -322,8 +328,8 @@ void MainSwordWeaponCombo2::Update()
 
     p->CalcNoMove();
     p->FrontMove((1.0f - float(time_) / (float)comboTime) * MOVE_SPEED);
-    m->GetSegmentCollider()->SetValid(false);
-    
+    m->SetAllAttackColliderValid(false);
+
     //攻撃判定
     if (time_ >= ANIM_ATTACK_FRAME2[0] && time_ <= ANIM_ATTACK_FRAME2[1]) m->CalcSwordTrans();
     //攻撃終了判定
@@ -360,7 +366,7 @@ void MainSwordWeaponCombo2::OnEnter()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK2, 0.3f);
+    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK2, ANIMATION_DECREASE);
     m->SetDamageInfoCombo2();
     time_ = 0;
     next_ = false;
@@ -394,8 +400,8 @@ void MainSwordWeaponCombo3::Update()
     
     p->CalcNoMove();
     p->FrontMove((1.0f - float(time_) / (float)comboTime) * MOVE_SPEED);
-    m->GetSegmentCollider()->SetValid(false);
-    
+    m->SetAllAttackColliderValid(false);
+
     //攻撃判定
     if (time_ >= ANIM_ATTACK_FRAME3[0] && time_ <= ANIM_ATTACK_FRAME3[1]) m->CalcSwordTrans();
     //攻撃終了判定
@@ -432,7 +438,7 @@ void MainSwordWeaponCombo3::OnEnter()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK3, 1.0f, 1.0f);
+    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK3, 1.0f, ANIMATION_DECREASE);
     m->SetDamageInfoCombo3();
     time_ = 0;
     next_ = false;

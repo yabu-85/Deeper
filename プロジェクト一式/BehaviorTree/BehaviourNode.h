@@ -29,8 +29,6 @@ public:
     Status Tick();
 
     virtual Status Update() = 0;    //本体処理
-    //virtual void Initialize() {}    //Invalidの時だけ実行
-    //virtual void Terminate() {};    //Running以外の時実行
 
     virtual void ResetState() { status_ = Status::INVALID; }
     void SetStatus(Status newState) { status_ = newState; }
@@ -57,7 +55,6 @@ public:
 
 protected:
     std::vector<TreeNode*> childlenNodes_;
-    unsigned currentIndex_;
 };
 
 //--------------------------Sequence--------------------------

@@ -13,6 +13,9 @@ namespace {
     static const int ATTACK_DAMAGE = 100;
     static const float MOVE_SPEED = 0.03f;
 
+    XMVECTOR shakeDirection { 0.0f, 1.0f, 0.0f, 0.0f };
+    CameraShakeInfo shakeInfo(7, 0.28f, 0.7f, 0.3f, 0.8f);
+
     static const int COMBO_TIME1 = 100;
     static const int ATTACK_FRAME1 = 52;   //”»’èƒtƒŒ[ƒ€
     static const int ROTATE_FRAME[2] = { 5, 15 };
@@ -67,10 +70,6 @@ void StoneArmWeapon::Draw()
 
     transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
-
-    if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
-        transform_.rotate_.y *= -1.0f;
-    }
     transform_.rotate_.y += pPlayer_->GetRotate().y;
 
     //‘½•ª«—ˆ’¼‚·C³‰ÓŠ
@@ -115,8 +114,8 @@ void StoneArmWeapon::Attack()
 {
     VFXManager::CreatVfxSmoke(atkPosition_);
 
-    GameManager::GetPlayer()->GetAim()->SetCameraShakeDirection(XMVECTOR{ 0.0f, 1.0f, 0.0f, 0.0f });
-    GameManager::GetPlayer()->GetAim()->SetCameraShake(7, 0.28f, 0.7f, 0.3f, 0.8f);
+    GameManager::GetPlayer()->GetAim()->SetCameraShakeDirection(shakeDirection);
+    GameManager::GetPlayer()->GetAim()->SetCameraShake(shakeInfo);
 }
 
 //--------------------------state-----------------------------------

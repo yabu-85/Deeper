@@ -16,31 +16,14 @@ TreeNode::Status TreeNode::Tick()
     
     return status_ = Update();
     
-    //Initalize / Terminateç°ÇÃÇ∆Ç±égÇ§ó\íËÇ™Ç»Ç¢ÅAÇªÇÃÇ‹Ç‹Ç»ÇÁñ≥Ç≠ÇƒÇ‡Ç¢Ç¢ÇÒÇ∂Ç·Ç»Ç¢Ç©Ç»èdÇ≠Ç»ÇÈÇµ
-    //
-
-    /*
-    if (status_ == Status::INVALID)
-    {
-        Initialize();
-    }
-    */
-    
     status_ = Update();
-
-    /*
-    if (status_ != Status::RUNNING)
-    {
-        Terminate();
-    }
-    */
 
     return status_;
 }
 
 //--------------------------Composite--------------------------
 
-CompositeNode::CompositeNode() : TreeNode(), currentIndex_(0)
+CompositeNode::CompositeNode() : TreeNode()
 {
     type_ = NodeType::CONTROL_NODE;
 }

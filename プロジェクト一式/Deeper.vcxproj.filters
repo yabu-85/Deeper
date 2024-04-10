@@ -207,9 +207,6 @@
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
     <ClCompile Include="AudioManager.cpp" />
-    <ClCompile Include="Engine\SegmentCollider.cpp">
-      <Filter>01Engine\Collider</Filter>
-    </ClCompile>
     <ClCompile Include="AnimationController.cpp">
       <Filter>11Animation</Filter>
     </ClCompile>
@@ -503,9 +500,6 @@
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
     <ClInclude Include="AudioManager.h" />
-    <ClInclude Include="Engine\SegmentCollider.h">
-      <Filter>01Engine\Collider</Filter>
-    </ClInclude>
     <ClInclude Include="AnimationController.h">
       <Filter>11Animation</Filter>
     </ClInclude>

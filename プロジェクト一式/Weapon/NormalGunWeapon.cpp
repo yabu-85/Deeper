@@ -54,11 +54,6 @@ void NormalGunWeapon::Draw()
 
     transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
-
-    if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
-        transform_.rotate_.y *= -1.0f;
-        transform_.rotate_.z *= -1.0f;
-    }
     transform_.rotate_.y += pPlayer_->GetRotate().y;
 
     Model::SetTransform(hModel_, transform_);
@@ -84,9 +79,6 @@ void NormalGunWeapon::ChangeAttackState()
 
 void NormalGunWeapon::ShotBullet()
 {
-    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
-    transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_); 
-    
     Aim* pAim = pPlayer_->GetAim();
     XMFLOAT3 tar;
     if (pAim->IsTarget()) {
@@ -97,7 +89,7 @@ void NormalGunWeapon::ShotBullet()
     else {
         XMFLOAT3 pos = transform_.position_;
         XMFLOAT3 vec = pAim->GetAimDirection();
-        tar = XMFLOAT3(pos.x + vec.x * 10.0f, pos.y + vec.y * 10.0f, pos.z + vec.z * 10.0f);
+        tar = XMFLOAT3(pos.x + vec.x, pos.y + vec.y, pos.z + vec.z);
     }
     NormalBullet* b = Instantiate<NormalBullet>(pPlayer_->GetParent());
     b->SetShotParent(pPlayer_);

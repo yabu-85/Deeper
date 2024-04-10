@@ -1,14 +1,13 @@
 #pragma once
 #include "SceneBase.h"
 #include "../Engine/SceneManager.h"
-#include <vector>
 
 class Warp;
 
 class StageBase : public SceneBase
 {
 	bool isCleared_;				//クリアしたかどうか
-	std::vector<Warp*> warpList_;	//ワープのリスト
+	Warp* pWarp_;					//ワープのリスト
 	XMFLOAT3 startPosition_;		//プレイヤーのスタート座標
 
 public:
@@ -20,14 +19,16 @@ public:
 
 	//引数：CSV・SkyBoxの名前
 	void InitializeStage(std::string csv, std::string sky);
-
-	//Warpをリストに追加
-	void AddWarpList(Warp* w) { warpList_.push_back(w); }
 	
-	//全てのWarpのValidをセット
-	void SetAllWarpValid(bool b);
+	//Warpをリストに追加
+	void SetWarp(Warp* w) { pWarp_ = w; }
+	Warp* GetWarp() { return pWarp_; }
 
-	void SetWarpStage(SCENE_ID* list);
+	//WarpのValidをセット
+	void SetWarpValid(bool b);
+
+	//Warp先の設定
+	void SetWarpStage(SCENE_ID id);
 
 	//ステージをクリアした時に呼ぶ関数
 	virtual void OnStageCleared() {}

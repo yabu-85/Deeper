@@ -23,8 +23,7 @@ void Stage3::Initialize()
 	TransitionEffect::SetAlphaDecrease(0.01f);
 
 	InitializeStage("Csv/Map3.csv", "Model/Stage/SkyBox.fbx");
-	SCENE_ID WARP_STAGE[] = { SCENE_ID_STAGE1, SCENE_ID_TITLE };
-	SetWarpStage(WARP_STAGE);
+	SetWarpStage(SCENE_ID_STAGE1);
 	GameManager::GetEnemyManager()->SpawnEnemyTable(ETABLE_NORMAL);
 
 	//デバッグ用
@@ -36,9 +35,6 @@ void Stage3::Update()
 {
 	if (IsClearStage()) {
 		OnStageCleared();
-
-		//修正箇所、Stageの制御が全て出来たら直すべき場所
-		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_RESULT);
 	}
 }
 
@@ -56,6 +52,8 @@ void Stage3::Release()
 
 void Stage3::OnStageCleared()
 {
-	SetAllWarpValid(true);
-
+	//SetWarpValid(true);
+	
+	//修正箇所、Stageの制御が全て出来たら直すべき場所
+	GameManager::GetSceneManager()->ChangeScene(SCENE_ID_RESULT);
 }

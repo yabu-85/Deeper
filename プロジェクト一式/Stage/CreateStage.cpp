@@ -166,7 +166,7 @@ void CreateStage::CreateStageData(std::string name)
 
                 Warp* warp = Instantiate<Warp>(stage);
                 warp->SetPosition(XMFLOAT3((float)x, 0.0f, (float)z));
-                stage->AddWarpList(warp);
+                stage->SetWarp(warp);
             }
         }
     }

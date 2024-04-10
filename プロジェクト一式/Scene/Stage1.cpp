@@ -21,8 +21,7 @@ void Stage1::Initialize()
 	TransitionEffect::SetAlphaDecrease(0.01f);
 	
 	InitializeStage("Csv/Map1.csv", "Model/Stage/SkyBox.fbx");
-	SCENE_ID WARP_STAGE[] = { SCENE_ID_STAGE2 };
-	SetWarpStage(WARP_STAGE);
+	SetWarpStage(SCENE_ID_STAGE2);
 	
 	OnStageCleared();
 
@@ -49,6 +48,6 @@ void Stage1::Release()
 
 void Stage1::OnStageCleared()
 {
-	SetAllWarpValid(true);
+	SetWarpValid(true);
 
 }

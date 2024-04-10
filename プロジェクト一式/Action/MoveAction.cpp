@@ -40,7 +40,7 @@ void MoveAction::Update()
 
 AstarMoveAction::AstarMoveAction(Character* obj, float speed, float range) : MoveAction(obj, speed, range), lastTarget_(0,0,0), handle_(-1)
 {
-#if _DEBUG
+#ifdef _DEBUG
 	handle_ = Model::Load("Model/Mas.fbx");
 	assert(handle_ >= 0);
 #endif
@@ -134,7 +134,7 @@ void AstarMoveAction::Draw()
 {
 	Transform t;
 
-#if _DEBUG
+#ifdef _DEBUG
 	for (int i = 0; i < targetList_.size(); i++) {
 		t.position_ = targetList_.at(i);
 		t.position_.y += 0.01f;

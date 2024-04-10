@@ -4,6 +4,8 @@
 
 class Stage2 : public StageBase
 {
+	int compTime_;
+
 public:
 	Stage2(GameObject* parent);
 	void Initialize() override;

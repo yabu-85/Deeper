@@ -1,4 +1,10 @@
+作品名：DEEPER
 敵を倒して最奥を目指すゲーム
+
+制作人数：１人
+制作期間：４か月
+開発言語：C / C++ / HLSL
+ライブラリ：DirectX11 / FBXSDK
 
 -プレイ動画-
 https://drive.google.com/file/d/15Yfn5iiS2OmcSI4bcQasoQlXAzMgJOb2/view?usp=drive_link

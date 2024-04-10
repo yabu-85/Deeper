@@ -10,7 +10,7 @@
 #include "../Engine/Model.h"
 
 StageBase::StageBase(GameObject* parent, std::string name)
-	: SceneBase(parent, name), isCleared_(false), startPosition_{0.f,0.f,0.f}
+	: SceneBase(parent, name), isCleared_(false), startPosition_{0.f,0.f,0.f}, pWarp_(nullptr)
 {
 	AddUIManager(new PauseUIManager(this));
 
@@ -49,19 +49,8 @@ void StageBase::InitializeStage(std::string csv, std::string sky)
 	skyBox->LoadModel(sky);
 }
 
-void StageBase::SetAllWarpValid(bool b)
-{
-	for (int i = 0; i < (int)warpList_.size(); i++) {
-		warpList_[i]->SetValid(b);
-	}
-}
-
-void StageBase::SetWarpStage(SCENE_ID* list)
-{
-	for (int i = 0; i < (int)warpList_.size(); i++) {
-		warpList_[i]->SetWarpScene(list[i]);
-	}
-}
+void StageBase::SetWarpValid(bool b) { pWarp_->SetValid(b); }
+void StageBase::SetWarpStage(SCENE_ID id) { pWarp_->SetWarpScene(id); }
 
 bool StageBase::IsClearStage()
 {

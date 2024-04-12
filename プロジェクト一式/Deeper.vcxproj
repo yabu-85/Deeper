@@ -156,6 +156,7 @@
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="Enemy\MeleeFighter.cpp" />
     <ClCompile Include="Enemy\StoneGolem.cpp" />
+    <ClCompile Include="Enemy\SwordBoss.cpp" />
     <ClCompile Include="Enemy\ThrowEnemy.cpp" />
     <ClCompile Include="Engine\Easing.cpp" />
     <ClCompile Include="Engine\PolyLine.cpp" />
@@ -214,6 +215,7 @@
     <ClCompile Include="State\PlayerState.cpp" />
     <ClCompile Include="State\StateManager.cpp" />
     <ClCompile Include="State\StoneGolemState.cpp" />
+    <ClCompile Include="State\SwordBossState.cpp" />
     <ClCompile Include="State\ThrowState.cpp" />
     <ClCompile Include="UI\Cursor.cpp" />
     <ClCompile Include="UI\ExitUIManager.cpp" />
@@ -257,6 +259,7 @@
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="Enemy\MeleeFighter.h" />
     <ClInclude Include="Enemy\StoneGolem.h" />
+    <ClInclude Include="Enemy\SwordBoss.h" />
     <ClInclude Include="Enemy\ThrowEnemy.h" />
     <ClInclude Include="Engine\Easing.h" />
     <ClInclude Include="Engine\PolyLine.h" />
@@ -316,6 +319,7 @@
     <ClInclude Include="State\StateBase.h" />
     <ClInclude Include="State\StateManager.h" />
     <ClInclude Include="State\StoneGolemState.h" />
+    <ClInclude Include="State\SwordBossState.h" />
     <ClInclude Include="State\ThrowState.h" />
     <ClInclude Include="UI\Cursor.h" />
     <ClInclude Include="UI\ExitUIManager.h" />

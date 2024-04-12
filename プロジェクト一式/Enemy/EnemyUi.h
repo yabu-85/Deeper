@@ -12,6 +12,8 @@ class EnemyUi
 		MAX,
 	};
 
+	bool isBossGauge_;
+
 	int hPict_[MAX];		//画像ハンドル
 	int gaugeAlpha_;		//ゲージの透明度
 	float height_;			//uiの高さ
@@ -33,5 +35,7 @@ public:
 	void SetIsDraw(bool b);
 	void InitTargetFoundUi();
 
+	void SetBssGauge() { isBossGauge_ = true; }
+	void SetAlphaMax();
 };
 

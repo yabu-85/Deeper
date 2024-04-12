@@ -175,15 +175,7 @@ void MainSwordWeapon::ResetState()
 
 void MainSwordWeapon::CalcSwordTrans()
 {
-    XMFLOAT3 target;
-    target.x = (float)sin(XMConvertToRadians(transform_.rotate_.y));
-    target.y = -(float)tan(XMConvertToRadians(transform_.rotate_.x));
-    target.z = (float)cos(XMConvertToRadians(transform_.rotate_.y));
-    if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
-        target.x *= -1.0f;
-        target.y *= -1.0f;
-        target.z *= -1.0f;
-    }
+    XMFLOAT3 target = CalculationDirection(transform_.rotate_);
 
     SetAllAttackColliderValid(true);
     XMFLOAT3 vec = Float3Multiply(Float3Normalize(target), WEAPON_SIZE);

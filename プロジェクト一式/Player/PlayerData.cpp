@@ -56,8 +56,8 @@ void PlayerData::SavePlayerData()
         if (weapon == nullptr) continue;
 
         std::string name = weapon->GetObjectName();
-        if (name == "StoneArmWeapon") SetWeaponData(i, static_cast<int>(STONE_ARM_WEAPON), weapon);
-        else if (name == "NormalGunWeapon") SetWeaponData(i, static_cast<int>(NORMAL_BULLET_WEAPON), weapon);
+        if (name == "StoneArmWeapon") SetWeaponData(i, static_cast<int>(WEAPON_TYPE::STONE_ARM_WEAPON), weapon);
+        else if (name == "NormalGunWeapon") SetWeaponData(i, static_cast<int>(WEAPON_TYPE::NORMAL_BULLET_WEAPON), weapon);
     }
 }
 

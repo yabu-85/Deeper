@@ -10,7 +10,7 @@ IsPlayerInRangeNode::IsPlayerInRangeNode(TreeNode* child, float range, EnemyBase
 
 IsPlayerInRangeNode::Status IsPlayerInRangeNode::Update()
 {
-    float length = DistanceCalculation(pPlayer_->GetPosition(), pEnemyBase_->GetPosition());
+    float length = CalculationDistance(pPlayer_->GetPosition(), pEnemyBase_->GetPosition());
     if (length <= range_) return child_->Tick();
     return Status::FAILURE;
 }
@@ -24,7 +24,7 @@ IsPlayerNotInRangeNode::IsPlayerNotInRangeNode(TreeNode* child, float range, Ene
 
 IsPlayerNotInRangeNode::Status IsPlayerNotInRangeNode::Update()
 {
-    float length = DistanceCalculation(pPlayer_->GetPosition(), pEnemyBase_->GetPosition());
+    float length = CalculationDistance(pPlayer_->GetPosition(), pEnemyBase_->GetPosition());
     if (length >= range_) return child_->Tick();
     return Status::FAILURE;
 }

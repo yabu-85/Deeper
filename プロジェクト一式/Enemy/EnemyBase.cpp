@@ -37,8 +37,8 @@ void EnemyBase::Release()
 
 void EnemyBase::DeadEnter()
 {
-	SetAllColliderValid(false);
-	SetAllAttackColliderValid(false);
+	//SetAllColliderValid(false);
+	//SetAllAttackColliderValid(false);
 
 	DropTable::DropItem(type_, transform_.position_);
 	GetEnemyUi()->SetIsDraw(false);

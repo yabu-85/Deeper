@@ -30,8 +30,12 @@ PlayerWeapon::PlayerWeapon(Player* pPlayer)
     drawPictSelect_[0] = SELECT_VALID;
     drawPictSelect_[1] = NO_SELECT_VALID;
 
-    const std::string fileName2[] = { "StoneArmImage", "RedBoxImage", "RedBoxImage" };
-    for (int i = 0; i < (int)WeaponObjectManager::WEAPON_TYPE::WT_MAX; i++) {
+    const std::string fileName2[] = { "StoneArmImage", "RedBoxImage", "RedBoxImage", "RedBoxImage" };
+    int WeaponMax = (int)ENEMY_TYPE::ENEMY_MAX;
+    int fileSize = (int)size(fileName2);
+    assert((int)fileSize == WeaponMax);
+
+    for (int i = 0; i < fileSize; i++) {
         hPictWeapon_[i] = Image::Load("Image/" + fileName2[i] + ".png");
         assert(hPictWeapon_[i] >= 0);
     }
@@ -83,8 +87,8 @@ void PlayerWeapon::SetPlayerDataWeapon()
         //どの武器かを読み込む
         int type = PlayerData::GetWeaponData(i).type_;
         WeaponBase* weapon = nullptr;
-        if(type == PlayerData::STONE_ARM_WEAPON) SetWeapon(weapon = Instantiate<StoneArmWeapon>(pPlayer_));
-        else if (type == PlayerData::NORMAL_BULLET_WEAPON) SetWeapon(weapon = Instantiate<NormalGunWeapon>(pPlayer_));
+        if(type == (int)PlayerData::WEAPON_TYPE::STONE_ARM_WEAPON) SetWeapon(weapon = Instantiate<StoneArmWeapon>(pPlayer_));
+        else if (type == (int)PlayerData::WEAPON_TYPE::NORMAL_BULLET_WEAPON) SetWeapon(weapon = Instantiate<NormalGunWeapon>(pPlayer_));
         
         //耐久地の読み込み
         if (weapon) weapon->SetDurability(PlayerData::GetWeaponData(i).durability_);
@@ -149,9 +153,10 @@ void PlayerWeapon::SetWeaponData(int index, WeaponBase* weapon)
     if(index == currentSubIndex_ && !pMainWeapon_->IsVisibled()) pSubWeapon_[index]->Visible();
 
     //表示する画像をセット
-    if (weapon->GetWeaponType() == WeaponObjectManager::WEAPON_TYPE::WT_STONE) drawPictWeapon_[index] = (int)WeaponObjectManager::WEAPON_TYPE::WT_STONE;
-    else if(weapon->GetWeaponType() == WeaponObjectManager::WEAPON_TYPE::WT_THROW) drawPictWeapon_[index] = (int)WeaponObjectManager::WEAPON_TYPE::WT_THROW;
-    else if(weapon->GetWeaponType() == WeaponObjectManager::WEAPON_TYPE::WT_MELEE) drawPictWeapon_[index] = (int)WeaponObjectManager::WEAPON_TYPE::WT_MELEE;
+    if (weapon->GetWeaponType() == ENEMY_TYPE::ENEMY_STONEGOLEM) drawPictWeapon_[index] = (int)ENEMY_TYPE::ENEMY_STONEGOLEM;
+    else if(weapon->GetWeaponType() == ENEMY_TYPE::ENEMY_THROW) drawPictWeapon_[index] = (int)ENEMY_TYPE::ENEMY_THROW;
+    else if(weapon->GetWeaponType() == ENEMY_TYPE::ENEMY_MELEE) drawPictWeapon_[index] = (int)ENEMY_TYPE::ENEMY_MELEE;
+    else if(weapon->GetWeaponType() == ENEMY_TYPE::ENEMY_SWORDBOSS) drawPictWeapon_[index] = (int)ENEMY_TYPE::ENEMY_SWORDBOSS;
 
     //boxのサイズに合わせる
     XMFLOAT3 size1 = Image::GetTextureSize(hPictSelect_[0]);

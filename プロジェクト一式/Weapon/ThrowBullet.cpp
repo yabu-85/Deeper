@@ -53,8 +53,7 @@ void ThrowBullet::Initialize()
 
 void ThrowBullet::Update()
 {
-	this;
-	
+	//Ž€–S”»’è
 	if (isDeath_) {
 		pPolyLine_->AddPosition(deathPosition_);
 
@@ -63,8 +62,7 @@ void ThrowBullet::Update()
 		return;
 	}
 
-	if(time_ > ((int)DEF_TIME / 2)) pSphereCollider_->SetValid(true);
-
+	//ˆÚ“®
 	Move();
 	pPolyLine_->AddPosition(transform_.position_);
 
@@ -110,10 +108,9 @@ void ThrowBullet::OnAttackCollision(GameObject* pTarget)
 void ThrowBullet::Shot(XMFLOAT3 pos, XMFLOAT3 target)
 {
 	transform_.position_ = pos;
-	
+	float dist = CalculationDistance(target, pos);
 	float distX = target.x - pos.x;
 	float distZ = target.z - pos.z;
-	float dist = sqrtf(distX * distX + distZ * distZ);
 
 	//Å‘å‹——£—}§
 	if (dist > maxDistance_) {

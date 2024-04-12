@@ -69,7 +69,7 @@ std::vector<XMFLOAT3> NavigationAI::Navi(XMFLOAT3 target, XMFLOAT3 pos, float si
 		return none;
 	}
 
-	if(size <= 0.5f) return Navi(startX, startZ, targetX, targetZ);
+	if(size < 0.5f) return Navi(startX, startZ, targetX, targetZ);
 	else return Navi(startX, startZ, targetX, targetZ, size);
 }
 

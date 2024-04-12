@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <DirectXMath.h>
+#include "../Enemy/EnemyManager.h"
 
 using namespace DirectX;
 class WeaponObject;
@@ -15,13 +16,6 @@ class WeaponObjectManager
 	void CaclNearestObject();
 
 public:
-	enum WEAPON_TYPE {
-		WT_STONE = 0,
-		WT_THROW,
-		WT_MELEE,
-		WT_MAX,
-	};
-
 	WeaponObjectManager();
 	~WeaponObjectManager();
 	void SceneTransitionInitialize();
@@ -30,7 +24,7 @@ public:
 	void AllKillWeaponObject();
 	
 	//ListÇ…í«â¡
-	void AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos);
+	void AddWeaponObject(ENEMY_TYPE type, XMFLOAT3 pos);
 	//ListÇ©ÇÁçÌèú
 	void RemoveWeaponObject(WeaponObject* obj);
 

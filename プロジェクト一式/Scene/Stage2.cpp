@@ -37,7 +37,7 @@ void Stage2::Initialize()
 	GameManager::GetEnemyManager()->SpawnEnemyTable(ETABLE_NORMAL);
 
 	//デバッグ用
-	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_STONE, GameManager::GetStage()->GetStartPosition());
+	GameManager::GetWeaponObjectManager()->AddWeaponObject(ENEMY_TYPE::ENEMY_STONEGOLEM, GameManager::GetStage()->GetStartPosition());
 
 }
 

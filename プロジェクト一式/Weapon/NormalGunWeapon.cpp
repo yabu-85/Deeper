@@ -29,7 +29,7 @@ void NormalGunWeapon::Initialize()
     hModel_ = Model::Load("Model/RedBox.fbx");
     assert(hModel_ >= 0);
 
-    type_ = WeaponObjectManager::WEAPON_TYPE::WT_THROW;
+    type_ = ENEMY_TYPE::ENEMY_THROW;
     pPlayer_ = static_cast<Player*>(GetParent());
     transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
     durance_ = 6;

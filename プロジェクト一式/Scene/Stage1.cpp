@@ -6,6 +6,7 @@
 
 //デバッグ用
 #include "../Weapon/WeaponObjectManager.h"
+#include "../Enemy/EnemyManager.h"
 #include "../Engine/Input.h"
 #include "../Engine/SceneManager.h"
 
@@ -26,7 +27,8 @@ void Stage1::Initialize()
 	OnStageCleared();
 
 	//デバッグ用
-	GameManager::GetWeaponObjectManager()->AddWeaponObject(WeaponObjectManager::WEAPON_TYPE::WT_STONE, GameManager::GetStage()->GetStartPosition());
+	GameManager::GetWeaponObjectManager()->AddWeaponObject(ENEMY_TYPE::ENEMY_STONEGOLEM, GameManager::GetStage()->GetStartPosition());
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_SWORDBOSS);
 
 }
 

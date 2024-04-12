@@ -17,8 +17,8 @@ using std::priority_queue;
 namespace CombatAI {
 	bool compare(EnemyBase* e1, EnemyBase* e2) {
 		XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
-		float dist1 = DistanceCalculation(e1->GetPosition(), plaPos);
-		float dist2 = DistanceCalculation(e2->GetPosition(), plaPos);
+		float dist1 = CalculationDistance(e1->GetPosition(), plaPos);
+		float dist2 = CalculationDistance(e2->GetPosition(), plaPos);
 		return dist1 < dist2;
 	}
 

@@ -175,10 +175,7 @@ EnemyBase* Aim::CalcTargetEnemy()
     std::vector<EnemyBase*> eList = pEnemyManager->GetAllEnemy();
 
     // プレイヤーの視線方向を計算
-    XMFLOAT3 forward;
-    forward.x = (float)sin(XMConvertToRadians(transform_.rotate_.y));
-    forward.y = 0.0f;
-    forward.z = (float)cos(XMConvertToRadians(transform_.rotate_.y));
+    XMFLOAT3 forward = CalculationDirection(transform_.rotate_);
     XMVECTOR vForward = XMLoadFloat3(&forward);
 
     float minLeng = 999999;
@@ -188,7 +185,7 @@ EnemyBase* Aim::CalcTargetEnemy()
         if(!eList.at(i)->IsAimTarget()) continue;
 
         //距離計算して、範囲外だったら次
-        float dist = DistanceCalculation(cameraTarget_, eList.at(i)->GetPosition());
+        float dist = CalculationDistance(cameraTarget_, eList.at(i)->GetPosition());
         if (dist >= TARGET_RANGE) continue;
 
         //視野角を計算
@@ -237,7 +234,7 @@ void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar)
 
 void Aim::DefaultAim()
 {
-    XMVECTOR direction = CalcDirection(transform_.rotate_.x, transform_.rotate_.y);
+    XMVECTOR direction = CalculationVectorDirection(transform_.rotate_);
     XMStoreFloat3(&aimDirection_, -direction);
 
     //プレイヤーの位置をカメラの焦点とする        
@@ -279,7 +276,7 @@ void Aim::Compulsion()
     transform_.rotate_.y = compulsionPosisiton_.y = XMConvertToDegrees(rotationY);
 
     //Rotateの結果を使ってAimDirectionを計算してセット
-    XMVECTOR direction = CalcDirection(transform_.rotate_.x, transform_.rotate_.y);
+    XMVECTOR direction = CalculationVectorDirection(transform_.rotate_);
     XMStoreFloat3(&aimDirection_, -direction);
 }
 
@@ -296,7 +293,7 @@ void Aim::BackCompulsion()
     //戻り中のPositionとTargetを計算する
     XMFLOAT3 position = pPlayer_->GetPosition();
     XMFLOAT3 target = { position.x + cameraOffset_.x, position.y + HEIGHT_DISTANCE, position.z + cameraOffset_.z };
-    XMVECTOR camPos = XMLoadFloat3(&target) + (CalcDirection(transform_.rotate_.x, transform_.rotate_.y) * perspectiveDistance_);
+    XMVECTOR camPos = XMLoadFloat3(&target) + (CalculationVectorDirection(transform_.rotate_)  * perspectiveDistance_);
     XMStoreFloat3(&position, camPos);
 
     XMVECTOR vPos = XMLoadFloat3(&cameraPosition_);
@@ -318,8 +315,8 @@ void Aim::BackCompulsion()
     float rotationX = -asinf(XMVectorGetY(dir));
     transform_.rotate_.x = XMConvertToDegrees(rotationX);
     transform_.rotate_.y = XMConvertToDegrees(rotationY);
-    XMVECTOR direction = CalcDirection(transform_.rotate_.x, transform_.rotate_.y);
-    XMStoreFloat3(&aimDirection_, -direction);
+    aimDirection_ = CalculationDirection(transform_.rotate_);
+    aimDirection_ = Float3Multiply(aimDirection_, -1.0f);
 }
 
 void Aim::FacingTarget()
@@ -397,10 +394,7 @@ void Aim::ChangeTarget(XMFLOAT3 mouse)
     if (eList.empty()) return;
 
     // プレイヤーの視線方向を計算
-    XMFLOAT3 playerForward;
-    playerForward.x = (float)sin(XMConvertToRadians(transform_.rotate_.y));
-    playerForward.y = 0.0f;
-    playerForward.z = (float)cos(XMConvertToRadians(transform_.rotate_.y));
+    XMFLOAT3 playerForward = CalculationDirection(transform_.rotate_);
     XMVECTOR vPlayerForward = XMLoadFloat3(&playerForward);
     XMFLOAT3 pPos = pPlayer_->GetPosition();
 
@@ -506,16 +500,6 @@ void Aim::CalcMouseMove()
     if (transform_.rotate_.x <= UP_MOUSE_LIMIT) transform_.rotate_.x = UP_MOUSE_LIMIT;
     if (transform_.rotate_.x >= DOWN_MOUSE_LIMIT) transform_.rotate_.x = DOWN_MOUSE_LIMIT;
 
-}
-
-XMVECTOR Aim::CalcDirection(float x, float y)
-{
-    XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(x));
-    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(y));
-    XMMATRIX mView = mRotX * mRotY;
-    const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-    XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView); //XMVector3TransformNormalを使用することで回転のみを適用します
-    return XMVector3Normalize(direction);
 }
 
 void Aim::CameraShake()

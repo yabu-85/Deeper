@@ -15,6 +15,7 @@ namespace DifficultyManager {
 		EnemyData(10),	//Stone
 		EnemyData(5),	//Throw
 		EnemyData(8),	//Melee
+		EnemyData(100),	//SwordBoss
 	};
 	const float WAVE_DIFFICULTY_SUPPRESS = 0.7f;
 	const float LIFE_DIFFICULTY_SUPPRESS = 0.3f;

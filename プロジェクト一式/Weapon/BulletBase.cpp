@@ -1,4 +1,5 @@
 #include "BulletBase.h"
+#include "../Engine/Global.h"
 
 BulletBase::BulletBase(GameObject* parent, std::string name)
 	: GameObject(nullptr, name), hModel_(-1), lifeTime_(0), moveVec_(0.0f, 0.0f, 0.0f), velocity_(1.0f), damage_(0), pParent_(nullptr)
@@ -18,10 +19,7 @@ void BulletBase::Shot(XMFLOAT3 pos, XMFLOAT3 target)
 
 void BulletBase::Move()
 {
-	transform_.position_.x += moveVec_.x;
-	transform_.position_.y += moveVec_.y;
-	transform_.position_.z += moveVec_.z;
-
+	transform_.position_ = Float3Add(transform_.position_, moveVec_);
 }
 
 void BulletBase::LifeTime()

@@ -34,7 +34,7 @@ void EnemyUi::SetGaugeAlpha(int value)
 }
 
 EnemyUi::EnemyUi(EnemyBase* parent)
-	: pParent_(parent), hPict_{ -1, -1, -1 }, parcent(1.0f), height_(0.0f), gaugeAlpha_(0), foundParcent_(0.0f), isDraw_(true)
+	: pParent_(parent), hPict_{ -1, -1, -1 }, parcent(1.0f), height_(0.0f), gaugeAlpha_(0), foundParcent_(0.0f), isDraw_(true), isBossGauge_(false)
 {
 }
 
@@ -91,6 +91,22 @@ void EnemyUi::Draw()
 		Image::Draw(hPict_[FOUND]);
 	}
 
+	if (isBossGauge_) {
+		for (int i = 0; i < 2; i++) {
+			float xSize = 2.0f;
+			float ySize = 1.5f;
+			Transform t = transform_[i];
+			t.position_.x = -halfSize * xSize;
+			t.position_.y = 0.85f;
+			t.scale_.x *= xSize;
+			t.scale_.y *= ySize;
+			Image::SetTransform(hPict_[i], t);
+			Image::Draw(hPict_[i]);
+		}
+
+		return;
+	}
+
 	//HPÅ‘å‚Ìê‡EŒã‚ë‚É•\Ž¦‚³‚ê‚Ä‚¢‚éê‡ˆ—I‚í‚è
 	if (parcent >= 1.0f) return;
 
@@ -100,7 +116,7 @@ void EnemyUi::Draw()
 	}
 	//‹——£‚Å§ŒÀ
 	else {
-		float dist = DistanceCalculation(GameManager::GetPlayer()->GetPosition(), pos);
+		float dist = CalculationDistance(GameManager::GetPlayer()->GetPosition(), pos);
 		if (dist < MAX_DRAW_LENGTH) SetGaugeAlpha(ALPHA_VALUE);
 		else SetGaugeAlpha(-ALPHA_VALUE);
 	}
@@ -130,4 +146,9 @@ void EnemyUi::SetIsDraw(bool b)
 void EnemyUi::InitTargetFoundUi()
 {
 	foundParcent_ = 1.0f;
+}
+
+void EnemyUi::SetAlphaMax()
+{
+	gaugeAlpha_ = MAX_ALPHA;
 }

@@ -26,9 +26,12 @@ void WeaponObjectManager::SceneTransitionInitialize()
 
 }
 
-void WeaponObjectManager::AddWeaponObject(WEAPON_TYPE type, XMFLOAT3 pos)
+void WeaponObjectManager::AddWeaponObject(ENEMY_TYPE type, XMFLOAT3 pos)
 {
-	std::string fileName[(int)WEAPON_TYPE::WT_MAX] = { "StoneArmObj", "RedBoxObj", "RedBoxObj"};
+	std::string fileName[] = { "StoneArmObj", "RedBoxObj", "RedBoxObj", "RedBoxObj" };
+	int WeaponMax = (int)ENEMY_TYPE::ENEMY_MAX;
+	int filesize = (int)size(fileName);
+	assert((int)filesize == WeaponMax);
 
 	WeaponObject* weapon = InstantiateFront<WeaponObject>(GameManager::GetStage());
 	weapon->SetPosition(pos);
@@ -63,7 +66,7 @@ bool WeaponObjectManager::IsInPlayerRange()
 {
 	XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
 	for (int i = 0; i < objctList_.size(); i++) {
-		if (DistanceCalculation(plaPos, objctList_.at(i)->GetPosition()) <= range_) {
+		if (CalculationDistance(plaPos, objctList_.at(i)->GetPosition()) <= range_) {
 			return true;
 		}
 	}
@@ -77,10 +80,11 @@ WeaponBase* WeaponObjectManager::GetNearestWeapon()
 	if (nearestObject_ == nullptr) return nullptr;
 
 	WeaponBase* weapon = nullptr;
-	if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_STONE) weapon = Instantiate<StoneArmWeapon>(GameManager::GetPlayer());
-	else if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_THROW) weapon = Instantiate<NormalGunWeapon>(GameManager::GetPlayer());
-	else if (nearestObject_->GetType() == (int)WEAPON_TYPE::WT_MELEE) weapon = Instantiate<NormalGunWeapon>(GameManager::GetPlayer());
-	
+	if (nearestObject_->GetType() == (int)ENEMY_TYPE::ENEMY_STONEGOLEM) weapon = Instantiate<StoneArmWeapon>(GameManager::GetPlayer());
+	else if (nearestObject_->GetType() == (int)ENEMY_TYPE::ENEMY_THROW) weapon = Instantiate<NormalGunWeapon>(GameManager::GetPlayer());
+	else if (nearestObject_->GetType() == (int)ENEMY_TYPE::ENEMY_MELEE) weapon = Instantiate<NormalGunWeapon>(GameManager::GetPlayer());
+	else if (nearestObject_->GetType() == (int)ENEMY_TYPE::ENEMY_SWORDBOSS) weapon = Instantiate<NormalGunWeapon>(GameManager::GetPlayer());
+
 	//削除
 	RemoveWeaponObject(nearestObject_);
 	nearestObject_->KillMe();
@@ -98,7 +102,7 @@ void WeaponObjectManager::CaclNearestObject()
 
 	//一番近いオブジェクトのインデックス計算
 	for (int i = 0; i < objctList_.size(); i++) {
-		float range = DistanceCalculation(plaPos, objctList_.at(i)->GetPosition());
+		float range = CalculationDistance(plaPos, objctList_.at(i)->GetPosition());
 		if (minRange > range) {
 			minRangeIndex = i;
 			minRange = range;
@@ -116,7 +120,7 @@ void WeaponObjectManager::InteractUIIsInPlayerRange()
 	//rangeの範囲内ならInteractionUIのValidをtrueに
 	XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
 	for (int i = 0; i < objctList_.size(); i++) {
-		if(DistanceCalculation(plaPos, objctList_.at(i)->GetPosition()) <= range_) objctList_.at(i)->GetInteractionUI()->SetValid(true);
+		if(CalculationDistance(plaPos, objctList_.at(i)->GetPosition()) <= range_) objctList_.at(i)->GetInteractionUI()->SetValid(true);
 		else objctList_.at(i)->GetInteractionUI()->SetValid(false);
 	}
 }

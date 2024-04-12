@@ -63,7 +63,6 @@ class Aim : public GameObject
     void CalcCameraOffset(float _aimMove);
     void RayCastStage();
     void CalcMouseMove();
-    XMVECTOR CalcDirection(float x, float y);
 
     void CameraShake();
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Engine/Transform.h"
-#include "../Weapon/WeaponObjectManager.h"
+#include "../Enemy/EnemyManager.h"
 
 class WeaponBase;
 class Player;
@@ -19,9 +19,9 @@ class PlayerWeapon
     int drawPictSelect_[2];         //ボックスのどれを表示するかの情報
 
     //WeaponImage
-    int hPictWeapon_[(int)WeaponObjectManager::WEAPON_TYPE::WT_MAX];    //画像総数
-    int drawPictWeapon_[(int)WeaponObjectManager::WEAPON_TYPE::WT_MAX]; //どの画像を表示するかの情報
-    Transform weaponTrans_[2];                                          //画像のTransform      
+    int hPictWeapon_[(int)ENEMY_TYPE::ENEMY_MAX];       //画像総数
+    int drawPictWeapon_[(int)ENEMY_TYPE::ENEMY_MAX];    //どの画像を表示するかの情報
+    Transform weaponTrans_[2];                          //画像のTransform      
 
     int currentSubIndex_;       //今選択してるSubのIndex
     WeaponBase* pMainWeapon_;

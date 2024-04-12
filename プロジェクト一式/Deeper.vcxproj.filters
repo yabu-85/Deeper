@@ -428,6 +428,12 @@
     <ClCompile Include="Item\RecoveryItem.cpp">
       <Filter>15Item</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy\SwordBoss.cpp">
+      <Filter>08Enemy\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="State\SwordBossState.cpp">
+      <Filter>06State\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -723,6 +729,12 @@
     </ClInclude>
     <ClInclude Include="Item\RecoveryItem.h">
       <Filter>15Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\SwordBoss.h">
+      <Filter>08Enemy\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="State\SwordBossState.h">
+      <Filter>06State\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

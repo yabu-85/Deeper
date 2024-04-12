@@ -5,11 +5,11 @@ class WeaponBase;
 
 namespace PlayerData
 {
-	enum WEAPON_TYPE {
+	enum class WEAPON_TYPE {
 		MAIN_SWORD_WEAPON = 1,
 		NORMAL_BULLET_WEAPON,
 		STONE_ARM_WEAPON,
-		MAX,
+		WEAPON_MAX,
 	};
 
 	struct WeaponData {

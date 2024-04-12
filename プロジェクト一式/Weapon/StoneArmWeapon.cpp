@@ -38,7 +38,7 @@ void StoneArmWeapon::Initialize()
     hModel_ = Model::Load("Model/StoneArm.fbx");
     assert(hModel_ >= 0);
 
-    type_ = WeaponObjectManager::WEAPON_TYPE::WT_STONE;
+    type_ = ENEMY_TYPE::ENEMY_STONEGOLEM;
     pPlayer_ = GameManager::GetPlayer();
     durance_ = 3;
     float size = 1.0f;

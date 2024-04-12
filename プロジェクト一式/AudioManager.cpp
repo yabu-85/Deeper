@@ -64,7 +64,7 @@ void AudioManager::Play(AUDIO_ID id, float volume)
 void AudioManager::Play(AUDIO_ID id, XMFLOAT3 position, float range, float volume)
 {
     //‹——£‚É‚æ‚Á‚Ä‰¹—Ê‚ð•Ï‚¦‚é
-    float dist = DistanceCalculation(GameManager::GetPlayer()->GetPosition(), position);
+    float dist = CalculationDistance(GameManager::GetPlayer()->GetPosition(), position);
     if(dist > range) volume = volume * (dist / range);
 
 	Audio::Play(hSound_[(int)id], volume * gameVolue_);

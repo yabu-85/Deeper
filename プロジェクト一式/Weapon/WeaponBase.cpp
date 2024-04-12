@@ -3,7 +3,7 @@
 
 WeaponBase::WeaponBase(GameObject* parent, std::string name)
 	: GameObject(parent, name), hModel_(-1), pStateManager_(nullptr), isAtkEnd_(true), isCancellable_(false), isReadyNext_(false), durance_(0),
-	boneIndex_(-1), partIndex_(-1), type_(WeaponObjectManager::WEAPON_TYPE::WT_STONE)
+	boneIndex_(-1), partIndex_(-1), type_(ENEMY_TYPE::ENEMY_STONEGOLEM)
 {
 }
 

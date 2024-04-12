@@ -1,5 +1,6 @@
 #pragma once
 #include "../Engine/GameObject.h"
+#include "../Enemy/EnemyManager.h"
 #include "WeaponObjectManager.h"
 
 class StateManager;
@@ -16,7 +17,7 @@ protected:
 	bool isReadyNext_;		//他の行動していいかどうか
 	int durance_;			//耐久値
 
-	WeaponObjectManager::WEAPON_TYPE type_;
+	ENEMY_TYPE type_;
 	StateManager* pStateManager_;
 
 public:
@@ -36,7 +37,7 @@ public:
 	void Endurance(int val = 1) { durance_ -= val; }
 
 	//--------------------ゲッター・セッター----------------------
-	WeaponObjectManager::WEAPON_TYPE GetWeaponType() { return type_; }
+	ENEMY_TYPE GetWeaponType() { return type_; }
 	
 	bool IsCancellable() { return isCancellable_; }
 	bool IsAtkEnd() { return isAtkEnd_; }

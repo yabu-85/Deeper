@@ -52,7 +52,7 @@ void Interaction::Draw() {
 	//一番近いUIオブジェクトを計算
 	for (int it = 0; it < (int)uiList_.size(); it++) {
 		if (!uiList_[it]->GetValid()) continue;
-		float dist = DistanceCalculation(plaPos, uiList_[it]->GetParent()->GetPosition());
+		float dist = CalculationDistance(plaPos, uiList_[it]->GetParent()->GetPosition());
 
 		if (dist <= minDistance) {
 			minDistance = dist;

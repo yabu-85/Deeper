@@ -33,8 +33,24 @@ static XMFLOAT3 Float3Normalize(XMFLOAT3 a)
 }
 
 //‹——£‚ðŒvŽZ
-static float DistanceCalculation(XMFLOAT3 a, XMFLOAT3 b)
+static float CalculationDistance(XMFLOAT3 a, XMFLOAT3 b)
 {
 	XMFLOAT3 c = Float3Sub(a, b);
 	return sqrtf((c.x * c.x) + (c.y * c.y) + (c.z * c.z));
+}
+
+//‰ñ“]Ž²‚©‚çŒü‚¢‚Ä‚¢‚é•ûŒü‚ðŒvŽZ
+static XMVECTOR CalculationVectorDirection(XMFLOAT3 rotate) {
+	XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(rotate.x));
+	XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(rotate.y));
+	XMMATRIX mView = mRotX * mRotY;
+	const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	return XMVector3TransformNormal(forwardVector, mView);
+}
+
+//‰ñ“]Ž²‚©‚çŒü‚¢‚Ä‚¢‚é•ûŒü‚ðŒvŽZ
+static XMFLOAT3 CalculationDirection(XMFLOAT3 rotate) {
+	XMFLOAT3 dir;
+	XMStoreFloat3(&dir, CalculationVectorDirection(rotate));
+	return dir;
 }

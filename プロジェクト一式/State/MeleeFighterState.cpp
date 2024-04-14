@@ -36,19 +36,6 @@ namespace {
 	static const int ROTATE_FRAME = 45;
 	static const float ATTACK_READY_DISTANCE = 2.0f;
 
-	/*
-	//UŒ‚State‚Ìî•ñ
-	static const int ATTACK_FRAME[2] = { 0, 260 };
-	static const float ATTACK_ROTATE_RATIO = 0.05f;
-	static const int CALC_FRAME2[2] = { 120, 140 };
-	static const int CALC_FRAME3[2] = { 235, 247 };
-
-	//UŒ‚‚R‚Ìî•ñ
-	static const int ROTATE_FRAME3[2] = { 140, 230 };
-	static const int ATTACK_EFFECT_TIME[2] = { 244, 247 };
-	static const float MOVESPEED_FRAME3 = 0.03f;
-	*/
-
 }
 
 MeleeFighterAppear::MeleeFighterAppear(StateManager* owner) : StateBase(owner), time_(0)

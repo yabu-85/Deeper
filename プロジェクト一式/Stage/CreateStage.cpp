@@ -6,6 +6,8 @@
 #include "../Engine/CsvReader.h"
 #include "../Engine/Global.h"
 #include "../GameManager/GameManager.h"
+#include "../Enemy/EnemyManager.h"
+#include "../Enemy/EnemyBase.h"
 #include "../Scene/StageBase.h"
 #include "../Player/Player.h"
 #include "../Stage/Warp.h"
@@ -165,8 +167,17 @@ void CreateStage::CreateStageData(std::string name)
                 if (!stage) continue;
 
                 Warp* warp = Instantiate<Warp>(stage);
-                warp->SetPosition(XMFLOAT3((float)x, 0.0f, (float)z));
+                warp->SetPosition({ (float)x, 0.0f, (float)z });
                 stage->SetWarp(warp);
+            }
+            
+            //BossStartPos
+            if (data == 12)
+            {
+                StageBase* stage = static_cast<StageBase*>(GameManager::GetStage());
+                if (!stage) continue;
+
+                stage->SetBossPosition({ (float)x + 0.5f, 0.0f, (float)z + 0.5f });
             }
         }
     }

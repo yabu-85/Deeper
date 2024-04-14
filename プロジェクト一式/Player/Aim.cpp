@@ -327,9 +327,6 @@ void Aim::FacingTarget()
     XMFLOAT3 targetPos = pEnemyBase_->GetPosition();
     targetPos = XMFLOAT3(targetPos.x, targetPos.y + aimTarPos, targetPos.z);
 
-    XMFLOAT3 fAimPos = XMFLOAT3(cameraPosition_.x - targetPos.x, 0.0f, cameraPosition_.z - targetPos.z);
-    XMVECTOR vAimPos = XMLoadFloat3(&fAimPos);  //正規化用の変数にfloatの値を入れる
-
     //範囲外に行った場合の処理をやる
     XMFLOAT3 plaPos = pPlayer_->GetPosition();
     if (XMVectorGetX(XMVector3Length(XMLoadFloat3(&targetPos) - XMLoadFloat3(&plaPos) )) > TARGET_RANGE) {
@@ -337,6 +334,9 @@ void Aim::FacingTarget()
         pEnemyBase_ = nullptr;
         return;
     }
+
+    XMFLOAT3 fAimPos = XMFLOAT3(cameraPosition_.x - targetPos.x, 0.0f, cameraPosition_.z - targetPos.z);
+    XMVECTOR vAimPos = XMLoadFloat3(&fAimPos);  //正規化用の変数にfloatの値を入れる
 
     vAimPos = XMVector3Normalize(vAimPos);
     XMVECTOR vDot = XMVector3Dot(vFront, vAimPos);

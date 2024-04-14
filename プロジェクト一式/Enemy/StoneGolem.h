@@ -27,7 +27,6 @@ public:
     void Draw() override;
     void Release() override;
     void OnAttackCollision(GameObject* pTarget) override;
-    void DeadEnter() override;
 
     int GetModelHandle() { return hModel_; }
     DamageController* GetDamageController() { return pDamageController_; }

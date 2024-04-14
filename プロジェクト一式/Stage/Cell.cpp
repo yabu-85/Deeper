@@ -33,17 +33,17 @@ void Cell::SetPosLeng(XMFLOAT3 pos, float leng)
 
 bool Cell::SetTriangle(Triangle& t)
 {
-	XMFLOAT3* tp = t.GetPosition();
+	Polygons tp = t.GetAllPosition();
 
 	//全頂点が Cellの頂点位置より外側にある場合は、関数を終わる
-	if (tp[0].x < verPos_[7].x && tp[1].x < verPos_[7].x && tp[2].x < verPos_[7].x || //全頂点が右
-		tp[0].x > verPos_[6].x && tp[1].x > verPos_[6].x && tp[2].x > verPos_[6].x || //全頂点が左
+	if (tp.pos1.x < verPos_[7].x && tp.pos2.x < verPos_[7].x && tp.pos3.x < verPos_[7].x || //全頂点が右
+		tp.pos1.x > verPos_[6].x && tp.pos2.x > verPos_[6].x && tp.pos3.x > verPos_[6].x || //全頂点が左
 		
-		tp[0].y < verPos_[3].y && tp[1].y < verPos_[3].y && tp[2].y < verPos_[3].y || //全頂点が下
-		tp[0].y > verPos_[7].y && tp[1].y > verPos_[7].y && tp[2].y > verPos_[7].y || //全頂点が上
+		tp.pos1.y < verPos_[3].y && tp.pos2.y < verPos_[3].y && tp.pos3.y < verPos_[3].y || //全頂点が下
+		tp.pos1.y > verPos_[7].y && tp.pos2.y > verPos_[7].y && tp.pos3.y > verPos_[7].y || //全頂点が上
 
-		tp[0].z < verPos_[7].z && tp[1].z < verPos_[7].z && tp[2].z < verPos_[7].z || //全頂点が奥
-		tp[0].z > verPos_[4].z && tp[1].z > verPos_[4].z && tp[2].z > verPos_[4].z )  //全頂点が前
+		tp.pos1.z < verPos_[7].z && tp.pos2.z < verPos_[7].z && tp.pos3.z < verPos_[7].z || //全頂点が奥
+		tp.pos1.z > verPos_[4].z && tp.pos2.z > verPos_[4].z && tp.pos3.z > verPos_[4].z )  //全頂点が前
 	{
 		return false;
 	}

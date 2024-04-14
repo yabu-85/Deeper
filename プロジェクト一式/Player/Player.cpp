@@ -84,7 +84,7 @@ void Player::Initialize()
     pStateManager_->ChangeState("Appear");
     pStateManager_->Initialize();
 
-    pCollider_[1] = new SphereCollider(XMFLOAT3(0.0f, 0.95f, 0.0f), 0.21f);
+    pCollider_[1] = new SphereCollider(XMFLOAT3(0.0f, 1.1f, 0.0f), 0.2f);
     pCollider_[0] = new SphereCollider(XMFLOAT3(0.0f, 0.4f, 0.0f), 0.26f);
     AddCollider(pCollider_[0]);
     AddCollider(pCollider_[1]);

@@ -51,7 +51,7 @@ void Stage2::Update()
 		compTime_--;
 		Player* p = GameManager::GetPlayer();
 		XMFLOAT3 pos = Float3Add(p->GetPosition(), COMPULSION_POS);
-		XMFLOAT3 vec = Float3Sub(p->GetPosition(), GetWarp()->GetPosition());
+		XMFLOAT3 vec = Float3Sub(p->GetPosition(), Float3Add(GetWarp()->GetPosition(), XMFLOAT3(0.5f, 0.0f, 0.5f)));
 		vec = Float3Multiply(Float3Normalize(vec), COMPULSION_DISTANCE);
 		pos = Float3Add(pos, vec);
 		p->GetAim()->SetCompulsion(pos, GetWarp()->GetPosition());

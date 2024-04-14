@@ -14,7 +14,7 @@
 
 namespace {
     static const int POLY_DRAW_TIME = 10;
-    static const int POLY_SMOOTH = 2;
+    static const int POLY_SMOOTH = 1;
 
     static const float WEAPON_SIZE = 1.2f;
     static const float BLEND_= 1.2f;

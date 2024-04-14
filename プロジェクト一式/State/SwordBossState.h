@@ -62,6 +62,9 @@ public:
 class SwordBossAttack : public StateBase
 {
 	int time_;
+	int attack_;
+	int attackData_;
+
 public:
 	SwordBossAttack(StateManager* owner);
 	const char* GetName() const override { return "Attack"; }

@@ -18,8 +18,6 @@ enum class SWORDBOSS_ANIMATION {
     DEAD,
     ATTACK1,
     ATTACK2,
-    ATTACK3,
-    STONE_ATTACK,
     MAX,
 };
 
@@ -31,19 +29,19 @@ const AnimeData SWORDBOSS_ANIMATION_DATA[(int)SWORDBOSS_ANIMATION::MAX]{
     { 175, 210 }, //DamageSmall
     { 210, 260 }, //DamageMid
     { 260, 495 }, //Dead
-    { 595, 665 }, //Attack1
-    { 665, 720 }, //Attack2
-    { 675, 720 }, //Attack3
-    { 725, 825 }, //Stone
+    { 600, 690 }, //Attack1
+    { 700, 775 }, //Attack2
 };
 
 class SwordBoss : public EnemyBase
 {
     int hModel_;
+    int polyCreatTime_;
     int hSwordModel_;
     int boneIndex_;
     int partIndex_;
     Transform swordTransform_;
+    XMFLOAT3 preRotate_;
 
     PolyLine* pPolyLine_;
     AnimationController* pAnimationController_;
@@ -62,8 +60,8 @@ public:
     void OnAttackCollision(GameObject* pTarget) override;
 
     void CalcPoly();
-    void DamageInfoReset();
-    void SetDamageInfoCombo1();
+    void AttackEnd();
+    void SetPolyCreatTime();
 
     int GetModelHandle() { return hModel_; }
     AnimationController* GetAnimationController() { return pAnimationController_; }

@@ -9,6 +9,7 @@ class StageBase : public SceneBase
 	bool isCleared_;				//クリアしたかどうか
 	Warp* pWarp_;					//ワープのリスト
 	XMFLOAT3 startPosition_;		//プレイヤーのスタート座標
+	XMFLOAT3 bossPosition_;			//ボスのスタートポジション
 
 public:
 	StageBase(GameObject* parent, std::string name);
@@ -35,9 +36,14 @@ public:
 	
 	//ステージをクリアした時に一回だけtrueになる
 	bool IsClearStage();
+	
+	//クリア一回したら常時trueを返す
+	bool IsAlwaysClearStage() { return isCleared_; }
 
 	void SetStartPosition(XMFLOAT3 pos) { startPosition_ = pos; }
 	XMFLOAT3 GetStartPosition() { return startPosition_; }
+	void SetBossPosition(XMFLOAT3 pos) { bossPosition_ = pos; }
+	XMFLOAT3 GetBossPosition() { return bossPosition_; }
 
 };
 

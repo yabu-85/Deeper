@@ -11,8 +11,13 @@
 #include "../Engine/SceneManager.h"
 #include "../Engine/Input.h"
 
+namespace {
+	static const int FADE_TIME = 100;
+
+}
+
 Stage3::Stage3(GameObject* parent)
-	: StageBase(parent, "Stage3")
+	: StageBase(parent, "Stage3"), fadeTime_(0)
 {
 }
 
@@ -23,19 +28,23 @@ void Stage3::Initialize()
 	TransitionEffect::SetAlphaDecrease(0.01f);
 
 	InitializeStage("Csv/Map3.csv", "Model/Stage/SkyBox.fbx");
-	SetWarpStage(SCENE_ID_STAGE1);
-	GameManager::GetEnemyManager()->SpawnEnemyTable(ETABLE_NORMAL);
-
-	//デバッグ用
-	GameManager::GetWeaponObjectManager()->AddWeaponObject(ENEMY_TYPE::ENEMY_STONEGOLEM, GameManager::GetStage()->GetStartPosition());
-
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_SWORDBOSS);
 }
 
 void Stage3::Update()
 {
 	if (IsClearStage()) {
+		TransitionEffect::SetFade(TRANSITION_TYPE::TYPE_ALPHA);
+		TransitionEffect::SetAlpha(0.0f);
+		TransitionEffect::SetAlphaDecrease(-0.01f);
 		OnStageCleared();
 	}
+	
+	if (IsAlwaysClearStage()) {
+		fadeTime_++;
+		if (fadeTime_ > FADE_TIME) GameManager::GetSceneManager()->ChangeScene(SCENE_ID_RESULT);
+	}
+	
 }
 
 void Stage3::Draw()
@@ -53,7 +62,5 @@ void Stage3::Release()
 void Stage3::OnStageCleared()
 {
 	//SetWarpValid(true);
-	
-	//修正箇所、Stageの制御が全て出来たら直すべき場所
-	GameManager::GetSceneManager()->ChangeScene(SCENE_ID_RESULT);
+
 }

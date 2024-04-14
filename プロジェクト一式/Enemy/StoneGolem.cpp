@@ -153,12 +153,6 @@ void StoneGolem::OnAttackCollision(GameObject* pTarget)
 	}
 }
 
-void StoneGolem::DeadEnter()
-{
-	GetDamageController()->ResetAttackList();
-	EnemyBase::DeadEnter();
-}
-
 void StoneGolem::DamageInfoReset()
 {
 	SetAllAttackColliderValid(false);

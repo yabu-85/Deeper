@@ -9,7 +9,7 @@ PolyLine::PolyLine() :
 	LENGTH_(50),	   //長さ（あくまで位置を記憶する数で、実際の長さは移動速度によって変わる）
 	alpha_(1.0f),      //透明度 (最初は透明にしないでおく)
 	moveAlpha_(false), //徐々に透明にしてく
-	smooth_(2),
+	smooth_(0),
 	first_(true),
 
 	pVertexBuffer_(nullptr), pConstantBuffer_(nullptr), pTexture_(nullptr)
@@ -166,14 +166,21 @@ void PolyLine::AddPosition(XMFLOAT3 pos1, XMFLOAT3 pos2)
 				//smooth＊２＋１の平均を求める
 				XMVECTOR addVec1 = XMVectorZero();
 				XMVECTOR addVec2 = XMVectorZero();
-				for (int j = firstI; j <= endI; j++) {
+				for (; firstI <= endI; firstI++) {
 					addVec1 += XMLoadFloat3(&(*it));
 					addVec2 += XMLoadFloat3(&(*itSub));
 					it++;
 					itSub++;
 				}
-				vPos1 = addVec1 * (1.0f / ((float)smooth_ * 2.0f + 1.0f));
-				vPos2 = addVec2 * (1.0f / ((float)smooth_ * 2.0f + 1.0f));
+				float s1 = 1.0f / ((float)smooth_ * 2.0f + 1.0f);
+				float s2 = 1.0f / ((float)smooth_ * 2.0f + 1.0f);
+				vPos1 = addVec1 * s1;
+				vPos2 = addVec2 * s2;
+				XMFLOAT3 fPos1, fPos2;
+				XMStoreFloat3(&fPos1, vPos1);
+				XMStoreFloat3(&fPos2, vPos2);
+				(*itr) = fPos1;
+				(*itrSub) = fPos2;
 			}
 		}
 		

@@ -6,14 +6,17 @@ using namespace DirectX;
 class BoxCollider;
 class SphereCollider;
 
+struct Polygons {
+	XMFLOAT3 pos1, pos2, pos3;
+};
+
 class Triangle
 {
-	//ÇRí∏ì_ÇÃç¿ïW
-	XMVECTOR position_[3];
+	Polygons position_;
 public:
 	void CreatTriangle(XMVECTOR& p1, XMVECTOR& p2, XMVECTOR& p3);
 	
-	XMFLOAT3* GetPosition();
+	Polygons GetAllPosition();
 
 	void RayCast(RayCastData* data);
 };

@@ -22,13 +22,8 @@ void Stage1::Initialize()
 	TransitionEffect::SetAlphaDecrease(0.01f);
 	
 	InitializeStage("Csv/Map1.csv", "Model/Stage/SkyBox.fbx");
-	SetWarpStage(SCENE_ID_STAGE2);
-	
+	SetWarpStage(SCENE_ID_STAGE2);	
 	OnStageCleared();
-
-	//デバッグ用
-	GameManager::GetWeaponObjectManager()->AddWeaponObject(ENEMY_TYPE::ENEMY_STONEGOLEM, GameManager::GetStage()->GetStartPosition());
-	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_SWORDBOSS);
 
 }
 

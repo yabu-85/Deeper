@@ -1,13 +1,14 @@
 #include "SwordBossState.h"
 #include "StateManager.h"
+#include "../VFXManager.h"
+#include "../GameManager/GameManager.h"
 #include "../Player/Player.h"
 #include "../Player/Aim.h"
 #include "../Enemy/SwordBoss.h"
-#include "../Stage/CreateStage.h"
-#include "../GameManager/GameManager.h"
 #include "../Enemy/EnemyUi.h"
+#include "../Stage/CreateStage.h"
 #include "../Engine/Model.h"
-#include "../VFXManager.h"
+#include "../Engine/Global.h"
 
 #include "../BehaviorTree/IsEnemyActionReadyNode.h"
 #include "../BehaviorTree/ChangeStateNode.h"
@@ -21,32 +22,20 @@
 
 namespace {
 	static const int APPER_TIME = 180;
-	static const int DEAD_TIME = 100;
 	static const int FOUND_SEARCH = 10;
 	static const int FPS = 60;
 	static const int MIN_MOVE_TIME = 6;
-	static const int MAX_MOVE_TIME = 5; 
+	static const int MAX_MOVE_TIME = 5;
 
 	static const float FAST_SPEED = 0.06f;
 	static const float SLOW_SPEED = 0.04f;
 	static const float ROTATE_RATIO = 0.07f;
 
-	//UŒ‚‚P‚Ìî•ñ
+	//UŒ‚‚Ìî•ñ
 	static const int ROTATE_FRAME = 45;
 	static const float ATTACK_READY_DISTANCE = 2.0f;
 
-	/*
-	//UŒ‚State‚Ìî•ñ
-	static const int ATTACK_FRAME[2] = { 0, 260 };
-	static const float ATTACK_ROTATE_RATIO = 0.05f;
-	static const int CALC_FRAME2[2] = { 120, 140 };
-	static const int CALC_FRAME3[2] = { 235, 247 };
-
-	//UŒ‚‚R‚Ìî•ñ
-	static const int ROTATE_FRAME3[2] = { 140, 230 };
-	static const int ATTACK_EFFECT_TIME[2] = { 244, 247 };
-	static const float MOVESPEED_FRAME3 = 0.03f;
-	*/
+	static const int CALC_FRAME[3][2] = { { 37, 56 }, { 40, 56 }, { 0, 100 } };
 
 }
 
@@ -62,7 +51,7 @@ void SwordBossAppear::Update()
 	float tsize = (float)time_ / (float)APPER_TIME;
 	e->SetScale(XMFLOAT3(tsize, tsize, tsize));
 
-	if (time_ > APPER_TIME) owner_->ChangeState("Patrol");
+	if (time_ > APPER_TIME) owner_->ChangeState("Combat");
 }
 
 void SwordBossAppear::OnEnter()
@@ -72,14 +61,12 @@ void SwordBossAppear::OnEnter()
 
 	XMFLOAT3 pos = e->GetPosition();
 	VFXManager::CreatVfxEnemySpawn(pos, APPER_TIME);
-
 }
 
 void SwordBossAppear::OnExit()
 {
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
 	e->SetScale(XMFLOAT3(1.0f, 1.0f, 1.0f));
-
 }
 
 //--------------------------------------------------------------------------------
@@ -92,20 +79,22 @@ void SwordBossDead::Update()
 {
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
 	time_++;
-	
-	float s = (float)time_ / (float)DEAD_TIME;
-	s = 1.0f - s;
-	e->SetScale({ s, s, s });
 
-	if (time_ >= DEAD_TIME) e->DeadExit();
+	int startT = e->GetAnimationController()->GetAnim((int)SWORDBOSS_ANIMATION::DEAD).startFrame;
+	int endT = e->GetAnimationController()->GetAnim((int)SWORDBOSS_ANIMATION::DEAD).endFrame;
+	int allTime = (endT - startT);
+	
+	if (time_ >= allTime) {
+		Model::SetAnimeStop(e->GetModelHandle(), true);
+		e->DeadExit();
+	}
 }
 
 void SwordBossDead::OnEnter()
 {
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
+	e->GetAnimationController()->SetNextAnime((int)SWORDBOSS_ANIMATION::DEAD, 0.1f);
 	e->DeadEnter();
-	e->GetAnimationController()->SetNextAnime((int)SWORDBOSS_ANIMATION::IDLE, 0.1f);
-
 	time_ = 0;
 }
 
@@ -132,7 +121,8 @@ SwordBossCombat::SwordBossCombat(StateManager* owner) : StateBase(owner), time_(
 	EnemyChangeCombatStateNode* action3 = new EnemyChangeCombatStateNode(e, "Attack");
 	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(action3, e);
 	IsPlayerInRangeNode* condition6 = new IsPlayerInRangeNode(condition5, e->GetAttackDistance(), e, GameManager::GetPlayer());
-	waitSelector->AddChildren(condition6);
+	IsEnemyAttackReady* condition8 = new IsEnemyAttackReady(condition6, e);
+	waitSelector->AddChildren(condition8);
 
 	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(e, "Move");
 	IsEnemyMovePermission* condition2 = new IsEnemyMovePermission(action1, e);
@@ -143,7 +133,8 @@ SwordBossCombat::SwordBossCombat(StateManager* owner) : StateBase(owner), time_(
 	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(e, "Attack");
 	IsEnemyAttackPermission* condition4 = new IsEnemyAttackPermission(action2, e);
 	IsPlayerInRangeNode* condition7 = new IsPlayerInRangeNode(condition4, e->GetAttackDistance(), e, GameManager::GetPlayer());
-	moveSelector->AddChildren(condition7);
+	IsEnemyAttackReady* condition9 = new IsEnemyAttackReady(condition7, e);
+	moveSelector->AddChildren(condition9);
 
 	//-------------------------------------Attack--------------------------------------
 
@@ -255,7 +246,7 @@ void SwordBossMove::OnExit()
 
 //-------------------------------------Attack-------------------------------------------
 
-SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0)
+SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0), attack_(0), attackData_(0)
 {
 }
 
@@ -271,33 +262,22 @@ void SwordBossAttack::Update()
 		e->GetOrientedMoveAction()->Update();
 	}
 
-	int startT = e->GetAnimationController()->GetAnim((int)SWORDBOSS_ANIMATION::ATTACK1).startFrame;
-	int endT = e->GetAnimationController()->GetAnim((int)SWORDBOSS_ANIMATION::ATTACK1).endFrame;
-	int time1 = (endT - startT);
+	if (time_ >= CALC_FRAME[attack_][0] && time_ <= CALC_FRAME[attack_][1]) { e->CalcPoly(); }
+	if (time_ == CALC_FRAME[attack_][1]) { e->AttackEnd(); }
+
+	int startT = e->GetAnimationController()->GetAnim(attackData_).startFrame;
+	int endT = e->GetAnimationController()->GetAnim(attackData_).endFrame;
+	int allTime = (endT - startT);
 	
-	//if (time_ == time1) e->GetAnimationController()->SetNextAnime((int)SWORDBOSS_ANIMATION::RUN_ATTACK, 0.1f);
+	if (time_ >= allTime) {
+		if (attack_ == 0 || attack_ == 1) {
+			if (rand() % 2 == 0 && e->GetAttackDistance() > CalculationDistance(GameManager::GetPlayer()->GetPosition(), e->GetPosition())) {
+				attack_ += 2;
+				owner_->ChangeState("Attack");
+				return;
+			}
+		}
 
-	//int startT2 = e->GetAnimationController()->GetAnim((int)SWORDBOSS_ANIMATION::RUN_ATTACK).startFrame;
-	//int endT2 = e->GetAnimationController()->GetAnim((int)SWORDBOSS_ANIMATION::RUN_ATTACK).endFrame;
-	//int time2 = time1 + (endT2 - startT2);
-
-	if (time_ >= time1 && time_ < time1 + 10) {
-		e->CalcPoly();
-	}
-
-	//UŒ‚ƒtƒ‰ƒO‚Ì§Œä
-	if (time_ == time1 + 8) { e->SetDamageInfoCombo1(); }
-	else if (time_ == time1 + 10) { e->DamageInfoReset(); }
-
-	//ƒGƒtƒFƒNƒg
-	if(time_ == time1 + 10) {
-		XMFLOAT3 pos = e->GetPosition();
-		XMFLOAT3 cP = e->GetAttackColliderList().front()->GetCenter();
-		pos = { pos.x + cP.x, 0.0f , pos.z + cP.z };
-		VFXManager::CreatVfxSmoke(pos);
-	}
-
-	if (time_ >= time1) {
 		owner_->ChangeState("Wait");
 	}
 }
@@ -306,17 +286,25 @@ void SwordBossAttack::OnEnter()
 {
 	time_ = 0;
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
-	e->GetAnimationController()->SetNextAnime((int)SWORDBOSS_ANIMATION::RUN, 0.1f);
 	e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
 	e->SetCombatReady(false);
+
+	if (attack_ == 2) attack_ = 1;
+	else if (attack_ == 3) attack_ = 0;
+	else attack_ = rand() % 2;
+
+	if(attack_ == 0) attackData_ = (int)SWORDBOSS_ANIMATION::ATTACK1;
+	if (attack_ == 1) attackData_ = (int)SWORDBOSS_ANIMATION::ATTACK2;
+	e->GetAnimationController()->SetNextAnime(attackData_, 1.0f);
 }
 
 void SwordBossAttack::OnExit()
 {
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
 	e->GetRotateAction()->SetRatio(ROTATE_RATIO);
-	e->SetAttackCoolDown(rand() % 100);
-	e->DamageInfoReset();
+	e->SetAttackCoolDown(rand() % 150);
+	e->AttackEnd();
+
 }
 
 //--------------------------------------------------------------------------------

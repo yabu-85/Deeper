@@ -6,27 +6,22 @@
 
 void Triangle::CreatTriangle(XMVECTOR& p1, XMVECTOR& p2, XMVECTOR& p3)
 {
-    position_[0] = p1;
-    position_[1] = p2;
-    position_[2] = p3;
+	XMStoreFloat3(&position_.pos1, p1);
+	XMStoreFloat3(&position_.pos2, p2);
+	XMStoreFloat3(&position_.pos3, p3);
+
 }
 
-XMFLOAT3* Triangle::GetPosition()
+Polygons Triangle::GetAllPosition()
 {
-    XMFLOAT3 pos[3];
-    for (int i = 0; i < 3; i++) XMStoreFloat3(&pos[i], position_[i]);
-
-    return pos;
+    return position_;
 }
 
 void Triangle::RayCast(RayCastData* data)
 {
-    XMFLOAT3 pos[3];
-    for (int i = 0; i < 3; i++) XMStoreFloat3(&pos[i], position_[i]);
-
     BOOL  hit = FALSE;
     float dist = 0.0f;
-	hit = Direct3D::Intersect(data->start, data->dir, pos[0], pos[1], pos[2], &dist);
+	hit = Direct3D::Intersect(data->start, data->dir, position_.pos1, position_.pos2, position_.pos3, &dist);
 
 	if (hit && dist < data->dist)
 	{

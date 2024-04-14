@@ -21,6 +21,7 @@ ResultUIManager::ResultUIManager(SceneBase* parent) : UIManager(parent), hPict_(
 	assert(hPict_ >= 0);
 
 	AddUi("ReturnToTitle", XMFLOAT2(0.0f, 0.0f), XMFLOAT2(1.6f, 1.0f), [this]() { GameManager::GetSceneManager()->ChangeScene(SCENE_ID_TITLE); });
+	AddUi("Exit", XMFLOAT2(0.0f, -0.6f), [this]() { pParent_->AddUIManager(new ExitUIManager(pParent_)); });
 }
 
 ResultUIManager::~ResultUIManager()

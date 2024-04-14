@@ -3,6 +3,8 @@
 
 class Stage3 : public StageBase
 {
+	int fadeTime_;
+
 public:
 	Stage3(GameObject* parent);
 	void Initialize() override;

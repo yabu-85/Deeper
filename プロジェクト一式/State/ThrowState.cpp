@@ -161,11 +161,7 @@ ThrowCombat::ThrowCombat(StateManager* owner) : StateBase(owner), time_(0)
 	waitSelector->AddChildren(condition3);
 
 	//--------------------Attack‚ÖˆÚs‚·‚é-----------------------
-	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsEnemyAttackPermission* condition4 = new IsEnemyAttackPermission(action2, e);
-	IsPlayerInRangeNode* condition7 = new IsPlayerInRangeNode(condition4, e->GetAttackDistance(), e, GameManager::GetPlayer());
-	IsEnemyWithinScreen* condition9 = new IsEnemyWithinScreen(condition7, e);
-	moveSelector->AddChildren(condition9);
+	moveSelector->AddChildren(condition8);
 
 }
 

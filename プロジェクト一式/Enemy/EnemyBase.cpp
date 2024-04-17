@@ -25,7 +25,6 @@ void EnemyBase::Update()
 
 	attackCoolDown_--;
 	actionCoolDown_--;
-	ReflectCharacter();
 }
 
 void EnemyBase::Release()

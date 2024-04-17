@@ -99,7 +99,6 @@ void Player::Update()
 
     if (InputManager::IsCmdDown(InputManager::TARGET)) pAim_->SetTargetEnemy();
     if (isCollider) GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f, GetBodyRange());
-    ReflectCharacter();
 
     //デバッグ用
     if (Input::IsKeyDown(DIK_T)) isCollider = !isCollider;

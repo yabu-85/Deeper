@@ -29,8 +29,8 @@ const AnimeData SWORDBOSS_ANIMATION_DATA[(int)SWORDBOSS_ANIMATION::MAX]{
     { 175, 210 }, //DamageSmall
     { 210, 260 }, //DamageMid
     { 260, 495 }, //Dead
-    { 600, 690 }, //Attack1
-    { 700, 775 }, //Attack2
+    { 600, 690 }, //Attack1ÅiêÿÇËè„Ç∞
+    { 700, 775 }, //Attack2Åiâ°êÿÇË
 };
 
 class SwordBoss : public EnemyBase

@@ -24,6 +24,8 @@ void Character::Update()
 		knockBackTime_--;
 	}
 
+	ReflectCharacter();
+
 }
 
 //Y²‚ÌÀ•W‚Í“®‚©‚³‚È‚¢‚æ‚¤‚É‚·‚é

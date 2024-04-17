@@ -35,7 +35,7 @@ namespace {
 	static const int ROTATE_FRAME = 45;
 	static const float ATTACK_READY_DISTANCE = 2.0f;
 
-	static const int CALC_FRAME[3][2] = { { 37, 56 }, { 40, 56 }, { 0, 100 } };
+	static const int CALC_FRAME[3][2] = { { 37, 80 }, { 40, 56 }, { 0, 100 } };
 
 }
 
@@ -130,13 +130,7 @@ SwordBossCombat::SwordBossCombat(StateManager* owner) : StateBase(owner), time_(
 	waitSelector->AddChildren(condition3);
 
 	//-------------------------------------Move--------------------------------------
-	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsEnemyAttackPermission* condition4 = new IsEnemyAttackPermission(action2, e);
-	IsPlayerInRangeNode* condition7 = new IsPlayerInRangeNode(condition4, e->GetAttackDistance(), e, GameManager::GetPlayer());
-	IsEnemyAttackReady* condition9 = new IsEnemyAttackReady(condition7, e);
-	moveSelector->AddChildren(condition9);
-
-	//-------------------------------------Attack--------------------------------------
+	moveSelector->AddChildren(condition8);
 
 }
 
@@ -246,6 +240,32 @@ void SwordBossMove::OnExit()
 
 //-------------------------------------Attack-------------------------------------------
 
+//AttackStateの中でAttack1とかAttack2とか分けるようにしたらいいのでは？
+
+#include <vector>
+enum SWORD_BOSS_ATTACK {
+	Slash_Up = 0,
+	Slash_Beside,
+	Slash_Max,
+};
+
+struct SwordBossInfo {
+	std::vector<int> 派生先;
+	int 回転フレーム[2];
+	int 移動フレーム[2];
+	int 攻撃判定フレーム[2];
+
+};
+
+namespace {
+	SwordBossInfo bossData[Slash_Max] = { 
+		{ {Slash_Beside }, 10, 100},
+		{ {Slash_Up }, 10, 100}
+	};
+	int attackDataIndex = 0;
+
+}
+
 SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0), attack_(0), attackData_(0)
 {
 }
@@ -254,6 +274,18 @@ void SwordBossAttack::Update()
 {
 	time_++;
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
+
+	if (true);
+
+	int startT = e->GetAnimationController()->GetAnim(attackData_).startFrame;
+	int endT = e->GetAnimationController()->GetAnim(attackData_).endFrame;
+	int allTime = (endT - startT);
+	
+	if (time_ >= allTime) {
+		owner_->ChangeState("Wait");
+	}
+
+	return;
 
 	//回転やら移動やら
 	if (time_ < ROTATE_FRAME) {
@@ -305,6 +337,10 @@ void SwordBossAttack::OnExit()
 	e->SetAttackCoolDown(rand() % 150);
 	e->AttackEnd();
 
+}
+
+void SwordBossAttack::Attack1Update()
+{
 }
 
 //--------------------------------------------------------------------------------

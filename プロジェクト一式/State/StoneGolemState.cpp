@@ -186,10 +186,7 @@ StoneGolemCombat::StoneGolemCombat(StateManager* owner) : StateBase(owner), time
 	waitSelector->AddChildren(condition3);
 
 	//-------------------------------------Move--------------------------------------
-	EnemyChangeCombatStateNode* action2 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsEnemyAttackPermission* condition4 = new IsEnemyAttackPermission(action2, e);
-	IsPlayerInRangeNode* condition7 = new IsPlayerInRangeNode(condition4, e->GetAttackDistance(), e, GameManager::GetPlayer());
-	moveSelector->AddChildren(condition7);
+	moveSelector->AddChildren(condition6);
 
 	//-------------------------------------Attack--------------------------------------
 

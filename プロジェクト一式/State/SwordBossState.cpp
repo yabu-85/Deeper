@@ -243,108 +243,121 @@ void SwordBossMove::OnExit()
 //AttackStateの中でAttack1とかAttack2とか分けるようにしたらいいのでは？
 
 #include <vector>
-enum SWORD_BOSS_ATTACK {
+#include <array>
+using std::vector;
+using std::pair;
+enum SWORD_BOSS {
 	Slash_Up = 0,
 	Slash_Beside,
 	Slash_Max,
 };
 
 struct SwordBossInfo {
-	std::vector<int> 派生先;
-	int 回転フレーム[2];
-	int 移動フレーム[2];
-	int 攻撃判定フレーム[2];
+	int animIndex;
+	vector<SWORD_BOSS> derivative;	//派生可能モーション
+	pair<int, int> attack;			//攻撃判定フレーム
+
+	SwordBossInfo(int anim, vector<SWORD_BOSS> derivat) : animIndex(anim), derivative(derivat) {};
+	SwordBossInfo(int anim, vector<SWORD_BOSS> derivat, pair<int, int> atk ) : animIndex(anim), derivative(derivat), attack(atk) {};
 
 };
 
 namespace {
-	SwordBossInfo bossData[Slash_Max] = { 
-		{ {Slash_Beside }, 10, 100},
-		{ {Slash_Up }, 10, 100}
+	SwordBossInfo SWORD_BOSS_INFO_LIST[Slash_Max] = {
+		{ Slash_Up,		{ (int)SWORDBOSS_ANIMATION::ATTACK1, {Slash_Beside} }},	//切り上げ
+		{ Slash_Beside,	{ (int)SWORDBOSS_ANIMATION::ATTACK2, {Slash_Up}		}},	//横切り
 	};
-	int attackDataIndex = 0;
 
 }
 
-SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0), attack_(0), attackData_(0)
+SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0), attack_(0), combo_(false)
 {
+	pBoss_ = static_cast<SwordBoss*>(owner_->GetGameObject());
 }
 
 void SwordBossAttack::Update()
 {
 	time_++;
-	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
 
-	if (true);
+	switch (attack_) {
+	case Slash_Up:
+		Attack1Update();
+		break;
+	case Slash_Beside:
+		Attack2Update();
+		break;
+	default:
+		break;
+	}
 
-	int startT = e->GetAnimationController()->GetAnim(attackData_).startFrame;
-	int endT = e->GetAnimationController()->GetAnim(attackData_).endFrame;
+	if (time_ >= CALC_FRAME[attack_][0] && time_ <= CALC_FRAME[attack_][1]) { pBoss_->CalcPoly(); }
+	if (time_ == CALC_FRAME[attack_][1]) { pBoss_->AttackEnd(); }
+
+	int startT = pBoss_->GetAnimationController()->GetAnim(SWORD_BOSS_INFO_LIST[attack_].animIndex).startFrame;
+	int endT = pBoss_->GetAnimationController()->GetAnim(SWORD_BOSS_INFO_LIST[attack_].animIndex).endFrame;
 	int allTime = (endT - startT);
 	
 	if (time_ >= allTime) {
-		owner_->ChangeState("Wait");
-	}
-
-	return;
-
-	//回転やら移動やら
-	if (time_ < ROTATE_FRAME) {
-		e->GetRotateAction()->Update();
-		e->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
-		e->GetOrientedMoveAction()->Update();
-	}
-
-	if (time_ >= CALC_FRAME[attack_][0] && time_ <= CALC_FRAME[attack_][1]) { e->CalcPoly(); }
-	if (time_ == CALC_FRAME[attack_][1]) { e->AttackEnd(); }
-
-	int startT = e->GetAnimationController()->GetAnim(attackData_).startFrame;
-	int endT = e->GetAnimationController()->GetAnim(attackData_).endFrame;
-	int allTime = (endT - startT);
-	
-	if (time_ >= allTime) {
-		if (attack_ == 0 || attack_ == 1) {
-			if (rand() % 2 == 0 && e->GetAttackDistance() > CalculationDistance(GameManager::GetPlayer()->GetPosition(), e->GetPosition())) {
-				attack_ += 2;
-				owner_->ChangeState("Attack");
-				return;
-			}
+		if (combo_) {
+			combo_ = false;
+			owner_->ChangeState("Wait");
+			return;
 		}
 
-		owner_->ChangeState("Wait");
+		if (rand() % 2 == 0) {
+			attack_ += 2;
+			combo_ = true;
+			owner_->ChangeState("Attack");
+			return;
+		}
+		
+		owner_->ChangeState("Attack");
 	}
 }
 
 void SwordBossAttack::OnEnter()
 {
 	time_ = 0;
-	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
-	e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
-	e->SetCombatReady(false);
+	pBoss_->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
+	pBoss_->SetCombatReady(false);
 
 	if (attack_ == 2) attack_ = 1;
 	else if (attack_ == 3) attack_ = 0;
 	else attack_ = rand() % 2;
 
-	if(attack_ == 0) attackData_ = (int)SWORDBOSS_ANIMATION::ATTACK1;
-	if (attack_ == 1) attackData_ = (int)SWORDBOSS_ANIMATION::ATTACK2;
-	e->GetAnimationController()->SetNextAnime(attackData_, 1.0f);
+	pBoss_->GetAnimationController()->SetNextAnime(SWORD_BOSS_INFO_LIST[attack_].animIndex, 1.0f);
 }
 
 void SwordBossAttack::OnExit()
 {
-	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
-	e->GetRotateAction()->SetRatio(ROTATE_RATIO);
-	e->SetAttackCoolDown(rand() % 150);
-	e->AttackEnd();
+	pBoss_->GetRotateAction()->SetRatio(ROTATE_RATIO);
+	pBoss_->SetAttackCoolDown(rand() % 150);
+	pBoss_->AttackEnd();
 
 }
 
 void SwordBossAttack::Attack1Update()
 {
+	//回転・移動
+	if (time_ < ROTATE_FRAME) {
+		pBoss_->GetRotateAction()->Update();
+		pBoss_->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
+		pBoss_->GetOrientedMoveAction()->Update();
+	}
+
+
+
 }
 
 void SwordBossAttack::Attack2Update()
 {
+	//回転・移動
+	if (time_ < ROTATE_FRAME) {
+		pBoss_->GetRotateAction()->Update();
+		pBoss_->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
+		pBoss_->GetOrientedMoveAction()->Update();
+	}
+
 }
 
 //--------------------------------------------------------------------------------

@@ -343,4 +343,8 @@ void SwordBossAttack::Attack1Update()
 {
 }
 
+void SwordBossAttack::Attack2Update()
+{
+}
+
 //--------------------------------------------------------------------------------

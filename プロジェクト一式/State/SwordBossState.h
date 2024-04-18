@@ -66,6 +66,7 @@ class SwordBossAttack : public StateBase
 	int attackData_;
 
 	void Attack1Update();
+	void Attack2Update();
 
 public:
 	SwordBossAttack(StateManager* owner);

@@ -79,6 +79,7 @@ void NormalGunWeapon::ChangeAttackState()
 
 void NormalGunWeapon::ShotBullet()
 {
+    transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     Aim* pAim = pPlayer_->GetAim();
     XMFLOAT3 tar;
     if (pAim->IsTarget()) {

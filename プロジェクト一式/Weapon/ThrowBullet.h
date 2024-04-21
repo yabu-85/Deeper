@@ -2,7 +2,6 @@
 #include "BulletBase.h"
 
 class PolyLine;
-class SphereCollider;
 
 class ThrowBullet : public BulletBase
 {
@@ -13,7 +12,6 @@ class ThrowBullet : public BulletBase
     XMFLOAT3 deathPosition_;    //Poly—p‚Ì€–SêŠ‹L‰¯
     
     PolyLine* pPolyLine_;
-    SphereCollider* pSphereCollider_;
 
 public:
     ThrowBullet(GameObject* parent);

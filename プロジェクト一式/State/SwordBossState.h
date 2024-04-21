@@ -1,8 +1,8 @@
 #pragma once
 #include "StateBase.h"
 
-class StateManager;
 class Root;
+class SwordBoss;
 
 class SwordBossAppear : public StateBase
 {

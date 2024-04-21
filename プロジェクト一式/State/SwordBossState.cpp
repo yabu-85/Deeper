@@ -240,7 +240,15 @@ void SwordBossMove::OnExit()
 
 //-------------------------------------Attack-------------------------------------------
 
-//AttackStateの中でAttack1とかAttack2とか分けるようにしたらいいのでは？
+//AttackStateの中でAttack1とかAttack2とか分けるようにする
+
+//攻撃しようとなったらすぐに次に攻撃する種類を決めるようにする
+//攻撃によって必ず次の攻撃に移る物がある、それは、、どうしよう
+
+//横ー＞上のその逆もあり得る
+//この場合も考慮しないといけない
+//今までのコンボを覚えるようにしていれば出来そう
+//同じ行動はしないようにする
 
 #include <vector>
 #include <array>
@@ -248,25 +256,50 @@ using std::vector;
 using std::pair;
 enum SWORD_BOSS {
 	Slash_Up = 0,
-	Slash_Beside,
+	Slash_Down,
+	Slash_Right,
+	Slash_Left,
+	Thrust,
 	Slash_Max,
 };
 
-struct SwordBossInfo {
-	int animIndex;
-	vector<SWORD_BOSS> derivative;	//派生可能モーション
-	pair<int, int> attack;			//攻撃判定フレーム
+struct AttackData {
+	int animId;					//AnimationControllerのIDを割り当てる
+	vector<int> derivative;		//派生可能モーション
+	pair<int, int> attack;		//攻撃判定フレーム
+	pair<int, int> rotateMove;	//移動・回転フレーム
+	
+	AttackData(int anim, vector<int> derivat) : animId(anim), derivative(derivat) {};
+	AttackData(int anim, vector<int> derivat, pair<int, int> atk, pair<int, int> rm)
+		: animId(anim), derivative(derivat), attack(atk), rotateMove(rm) {};
+};
 
-	SwordBossInfo(int anim, vector<SWORD_BOSS> derivat) : animIndex(anim), derivative(derivat) {};
-	SwordBossInfo(int anim, vector<SWORD_BOSS> derivat, pair<int, int> atk ) : animIndex(anim), derivative(derivat), attack(atk) {};
+struct AttackManager {
+	vector<int> infoList;		//コンボ予定リスト
+	vector<AttackData> list;	//全部の攻撃情報登録リスト
+
+	void SelectAction() {
+		infoList.clear();
+		std::vector<AttackData> copyList = list;
+
+		//重複を避けてランダムに選択
+		for (int i = 0; i < 3; ++i) {
+			int randomIndex = rand() % list.size();
+			infoList.push_back(randomIndex);	
+			copyList.erase(copyList.begin() + randomIndex);
+		}
+	};
+
+
+
 
 };
 
 namespace {
-	SwordBossInfo SWORD_BOSS_INFO_LIST[Slash_Max] = {
-		{ Slash_Up,		{ (int)SWORDBOSS_ANIMATION::ATTACK1, {Slash_Beside} }},	//切り上げ
-		{ Slash_Beside,	{ (int)SWORDBOSS_ANIMATION::ATTACK2, {Slash_Up}		}},	//横切り
-	};
+	AttackData atk1 = AttackData((int)SWORDBOSS_ANIMATION::ATTACK1, { Slash_Right });
+	AttackData atk2 = AttackData((int)SWORDBOSS_ANIMATION::ATTACK2, { Slash_Up });
+
+	AttackData SWORD_BOSS_INFO_LIST[Slash_Max] = { atk1, atk2, atk2, atk2, atk2 };
 
 }
 
@@ -283,7 +316,7 @@ void SwordBossAttack::Update()
 	case Slash_Up:
 		Attack1Update();
 		break;
-	case Slash_Beside:
+	case Slash_Right:
 		Attack2Update();
 		break;
 	default:
@@ -293,8 +326,8 @@ void SwordBossAttack::Update()
 	if (time_ >= CALC_FRAME[attack_][0] && time_ <= CALC_FRAME[attack_][1]) { pBoss_->CalcPoly(); }
 	if (time_ == CALC_FRAME[attack_][1]) { pBoss_->AttackEnd(); }
 
-	int startT = pBoss_->GetAnimationController()->GetAnim(SWORD_BOSS_INFO_LIST[attack_].animIndex).startFrame;
-	int endT = pBoss_->GetAnimationController()->GetAnim(SWORD_BOSS_INFO_LIST[attack_].animIndex).endFrame;
+	int startT = pBoss_->GetAnimationController()->GetAnim(SWORD_BOSS_INFO_LIST[attack_].animId).startFrame;
+	int endT = pBoss_->GetAnimationController()->GetAnim(SWORD_BOSS_INFO_LIST[attack_].animId).endFrame;
 	int allTime = (endT - startT);
 	
 	if (time_ >= allTime) {
@@ -321,11 +354,7 @@ void SwordBossAttack::OnEnter()
 	pBoss_->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
 	pBoss_->SetCombatReady(false);
 
-	if (attack_ == 2) attack_ = 1;
-	else if (attack_ == 3) attack_ = 0;
-	else attack_ = rand() % 2;
-
-	pBoss_->GetAnimationController()->SetNextAnime(SWORD_BOSS_INFO_LIST[attack_].animIndex, 1.0f);
+	pBoss_->GetAnimationController()->SetNextAnime(SWORD_BOSS_INFO_LIST[attack_].animId, 1.0f);
 }
 
 void SwordBossAttack::OnExit()

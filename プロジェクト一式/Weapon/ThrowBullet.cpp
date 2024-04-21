@@ -17,11 +17,12 @@ namespace {
 	static const float MAX_HEIGHT = 8.0f;
 	static const float MAX_DISTANCE = 10.0f;
 	static const float AUDIO_DISTANCE = 10.0f;
+	static const XMFLOAT3 BULLET_SCALE = XMFLOAT3(0.2f, 0.2f, 0.2f);
 
 }
 
 ThrowBullet::ThrowBullet(GameObject* parent)
-	: BulletBase(parent, "ThrowBullet"), maxDistance_(0), maxHeight_(0), time_(0), pPolyLine_(nullptr), pSphereCollider_(nullptr),
+	: BulletBase(parent, "ThrowBullet"), maxDistance_(0), maxHeight_(0), time_(0), pPolyLine_(nullptr),
 	deathPosition_(XMFLOAT3()), isDeath_(false)
 {
 }
@@ -35,15 +36,14 @@ void ThrowBullet::Initialize()
 	hModel_ = Model::Load("DebugCollision/SphereCollider.fbx");
 	assert(hModel_ >= 0);
 
-	transform_.scale_ = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	transform_.scale_ = BULLET_SCALE;
 	damage_ = DAMAGE;
 	time_ = (int)DEF_TIME;
 	maxHeight_ = MAX_HEIGHT;
 	maxDistance_ = MAX_DISTANCE;
 
-	pSphereCollider_ = new SphereCollider(XMFLOAT3(0, 0, 0), 0.2f);
-	AddAttackCollider(pSphereCollider_);
-	pSphereCollider_->SetValid(false);
+	SphereCollider* collider = new SphereCollider(XMFLOAT3(0, 0, 0), BULLET_SCALE.x);
+	AddAttackCollider(collider);
 
 	pPolyLine_ = new PolyLine;
 	pPolyLine_->Load("PolyImage/Line.png");

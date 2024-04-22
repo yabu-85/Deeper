@@ -62,8 +62,6 @@ public:
 class SwordBossAttack : public StateBase
 {
 	int time_;
-	int attack_;
-	bool combo_;
 	SwordBoss* pBoss_;
 
 	void Attack1Update();

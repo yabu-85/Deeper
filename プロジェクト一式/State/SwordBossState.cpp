@@ -264,55 +264,95 @@ enum SWORD_BOSS {
 };
 
 struct AttackData {
+	int attackNumber;			//番号
 	int animId;					//AnimationControllerのIDを割り当てる
 	vector<int> derivative;		//派生可能モーション
 	pair<int, int> attack;		//攻撃判定フレーム
 	pair<int, int> rotateMove;	//移動・回転フレーム
 	
-	AttackData(int anim, vector<int> derivat) : animId(anim), derivative(derivat) {};
-	AttackData(int anim, vector<int> derivat, pair<int, int> atk, pair<int, int> rm)
-		: animId(anim), derivative(derivat), attack(atk), rotateMove(rm) {};
+	AttackData(int number, int anim, vector<int> derivat) : attackNumber(number), animId(anim), derivative(derivat) {};
+	AttackData(int number, int anim, vector<int> derivat, pair<int, int> atk, pair<int, int> rm)
+		: attackNumber(number), animId(anim), derivative(derivat), attack(atk), rotateMove(rm) {};
 };
 
 struct AttackManager {
+	bool isNextReady;			//次の行動していいか
 	vector<int> infoList;		//コンボ予定リスト
 	vector<AttackData> list;	//全部の攻撃情報登録リスト
+
+	void SetIsNextReady(bool b) { isNextReady = b; }
+	bool IsNextReady() { return isNextReady; }
+	
+	bool IsInfoListEmpty() { return infoList.empty(); }
+	void AddList(const AttackData& info) {
+		list.push_back(info);
+	}
 
 	void SelectAction() {
 		infoList.clear();
 		std::vector<AttackData> copyList = list;
 
+		/*
+		// データをシャッフルする
+		for (int i = 0; i < data.size(); ++i) {
+			int j = std::rand() % (i + 1);
+			std::swap(data[i], data[j]);
+		}
+
+	    // １つ以上データをランダムに選択する
+		int numSelected = std::rand() % data.size() + 1;
+		*/
+
 		//重複を避けてランダムに選択
-		for (int i = 0; i < 3; ++i) {
-			int randomIndex = rand() % list.size();
-			infoList.push_back(randomIndex);	
+		for (int i = 0; i < list.size(); ++i) {
+			int randomIndex = rand() % copyList.size();
+			infoList.push_back(copyList[randomIndex].attackNumber);	
 			copyList.erase(copyList.begin() + randomIndex);
 		}
 	};
 
+	//今やってる攻撃終わった
+	void EndAction() {
+		infoList.erase(infoList.begin());
+	}
 
+	int GetAttackNumber() {
+		return infoList.front();
+	}
 
+	AttackManager() : isNextReady(false) {};
 
 };
 
-namespace {
-	AttackData atk1 = AttackData((int)SWORDBOSS_ANIMATION::ATTACK1, { Slash_Right });
-	AttackData atk2 = AttackData((int)SWORDBOSS_ANIMATION::ATTACK2, { Slash_Up });
+//あったくなんばーはManagerのほうで計算・取得したほうがよさげなきがすー
 
-	AttackData SWORD_BOSS_INFO_LIST[Slash_Max] = { atk1, atk2, atk2, atk2, atk2 };
+namespace {
+	AttackData atk1 = AttackData(0, (int)SWORDBOSS_ANIMATION::ATTACK1, { Slash_Right }, { 37, 80 }, { 0, 45 });
+	AttackData atk2 = AttackData(1, (int)SWORDBOSS_ANIMATION::ATTACK2, { Slash_Up }, { 40, 56 }, { 0, 45 });
+	AttackManager atk = AttackManager();
 
 }
 
-SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0), attack_(0), combo_(false)
+SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0)
 {
 	pBoss_ = static_cast<SwordBoss*>(owner_->GetGameObject());
+
+	atk.AddList(atk1);
+	atk.AddList(atk2);
+	atk.SelectAction();
 }
 
 void SwordBossAttack::Update()
 {
 	time_++;
+	int number = atk.GetAttackNumber();
 
-	switch (attack_) {
+	if (number < 0 || number >= 2) {
+		int num = number;
+
+	}
+
+	switch (number) {
 	case Slash_Up:
 		Attack1Update();
 		break;
@@ -323,28 +363,20 @@ void SwordBossAttack::Update()
 		break;
 	}
 
-	if (time_ >= CALC_FRAME[attack_][0] && time_ <= CALC_FRAME[attack_][1]) { pBoss_->CalcPoly(); }
-	if (time_ == CALC_FRAME[attack_][1]) { pBoss_->AttackEnd(); }
+	if (time_ >= CALC_FRAME[number][0] && time_ <= CALC_FRAME[number][1]) { pBoss_->CalcPoly(); }
+	if (time_ == CALC_FRAME[number][1]) { pBoss_->AttackEnd(); }
 
-	int startT = pBoss_->GetAnimationController()->GetAnim(SWORD_BOSS_INFO_LIST[attack_].animId).startFrame;
-	int endT = pBoss_->GetAnimationController()->GetAnim(SWORD_BOSS_INFO_LIST[attack_].animId).endFrame;
+	int startT = pBoss_->GetAnimationController()->GetAnim(atk.list[number].animId).startFrame;
+	int endT = pBoss_->GetAnimationController()->GetAnim(atk.list[number].animId).endFrame;
 	int allTime = (endT - startT);
 	
 	if (time_ >= allTime) {
-		if (combo_) {
-			combo_ = false;
+		atk.EndAction();
+		if (atk.IsNextReady() && !atk.IsInfoListEmpty()) owner_->ChangeState("Attack");
+		else {
+			atk.SelectAction();
 			owner_->ChangeState("Wait");
-			return;
 		}
-
-		if (rand() % 2 == 0) {
-			attack_ += 2;
-			combo_ = true;
-			owner_->ChangeState("Attack");
-			return;
-		}
-		
-		owner_->ChangeState("Attack");
 	}
 }
 
@@ -354,7 +386,7 @@ void SwordBossAttack::OnEnter()
 	pBoss_->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
 	pBoss_->SetCombatReady(false);
 
-	pBoss_->GetAnimationController()->SetNextAnime(SWORD_BOSS_INFO_LIST[attack_].animId, 1.0f);
+	pBoss_->GetAnimationController()->SetNextAnime(atk.list[atk.GetAttackNumber()].animId, 1.0f);
 }
 
 void SwordBossAttack::OnExit()
@@ -367,6 +399,8 @@ void SwordBossAttack::OnExit()
 
 void SwordBossAttack::Attack1Update()
 {
+	OutputDebugString("Attack1\n\n");
+	
 	//回転・移動
 	if (time_ < ROTATE_FRAME) {
 		pBoss_->GetRotateAction()->Update();
@@ -375,11 +409,12 @@ void SwordBossAttack::Attack1Update()
 	}
 
 
-
 }
 
 void SwordBossAttack::Attack2Update()
 {
+	OutputDebugString("Attack2\n\n");
+	
 	//回転・移動
 	if (time_ < ROTATE_FRAME) {
 		pBoss_->GetRotateAction()->Update();

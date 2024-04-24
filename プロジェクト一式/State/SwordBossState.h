@@ -59,13 +59,22 @@ public:
 	void OnExit() override;
 };
 
+//--------------------ééÇµÇ…SwordBossÇÇ±Ç±Ç…èëÇ≠
+#include "../Enemy/EnemyAttackBase.h"
+
+class SwordBossAttack1 : public EnemyFrame {
+	SwordBoss* pBoss_;
+public:
+	SwordBossAttack1(int start, int end);
+	void Update() override;
+	void OnExit() override;
+};
+
 class SwordBossAttack : public StateBase
 {
 	int time_;
 	SwordBoss* pBoss_;
-
-	void Attack1Update();
-	void Attack2Update();
+	EnemyAttackController* pAttackController_;
 
 public:
 	SwordBossAttack(StateManager* owner);

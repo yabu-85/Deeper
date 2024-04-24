@@ -47,8 +47,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int isDrawFps = GetPrivateProfileInt("DEBUG", "ViewFps", 0, ".\\setup.ini");		//キャプションに現在のFPSを表示するかどうか
 
 #ifdef _DEBUG
-	screenWidth = 800;
-	screenHeight = 600;
+	screenWidth = 600;
+	screenHeight = 400;
 #endif
 
 	//ウィンドウを作成

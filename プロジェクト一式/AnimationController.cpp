@@ -34,6 +34,11 @@ AnimeData AnimationController::GetAnim(int id)
 	return animeDatas_[id];
 }
 
+int AnimationController::GetAnimTime(int id)
+{
+	return  animeDatas_[id].startFrame - animeDatas_[id].endFrame;
+}
+
 void AnimationController::SetNextAnime(int id, float blendFactor, float decrease)
 {
 	currentAnime_ = id;

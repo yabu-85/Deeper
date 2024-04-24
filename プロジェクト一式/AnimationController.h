@@ -24,6 +24,9 @@ public:
 	//アニメーションデータの取得
 	AnimeData GetAnim(int id);
 
+	//アニメーションの合計時間を取得
+	int GetAnimTime(int id);
+
 	//次のアニメーションを設定（BlendFactorを手動で設定
 	void SetNextAnime(int id, float blendFactor, float decrease);
 

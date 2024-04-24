@@ -434,6 +434,9 @@
     <ClCompile Include="State\SwordBossState.cpp">
       <Filter>06State\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy\EnemyAttackBase.cpp">
+      <Filter>08Enemy\EnemyBase</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -735,6 +738,9 @@
     </ClInclude>
     <ClInclude Include="State\SwordBossState.h">
       <Filter>06State\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\EnemyAttackBase.h">
+      <Filter>08Enemy\EnemyBase</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

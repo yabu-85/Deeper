@@ -27,15 +27,12 @@ namespace {
 }
 
 MoveAction::MoveAction(Character* obj, float speed, float range)
-	: BaseAction(obj), isInRange_(false), moveSpeed_(speed), moveRange_(range), targetPos_(0, 0, 0), pTarget_(nullptr)
+	: BaseAction(obj), isInRange_(false), moveSpeed_(speed), moveRange_(range), targetPos_(0, 0, 0)
 {
 }
 
 void MoveAction::Update()
 {
-	//TargetCharacterがいるならその座標を目標地点に
-	if (pTarget_) targetPos_ = pTarget_->GetPosition();
-
 	//移動量計算
 	XMFLOAT3 pos = pCharacter_->GetPosition();
 	XMVECTOR vPos = XMLoadFloat3(&pos);
@@ -147,11 +144,6 @@ void AstarMoveAction::UpdatePath(XMFLOAT3 target)
 {
 	targetList_ = GameManager::GetNavigationAI()->Navi(target, pCharacter_->GetPosition(), pCharacter_->GetBodyRange());
 	if(!targetList_.empty()) targetPos_ = targetList_.front();
-}
-
-void AstarMoveAction::UpdatePath()
-{
-	UpdatePath(pTarget_->GetPosition());
 }
 
 void AstarMoveAction::Draw()

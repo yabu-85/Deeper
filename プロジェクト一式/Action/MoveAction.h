@@ -14,7 +14,6 @@ protected:
     float moveSpeed_;   //移動スピード
     float moveRange_;   //移動終了判定の範囲
     XMFLOAT3 targetPos_;//ターゲットの場所
-    Character* pTarget_;
 
 public:
     MoveAction(Character* obj, float speed, float range);
@@ -32,7 +31,6 @@ public:
 
     //Astarの場合Update呼ばないと移動しない
     void SetTarget(XMFLOAT3 target) { targetPos_ = target; }
-    void SetTarget(Character* target) { pTarget_ = target; }
 };
 
 class AstarMoveAction : public MoveAction {
@@ -55,7 +53,6 @@ public:
 
     //新しく経路を求める
     void UpdatePath(XMFLOAT3 target);
-    void UpdatePath();
 
     //デバッグ用の経路表示
     void Draw();

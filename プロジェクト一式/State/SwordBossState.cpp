@@ -234,17 +234,15 @@ void SwordBossMove::OnExit()
 
 //-------------------------------------Attack-------------------------------------------
 
-SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0), pAttackController_(nullptr)
+SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0)
 {
 	pBoss_ = static_cast<SwordBoss*>(owner_->GetGameObject());
-	pAttackController_ = new EnemyAttackController();
 
 }
 
 void SwordBossAttack::Update()
 {
 	time_++;
-	pAttackController_->Update(time_);
 	int animeFrame = pBoss_->GetAnimationController()->GetAnimTime(0);
 
 	//âÒì]ÅEà⁄ìÆ
@@ -277,7 +275,3 @@ void SwordBossAttack::OnExit()
 }
 
 //--------------------------------------------------------------------------------
-
-SwordBossAttack1::SwordBossAttack1(int start, int end) : EnemyFrame(start, end), pBoss_(nullptr) { pBoss_ = static_cast<SwordBoss*>(pParent_); }
-void SwordBossAttack1::Update() { pBoss_->CalcPoly(); }
-void SwordBossAttack1::OnExit() { pBoss_->AttackEnd(); }

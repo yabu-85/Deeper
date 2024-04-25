@@ -5,8 +5,8 @@
 
 using namespace DirectX;
 
-class Player;
-
+//pTargetがnull出ない場合は、pTargetの方向へ移動
+//pTargetがnullならtargetPosに方向に移動
 class MoveAction : public BaseAction
 {
 protected:
@@ -14,6 +14,7 @@ protected:
     float moveSpeed_;   //移動スピード
     float moveRange_;   //移動終了判定の範囲
     XMFLOAT3 targetPos_;//ターゲットの場所
+    Character* pTarget_;
 
 public:
     MoveAction(Character* obj, float speed, float range);
@@ -28,8 +29,9 @@ public:
     //移動が終わった、Targetの位置についたか移動終わった
     bool IsInRange() { return isInRange_; }
 
-    //Astarの場合Update呼ばないと移動しない・IsOutEndTargetに使う
-    virtual void SetTarget(XMFLOAT3 target) { targetPos_ = target; }
+    //Astarの場合Update呼ばないと移動しない
+    void SetTarget(XMFLOAT3 target) { targetPos_ = target; }
+    void SetTarget(Character* target) { pTarget_ = target; }
 };
 
 class AstarMoveAction : public MoveAction {

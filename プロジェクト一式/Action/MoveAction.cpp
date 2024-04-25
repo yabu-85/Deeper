@@ -7,12 +7,13 @@
 #include "../Enemy/EnemyBase.h"
 #include "../Stage/NavigationAI.h"
 #include "../Stage/CreateStage.h"
+#include "../Engine/Global.h"
 
 //デバッグ用
 #include "../Engine/Model.h"
 
 MoveAction::MoveAction(Character* obj, float speed, float range)
-	: BaseAction(obj), isInRange_(false), moveSpeed_(speed), moveRange_(range), targetPos_(0, 0, 0)
+	: BaseAction(obj), isInRange_(false), moveSpeed_(speed), moveRange_(range), targetPos_(0, 0, 0), pTarget_(nullptr)
 {
 }
 

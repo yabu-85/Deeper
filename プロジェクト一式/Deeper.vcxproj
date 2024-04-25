@@ -150,7 +150,6 @@
     <ClCompile Include="Character\Character.cpp" />
     <ClCompile Include="Character\CharacterManager.cpp" />
     <ClCompile Include="Enemy\DropTable.cpp" />
-    <ClCompile Include="Enemy\EnemyAttackBase.cpp" />
     <ClCompile Include="Enemy\EnemyBase.cpp" />
     <ClCompile Include="Enemy\EnemyManager.cpp" />
     <ClCompile Include="Enemy\EnemyUi.cpp" />
@@ -254,7 +253,6 @@
     <ClInclude Include="Character\Character.h" />
     <ClInclude Include="Character\CharacterManager.h" />
     <ClInclude Include="Enemy\DropTable.h" />
-    <ClInclude Include="Enemy\EnemyAttackBase.h" />
     <ClInclude Include="Enemy\EnemyBase.h" />
     <ClInclude Include="Enemy\EnemyManager.h" />
     <ClInclude Include="Enemy\EnemyUi.h" />

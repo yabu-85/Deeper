@@ -1,10 +1,12 @@
 #include "RotateAction.h"
 #include "../Character/Character.h"
+#include "../GameManager/GameManager.h"
+#include "../Player/Player.h"
+#include "../Engine/Global.h"
 
 RotateAction::RotateAction(Character* obj) : BaseAction(obj), pTarget_(nullptr), rotateRatio_(1.0f)
 {
-    pTarget_ = static_cast<Character*>(pCharacter_->FindObject("Player"));
-
+    pTarget_ = GameManager::GetPlayer();
 }
 
 RotateAction::RotateAction(Character* obj, float ratio) : BaseAction(obj), pTarget_(nullptr), rotateRatio_(ratio)

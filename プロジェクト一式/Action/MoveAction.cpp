@@ -12,6 +12,20 @@
 //デバッグ用
 #include "../Engine/Model.h"
 
+namespace {
+	static const XMVECTOR FLOAR_HALF = XMVectorSet(0.5f, 0.0f, 0.5f, 0.0f);
+	
+	//Orientに使用
+	static const float DIR_X[4] = { 0, 1, 0, -1 };
+	static const float DIR_Z[4] = { 1, 0, -1, 0 };
+	enum DIRECTION {
+		FRONT = 0,
+		RIGHT,
+		BACK,
+		LEFT,
+	};
+}
+
 MoveAction::MoveAction(Character* obj, float speed, float range)
 	: BaseAction(obj), isInRange_(false), moveSpeed_(speed), moveRange_(range), targetPos_(0, 0, 0), pTarget_(nullptr)
 {
@@ -19,10 +33,16 @@ MoveAction::MoveAction(Character* obj, float speed, float range)
 
 void MoveAction::Update()
 {
+	//TargetCharacterがいるならその座標を目標地点に
+	if (pTarget_) targetPos_ = pTarget_->GetPosition();
+
+	//移動量計算
 	XMFLOAT3 pos = pCharacter_->GetPosition();
 	XMVECTOR vPos = XMLoadFloat3(&pos);
 	XMVECTOR vTar = XMLoadFloat3(&targetPos_);
 	XMVECTOR vMove = vTar - vPos;
+	
+	//移動スピード抑制
 	float currentSpeed = XMVectorGetX(XMVector3Length(vTar - vPos));
 	if(currentSpeed > moveSpeed_) vMove = XMVector3Normalize(vMove) * moveSpeed_;
 
@@ -35,6 +55,33 @@ void MoveAction::Update()
 	XMStoreFloat3(&pos, vPos + vMove);
 	pCharacter_->SetPosition(pos);
 	isInRange_ = false;;
+}
+
+void MoveAction::CalcDodge(XMVECTOR& move)
+{
+	const float safeSize = 2.5f;
+	XMFLOAT3 pos = pCharacter_->GetPosition();
+	XMVECTOR vPos = XMLoadFloat3(&pos);
+	XMVECTOR vSafeMove = XMVectorZero();
+
+	if (pCharacter_) {
+		std::vector<EnemyBase*> eList = GameManager::GetEnemyManager()->GetAllEnemy();
+
+		for (auto& e : eList) {
+			if (e == pCharacter_) continue;
+			XMFLOAT3 f = e->GetPosition();
+			XMVECTOR vTarget = XMLoadFloat3(&f);
+			XMVECTOR vec = vTarget - vPos;
+			float range = XMVectorGetX(XMVector3Length(vec));
+
+			if (range < safeSize) {
+				range -= safeSize;
+				vSafeMove += XMVector3Normalize(vec) * range;
+			}
+		}
+
+		move += vSafeMove;
+	}
 }
 
 //------------------------------Astar----------------------
@@ -59,40 +106,21 @@ void AstarMoveAction::Update()
 		return;
 	}
 	
-	XMVECTOR half = XMVectorSet(0.5f, 0.0f, 0.5f, 0.0f);
+	//移動方向計算
 	XMFLOAT3 pos = pCharacter_->GetPosition();
 	XMVECTOR vPos = XMLoadFloat3(&pos);
-	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) + half;
+	XMVECTOR vTar = XMLoadFloat3(&targetList_.back()) + FLOAR_HALF;
 	XMVECTOR vMove = vTar - vPos;
-	const float safeSize = 2.5f;
 
-	//他のEnemyとの当たり判定
-	XMVECTOR vSafeMove = XMVectorZero();
-	if (pCharacter_) {
-		std::vector<EnemyBase*> eList = GameManager::GetEnemyManager()->GetAllEnemy();
-
-		for (auto& e : eList) {
-			if (e == pCharacter_) continue;
-			XMFLOAT3 f = e->GetPosition();
-			XMVECTOR vTarget = XMLoadFloat3(&f);
-			XMVECTOR vec = vTarget - vPos;
-			float range = XMVectorGetX(XMVector3Length(vec));
-			
-			if (range < safeSize) {
-				range -= safeSize;
-				vSafeMove += XMVector3Normalize(vec) * range;
-			}
-		}
-
-		vMove += vSafeMove;
-	}
-	
+	//移動スピード抑制
 	float currentSpeed = XMVectorGetX(XMVector3Length(vMove));
 	if (currentSpeed > moveSpeed_) vMove = XMVector3Normalize(vMove) * moveSpeed_;
 
 	//Target位置ついた：カクカクしないように再起処理する
 	float length = XMVectorGetX(XMVector3Length(vTar - vPos));
-	if (length <= moveRange_ + (XMVectorGetX(XMVector3Length(vSafeMove * 0.9f)))) {
+
+	//CalcDodge使う場合はmoveRange＋vSafeMoveでやったほうがいい
+	if (length <= moveRange_) {
 		targetList_.pop_back();
 		Update();
 		return;
@@ -100,27 +128,18 @@ void AstarMoveAction::Update()
 
 	pCharacter_->SetMovement(-vMove);
 	XMStoreFloat3(&pos, vPos + vMove);
-
-	//壁とのあたり判定してからポジションセット
-	CollisionMap* pMap = static_cast<CollisionMap*>(pCharacter_->FindObject("CollisionMap"));
-	pMap->CalcMapWall(pos, moveSpeed_, pCharacter_->GetBodyRange());
 	pCharacter_->SetPosition(pos);
-
 }
 
 bool AstarMoveAction::IsOutTarget(float range)
 {
+	//lastTargetを更新・outTarget関数以外でも使うならUpdateに置いたほうがいい
 	if (!targetList_.empty()) {
 		lastTarget_ = targetList_.front();
 	}
 
-	XMVECTOR vLatestTarget = XMLoadFloat3(&targetPos_);
-	XMVECTOR vLastTarget = XMLoadFloat3(&lastTarget_);
-	float r = XMVectorGetX(XMVector3Length(vLatestTarget - vLastTarget));
-	if (range < r) {
-		return true;
-	}
-
+	//range外だからtrue
+	if (range < CalculationDistance(targetPos_, lastTarget_)) return true;
 	return false;
 }
 
@@ -128,14 +147,17 @@ void AstarMoveAction::UpdatePath(XMFLOAT3 target)
 {
 	targetList_ = GameManager::GetNavigationAI()->Navi(target, pCharacter_->GetPosition(), pCharacter_->GetBodyRange());
 	if(!targetList_.empty()) targetPos_ = targetList_.front();
+}
 
+void AstarMoveAction::UpdatePath()
+{
+	UpdatePath(pTarget_->GetPosition());
 }
 
 void AstarMoveAction::Draw()
 {
-	Transform t;
-
 #ifdef _DEBUG
+	Transform t;
 	for (int i = 0; i < targetList_.size(); i++) {
 		t.position_ = targetList_.at(i);
 		t.position_.y += 0.01f;
@@ -143,7 +165,6 @@ void AstarMoveAction::Draw()
 		Model::Draw(handle_);
 	}
 #endif
-	
 }
 
 //------------------------------Oriented----------------------
@@ -169,7 +190,6 @@ void OrientedMoveAction::Update() {
 	move_ = vMove * moveSpeed_;
 	XMStoreFloat3(&position, vPosition + move_);
 	pCharacter_->SetPosition(position);
-		
 }
 
 bool OrientedMoveAction::CheckWallCollision(int count)
@@ -183,20 +203,7 @@ bool OrientedMoveAction::CheckWallCollision(int count)
 	position = { position.x + XMVectorGetX(vR), 0.0f, position.z + XMVectorGetZ(vR) };
 
 	if (GameManager::GetCollisionMap()->IsWall((int)position.x, (int)position.z)) return true;
-
 	return false;
-}
-
-namespace {
-	const float DIR_X[4] = { 0, 1, 0, -1 };
-	const float DIR_Z[4] = { 1, 0, -1, 0 };
-	enum DIRECTION{
-		FRONT = 0,
-		RIGHT,
-		BACK,
-		LEFT,
-		MAX
-	};
 }
 
 void OrientedMoveAction::CalcOptimalDirection()

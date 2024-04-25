@@ -20,8 +20,9 @@ public:
     MoveAction(Character* obj, float speed, float range);
     virtual ~MoveAction() override {};
     virtual void Update() override;
-    virtual void Initialize() override {};
-    virtual void Terminate() override {};
+
+    //他の敵をよけるようにmoveを計算
+    void CalcDodge(XMVECTOR& move);
 
     void SetMoveSpeed(float speed) { moveSpeed_ = speed; }
     void SetMoveRange(float range) { moveRange_ = range; }
@@ -37,13 +38,10 @@ public:
 class AstarMoveAction : public MoveAction {
     std::vector<XMFLOAT3> targetList_;  //今の経路
     XMFLOAT3 lastTarget_;               //今のTargetCharaのポジション
-
     int handle_;
 
 public:
     AstarMoveAction(Character* obj, float speed, float range);
-    ~AstarMoveAction() override {};
-
     void Update() override;
 
     //今の移動目標リストを取得
@@ -57,14 +55,15 @@ public:
 
     //新しく経路を求める
     void UpdatePath(XMFLOAT3 target);
+    void UpdatePath();
 
+    //デバッグ用の経路表示
     void Draw();
-
 };
 
 class OrientedMoveAction : public MoveAction {
-    XMVECTOR direction_;
-    XMVECTOR move_;
+    XMVECTOR direction_;    //移動の向き
+    XMVECTOR move_;         //移動量
 
 public:
     OrientedMoveAction(Character* obj, float speed);

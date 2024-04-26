@@ -9,6 +9,7 @@
 #include "../State/MeleeFighterState.h"
 #include "../Stage/CreateStage.h"
 #include "../Stage/CollisionMap.h"
+#include "../Other/AnimationController.h"
 
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
@@ -49,7 +50,7 @@ void MeleeFighter::Initialize()
 
 	//アニメーションデータのセットフレームはヘッダに書いてる
 	pAnimationController_ = new AnimationController(hModel_);
-	for (int i = 0; i < (int)MELEE_ANIMATION::MAX; i++) pAnimationController_->AddAnime(MELEE_ANIMATION_DATA[i].startFrame, MELEE_ANIMATION_DATA[i].endFrame);
+	for (int i = 0; i < (int)MELEE_ANIMATION::MAX; i++) pAnimationController_->AddAnime(MELEE_ANIMATION_DATA[i][0], MELEE_ANIMATION_DATA[i][1]);
 
 	//Colliderの設定
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5f, 0), 0.35f);

@@ -1,7 +1,7 @@
 #include "TitleScene.h"
 #include "../Engine/SceneManager.h"
 #include "../Engine/Input.h"
-#include "../AudioManager.h"
+#include "../Other/AudioManager.h"
 #include "../UI/TitleUIManager.h"
 #include "../GameManager/GameManager.h"
 #include "../Stage/CreateStage.h"
@@ -35,7 +35,7 @@ void TitleScene::Initialize()
 	po->SetRotateY(230.0f);
 	InstantiateFront<WeaponMainOrnament>(po);
 	Model::SetAnimFrame(po->GetModelHandle(), 
-		PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::IDLE].startFrame, PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::IDLE].endFrame, 1.0f);
+		PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::IDLE][0], PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::IDLE][1], 1.0f);
 
 }
 

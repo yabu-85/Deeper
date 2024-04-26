@@ -1,9 +1,9 @@
 #include "AudioManager.h"
-#include "Engine/Audio.h"
-#include "Engine/Global.h"
-#include "GameManager/GameManager.h"
-#include "Player/Player.h"
-#include "Enemy/EnemyManager.h"
+#include "../Engine/Audio.h"
+#include "../Engine/Global.h"
+#include "../GameManager/GameManager.h"
+#include "../Player/Player.h"
+#include "../Enemy/EnemyManager.h"
 #include <cassert>
 #include <vector>
 

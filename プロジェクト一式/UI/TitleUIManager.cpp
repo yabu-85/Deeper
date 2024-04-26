@@ -1,6 +1,6 @@
 #include "TitleUIManager.h"
 #include "ExitUIManager.h"
-#include "../AudioManager.h"
+#include "../Other/AudioManager.h"
 #include "../Engine/Image.h"
 #include "../Engine/Direct3D.h"
 #include "../Engine/SceneManager.h"

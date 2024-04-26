@@ -1,7 +1,7 @@
 #include "PlayerWeapon.h"
 #include "Player.h"
 #include "PlayerData.h"
-#include "../InputManager.h"
+#include "../Other/InputManager.h"
 #include "../Weapon/WeaponBase.h"
 #include "../Weapon/MainSwordWeapon.h"
 #include "../Weapon/NormalGunWeapon.h"

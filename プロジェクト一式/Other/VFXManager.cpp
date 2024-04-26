@@ -1,6 +1,6 @@
 #include "VFXManager.h"
-#include "Engine/VFX.h"
-#include "Engine/Easing.h"
+#include "../Engine/VFX.h"
+#include "../Engine/Easing.h"
 
 namespace VFXManager
 {

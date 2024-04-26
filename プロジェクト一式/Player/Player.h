@@ -1,11 +1,11 @@
 #pragma once
 #include "../Character/Character.h"
-#include "../AnimationController.h"
 
 class SphereCollider;
 class Aim;
 class StateManager;
 class PlayerWeapon;
+class AnimationController;
 
 enum class PLAYER_ANIMATION {
     IDLE = 0,
@@ -22,7 +22,7 @@ enum class PLAYER_ANIMATION {
     MAX,
 };
 
-const AnimeData PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::MAX]{
+const int PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::MAX][2] {
     {0, 120},     //Idle
     { 548, 590 }, //Run
     { 120, 175 }, //Roring

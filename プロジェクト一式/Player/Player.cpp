@@ -3,8 +3,6 @@
 #include "PlayerWeapon.h"
 #include "LifeManager.h"
 #include "PlayerData.h"
-#include "../VFXManager.h"
-#include "../InputManager.h"
 #include "../GameManager/GameManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
@@ -15,6 +13,9 @@
 #include "../Stage/CreateStage.h"
 #include "../Stage/CollisionMap.h"
 #include "../Scene/StageBase.h"
+#include "../Other/VFXManager.h"
+#include "../Other/InputManager.h"
+#include "../Other/AnimationController.h"
 
 #include "../Engine/Text.h"
 
@@ -64,7 +65,7 @@ void Player::Initialize()
 
     //アニメーションデータのセットフレームはヘッダに書いてる
     pAnimationController_ = new AnimationController(hModel_);
-    for (int i = 0; i < (int)PLAYER_ANIMATION::MAX; i++) pAnimationController_->AddAnime(PLAYER_ANIMATION_DATA[i].startFrame, PLAYER_ANIMATION_DATA[i].endFrame);
+    for (int i = 0; i < (int)PLAYER_ANIMATION::MAX; i++) pAnimationController_->AddAnime(PLAYER_ANIMATION_DATA[i][0], PLAYER_ANIMATION_DATA[i][1]);
 
     pAim_ = Instantiate<Aim>(this);
     pPlayerWeapon_ = new PlayerWeapon(this);

@@ -1,6 +1,6 @@
 #include "LifeManager.h"
 #include "../GameManager/GameManager.h"
-#include "../AnimationController.h"
+#include "../Other/AnimationController.h"
 #include "../Engine/Transform.h"
 #include "../Engine/Sprite.h"
 #include "../Engine/Direct3D.h"

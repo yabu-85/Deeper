@@ -1,12 +1,11 @@
 #pragma once
 #include "EnemyBase.h"
-#include "../AnimationController.h"
 
 class PolyLine;
-class AnimationController;
 class AstarMoveAction;
 class OrientedMoveAction;
 class RotateAction;
+class AnimationController;
 
 enum class SWORDBOSS_ANIMATION {
     IDLE = 0,
@@ -21,7 +20,7 @@ enum class SWORDBOSS_ANIMATION {
     MAX,
 };
 
-const AnimeData SWORDBOSS_ANIMATION_DATA[(int)SWORDBOSS_ANIMATION::MAX]{
+const int SWORDBOSS_ANIMATION_DATA[(int)SWORDBOSS_ANIMATION::MAX][2] {
     {0, 120},     //Idle
     { 548, 590 }, //Run
     { 120, 175 }, //Roring

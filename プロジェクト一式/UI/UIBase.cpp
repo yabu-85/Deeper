@@ -2,7 +2,7 @@
 #include "../Engine/Image.h"
 #include "../Engine/Direct3D.h"
 #include "../Engine/Input.h"
-#include "../AudioManager.h"
+#include "../Other/AudioManager.h"
 
 namespace {
 	XMFLOAT2 BUTTON_SIZE = { 0.5f, 0.5f };

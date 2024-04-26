@@ -13,6 +13,7 @@
 #include "../Action/RotateAction.h"
 #include "../Scene/StageBase.h"
 #include "../Player/Player.h"
+#include "../Other/AnimationController.h"
 
 namespace {
 	static const int POLY_DRAW_TIME = 20;
@@ -63,7 +64,7 @@ void SwordBoss::Initialize()
 
 	//アニメーションデータのセットフレームはヘッダに書いてる
 	pAnimationController_ = new AnimationController(hModel_);
-	for (int i = 0; i < (int)SWORDBOSS_ANIMATION::MAX; i++) pAnimationController_->AddAnime(SWORDBOSS_ANIMATION_DATA[i].startFrame, SWORDBOSS_ANIMATION_DATA[i].endFrame);
+	for (int i = 0; i < (int)SWORDBOSS_ANIMATION::MAX; i++) pAnimationController_->AddAnime(SWORDBOSS_ANIMATION_DATA[i][0], SWORDBOSS_ANIMATION_DATA[i][1]);
 	Model::SetAnimFrame(hModel_, 0, 900, 1.0f);
 
 	//Colliderの設定

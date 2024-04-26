@@ -3,7 +3,7 @@
 #include "../Engine/Input.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Model.h"
-#include "../AudioManager.h"
+#include "../Other/AudioManager.h"
 #include "../UI/ResultUIManager.h"
 #include "../GameManager/GameManager.h"
 #include "../Stage/CreateStage.h"
@@ -39,7 +39,7 @@ void ResultScene::Initialize()
 		po->SetRotateY(230.0f);
 		InstantiateFront<WeaponMainOrnament>(po);
 		Model::SetAnimFrame(po->GetModelHandle(), 
-			PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::DEAD].endFrame, PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::DEAD].endFrame, 1.0f);
+			PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::DEAD][0], PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::DEAD][1], 1.0f);
 	}
 	else {
 		Camera::SetPosition(XMFLOAT3(15, 1, 15));
@@ -49,7 +49,7 @@ void ResultScene::Initialize()
 		po->SetRotateY(230.0f);
 		InstantiateFront<WeaponMainOrnament>(po);
 		Model::SetAnimFrame(po->GetModelHandle(), 
-			PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::IDLE].startFrame, PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::IDLE].endFrame, 1.0f);
+			PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::IDLE][0], PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::IDLE][1], 1.0f);
 	}
 }
 

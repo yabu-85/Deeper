@@ -1,5 +1,5 @@
 #include "Warp.h"
-#include "../InputManager.h"
+#include "../Other/InputManager.h"
 #include "../GameManager/GameManager.h"
 #include "../Engine/BoxCollider.h"
 #include "../Engine/Model.h"

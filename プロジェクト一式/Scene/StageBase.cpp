@@ -10,10 +10,9 @@
 #include "../Engine/Model.h"
 
 StageBase::StageBase(GameObject* parent, std::string name)
-	: SceneBase(parent, name), isCleared_(false), startPosition_{0.f,0.f,0.f}, pWarp_(nullptr)
+	: SceneBase(parent, name), isCleared_(false), startPosition_{0.f,0.f,0.f}, pWarp_(nullptr), bossPosition_(XMFLOAT3())
 {
 	AddUIManager(new PauseUIManager(this));
-
 }
 
 void StageBase::Initialize()
@@ -34,6 +33,7 @@ void StageBase::Release()
 
 void StageBase::InitializeStage(std::string csv, std::string sky)
 {
+	//頻繁に使うモデルデータは事前に読み込んでおく
 	Model::Load("DebugCollision/SphereCollider.fbx");
 	Model::Load("Model/stoneGolem.fbx");
 	Model::Load("Model/walf.fbx");

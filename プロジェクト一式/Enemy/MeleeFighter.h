@@ -1,13 +1,12 @@
 #pragma once
 #include "EnemyBase.h"
-#include "../AnimationController.h"
 
 class PolyLine;
-class AnimationController;
 class AstarMoveAction;
 class OrientedMoveAction;
 class RotateAction;
 class VisionSearchAction;
+class AnimationController;
 
 enum class MELEE_ANIMATION {
     IDLE = 0,
@@ -18,7 +17,7 @@ enum class MELEE_ANIMATION {
     MAX,
 };
 
-const AnimeData MELEE_ANIMATION_DATA[(int)MELEE_ANIMATION::MAX]{
+const int MELEE_ANIMATION_DATA[(int)MELEE_ANIMATION::MAX][2] {
     {0, 100},
     {105, 175},
     {180, 222},

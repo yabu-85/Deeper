@@ -1,6 +1,6 @@
 #include "Aim.h"
 #include "Player.h"
-#include "../InputManager.h"
+#include "../Other/InputManager.h"
 #include "../Engine/Camera.h"
 #include "../Engine/Input.h"
 #include "../Engine/Global.h"

@@ -38,7 +38,7 @@ public:
 
 class MeleeFighterCombat : public StateBase
 {
-	unsigned time_;
+	int time_;
 	Root* root_;
 public:
 	MeleeFighterCombat(StateManager* owner);

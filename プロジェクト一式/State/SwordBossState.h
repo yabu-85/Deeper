@@ -3,6 +3,7 @@
 
 class Root;
 class SwordBoss;
+class EnemyBase;
 
 class SwordBossAppear : public StateBase
 {
@@ -27,7 +28,7 @@ public:
 
 class SwordBossCombat : public StateBase
 {
-	unsigned time_;
+	int time_;
 	Root* root_;
 public:
 	SwordBossCombat(StateManager* owner);
@@ -63,6 +64,9 @@ class SwordBossAttack : public StateBase
 {
 	int time_;
 	SwordBoss* pBoss_;
+
+	void AttackTest();
+
 public:
 	SwordBossAttack(StateManager* owner);
 	const char* GetName() const override { return "Attack"; }

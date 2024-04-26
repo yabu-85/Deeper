@@ -1,5 +1,5 @@
 #include "Stage1.h"
-#include "../AudioManager.h"
+#include "../Other/AudioManager.h"
 #include "../GameManager/GameManager.h"
 #include "../Engine/TransitionEffect.h"
 #include "../Stage/CreateStage.h"

@@ -12,7 +12,7 @@
 #include "Audio.h"
 #include "VFX.h"
 #include "../GameManager/GameManager.h"
-#include "../InputManager.h"
+#include "../Other/InputManager.h"
 
 #pragma comment(lib,"Winmm.lib")
 

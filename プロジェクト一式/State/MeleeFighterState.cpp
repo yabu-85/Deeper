@@ -7,7 +7,8 @@
 #include "../GameManager/GameManager.h"
 #include "../Enemy/EnemyUi.h"
 #include "../Engine/Model.h"
-#include "../VFXManager.h"
+#include "../Other/VFXManager.h"
+#include "../Other/AnimationController.h"
 
 #include "../BehaviorTree/IsEnemyActionReadyNode.h"
 #include "../BehaviorTree/ChangeStateNode.h"

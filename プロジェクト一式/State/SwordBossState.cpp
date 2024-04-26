@@ -1,6 +1,7 @@
 #include "SwordBossState.h"
 #include "StateManager.h"
-#include "../VFXManager.h"
+#include "../Other/VFXManager.h"
+#include "../Other/AnimationController.h"
 #include "../GameManager/GameManager.h"
 #include "../Player/Player.h"
 #include "../Player/Aim.h"
@@ -234,16 +235,44 @@ void SwordBossMove::OnExit()
 
 //-------------------------------------Attack-------------------------------------------
 
+namespace {
+	/*
+	AttackData ATTACK_INFO_LIST[] = {
+		AttackData(0, (int)SWORDBOSS_ANIMATION::ATTACK1, { Slash_Right }, { 37, 80 }, { 0, 45 }),
+		AttackData(1, (int)SWORDBOSS_ANIMATION::ATTACK2, { Slash_Up }, { 40, 56 }, { 0, 45 }),
+		AttackData(1, (int)SWORDBOSS_ANIMATION::ATTACK2, { Slash_Up }, { 40, 56 }, { 0, 45 }),
+	};
+	*/
+
+}
+
+/*
+switch (number) {
+case Slash_Up:
+case (int)Slash_Up:
+	Attack1Update();
+	break;
+case Slash_Right:
+case (int)Slash_Down:
+	Attack2Update();
+	break;
+default:
+	OutputDebugString("Attack No 1&2\n\n");
+	break;
+}
+*/
+
 SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0)
 {
 	pBoss_ = static_cast<SwordBoss*>(owner_->GetGameObject());
-
 }
 
 void SwordBossAttack::Update()
 {
 	time_++;
 	int animeFrame = pBoss_->GetAnimationController()->GetAnimTime(0);
+
+	pBoss_->CalcPoly();
 
 	//‰ñ“]EˆÚ“®
 	if (0) {
@@ -263,7 +292,7 @@ void SwordBossAttack::OnEnter()
 	time_ = 0;
 	pBoss_->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
 	pBoss_->SetCombatReady(false);
-	pBoss_->GetAnimationController()->SetNextAnime(0, 0.15f);
+	pBoss_->GetAnimationController()->SetNextAnime((int)SWORDBOSS_ANIMATION::ATTACK1, 0.15f);
 }
 
 void SwordBossAttack::OnExit()
@@ -273,5 +302,11 @@ void SwordBossAttack::OnExit()
 	pBoss_->AttackEnd();
 
 }
+
+void SwordBossAttack::AttackTest()
+{
+
+}
+
 
 //--------------------------------------------------------------------------------

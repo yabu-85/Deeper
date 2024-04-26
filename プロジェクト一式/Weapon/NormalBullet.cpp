@@ -1,6 +1,6 @@
 #include "NormalBullet.h"
-#include "../AudioManager.h"
-#include "../VFXManager.h"
+#include "../Other/AudioManager.h"
+#include "../Other/VFXManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/SphereCollider.h"
 #include "../GameManager/GameManager.h"

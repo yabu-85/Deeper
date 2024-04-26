@@ -78,12 +78,6 @@
     <Filter Include="06State\Player">
       <UniqueIdentifier>{a3b99297-e4e2-4533-b267-eae497f6f730}</UniqueIdentifier>
     </Filter>
-    <Filter Include="11Animation">
-      <UniqueIdentifier>{f2fd3b5b-9812-4d61-8d08-0a1f902da6c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="12Stage">
-      <UniqueIdentifier>{f17cee51-8ce2-41ab-b564-b00204fc3e6e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="09Weapon\Weapons">
       <UniqueIdentifier>{45555a1b-c656-4b82-90db-50aabcc9dbc6}</UniqueIdentifier>
     </Filter>
@@ -126,14 +120,20 @@
     <Filter Include="03Scene\Ornament">
       <UniqueIdentifier>{b78aad7c-1ab8-46ab-a6dc-9337e00b7fc9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="13GameManager">
+    <Filter Include="11Stage">
+      <UniqueIdentifier>{f17cee51-8ce2-41ab-b564-b00204fc3e6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="12GameManager">
       <UniqueIdentifier>{cae6212c-5e18-4c1a-8b02-835e76869ce9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="14Character">
+    <Filter Include="13Character">
       <UniqueIdentifier>{d58b2a94-1d06-4230-b086-4db5cd8acf23}</UniqueIdentifier>
     </Filter>
-    <Filter Include="15Item">
+    <Filter Include="14Item">
       <UniqueIdentifier>{96265a74-62f7-435f-bd0b-f73a0cba2012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="15Other">
+      <UniqueIdentifier>{707a9bd2-38f1-4e3e-a752-9a88ecec71f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -206,28 +206,23 @@
     <ClCompile Include="Engine\VFX.cpp">
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="AudioManager.cpp" />
-    <ClCompile Include="AnimationController.cpp">
-      <Filter>11Animation</Filter>
-    </ClCompile>
-    <ClCompile Include="VFXManager.cpp" />
     <ClCompile Include="Engine\PolyLine.cpp">
       <Filter>01Engine\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Stage\Cell.cpp">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClCompile>
     <ClCompile Include="Stage\CollisionMap.cpp">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClCompile>
     <ClCompile Include="Stage\CreateStage.cpp">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClCompile>
     <ClCompile Include="Stage\Triangle.cpp">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClCompile>
     <ClCompile Include="Stage\Warp.cpp">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClCompile>
     <ClCompile Include="Action\MoveAction.cpp">
       <Filter>10Action\Actions</Filter>
@@ -353,7 +348,7 @@
       <Filter>03Scene\Ornament</Filter>
     </ClCompile>
     <ClCompile Include="Stage\SkyBox.cpp">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClCompile>
     <ClCompile Include="Enemy\StoneGolem.cpp">
       <Filter>08Enemy\Enemies</Filter>
@@ -383,22 +378,22 @@
       <Filter>06State\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="GameManager\CombatAI.cpp">
-      <Filter>13GameManager</Filter>
+      <Filter>12GameManager</Filter>
     </ClCompile>
     <ClCompile Include="GameManager\DifficultyManager.cpp">
-      <Filter>13GameManager</Filter>
+      <Filter>12GameManager</Filter>
     </ClCompile>
     <ClCompile Include="GameManager\GameManager.cpp">
-      <Filter>13GameManager</Filter>
+      <Filter>12GameManager</Filter>
     </ClCompile>
     <ClCompile Include="Character\Character.cpp">
-      <Filter>14Character</Filter>
+      <Filter>13Character</Filter>
     </ClCompile>
     <ClCompile Include="Character\CharacterManager.cpp">
-      <Filter>14Character</Filter>
+      <Filter>13Character</Filter>
     </ClCompile>
     <ClCompile Include="Stage\NavigationAI.cpp">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClCompile>
     <ClCompile Include="Weapon\NormalBullet.cpp">
       <Filter>09Weapon\Bullet</Filter>
@@ -415,7 +410,6 @@
     <ClCompile Include="BehaviorTree\CameraConditionNode.cpp">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClCompile>
-    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Weapon\NormalGunWeapon.cpp">
       <Filter>09Weapon\Weapons</Filter>
     </ClCompile>
@@ -426,7 +420,7 @@
       <Filter>04UI\Base</Filter>
     </ClCompile>
     <ClCompile Include="Item\RecoveryItem.cpp">
-      <Filter>15Item</Filter>
+      <Filter>14Item</Filter>
     </ClCompile>
     <ClCompile Include="Enemy\SwordBoss.cpp">
       <Filter>08Enemy\Enemies</Filter>
@@ -434,8 +428,20 @@
     <ClCompile Include="State\SwordBossState.cpp">
       <Filter>06State\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy\EnemyAttackBase.cpp">
-      <Filter>08Enemy\EnemyBase</Filter>
+    <ClCompile Include="Other\CalcFrame.cpp">
+      <Filter>15Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\AnimationController.cpp">
+      <Filter>15Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\AudioManager.cpp">
+      <Filter>15Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\InputManager.cpp">
+      <Filter>15Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\VFXManager.cpp">
+      <Filter>15Other</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -508,28 +514,23 @@
     <ClInclude Include="Engine\VFX.h">
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="AudioManager.h" />
-    <ClInclude Include="AnimationController.h">
-      <Filter>11Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="VFXManager.h" />
     <ClInclude Include="Engine\PolyLine.h">
       <Filter>01Engine\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Stage\Cell.h">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClInclude>
     <ClInclude Include="Stage\CollisionMap.h">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClInclude>
     <ClInclude Include="Stage\CreateStage.h">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClInclude>
     <ClInclude Include="Stage\Triangle.h">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClInclude>
     <ClInclude Include="Stage\Warp.h">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClInclude>
     <ClInclude Include="Action\MoveAction.h">
       <Filter>10Action\Actions</Filter>
@@ -658,7 +659,7 @@
       <Filter>03Scene\Ornament</Filter>
     </ClInclude>
     <ClInclude Include="Stage\SkyBox.h">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClInclude>
     <ClInclude Include="Enemy\StoneGolem.h">
       <Filter>08Enemy\Enemies</Filter>
@@ -688,22 +689,22 @@
       <Filter>06State\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="GameManager\CombatAI.h">
-      <Filter>13GameManager</Filter>
+      <Filter>12GameManager</Filter>
     </ClInclude>
     <ClInclude Include="GameManager\DifficultyManager.h">
-      <Filter>13GameManager</Filter>
+      <Filter>12GameManager</Filter>
     </ClInclude>
     <ClInclude Include="GameManager\GameManager.h">
-      <Filter>13GameManager</Filter>
+      <Filter>12GameManager</Filter>
     </ClInclude>
     <ClInclude Include="Character\Character.h">
-      <Filter>14Character</Filter>
+      <Filter>13Character</Filter>
     </ClInclude>
     <ClInclude Include="Character\CharacterManager.h">
-      <Filter>14Character</Filter>
+      <Filter>13Character</Filter>
     </ClInclude>
     <ClInclude Include="Stage\NavigationAI.h">
-      <Filter>12Stage</Filter>
+      <Filter>11Stage</Filter>
     </ClInclude>
     <ClInclude Include="Weapon\NormalBullet.h">
       <Filter>09Weapon\Bullet</Filter>
@@ -720,7 +721,6 @@
     <ClInclude Include="BehaviorTree\CameraConditionNode.h">
       <Filter>05BehaviorTree\03ConditionNode</Filter>
     </ClInclude>
-    <ClInclude Include="InputManager.h" />
     <ClInclude Include="Weapon\NormalGunWeapon.h">
       <Filter>09Weapon\Weapons</Filter>
     </ClInclude>
@@ -731,7 +731,7 @@
       <Filter>04UI\Base</Filter>
     </ClInclude>
     <ClInclude Include="Item\RecoveryItem.h">
-      <Filter>15Item</Filter>
+      <Filter>14Item</Filter>
     </ClInclude>
     <ClInclude Include="Enemy\SwordBoss.h">
       <Filter>08Enemy\Enemies</Filter>
@@ -739,8 +739,20 @@
     <ClInclude Include="State\SwordBossState.h">
       <Filter>06State\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy\EnemyAttackBase.h">
-      <Filter>08Enemy\EnemyBase</Filter>
+    <ClInclude Include="Other\CalcFrame.h">
+      <Filter>15Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\AnimationController.h">
+      <Filter>15Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\AudioManager.h">
+      <Filter>15Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\InputManager.h">
+      <Filter>15Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\VFXManager.h">
+      <Filter>15Other</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

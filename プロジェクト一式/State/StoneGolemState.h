@@ -8,7 +8,7 @@ class StoneGolemAppear : public StateBase
 {
 	int time_;
 public:
-	StoneGolemAppear(StateManager* owner);
+	StoneGolemAppear(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Appear"; }
 	void Update() override;
 	void OnEnter() override;
@@ -19,7 +19,7 @@ class StoneGolemDead : public StateBase
 {
 	int time_;
 public:
-	StoneGolemDead(StateManager* owner);
+	StoneGolemDead(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Dead"; }
 	void Update() override;
 	void OnEnter() override;
@@ -27,9 +27,9 @@ public:
 
 class StoneGolemPatrol : public StateBase
 {
-	int foundSearchTime_;
+	int time_;
 public:
-	StoneGolemPatrol(StateManager* owner);
+	StoneGolemPatrol(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Patrol"; }
 	void Update() override;
 	void OnEnter() override;
@@ -54,7 +54,7 @@ class StoneGolemWait : public StateBase
 {
 	int time_;
 public:
-	StoneGolemWait(StateManager* owner);
+	StoneGolemWait(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Wait"; }
 	void Update() override;
 	void OnEnter() override;
@@ -64,7 +64,7 @@ class StoneGolemMove : public StateBase
 {
 	int time_;
 public:
-	StoneGolemMove(StateManager* owner);
+	StoneGolemMove(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Move"; }
 	void Update() override;
 	void OnEnter() override;
@@ -75,7 +75,7 @@ class StoneGolemAttack : public StateBase
 {
 	int time_;
 public:
-	StoneGolemAttack(StateManager* owner);
+	StoneGolemAttack(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Attack"; }
 	void Update() override;
 	void OnEnter() override;

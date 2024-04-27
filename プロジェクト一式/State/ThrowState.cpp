@@ -30,10 +30,6 @@ namespace {
 
 }
 
-ThrowAppear::ThrowAppear(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
-
 void ThrowAppear::Update()
 {
 	time_++;
@@ -49,7 +45,7 @@ void ThrowAppear::OnEnter()
 {
 	ThrowEnemy* e = static_cast<ThrowEnemy*>(owner_->GetGameObject());
 	XMFLOAT3 pos = e->GetPosition();
-	VFXManager::CreatVfxEnemySpawn(pos, APPER_TIME);
+	VFXManager::CreateVfxEnemySpawn(pos);
 
 }
 
@@ -61,10 +57,6 @@ void ThrowAppear::OnExit()
 }
 
 //--------------------------------------------------------------------------------
-
-ThrowDead::ThrowDead(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
 
 void ThrowDead::Update()
 {
@@ -87,10 +79,6 @@ void ThrowDead::OnEnter()
 
 //--------------------------------------------------------------------------------
 
-ThrowPatrol::ThrowPatrol(StateManager* owner) : StateBase(owner), foundSearchTime_(0)
-{
-}
-
 void ThrowPatrol::Update()
 {
 	//Astar移動が終わったなら更新・待ち時間適当にrandamで デバッグ用
@@ -104,9 +92,9 @@ void ThrowPatrol::Update()
 	e->GetRotateAction()->Update();
 
 	//FoundSearchの実行待ち時間がfoundSearch
-	foundSearchTime_++;
-	if (foundSearchTime_ > FOUND_SEARCH) {
-		foundSearchTime_ = 0;
+	time_++;
+	if (time_ > FOUND_SEARCH) {
+		time_ = 0;
 		e->GetVisionSearchAction()->Update();
 
 		//見つかったらCombatStateへ推移
@@ -191,10 +179,6 @@ ThrowCombat::~ThrowCombat()
 
 //-------------------------------------CombatState-------------------------------------------
 
-ThrowWait::ThrowWait(StateManager* owner) : StateBase(owner)
-{
-}
-
 void ThrowWait::Update()
 {
 	ThrowEnemy* e = static_cast<ThrowEnemy*>(owner_->GetGameObject());
@@ -219,10 +203,6 @@ void ThrowWait::OnEnter()
 }
 
 //--------------------------------------------------------------------------------
-
-ThrowMove::ThrowMove(StateManager* owner) : StateBase(owner)
-{
-}
 
 void ThrowMove::Update()
 {
@@ -252,10 +232,6 @@ void ThrowMove::OnExit()
 }
 
 //--------------------------------------------------------------------------------
-
-ThrowAttack::ThrowAttack(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
 
 void ThrowAttack::Update()
 {

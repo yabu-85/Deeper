@@ -115,16 +115,16 @@ namespace Model
 	float GetBlendFactor(int handle);
 
 	//アニメーション停止
-	void SetAnimeStop(int handle, bool b);
+	void SetAnimStop(int handle, bool b);
 
 	//全てのモデルに対してアニメーション停止をセット
-	void SetAllAnimeStop(bool b);
+	void SetAllAnimStop(bool b);
 
 	//アニメーション止まっているか調べる
-	bool IsAnimeStop(int handle);
+	bool IsAnimStop(int handle);
 
 	//現在のアニメーションのフレームを取得
-	int GetAnimFrame(int handle);
+	float GetAnimFrame(int handle);
 
 	bool GetBoneIndex(int handle, std::string boneName, int* index, int* partIndex);
 

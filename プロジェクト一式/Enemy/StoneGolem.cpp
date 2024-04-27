@@ -130,6 +130,7 @@ void StoneGolem::Release()
 {
 	SAFE_DELETE(pVisionSearchAction_);
 	SAFE_DELETE(pRotateAction_);
+	SAFE_DELETE(pOrientedMoveAction_);
 	SAFE_DELETE(pMoveAction_);
 	SAFE_DELETE(pDamageController_);
 

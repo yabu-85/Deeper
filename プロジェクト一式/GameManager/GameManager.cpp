@@ -1,7 +1,7 @@
 #include "GameManager.h"
 #include "CombatAI.h"
 #include "DifficultyManager.h"
-#include "../VFXManager.h"
+#include "../Other/VFXManager.h"
 #include "../Enemy/EnemyManager.h"
 #include "../Stage/NavigationAI.h"
 #include "../Stage/CreateStage.h"
@@ -24,7 +24,7 @@
 #include "../Character/CharacterManager.h"
 #include "../Scene/StageBase.h"
 #include "../Player/Aim.h"
-#include "../AudioManager.h"
+#include "../Other/AudioManager.h"
 
 //デバッグ用
 #include "../Enemy/EnemyBase.h"
@@ -159,7 +159,7 @@ void GameManager::StartPause()
 	}
 
 	//アニメーション・Aim
-	Model::SetAllAnimeStop(true);
+	Model::SetAllAnimStop(true);
 	GetPlayer()->GetAim()->SetValid(false);
 }
 
@@ -179,7 +179,7 @@ void GameManager::EndPause()
 	}
 
 	//アニメーション・Aim
-	Model::SetAllAnimeStop(false);
+	Model::SetAllAnimStop(false);
 	GetPlayer()->GetAim()->SetValid(true);
 }
 

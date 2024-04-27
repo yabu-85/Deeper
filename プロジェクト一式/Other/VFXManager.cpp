@@ -67,8 +67,10 @@ void VFXManager::Initialize()
 	smoke.gravity = 0.0f;
 
 	//敵のスポーンVFX
+	static const int APPER_TIME = 180;
 	enemySpawn.textureFileName = "Particle/Red.png";
 	enemySpawn.delay = 0;
+	enemySpawn.lifeTime = APPER_TIME;
 	enemySpawn.number = 1;
 	enemySpawn.speed = 0.0f;
 	enemySpawn.speedRnd = 0.0f;
@@ -76,6 +78,7 @@ void VFXManager::Initialize()
 	enemySpawn.rotate = XMFLOAT3(90.0f, 0.0f, 0.0f);
 	enemySpawn.spin = XMFLOAT3(0.0f, 10.0f, 0.0f);
 	enemySpawn.gravity = 0.0f;
+	enemySpawn.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / APPER_TIME);
 	enemySpawn.isBillBoard = false;
 
 	//剣のスラッシュ
@@ -104,7 +107,30 @@ void VFXManager::Initialize()
 
 }
 
-void VFXManager::CreatVfxSwordSlash(XMFLOAT3 pos, XMFLOAT3 dir)
+void VFXManager::CreateVfx(XMFLOAT3 pos, VFX_TYPE type, XMFLOAT3 other)
+{
+	switch (type)
+	{
+	case Explode: 
+		CreateVfxExplode1(pos);
+		break;
+	case EnemySpawn: 
+		CreateVfxEnemySpawn(pos); 
+		break;
+	case Smoke: 
+		CreateVfxSmoke(pos);
+		break;
+	case SwordSlash: 
+		CreateVfxSwordSlash(pos, other); 
+		break;
+	case Recovery: 
+		CreateVfxRecovery(pos); 
+		break;
+	default: break;
+	}
+}
+
+void VFXManager::CreateVfxSwordSlash(XMFLOAT3 pos, XMFLOAT3 dir)
 {
 	swordSlash.position = pos;
 	swordSlash.direction = dir;
@@ -115,13 +141,13 @@ void VFXManager::CreatVfxSwordSlash(XMFLOAT3 pos, XMFLOAT3 dir)
 	VFX::Start(swordSlash);
 }
 
-void VFXManager::CreatVfxRecovery(XMFLOAT3 pos)
+void VFXManager::CreateVfxRecovery(XMFLOAT3 pos)
 {
 	recovery.position = pos;
 	VFX::Start(recovery);
 }
 
-void VFXManager::CreatVfxExplode1(XMFLOAT3 pos)
+void VFXManager::CreateVfxExplode1(XMFLOAT3 pos)
 {
 	//火の粉
 	sparks.position = pos;
@@ -130,20 +156,16 @@ void VFXManager::CreatVfxExplode1(XMFLOAT3 pos)
 	//爆発
 	explode.position = pos;
 	VFX::Start(explode);
-
 }
 
-void VFXManager::CreatVfxEnemySpawn(XMFLOAT3 pos, int lifeTime)
+void VFXManager::CreateVfxEnemySpawn(XMFLOAT3 pos)
 {
 	enemySpawn.position = pos;
 	enemySpawn.position.y += 0.01f;
-	enemySpawn.lifeTime = lifeTime;
-	enemySpawn.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / enemySpawn.lifeTime);
 	VFX::Start(enemySpawn);
-	
 }
 
-void VFXManager::CreatVfxSmoke(XMFLOAT3 pos)
+void VFXManager::CreateVfxSmoke(XMFLOAT3 pos)
 {
 	smoke.position = pos;
 	smoke.position.y -= 0.25f;

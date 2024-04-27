@@ -1,7 +1,7 @@
 #include "SwordBossState.h"
 #include "StateManager.h"
 #include "../Other/VFXManager.h"
-#include "../Other/AnimationController.h"
+#include "../Animation/AnimationController.h"
 #include "../GameManager/GameManager.h"
 #include "../Player/Player.h"
 #include "../Player/Aim.h"
@@ -34,10 +34,6 @@ namespace {
 
 }
 
-SwordBossAppear::SwordBossAppear(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
-
 void SwordBossAppear::Update()
 {
 	time_++;
@@ -52,10 +48,10 @@ void SwordBossAppear::Update()
 void SwordBossAppear::OnEnter()
 {
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
-	e->GetAnimationController()->SetNextAnime((int)SWORDBOSS_ANIMATION::IDLE, 0.1f);
+	e->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::IDLE, 0.1f);
 
 	XMFLOAT3 pos = e->GetPosition();
-	VFXManager::CreatVfxEnemySpawn(pos, APPER_TIME);
+	VFXManager::CreateVfxEnemySpawn(pos);
 }
 
 void SwordBossAppear::OnExit()
@@ -65,10 +61,6 @@ void SwordBossAppear::OnExit()
 }
 
 //--------------------------------------------------------------------------------
-
-SwordBossDead::SwordBossDead(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
 
 void SwordBossDead::Update()
 {
@@ -80,7 +72,7 @@ void SwordBossDead::Update()
 	int allTime = (endT - startT);
 	
 	if (time_ >= allTime) {
-		Model::SetAnimeStop(e->GetModelHandle(), true);
+		Model::SetAnimStop(e->GetModelHandle(), true);
 		e->DeadExit();
 	}
 }
@@ -88,7 +80,7 @@ void SwordBossDead::Update()
 void SwordBossDead::OnEnter()
 {
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
-	e->GetAnimationController()->SetNextAnime((int)SWORDBOSS_ANIMATION::DEAD, 0.1f);
+	e->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::DEAD, 0.1f);
 	e->DeadEnter();
 	time_ = 0;
 }
@@ -156,10 +148,6 @@ SwordBossCombat::~SwordBossCombat()
 
 //-------------------------------------CombatState-------------------------------------------
 
-SwordBossWait::SwordBossWait(StateManager* owner) : StateBase(owner)
-{
-}
-
 void SwordBossWait::Update()
 {
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
@@ -179,7 +167,7 @@ void SwordBossWait::OnEnter()
 {
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
-	e->GetAnimationController()->SetNextAnime((int)SWORDBOSS_ANIMATION::IDLE, 0.1f);
+	e->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::IDLE, 0.1f);
 
 	//プレイヤーから指定の範囲内で
 	//ゲーム参考にしてから作る
@@ -196,10 +184,6 @@ void SwordBossWait::OnEnter()
 }
 
 //------------------------------------Move--------------------------------------------
-
-SwordBossMove::SwordBossMove(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
 
 void SwordBossMove::Update()
 {
@@ -223,7 +207,7 @@ void SwordBossMove::OnEnter()
 	time_ = FPS * MIN_MOVE_TIME + rand() % MAX_MOVE_TIME * FPS;
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
-	e->GetAnimationController()->SetNextAnime((int)SWORDBOSS_ANIMATION::RUN, 0.1f);
+	e->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::RUN, 0.1f);
 
 }
 
@@ -235,32 +219,15 @@ void SwordBossMove::OnExit()
 
 //-------------------------------------Attack-------------------------------------------
 
-namespace {
-	/*
-	AttackData ATTACK_INFO_LIST[] = {
-		AttackData(0, (int)SWORDBOSS_ANIMATION::ATTACK1, { Slash_Right }, { 37, 80 }, { 0, 45 }),
-		AttackData(1, (int)SWORDBOSS_ANIMATION::ATTACK2, { Slash_Up }, { 40, 56 }, { 0, 45 }),
-		AttackData(1, (int)SWORDBOSS_ANIMATION::ATTACK2, { Slash_Up }, { 40, 56 }, { 0, 45 }),
-	};
-	*/
-
-}
-
-/*
-switch (number) {
-case Slash_Up:
-case (int)Slash_Up:
-	Attack1Update();
-	break;
-case Slash_Right:
-case (int)Slash_Down:
-	Attack2Update();
-	break;
-default:
-	OutputDebugString("Attack No 1&2\n\n");
-	break;
-}
-*/
+enum class SWORD_BOSS_ATK {
+	Slash_Up = 0,
+	Slash_Down,
+	Slash_Right,
+	Slash_Left,
+	Thrust,
+	Jump,
+	Max,
+};
 
 SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0)
 {
@@ -270,18 +237,9 @@ SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(
 void SwordBossAttack::Update()
 {
 	time_++;
-	int animeFrame = pBoss_->GetAnimationController()->GetAnimTime(0);
+	int AnimFrame = pBoss_->GetAnimationController()->GetAnimTime((int)SWORDBOSS_ANIMATION::ATTACK1);
 
-	pBoss_->CalcPoly();
-
-	//回転・移動
-	if (0) {
-		pBoss_->GetRotateAction()->Update();
-		pBoss_->GetOrientedMoveAction()->SetTarget(GameManager::GetPlayer()->GetPosition());
-		pBoss_->GetOrientedMoveAction()->Update();
-	}
-	
-	if (time_ >= animeFrame) {
+	if (time_ >= AnimFrame) {
 		if (0) owner_->ChangeState("Attack");
 		else owner_->ChangeState("Wait");
 	}
@@ -292,7 +250,7 @@ void SwordBossAttack::OnEnter()
 	time_ = 0;
 	pBoss_->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
 	pBoss_->SetCombatReady(false);
-	pBoss_->GetAnimationController()->SetNextAnime((int)SWORDBOSS_ANIMATION::ATTACK1, 0.15f);
+	pBoss_->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::ATTACK1, 0.15f);
 }
 
 void SwordBossAttack::OnExit()
@@ -300,13 +258,6 @@ void SwordBossAttack::OnExit()
 	pBoss_->GetRotateAction()->SetRatio(ROTATE_RATIO);
 	pBoss_->SetAttackCoolDown(rand() % 150);
 	pBoss_->AttackEnd();
-
 }
-
-void SwordBossAttack::AttackTest()
-{
-
-}
-
 
 //--------------------------------------------------------------------------------

@@ -8,7 +8,7 @@ class ThrowAppear : public StateBase
 {
 	int time_;
 public:
-	ThrowAppear(StateManager* owner);
+	ThrowAppear(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Appear"; }
 	void Update() override;
 	void OnEnter() override;
@@ -19,7 +19,7 @@ class ThrowDead : public StateBase
 {
 	int time_;
 public:
-	ThrowDead(StateManager* owner);
+	ThrowDead(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Dead"; }
 	void Update() override;
 	void OnEnter() override;
@@ -27,9 +27,9 @@ public:
 
 class ThrowPatrol : public StateBase
 {
-	int foundSearchTime_;
+	int time_;
 public:
-	ThrowPatrol(StateManager* owner);
+	ThrowPatrol(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Patrol"; }
 	void Update() override;
 	void OnEnter() override;
@@ -53,7 +53,7 @@ public:
 class ThrowWait : public StateBase
 {
 public:
-	ThrowWait(StateManager* owner);
+	ThrowWait(StateManager* owner) : StateBase(owner) {};
 	const char* GetName() const override { return "Wait"; }
 	void Update() override;
 	void OnEnter() override;
@@ -62,7 +62,7 @@ public:
 class ThrowMove : public StateBase
 {
 public:
-	ThrowMove(StateManager* owner);
+	ThrowMove(StateManager* owner) : StateBase(owner) {};
 	const char* GetName() const override { return "Move"; }
 	void Update() override;
 	void OnEnter() override;
@@ -73,7 +73,7 @@ class ThrowAttack : public StateBase
 {
 	int time_;
 public:
-	ThrowAttack(StateManager* owner);
+	ThrowAttack(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Attack"; }
 	void Update() override;
 	void OnEnter() override;

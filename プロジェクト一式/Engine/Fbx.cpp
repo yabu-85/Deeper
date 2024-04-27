@@ -170,7 +170,7 @@ void Fbx::Draw(Transform& transform, Direct3D::SHADER_TYPE shader, int frame1, i
 		//スキンアニメーション（ボーン有り）の場合
 		if (parts_[k]->GetSkinInfo() != nullptr)
 		{
-			parts_[k]->DrawBlendedSkinAnime(transform, time1, time2, blendFactor);
+			parts_[k]->DrawBlendedSkinAnim(transform, time1, time2, blendFactor);
 		}
 	}
 }
@@ -191,13 +191,13 @@ void Fbx::Draw(Transform& transform, Direct3D::SHADER_TYPE shader, int frame)
 		//スキンアニメーション（ボーン有り）の場合
 		if (parts_[k]->GetSkinInfo() != nullptr)
 		{
-			parts_[k]->DrawSkinAnime(transform, time);
+			parts_[k]->DrawSkinAnim(transform, time);
 		}
 
 		//メッシュアニメーションの場合
 		else
 		{
-			parts_[k]->DrawMeshAnime(transform, time, pFbxScene_);
+			parts_[k]->DrawMeshAnim(transform, time, pFbxScene_);
 		}
 	}
 }

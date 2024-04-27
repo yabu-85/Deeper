@@ -169,12 +169,12 @@ namespace Model
 		return _datas[handle]->blendWeight;
 	}
 
-	void SetAnimeStop(int handle, bool b)
+	void SetAnimStop(int handle, bool b)
 	{
 		_datas[handle]->isAimeStop = b;
 	}
 
-	void SetAllAnimeStop(bool b)
+	void SetAllAnimStop(bool b)
 	{
 		for (int i = 0; i < _datas.size(); i++)
 		{
@@ -182,15 +182,15 @@ namespace Model
 		}
 	}
 
-	bool IsAnimeStop(int handle)
+	bool IsAnimStop(int handle)
 	{
 		return _datas[handle]->isAimeStop;
 	}
 
 	//現在のアニメーションのフレームを取得
-	int GetAnimFrame(int handle)
+	float GetAnimFrame(int handle)
 	{
-		return (int)_datas[handle]->nowFrame;
+		return _datas[handle]->nowFrame;
 	}
 
 	bool GetBoneIndex(int handle, std::string boneName, int* index, int* partIndex)

@@ -2,7 +2,7 @@
 #include "../Other/InputManager.h"
 #include "../Other/AudioManager.h"
 #include "../Other/VFXManager.h"
-#include "../Other/AnimationController.h"
+#include "../Animation/AnimationController.h"
 #include "../GameManager/GameManager.h"
 #include "../Player/Player.h"
 #include "../Player/Aim.h"
@@ -151,7 +151,7 @@ void MainSwordWeapon::OnAttackCollision(GameObject* pTarget)
         if (e->ApplyDamageWithList(damage, knock)) {
             pDamageController_->AddAttackList(e);
             
-            VFXManager::CreatVfxSwordSlash(wandPos_, direction_);
+            VFXManager::CreateVfxSwordSlash(wandPos_, direction_);
             pPlayer_->GetAim()->SetCameraShakeDirection(XMLoadFloat3(&direction_));
             pPlayer_->GetAim()->SetCameraShake(shakeInfo);
         }
@@ -287,7 +287,7 @@ void MainSwordWeaponCombo1::OnEnter()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK1, ANIMATION_DECREASE);
+    p->GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::ATTACK1, ANIMATION_DECREASE);
     m->SetDamageInfoCombo1();
     time_ = 0;
     next_ = false;
@@ -359,7 +359,7 @@ void MainSwordWeaponCombo2::OnEnter()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK2, ANIMATION_DECREASE);
+    p->GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::ATTACK2, ANIMATION_DECREASE);
     m->SetDamageInfoCombo2();
     time_ = 0;
     next_ = false;
@@ -431,7 +431,7 @@ void MainSwordWeaponCombo3::OnEnter()
 {
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
     MainSwordWeapon* m = static_cast<MainSwordWeapon*>(owner_->GetGameObject());
-    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::ATTACK3, 1.0f, ANIMATION_DECREASE);
+    p->GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::ATTACK3, 1.0f, ANIMATION_DECREASE);
     m->SetDamageInfoCombo3();
     time_ = 0;
     next_ = false;

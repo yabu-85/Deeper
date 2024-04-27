@@ -13,15 +13,14 @@
 #include "../Action/RotateAction.h"
 #include "../Scene/StageBase.h"
 #include "../Player/Player.h"
-#include "../Other/AnimationController.h"
+#include "../Animation/AnimationController.h"
+#include "../Animation/SwordBossNotify.h"
 
 namespace {
 	static const int POLY_DRAW_TIME = 20;
 	static const int POLY_SMOOTH = 1;
-	
 	static const float FIRST_LENG = 0.1f;
 	static const float ADDLENG = 0.42f;
-
 }
 
 SwordBoss::SwordBoss(GameObject* parent)
@@ -63,9 +62,12 @@ void SwordBoss::Initialize()
 	pEnemyUi_->SetAlphaMax();
 
 	//アニメーションデータのセットフレームはヘッダに書いてる
-	pAnimationController_ = new AnimationController(hModel_);
-	for (int i = 0; i < (int)SWORDBOSS_ANIMATION::MAX; i++) pAnimationController_->AddAnime(SWORDBOSS_ANIMATION_DATA[i][0], SWORDBOSS_ANIMATION_DATA[i][1]);
-	Model::SetAnimFrame(hModel_, 0, 900, 1.0f);
+	pAnimationController_ = new AnimationController(hModel_, this);
+	for (int i = 0; i < (int)SWORDBOSS_ANIMATION::MAX; i++) pAnimationController_->AddAnim(SWORDBOSS_ANIMATION_DATA[i][0], SWORDBOSS_ANIMATION_DATA[i][1]);
+	SowrdTestNotify* notify = new SowrdTestNotify(600, 690);
+	SowrdRotateNotify* notifyRot = new SowrdRotateNotify(600, 690);
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::ATTACK1, notify);
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::ATTACK1, notifyRot);
 
 	//Colliderの設定
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5f, 0), 0.35f);
@@ -106,7 +108,6 @@ void SwordBoss::Initialize()
 	pPolyLine_->Load("PolyImage/Sword.png");
 	pPolyLine_->SetLength(POLY_DRAW_TIME);
 	pPolyLine_->SetSmooth(POLY_SMOOTH);
-
 }
 
 void SwordBoss::Update()
@@ -167,6 +168,9 @@ void SwordBoss::Release()
 
 	SAFE_DELETE(pRotateAction_);
 	SAFE_DELETE(pMoveAction_);
+	SAFE_DELETE(pOrientedMoveAction_);
+	SAFE_DELETE(pAnimationController_);
+	SAFE_DELETE(pDamageController_);
 
 	EnemyBase::Release();
 	Model::Release(hModel_);

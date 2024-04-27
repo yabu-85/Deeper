@@ -133,18 +133,18 @@ public:
 	void Draw(Transform& transform);
 
 	// アニメーションのブレンディングを行う（失敗作
-	void DrawBlendedSkinAnime(Transform& transform, FbxTime time1, FbxTime time2, float blendFactor);
+	void DrawBlendedSkinAnim(Transform& transform, FbxTime time1, FbxTime time2, float blendFactor);
 
 	//ボーン有りのモデルを描画
 	//引数：transform	行列情報
 	//引数：time		フレーム情報（１アニメーション内の今どこか）
-	void DrawSkinAnime(Transform& transform, FbxTime time);
+	void DrawSkinAnim(Transform& transform, FbxTime time);
 
 	//ボーン無しのモデルを描画
 	//引数：transform	行列情報
 	//引数：time		フレーム情報（１アニメーション内の今どこか）
 	//引数：scene		Fbxファイルから読み込んだシーン情報
-	void DrawMeshAnime(Transform& transform, FbxTime time, FbxScene* scene);
+	void DrawMeshAnim(Transform& transform, FbxTime time, FbxScene* scene);
 
 	bool GetBoneIndex(std::string boneName, int* index);
 

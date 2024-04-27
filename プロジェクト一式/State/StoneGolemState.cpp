@@ -52,10 +52,6 @@ namespace {
 
 }
 
-StoneGolemAppear::StoneGolemAppear(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
-
 void StoneGolemAppear::Update()
 {
 	time_++;
@@ -71,7 +67,7 @@ void StoneGolemAppear::OnEnter()
 {
 	StoneGolem* e = static_cast<StoneGolem*>(owner_->GetGameObject());
 	XMFLOAT3 pos = e->GetPosition();
-	VFXManager::CreatVfxEnemySpawn(pos, APPER_TIME);
+	VFXManager::CreateVfxEnemySpawn(pos);
 
 }
 
@@ -84,10 +80,6 @@ void StoneGolemAppear::OnExit()
 }
 
 //--------------------------------------------------------------------------------
-
-StoneGolemDead::StoneGolemDead(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
 
 void StoneGolemDead::Update()
 {
@@ -110,10 +102,6 @@ void StoneGolemDead::OnEnter()
 
 //--------------------------------------------------------------------------------
 
-StoneGolemPatrol::StoneGolemPatrol(StateManager* owner) : StateBase(owner), foundSearchTime_(0)
-{
-}
-
 void StoneGolemPatrol::Update()
 {
 	//Astar移動が終わったなら更新・待ち時間適当にrandamで デバッグ用
@@ -128,9 +116,9 @@ void StoneGolemPatrol::Update()
 	e->GetRotateAction()->Update();
 
 	//FoundSearchの実行待ち時間がfoundSearch
-	foundSearchTime_++;
-	if (foundSearchTime_ > FOUND_SEARCH) {
-		foundSearchTime_ = 0;
+	time_++;
+	if (time_ > FOUND_SEARCH) {
+		time_ = 0;
 		e->GetVisionSearchAction()->Update();
 
 		//見つかったらCombatStateへ推移
@@ -219,10 +207,6 @@ StoneGolemCombat::~StoneGolemCombat()
 
 //-------------------------------------CombatState-------------------------------------------
 
-StoneGolemWait::StoneGolemWait(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
-
 void StoneGolemWait::Update()
 {
 	time_++;
@@ -276,10 +260,6 @@ void StoneGolemWait::OnEnter()
 
 //------------------------------------Move--------------------------------------------
 
-StoneGolemMove::StoneGolemMove(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
-
 void StoneGolemMove::Update()
 {
 	time_--;
@@ -320,10 +300,6 @@ void StoneGolemMove::OnExit()
 
 //-------------------------------------Attack-------------------------------------------
 
-StoneGolemAttack::StoneGolemAttack(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
-
 void StoneGolemAttack::Update()
 {
 	time_++;
@@ -361,7 +337,7 @@ void StoneGolemAttack::Update()
 		XMFLOAT3 pos = e->GetPosition();
 		XMFLOAT3 cP = e->GetAttackColliderList().front()->GetCenter();
 		pos = { pos.x + cP.x, 0.0f , pos.z + cP.z };
-		VFXManager::CreatVfxSmoke(pos);
+		VFXManager::CreateVfxSmoke(pos);
 
 		//カメラシェイク
 		if (time_ == ATTACK_EFFECT_TIME[0]) {

@@ -1,6 +1,6 @@
 #include "LifeManager.h"
 #include "../GameManager/GameManager.h"
-#include "../Other/AnimationController.h"
+#include "../Animation/AnimationController.h"
 #include "../Engine/Transform.h"
 #include "../Engine/Sprite.h"
 #include "../Engine/Direct3D.h"
@@ -106,7 +106,7 @@ void LifeManager::Damage(int i)
 	//ダメージ計算したら、HPが０以下になった
 	if (LifeManager::IsDie()) {
 		pPlayer->GetStateManager()->ChangeState("Dead");
-		pPlayer->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::DEAD, 1.0f);
+		pPlayer->GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::DEAD, 1.0f);
 		pPlayer->GetAim()->SetAimMove(false);
 		return;
 	}

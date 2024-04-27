@@ -1,8 +1,7 @@
 #pragma once
-#include "GameObject.h"
 #include "BillBoard.h"
 #include <list>
-
+class GameObject;
 
 //エミッター（パーティクルの発生源）を作る時のデータ一覧
 //Start関数の引数として使う
@@ -29,7 +28,7 @@ struct EmitterData
 	DWORD	 delay;			//何フレームおきにパーティクルを発生させるか
 	DWORD	 number;		//1度に出すパーティクル量
 	bool	 isBillBoard;	//ビルボードかどうか
-
+	
 	//初期化
 	EmitterData()
 	{
@@ -88,10 +87,6 @@ namespace VFX
 		Emitter* pEmitter;	//発生元エミッタ
 	};
 
-	
-
-
-
 	//発生中のパーティクルを更新
 	void ParticleUpdate();
 
@@ -101,7 +96,6 @@ namespace VFX
 	//パーティクル生成
 	//引数：emitter	エミッター情報
 	void CreateParticle(std::list<VFX::Emitter*>::iterator& emitter);
-
 
 	//更新
 	void Update();

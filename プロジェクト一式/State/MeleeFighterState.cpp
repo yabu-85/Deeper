@@ -8,7 +8,7 @@
 #include "../Enemy/EnemyUi.h"
 #include "../Engine/Model.h"
 #include "../Other/VFXManager.h"
-#include "../Other/AnimationController.h"
+#include "../Animation/AnimationController.h"
 
 #include "../BehaviorTree/IsEnemyActionReadyNode.h"
 #include "../BehaviorTree/ChangeStateNode.h"
@@ -39,10 +39,6 @@ namespace {
 
 }
 
-MeleeFighterAppear::MeleeFighterAppear(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
-
 void MeleeFighterAppear::Update()
 {
 	time_++;
@@ -57,10 +53,10 @@ void MeleeFighterAppear::Update()
 void MeleeFighterAppear::OnEnter()
 {
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
-	e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::IDLE, 0.1f);
+	e->GetAnimationController()->SetNextAnim((int)MELEE_ANIMATION::IDLE, 0.1f);
 
 	XMFLOAT3 pos = e->GetPosition();
-	VFXManager::CreatVfxEnemySpawn(pos, APPER_TIME);
+	VFXManager::CreateVfxEnemySpawn(pos);
 
 }
 
@@ -72,10 +68,6 @@ void MeleeFighterAppear::OnExit()
 }
 
 //--------------------------------------------------------------------------------
-
-MeleeFighterDead::MeleeFighterDead(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
 
 void MeleeFighterDead::Update()
 {
@@ -93,16 +85,12 @@ void MeleeFighterDead::OnEnter()
 {
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->DeadEnter();
-	e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::IDLE, 0.1f);
+	e->GetAnimationController()->SetNextAnim((int)MELEE_ANIMATION::IDLE, 0.1f);
 
 	time_ = 0;
 }
 
 //--------------------------------------------------------------------------------
-
-MeleeFighterPatrol::MeleeFighterPatrol(StateManager* owner) : StateBase(owner), foundSearchTime_(0)
-{
-}
 
 void MeleeFighterPatrol::Update()
 {
@@ -117,9 +105,9 @@ void MeleeFighterPatrol::Update()
 	e->GetRotateAction()->Update();
 
 	//FoundSearchの実行待ち時間がfoundSearch
-	foundSearchTime_++;
-	if (foundSearchTime_ > FOUND_SEARCH) {
-		foundSearchTime_ = 0;
+	time_++;
+	if (time_ > FOUND_SEARCH) {
+		time_ = 0;
 		e->GetVisionSearchAction()->Update();
 
 		//見つかったらCombatStateへ推移
@@ -135,7 +123,7 @@ void MeleeFighterPatrol::OnEnter()
 	e->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
 	e->GetRotateAction()->SetTarget(nullptr);
 	e->GetRotateAction()->SetRatio(ROTATE_RATIO);
-	e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::WALK, 0.1f);
+	e->GetAnimationController()->SetNextAnim((int)MELEE_ANIMATION::WALK, 0.1f);
 
 }
 
@@ -209,10 +197,6 @@ MeleeFighterCombat::~MeleeFighterCombat()
 
 //-------------------------------------CombatState-------------------------------------------
 
-MeleeFighterWait::MeleeFighterWait(StateManager* owner) : StateBase(owner)
-{
-}
-
 void MeleeFighterWait::Update()
 {
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
@@ -232,7 +216,7 @@ void MeleeFighterWait::OnEnter()
 {
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
-	e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::IDLE, 0.1f);
+	e->GetAnimationController()->SetNextAnim((int)MELEE_ANIMATION::IDLE, 0.1f);
 
 	//プレイヤーから指定の範囲内で
 	//ゲーム参考にしてから作る
@@ -249,10 +233,6 @@ void MeleeFighterWait::OnEnter()
 }
 
 //------------------------------------Move--------------------------------------------
-
-MeleeFighterMove::MeleeFighterMove(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
 
 void MeleeFighterMove::Update()
 {
@@ -276,7 +256,7 @@ void MeleeFighterMove::OnEnter()
 	time_ = FPS * MIN_MOVE_TIME + rand() % MAX_MOVE_TIME * FPS;
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
-	e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::WALK, 0.1f);
+	e->GetAnimationController()->SetNextAnim((int)MELEE_ANIMATION::WALK, 0.1f);
 
 }
 
@@ -287,10 +267,6 @@ void MeleeFighterMove::OnExit()
 }
 
 //-------------------------------------Attack-------------------------------------------
-
-MeleeFighterAttack::MeleeFighterAttack(StateManager* owner) : StateBase(owner), time_(0)
-{
-}
 
 void MeleeFighterAttack::Update()
 {
@@ -307,7 +283,7 @@ void MeleeFighterAttack::Update()
 	int startT = e->GetAnimationController()->GetAnim((int)MELEE_ANIMATION::PRE_RUN_ATTACK).startFrame;
 	int endT = e->GetAnimationController()->GetAnim((int)MELEE_ANIMATION::PRE_RUN_ATTACK).endFrame;
 	int time1 = (endT - startT);
-	if (time_ == time1) e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::RUN_ATTACK, 0.1f);
+	if (time_ == time1) e->GetAnimationController()->SetNextAnim((int)MELEE_ANIMATION::RUN_ATTACK, 0.1f);
 
 	int startT2 = e->GetAnimationController()->GetAnim((int)MELEE_ANIMATION::RUN_ATTACK).startFrame;
 	int endT2 = e->GetAnimationController()->GetAnim((int)MELEE_ANIMATION::RUN_ATTACK).endFrame;
@@ -326,7 +302,7 @@ void MeleeFighterAttack::Update()
 		XMFLOAT3 pos = e->GetPosition();
 		XMFLOAT3 cP = e->GetAttackColliderList().front()->GetCenter();
 		pos = { pos.x + cP.x, 0.0f , pos.z + cP.z };
-		VFXManager::CreatVfxSmoke(pos);
+		VFXManager::CreateVfxSmoke(pos);
 	}
 
 	if (time_ >= time2) {
@@ -338,7 +314,7 @@ void MeleeFighterAttack::OnEnter()
 {
 	time_ = 0;
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
-	e->GetAnimationController()->SetNextAnime((int)MELEE_ANIMATION::PRE_RUN_ATTACK, 0.1f);
+	e->GetAnimationController()->SetNextAnim((int)MELEE_ANIMATION::PRE_RUN_ATTACK, 0.1f);
 	e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
 	e->SetCombatReady(false);
 }

@@ -48,7 +48,7 @@ void EnemyBase::DeadEnter()
 
 void EnemyBase::DeadExit()
 {
-	VFXManager::CreatVfxSmoke(transform_.position_);
+	VFXManager::CreateVfxSmoke(transform_.position_);
 	GameManager::GetEnemyManager()->KillEnemy(this);
 }
 

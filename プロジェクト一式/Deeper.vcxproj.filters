@@ -132,8 +132,14 @@
     <Filter Include="14Item">
       <UniqueIdentifier>{96265a74-62f7-435f-bd0b-f73a0cba2012}</UniqueIdentifier>
     </Filter>
-    <Filter Include="15Other">
+    <Filter Include="15Animation">
+      <UniqueIdentifier>{1c5374e2-b931-4d25-8275-efdd1eb2eee2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="16Other">
       <UniqueIdentifier>{707a9bd2-38f1-4e3e-a752-9a88ecec71f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="15Animation\EnemyNotify">
+      <UniqueIdentifier>{9f83ef5f-4a95-40ee-9270-87b6f087e1e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -428,20 +434,23 @@
     <ClCompile Include="State\SwordBossState.cpp">
       <Filter>06State\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Other\CalcFrame.cpp">
-      <Filter>15Other</Filter>
-    </ClCompile>
-    <ClCompile Include="Other\AnimationController.cpp">
-      <Filter>15Other</Filter>
-    </ClCompile>
     <ClCompile Include="Other\AudioManager.cpp">
-      <Filter>15Other</Filter>
+      <Filter>16Other</Filter>
     </ClCompile>
     <ClCompile Include="Other\InputManager.cpp">
-      <Filter>15Other</Filter>
+      <Filter>16Other</Filter>
     </ClCompile>
     <ClCompile Include="Other\VFXManager.cpp">
-      <Filter>15Other</Filter>
+      <Filter>16Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\AnimationNotify.cpp">
+      <Filter>15Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\AnimationController.cpp">
+      <Filter>15Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\SwordBossNotify.cpp">
+      <Filter>15Animation\EnemyNotify</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -739,20 +748,23 @@
     <ClInclude Include="State\SwordBossState.h">
       <Filter>06State\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Other\CalcFrame.h">
-      <Filter>15Other</Filter>
-    </ClInclude>
-    <ClInclude Include="Other\AnimationController.h">
-      <Filter>15Other</Filter>
-    </ClInclude>
     <ClInclude Include="Other\AudioManager.h">
-      <Filter>15Other</Filter>
+      <Filter>16Other</Filter>
     </ClInclude>
     <ClInclude Include="Other\InputManager.h">
-      <Filter>15Other</Filter>
+      <Filter>16Other</Filter>
     </ClInclude>
     <ClInclude Include="Other\VFXManager.h">
-      <Filter>15Other</Filter>
+      <Filter>16Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\AnimationNotify.h">
+      <Filter>15Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\AnimationController.h">
+      <Filter>15Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\SwordBossNotify.h">
+      <Filter>15Animation\EnemyNotify</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

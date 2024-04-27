@@ -9,7 +9,7 @@
 #include "../State/MeleeFighterState.h"
 #include "../Stage/CreateStage.h"
 #include "../Stage/CollisionMap.h"
-#include "../Other/AnimationController.h"
+#include "../Animation/AnimationController.h"
 
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
@@ -49,8 +49,8 @@ void MeleeFighter::Initialize()
 	combatDistance_ = 5.0f;
 
 	//アニメーションデータのセットフレームはヘッダに書いてる
-	pAnimationController_ = new AnimationController(hModel_);
-	for (int i = 0; i < (int)MELEE_ANIMATION::MAX; i++) pAnimationController_->AddAnime(MELEE_ANIMATION_DATA[i][0], MELEE_ANIMATION_DATA[i][1]);
+	pAnimationController_ = new AnimationController(hModel_, this);
+	for (int i = 0; i < (int)MELEE_ANIMATION::MAX; i++) pAnimationController_->AddAnim(MELEE_ANIMATION_DATA[i][0], MELEE_ANIMATION_DATA[i][1]);
 
 	//Colliderの設定
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5f, 0), 0.35f);
@@ -135,7 +135,9 @@ void MeleeFighter::Release()
 	
 	SAFE_DELETE(pVisionSearchAction_);
 	SAFE_DELETE(pRotateAction_);
+	SAFE_DELETE(pOrientedMoveAction_);
 	SAFE_DELETE(pMoveAction_);
+	SAFE_DELETE(pAnimationController_);
 
 	EnemyBase::Release();
 	Model::Release(hModel_);

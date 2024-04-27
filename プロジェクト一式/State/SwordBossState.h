@@ -9,7 +9,7 @@ class SwordBossAppear : public StateBase
 {
 	int time_;
 public:
-	SwordBossAppear(StateManager* owner);
+	SwordBossAppear(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Appear"; }
 	void Update() override;
 	void OnEnter() override;
@@ -20,7 +20,7 @@ class SwordBossDead : public StateBase
 {
 	int time_;
 public:
-	SwordBossDead(StateManager* owner);
+	SwordBossDead(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Dead"; }
 	void Update() override;
 	void OnEnter() override;
@@ -43,7 +43,7 @@ public:
 class SwordBossWait : public StateBase
 {
 public:
-	SwordBossWait(StateManager* owner);
+	SwordBossWait(StateManager* owner) : StateBase(owner) {};
 	const char* GetName() const override { return "Wait"; }
 	void Update() override;
 	void OnEnter() override;
@@ -53,7 +53,7 @@ class SwordBossMove : public StateBase
 {
 	int time_;
 public:
-	SwordBossMove(StateManager* owner);
+	SwordBossMove(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Move"; }
 	void Update() override;
 	void OnEnter() override;
@@ -64,9 +64,6 @@ class SwordBossAttack : public StateBase
 {
 	int time_;
 	SwordBoss* pBoss_;
-
-	void AttackTest();
-
 public:
 	SwordBossAttack(StateManager* owner);
 	const char* GetName() const override { return "Attack"; }

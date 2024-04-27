@@ -139,6 +139,9 @@
     <ClCompile Include="Action\MoveAction.cpp" />
     <ClCompile Include="Action\RotateAction.cpp" />
     <ClCompile Include="Action\SearchAction.cpp" />
+    <ClCompile Include="Animation\AnimationController.cpp" />
+    <ClCompile Include="Animation\AnimationNotify.cpp" />
+    <ClCompile Include="Animation\SwordBossNotify.cpp" />
     <ClCompile Include="BehaviorTree\BehaviourNode.cpp" />
     <ClCompile Include="BehaviorTree\CameraConditionNode.cpp" />
     <ClCompile Include="BehaviorTree\ChangeStateNode.cpp" />
@@ -189,9 +192,7 @@
     <ClCompile Include="Item\RecoveryItem.cpp" />
     <ClCompile Include="Ornament\PlayerOrnament.cpp" />
     <ClCompile Include="Ornament\WeaponMainOrnament.cpp" />
-    <ClCompile Include="Other\AnimationController.cpp" />
     <ClCompile Include="Other\AudioManager.cpp" />
-    <ClCompile Include="Other\CalcFrame.cpp" />
     <ClCompile Include="Other\InputManager.cpp" />
     <ClCompile Include="Other\VFXManager.cpp" />
     <ClCompile Include="Player\Aim.cpp" />
@@ -243,6 +244,9 @@
     <ClInclude Include="Action\MoveAction.h" />
     <ClInclude Include="Action\RotateAction.h" />
     <ClInclude Include="Action\SearchAction.h" />
+    <ClInclude Include="Animation\AnimationController.h" />
+    <ClInclude Include="Animation\AnimationNotify.h" />
+    <ClInclude Include="Animation\SwordBossNotify.h" />
     <ClInclude Include="BehaviorTree\BehaviourNode.h" />
     <ClInclude Include="BehaviorTree\CameraConditionNode.h" />
     <ClInclude Include="BehaviorTree\ChangeStateNode.h" />
@@ -293,9 +297,7 @@
     <ClInclude Include="Item\RecoveryItem.h" />
     <ClInclude Include="Ornament\PlayerOrnament.h" />
     <ClInclude Include="Ornament\WeaponMainOrnament.h" />
-    <ClInclude Include="Other\AnimationController.h" />
     <ClInclude Include="Other\AudioManager.h" />
-    <ClInclude Include="Other\CalcFrame.h" />
     <ClInclude Include="Other\InputManager.h" />
     <ClInclude Include="Other\VFXManager.h" />
     <ClInclude Include="Player\Aim.h" />

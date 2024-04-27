@@ -430,7 +430,7 @@ void FbxParts::Draw(Transform& transform)
 
 }
 
-void FbxParts::DrawBlendedSkinAnime(Transform& transform, FbxTime time1, FbxTime time2, float blendFactor)
+void FbxParts::DrawBlendedSkinAnim(Transform& transform, FbxTime time1, FbxTime time2, float blendFactor)
 {
 	// ボーンごとの現在の行列を取得する（タイム1のフレーム）
 	for (int i = 0; i < numBone_; i++)
@@ -511,7 +511,7 @@ void FbxParts::DrawBlendedSkinAnime(Transform& transform, FbxTime time1, FbxTime
 }
 
 //ボーン有りのモデルを描画
-void FbxParts::DrawSkinAnime(Transform& transform, FbxTime time)
+void FbxParts::DrawSkinAnim(Transform& transform, FbxTime time)
 {
 	// ボーンごとの現在の行列を取得する
 	for (int i = 0; i < numBone_; i++)
@@ -572,7 +572,7 @@ void FbxParts::DrawSkinAnime(Transform& transform, FbxTime time)
 
 }
 
-void FbxParts::DrawMeshAnime(Transform& transform, FbxTime time, FbxScene * scene)
+void FbxParts::DrawMeshAnim(Transform& transform, FbxTime time, FbxScene * scene)
 {
 	Draw(transform);
 }

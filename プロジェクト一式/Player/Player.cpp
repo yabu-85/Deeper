@@ -15,7 +15,7 @@
 #include "../Scene/StageBase.h"
 #include "../Other/VFXManager.h"
 #include "../Other/InputManager.h"
-#include "../Other/AnimationController.h"
+#include "../Animation/AnimationController.h"
 
 #include "../Engine/Text.h"
 
@@ -64,8 +64,8 @@ void Player::Initialize()
     SetBodyRange(0.3f);
 
     //アニメーションデータのセットフレームはヘッダに書いてる
-    pAnimationController_ = new AnimationController(hModel_);
-    for (int i = 0; i < (int)PLAYER_ANIMATION::MAX; i++) pAnimationController_->AddAnime(PLAYER_ANIMATION_DATA[i][0], PLAYER_ANIMATION_DATA[i][1]);
+    pAnimationController_ = new AnimationController(hModel_, this);
+    for (int i = 0; i < (int)PLAYER_ANIMATION::MAX; i++) pAnimationController_->AddAnim(PLAYER_ANIMATION_DATA[i][0], PLAYER_ANIMATION_DATA[i][1]);
 
     pAim_ = Instantiate<Aim>(this);
     pPlayerWeapon_ = new PlayerWeapon(this);
@@ -287,7 +287,7 @@ void Player::Avo()
         CalcMove();
         Rotate(avoRotateRatio);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
-        GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::RORING, 0.2f);
+        GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::RORING, 0.2f);
 
         GetSphereCollider(0)->SetValid(false);
         GetSphereCollider(1)->SetValid(false);
@@ -297,13 +297,13 @@ void Player::Avo()
     else if(pAim_->IsTarget()) {
         AimTargetRotate(1.0f);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed * -1.0f);
-        GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::BACK_STEP, 0.2f);
+        GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::BACK_STEP, 0.2f);
     
     }
     //動いていない・ターゲットもしていない
     else {
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
-        GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::RORING, 0.2f);
+        GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::RORING, 0.2f);
 
         GetSphereCollider(0)->SetValid(false);
         GetSphereCollider(1)->SetValid(false);

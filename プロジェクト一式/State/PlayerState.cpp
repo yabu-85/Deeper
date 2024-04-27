@@ -1,6 +1,6 @@
 #include "PlayerState.h"
 #include "StateManager.h"
-#include "../Other/AnimationController.h"
+#include "../Animation/AnimationController.h"
 #include "../Other/VFXManager.h"
 #include "../Other/InputManager.h"
 #include "../GameManager/GameManager.h"
@@ -63,7 +63,7 @@ void PlayerWait::Update()
 void PlayerWait::OnEnter()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::IDLE, 0.1f);
+	p->GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::IDLE, 0.1f);
 }
 
 //------------------------------------Walk--------------------------------------------
@@ -94,7 +94,7 @@ void PlayerWalk::Update()
 void PlayerWalk::OnEnter()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::RUN, 0.05f);
+	p->GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::RUN, 0.05f);
 }
 
 //---------------------------------------WeaponChange-----------------------------------------
@@ -142,7 +142,7 @@ void PlayerWeaponChange::OnEnter()
 {
 	time_ = 0;
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::IDLE, 0.1f);
+	p->GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::IDLE, 0.1f);
 }
 
 void PlayerWeaponChange::OnExit()
@@ -316,7 +316,7 @@ void PlayerHear::Update()
 void PlayerHear::OnEnter()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::BACK_STEP, 0.3f);
+	p->GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::BACK_STEP, 0.3f);
 
 }
 
@@ -335,7 +335,7 @@ void PlayerDead::Update()
 	int e = p->GetAnimationController()->GetAnim((int)PLAYER_ANIMATION::DEAD).endFrame;
 
 	if (time_ >= (e - s)) {
-		Model::SetAnimeStop(p->GetModelHandle(), true);
+		Model::SetAnimStop(p->GetModelHandle(), true);
 		GameManager::GetSceneManager()->ChangeScene(SCENE_ID_RESULT);
 	}
 }
@@ -366,7 +366,7 @@ void PlayerAppear::Update()
 	if (time_ >= APPER_TIME) {
 		p->SetPosition(apperPos_);
 		XMFLOAT3 vfxPos = { apperPos_.x, apperPos_.y + APPER_VFX_HEIGHT, apperPos_.z };
-		VFXManager::CreatVfxExplode1(vfxPos);
+		VFXManager::CreateVfxExplode1(vfxPos);
 		owner_->ChangeState("Wait");
 	}
 }

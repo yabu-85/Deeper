@@ -8,7 +8,7 @@ class MeleeFighterAppear : public StateBase
 {
 	int time_;
 public:
-	MeleeFighterAppear(StateManager* owner);
+	MeleeFighterAppear(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Appear"; }
 	void Update() override;
 	void OnEnter() override;
@@ -19,7 +19,7 @@ class MeleeFighterDead : public StateBase
 {
 	int time_;
 public:
-	MeleeFighterDead(StateManager* owner);
+	MeleeFighterDead(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Dead"; }
 	void Update() override;
 	void OnEnter() override;
@@ -27,9 +27,9 @@ public:
 
 class MeleeFighterPatrol : public StateBase
 {
-	int foundSearchTime_;
+	int time_;
 public:
-	MeleeFighterPatrol(StateManager* owner);
+	MeleeFighterPatrol(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Patrol"; }
 	void Update() override;
 	void OnEnter() override;
@@ -53,7 +53,7 @@ public:
 class MeleeFighterWait : public StateBase
 {
 public:
-	MeleeFighterWait(StateManager* owner);
+	MeleeFighterWait(StateManager* owner) : StateBase(owner) {};
 	const char* GetName() const override { return "Wait"; }
 	void Update() override;
 	void OnEnter() override;
@@ -63,7 +63,7 @@ class MeleeFighterMove : public StateBase
 {
 	int time_;
 public:
-	MeleeFighterMove(StateManager* owner);
+	MeleeFighterMove(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Move"; }
 	void Update() override;
 	void OnEnter() override;
@@ -74,7 +74,7 @@ class MeleeFighterAttack : public StateBase
 {
 	int time_;
 public:
-	MeleeFighterAttack(StateManager* owner);
+	MeleeFighterAttack(StateManager* owner) : StateBase(owner), time_(0) {};
 	const char* GetName() const override { return "Attack"; }
 	void Update() override;
 	void OnEnter() override;

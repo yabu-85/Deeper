@@ -1,5 +1,5 @@
 #include "RecoveryItem.h"
-#include "../VFXManager.h"
+#include "../Other/VFXManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/SphereCollider.h"
 #include "../Player/Player.h"
@@ -62,7 +62,7 @@ void RecoveryItem::OnCollision(GameObject* pTarget)
 	if (pTarget->GetObjectName() == "Player") {
 		Player* p = static_cast<Player*>(pTarget);
 		p->SetHP(p->GetHP() + recoveryAmount_);
-		VFXManager::CreatVfxRecovery(p->GetPosition());
+		VFXManager::CreateVfxRecovery(p->GetPosition());
 		KillMe();
 
 		LifeManager::Damage(0);

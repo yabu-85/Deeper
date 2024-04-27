@@ -147,7 +147,7 @@ void ThrowBullet::Hit()
 	//ìñÇΩÇ¡ÇΩÇÊÇ§Ç…å©ÇπÇÈÇΩÇﬂÇ…àÍâÒêiÇﬂÇÈ
 	Move();
 
-	VFXManager::CreatVfxExplode1(transform_.position_);
+	VFXManager::CreateVfxExplode1(transform_.position_);
 	AudioManager::Play(AUDIO_ID::BULLET_HIT1, transform_.position_, 10.0f);
 	deathPosition_ = transform_.position_;
 	time_ = DEATH_TIME;

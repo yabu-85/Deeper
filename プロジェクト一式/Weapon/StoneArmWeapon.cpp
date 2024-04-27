@@ -1,7 +1,7 @@
 #include "StoneArmWeapon.h"
 #include "../Other/VFXManager.h"
 #include "../Other/InputManager.h"
-#include "../Other/AnimationController.h"
+#include "../Animation/AnimationController.h"
 #include "../GameManager/GameManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/SphereCollider.h"
@@ -113,7 +113,7 @@ void StoneArmWeapon::OnAttackCollision(GameObject* pTarget)
 
 void StoneArmWeapon::Attack()
 {
-    VFXManager::CreatVfxSmoke(atkPosition_);
+    VFXManager::CreateVfxSmoke(atkPosition_);
 
     GameManager::GetPlayer()->GetAim()->SetCameraShakeDirection(shakeDirection);
     GameManager::GetPlayer()->GetAim()->SetCameraShake(shakeInfo);
@@ -159,7 +159,7 @@ void StoneArmWeaponCombo1::OnEnter()
 {
     time_ = 0;
     Player* p = static_cast<Player*>(owner_->GetGameObject()->GetParent());
-    p->GetAnimationController()->SetNextAnime((int)PLAYER_ANIMATION::STONE_ATTACK, 0.2f);
+    p->GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::STONE_ATTACK, 0.2f);
 
 }
 

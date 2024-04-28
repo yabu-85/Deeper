@@ -3,21 +3,6 @@
 class OneFrame;
 class GameObject;
 
-//Animation Notify 
-//UEの機能
-//アニメーションに通知を出すフレームを決めて
-//通知範囲内なら登録されている通知の処理をする
-
-//Animation Notify = １フレームだけ
-//Animation Notify State = x ～ yの間
-
-//Play Sound
-//Effect
-//オリジナル
-
-//Notifyが親（GameObject＊）を取得する方法
-//
-
 struct AnimData {
 	int startFrame;
 	int endFrame;

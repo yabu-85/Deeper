@@ -20,20 +20,22 @@
 #include "../Engine/Text.h"
 
 namespace {
+    const float moveSpeed = 0.08f;          //移動スピード
     const float stopGradually = 0.21f;      //移動スピードの加減の値止まるとき
     const float moveGradually = 0.09f;      //移動スピードの加減の値移動時
     const float maxMoveSpeed = 0.7f;        //最大移動スピード
+    const float rotateRatio = 0.1f;         //通常時のRotateRatio
     const float avoRotateRatio = 1.0f;      //回避時のRotateRatio
     const int DEF_LIFE_MAX = 50;
-
+   
+    //デバッグ用
     bool isCollider = true; //当たり判定するかどうか
 
 }
 
 Player::Player(GameObject* parent)
     : Character(parent, "Player"), hModel_(-1), pAim_(nullptr), pStateManager_(nullptr), pPlayerWeapon_(nullptr),
-    pAnimationController_(nullptr), pCollider_{nullptr, nullptr},
-    moveSpeed_(0.0f), rotateRatio_(0.0f), playerMovement_(0,0,0), gradually_(0.0f)
+    pAnimationController_(nullptr), pCollider_{nullptr, nullptr}, playerMovement_(0,0,0), gradually_(0.0f)
 {
 }
 
@@ -54,9 +56,6 @@ void Player::Initialize()
     transform_.rotate_.y = 180.0f;
     transform_.position_ = GameManager::GetStage()->GetStartPosition();
 
-    moveSpeed_ = 0.08f;
-    rotateRatio_ = 0.2f;
-    
     LifeManager::SetLife(DEF_LIFE_MAX - PlayerData::GetReceiveDamage(), DEF_LIFE_MAX);
     SetHP(DEF_LIFE_MAX - PlayerData::GetReceiveDamage());
     SetMaxHP(DEF_LIFE_MAX);
@@ -106,8 +105,43 @@ void Player::Update()
 
 }
 
+#include "../Engine/FbxParts.h"
 void Player::Draw()
 {
+    //OrientWarping
+    static float targetY = 0.0f;
+    static const float rotMaxY = 60.0f;
+    static const float rotMaxYD = 100.0f;
+    static const float rotRatio = 0.2f;
+    if (transform_.rotate_.y <= -180.0f) transform_.rotate_.y += 360.0f;
+    if (transform_.rotate_.y >= 180.0f) transform_.rotate_.y -= 360.0f;
+    if (pAim_->IsTarget()) {        
+        //移動中なら移動方向から向く方向計算
+        float rotYYY = 0.0f;
+        if (InputManager::CmdWalk()) rotYYY = CalculationRotate(GetInputMove()).y - transform_.rotate_.y;
+        else rotYYY = 0.0f;
+
+        //計算結果を使える値に変換
+        if (rotYYY >= 180.0f) rotYYY = -180.0f - (180.0f - rotYYY);
+        else if (rotYYY <= -180.0f) rotYYY = 180.0f + (180.0f + rotYYY);
+
+        //後ろ向きの時は向きを反転させる
+        if (rotYYY >= rotMaxYD || rotYYY <= -rotMaxYD) {
+            if (rotYYY > 0) rotYYY -= 180.0f;
+            else rotYYY += 180.0f;
+        }
+        //回転量制限
+        if (rotYYY >= rotMaxY) rotYYY = rotMaxY;
+        else if (rotYYY <= -rotMaxY) rotYYY = -rotMaxY;
+
+        targetY = targetY + ((rotYYY - targetY) * rotRatio);
+        Model::GetFbx(hModel_)->GetFbxParts().at(0)->orientRotY = targetY;
+    }
+    else {
+        targetY = targetY + ((0.0f - targetY) * rotRatio);
+        Model::GetFbx(hModel_)->GetFbxParts().at(0)->orientRotY = targetY;
+    }
+    
     Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_);
     pPlayerWeapon_->DrawWeapon();
@@ -160,9 +194,9 @@ void Player::CalcRotate(XMFLOAT3 pos, float ratio)
 }
 
 void Player::TargetRotate(XMFLOAT3 pos, float ratio) { CalcRotate(XMFLOAT3(pos.x - transform_.position_.x, 0.0f, pos.z - transform_.position_.z), ratio); }
-void Player::Rotate() { Rotate(rotateRatio_); }
+void Player::Rotate() { Rotate(rotateRatio); }
 void Player::Rotate(float ratio) { CalcRotate(GetInputMove(), ratio); }
-void Player::AimTargetRotate() { AimTargetRotate(rotateRatio_); }
+void Player::AimTargetRotate() { AimTargetRotate(rotateRatio); }
 void Player::AimTargetRotate(float ratio) { 
     XMFLOAT3 pos = pAim_->GetTargetPos();
     CalcRotate(XMFLOAT3(pos.x - transform_.position_.x, 0.0f, pos.z - transform_.position_.z), ratio);
@@ -211,9 +245,9 @@ void Player::FrontMove(float f)
     XMFLOAT3 move{};
     XMStoreFloat3(&move, vMove);
 
-    transform_.position_.x += ((move.x * moveSpeed_) * f);
-    transform_.position_.z += ((move.z * moveSpeed_) * f);
-    SetMovement((XMLoadFloat3(&move) * moveSpeed_) * f);
+    transform_.position_.x += ((move.x * moveSpeed) * f);
+    transform_.position_.z += ((move.z * moveSpeed) * f);
+    SetMovement((XMLoadFloat3(&move) * moveSpeed) * f);
 }
 
 void Player::BackMove(float f)
@@ -226,16 +260,16 @@ void Player::BackMove(float f)
     XMFLOAT3 move{};
     XMStoreFloat3(&move, vMove);
 
-    transform_.position_.x += ((move.x * moveSpeed_) * f);
-    transform_.position_.z += ((move.z * moveSpeed_) * f);
-    SetMovement((XMLoadFloat3(&move) * moveSpeed_) * f);
+    transform_.position_.x += ((move.x * moveSpeed) * f);
+    transform_.position_.z += ((move.z * moveSpeed) * f);
+    SetMovement((XMLoadFloat3(&move) * moveSpeed) * f);
 }
 
 void Player::Move(float f)
 {
-    transform_.position_.x += ((playerMovement_.x * moveSpeed_) * f);
-    transform_.position_.z += ((playerMovement_.z * moveSpeed_) * f);
-    SetMovement((XMLoadFloat3(&playerMovement_) * moveSpeed_) * f);
+    transform_.position_.x += ((playerMovement_.x * moveSpeed) * f);
+    transform_.position_.z += ((playerMovement_.z * moveSpeed) * f);
+    SetMovement((XMLoadFloat3(&playerMovement_) * moveSpeed) * f);
 }
 
 XMVECTOR Player::GetDirectionVec()

@@ -108,7 +108,12 @@ class FbxParts
 	Bone*			pBoneArray_;	// 各関節の情報
 	Weight*			pWeightArray_;	// ウェイト情報（頂点の対する各関節の影響度合い）
 
-
+public:
+	float orientRotY;
+	
+private:
+	std::vector<int> orientBoneIndex;
+	void RotateOrient();
 
 	/////////privateな関数（Init関数から呼ばれる）//////////////////////////
 	void InitVertex(fbxsdk::FbxMesh * mesh);	//頂点バッファ準備

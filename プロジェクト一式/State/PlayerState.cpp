@@ -87,14 +87,16 @@ void PlayerWalk::Update()
 		p->GetPlayerWeapon()->WeaponChangeIndex();
 		p->CalcMove();
 		p->Move();
-		p->Rotate();
+		
+		if (p->GetAim()->IsTarget()) p->AimTargetRotate();
+		else p->Rotate();
 	}
 }
 
 void PlayerWalk::OnEnter()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::RUN, 0.05f);
+	p->GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::RUN, 0.2f);
 }
 
 //---------------------------------------WeaponChange-----------------------------------------

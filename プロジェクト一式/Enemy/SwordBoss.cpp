@@ -40,17 +40,15 @@ void SwordBoss::Initialize()
 	assert(hModel_ >= 0);
 	hSwordModel_ = Model::Load("Model/ThickSword.fbx");
 	assert(hSwordModel_ >= 0);
-
 	Model::GetBoneIndex(hModel_, "Weapon", &boneIndex_, &partIndex_);
 	assert(boneIndex_ >= 0);
-
-	transform_.position_ = GameManager::GetStage()->GetBossPosition();
 
 	SetHP(300);
 	SetMaxHP(300);
 	SetBodyWeight(10.0f);
 	SetBodyRange(0.5f);
 
+	transform_.position_ = GameManager::GetStage()->GetBossPosition();
 	type_ = ENEMY_SWORDBOSS;
 	aimTargetPos_ = 1.2f;
 	attackDistance_ = 2.5f;
@@ -64,8 +62,8 @@ void SwordBoss::Initialize()
 	//アニメーションデータのセットフレームはヘッダに書いてる
 	pAnimationController_ = new AnimationController(hModel_, this);
 	for (int i = 0; i < (int)SWORDBOSS_ANIMATION::MAX; i++) pAnimationController_->AddAnim(SWORDBOSS_ANIMATION_DATA[i][0], SWORDBOSS_ANIMATION_DATA[i][1]);
-	SowrdTestNotify* notify = new SowrdTestNotify(600, 690);
-	SowrdRotateNotify* notifyRot = new SowrdRotateNotify(600, 690);
+	SowrdBossAttackNotify* notify = new SowrdBossAttackNotify(600, 690);
+	SowrdBossRotateNotify* notifyRot = new SowrdBossRotateNotify(600, 690);
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::ATTACK1, notify);
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::ATTACK1, notifyRot);
 

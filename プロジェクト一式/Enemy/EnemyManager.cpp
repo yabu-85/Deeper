@@ -5,6 +5,7 @@
 #include "ThrowEnemy.h"
 #include "MeleeFighter.h"
 #include "SwordBoss.h"
+#include "Scarecrow.h"
 
 namespace {
 	static const std::vector<std::vector<ENEMY_TYPE>> spawnEnemyTable[ETABLE_MAX] = {
@@ -57,6 +58,7 @@ void EnemyManager::SpawnEnemy(ENEMY_TYPE type)
 	else if (type == ENEMY_THROW) AddEnemyList(InstantiateFront<ThrowEnemy>(pParent_), type);
 	else if (type == ENEMY_MELEE) AddEnemyList(InstantiateFront<MeleeFighter>(pParent_), type);
 	else if (type == ENEMY_SWORDBOSS) AddEnemyList(InstantiateFront<SwordBoss>(pParent_), type);
+	else if (type == ENEMY_SCARECROW) AddEnemyList(InstantiateFront<Scarecrow>(pParent_), type);
 }
 
 void EnemyManager::SpawnEnemyTable(ENEMY_TABLE type)

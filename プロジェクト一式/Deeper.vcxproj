@@ -157,6 +157,7 @@
     <ClCompile Include="Enemy\EnemyManager.cpp" />
     <ClCompile Include="Enemy\EnemyUi.cpp" />
     <ClCompile Include="Enemy\MeleeFighter.cpp" />
+    <ClCompile Include="Enemy\Scarecrow.cpp" />
     <ClCompile Include="Enemy\StoneGolem.cpp" />
     <ClCompile Include="Enemy\SwordBoss.cpp" />
     <ClCompile Include="Enemy\ThrowEnemy.cpp" />
@@ -262,6 +263,7 @@
     <ClInclude Include="Enemy\EnemyManager.h" />
     <ClInclude Include="Enemy\EnemyUi.h" />
     <ClInclude Include="Enemy\MeleeFighter.h" />
+    <ClInclude Include="Enemy\Scarecrow.h" />
     <ClInclude Include="Enemy\StoneGolem.h" />
     <ClInclude Include="Enemy\SwordBoss.h" />
     <ClInclude Include="Enemy\ThrowEnemy.h" />

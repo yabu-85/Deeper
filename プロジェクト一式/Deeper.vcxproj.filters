@@ -452,6 +452,9 @@
     <ClCompile Include="Animation\SwordBossNotify.cpp">
       <Filter>15Animation\EnemyNotify</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy\Scarecrow.cpp">
+      <Filter>08Enemy\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -765,6 +768,9 @@
     </ClInclude>
     <ClInclude Include="Animation\SwordBossNotify.h">
       <Filter>15Animation\EnemyNotify</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\Scarecrow.h">
+      <Filter>08Enemy\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

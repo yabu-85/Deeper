@@ -11,9 +11,7 @@ AnimationController::~AnimationController()
 {
 	for (int i = 0; i < animDatas_.size(); i++) {
 		for (OneFrame* frame : animDatas_[i].frameList) delete frame;
-		
 	}
-
 }
 
 void AnimationController::Update()

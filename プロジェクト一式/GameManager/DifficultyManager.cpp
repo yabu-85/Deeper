@@ -16,6 +16,7 @@ namespace DifficultyManager {
 		EnemyData(5),	//Throw
 		EnemyData(8),	//Melee
 		EnemyData(100),	//SwordBoss
+		EnemyData(100),	//Scarecrow
 	};
 	const float WAVE_DIFFICULTY_SUPPRESS = 0.7f;
 	const float LIFE_DIFFICULTY_SUPPRESS = 0.3f;

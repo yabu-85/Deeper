@@ -67,9 +67,27 @@ HRESULT FbxParts::Init(FbxNode *pNode)
 	InitSkelton(mesh);		//骨の情報を準備
 	IntConstantBuffer();	//コンスタントバッファ（シェーダーに情報を送るやつ）準備
 
+	for (int i = 0; i < numBone_; i++) {
+		std::string name = ppCluster_[i]->GetLink()->GetName();
+		if (name == "thigh.L" || name == "thigh.R" || name == "shin.R" || name == "shin.L" ||
+			name == "foot.R" || name == "foot.L" || name == "toe.R" || name == "toe.L") {
+			orientBoneIndex.push_back(i);
+		}
+	}
+	orientRotY = 0.0f;
+
 	return E_NOTIMPL;
 }
 
+void FbxParts::RotateOrient()
+{
+	for(int i : orientBoneIndex) {
+		float angleInRadians = XMConvertToRadians(orientRotY);
+		XMMATRIX rotationMatrix = XMMatrixRotationY(angleInRadians);
+		pBoneArray_[i].diffPose *= rotationMatrix;
+		pBoneArray_[i].diffPose2 *= rotationMatrix;
+	}
+}
 
 //頂点バッファ準備
 void FbxParts::InitVertex(fbxsdk::FbxMesh * mesh)
@@ -470,6 +488,8 @@ void FbxParts::DrawBlendedSkinAnim(Transform& transform, FbxTime time1, FbxTime 
 		pBoneArray_[i].diffPose2 *= pBoneArray_[i].newPose2;
 	}
 
+	RotateOrient();
+
 	//-----------------------------こっから二つのアニメーションを合わせる---------------------------------------------------
 
 	for (DWORD i = 0; i < vertexCount_; i++)
@@ -535,6 +555,8 @@ void FbxParts::DrawSkinAnim(Transform& transform, FbxTime time)
 		pBoneArray_[i].diffPose *= pBoneArray_[i].newPose;
 	}
 
+	RotateOrient();
+
 	// 各ボーンに対応した頂点の変形制御
 	for (DWORD i = 0; i < vertexCount_; i++)
 	{
@@ -555,7 +577,10 @@ void FbxParts::DrawSkinAnim(Transform& transform, FbxTime time)
 		XMVECTOR Pos = XMLoadFloat3(&pWeightArray_[i].posOrigin);
 		XMVECTOR Normal = XMLoadFloat3(&pWeightArray_[i].normalOrigin);
 		XMStoreFloat3(&pVertexData_[i].position, XMVector3TransformCoord(Pos, matrix));
-		XMStoreFloat3(&pVertexData_[i].normal, XMVector3TransformCoord(Normal, matrix));
+		XMFLOAT3X3 mat33;
+		XMStoreFloat3x3(&mat33, matrix);
+		XMMATRIX matrix33 = XMLoadFloat3x3(&mat33);
+		XMStoreFloat3(&pVertexData_[i].normal, XMVector3TransformCoord(Normal, matrix33));
 	}
 
 	// 頂点バッファをロックして、変形させた後の頂点情報で上書きする

@@ -5,13 +5,13 @@
 #include "../GameManager/GameManager.h"
 #include "../Player/Player.h"
 
-void SowrdTestNotify::OnFrame(GameObject* obj)
+void SowrdBossAttackNotify::OnFrame(GameObject* obj)
 {
 	SwordBoss* boss = static_cast<SwordBoss*>(obj);
 	boss->CalcPoly();
 }
 
-void SowrdRotateNotify::OnFrame(GameObject* obj)
+void SowrdBossRotateNotify::OnFrame(GameObject* obj)
 {
 	SwordBoss* boss = static_cast<SwordBoss*>(obj);
 	boss->GetRotateAction()->Update();

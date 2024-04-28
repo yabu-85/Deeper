@@ -28,7 +28,7 @@ void WeaponObjectManager::SceneTransitionInitialize()
 
 void WeaponObjectManager::AddWeaponObject(ENEMY_TYPE type, XMFLOAT3 pos)
 {
-	std::string fileName[] = { "StoneArmObj", "RedBoxObj", "RedBoxObj", "RedBoxObj" };
+	std::string fileName[] = { "StoneArmObj", "RedBoxObj", "RedBoxObj", "RedBoxObj", "RedBoxObj" };
 	int WeaponMax = (int)ENEMY_TYPE::ENEMY_MAX;
 	int filesize = (int)size(fileName);
 	assert((int)filesize == WeaponMax);

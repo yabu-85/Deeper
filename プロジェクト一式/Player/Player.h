@@ -39,9 +39,7 @@ const int PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::MAX][2] {
 class Player : public Character
 {
     int hModel_;
-    float moveSpeed_;           //移動スピード
     float gradually_;           //移動スピードの加減の値
-    float rotateRatio_;         //回転の比率
     XMFLOAT3 playerMovement_;   //Normalizeの移動量を保存する用
 
     SphereCollider* pCollider_[2];

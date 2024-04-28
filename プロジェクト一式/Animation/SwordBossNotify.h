@@ -1,16 +1,14 @@
 #pragma once
 #include "AnimationNotify.h"
 
-class SowrdTestNotify : public DoubleFrame {
+class SowrdBossAttackNotify : public DoubleFrame {
 public:
-    SowrdTestNotify(int first, int end) : DoubleFrame(first, end) {};
+    SowrdBossAttackNotify(int first, int end) : DoubleFrame(first, end) {};
     void OnFrame(GameObject* obj) override;
-    void OnEnter(GameObject* obj) override {};
-    void OnExit(GameObject* obj) override {};
 };
 
-class SowrdRotateNotify : public DoubleFrame {
+class SowrdBossRotateNotify : public DoubleFrame {
 public:
-    SowrdRotateNotify(int first, int end) : DoubleFrame(first, end) {};
+    SowrdBossRotateNotify(int first, int end) : DoubleFrame(first, end) {};
     void OnFrame(GameObject* obj) override;
 };

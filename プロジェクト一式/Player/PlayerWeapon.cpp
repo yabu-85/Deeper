@@ -30,7 +30,7 @@ PlayerWeapon::PlayerWeapon(Player* pPlayer)
     drawPictSelect_[0] = SELECT_VALID;
     drawPictSelect_[1] = NO_SELECT_VALID;
 
-    const std::string fileName2[] = { "StoneArmImage", "RedBoxImage", "RedBoxImage", "RedBoxImage" };
+    const std::string fileName2[] = { "StoneArmImage", "RedBoxImage", "RedBoxImage", "RedBoxImage", "RedBoxImage" };
     int WeaponMax = (int)ENEMY_TYPE::ENEMY_MAX;
     int fileSize = (int)size(fileName2);
     assert((int)fileSize == WeaponMax);

@@ -2,10 +2,6 @@
 #include "../Engine/Model.h"
 #include "../Engine/Input.h"
 
-namespace {
-
-}
-
 PlayerOrnament::PlayerOrnament(GameObject* parent)
     : GameObject(parent, "PlayerOrnament"), hModel_(-1)
 {

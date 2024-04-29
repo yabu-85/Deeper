@@ -39,7 +39,7 @@ void ResultScene::Initialize()
 		po->SetRotateY(230.0f);
 		InstantiateFront<WeaponMainOrnament>(po);
 		Model::SetAnimFrame(po->GetModelHandle(), 
-			PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::DEAD][0], PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::DEAD][1], 1.0f);
+			PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::DEAD][1], PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::DEAD][1], 1.0f);
 	}
 	else {
 		Camera::SetPosition(XMFLOAT3(15, 1, 15));

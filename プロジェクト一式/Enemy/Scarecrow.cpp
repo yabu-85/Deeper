@@ -5,7 +5,6 @@
 #include "../Engine/SphereCollider.h"
 #include "../Engine/Global.h"
 #include "../State/StateManager.h"
-#include "../Stage/CreateStage.h"
 #include "../Stage/CollisionMap.h"
 #include "../Action/MoveAction.h"
 

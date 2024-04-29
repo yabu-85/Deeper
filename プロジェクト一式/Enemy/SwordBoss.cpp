@@ -62,10 +62,21 @@ void SwordBoss::Initialize()
 	//アニメーションデータのセットフレームはヘッダに書いてる
 	pAnimationController_ = new AnimationController(hModel_, this);
 	for (int i = 0; i < (int)SWORDBOSS_ANIMATION::MAX; i++) pAnimationController_->AddAnim(SWORDBOSS_ANIMATION_DATA[i][0], SWORDBOSS_ANIMATION_DATA[i][1]);
+	//Slash_Up
 	SowrdBossAttackNotify* notify = new SowrdBossAttackNotify(600, 690);
 	SowrdBossRotateNotify* notifyRot = new SowrdBossRotateNotify(600, 690);
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::ATTACK1, notify);
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::ATTACK1, notifyRot);
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, notify);
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, notifyRot);
+	//Slash_Right
+	notify = new SowrdBossAttackNotify(740, 755);
+	notifyRot = new SowrdBossRotateNotify(700, 740);
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, notify);
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, notifyRot);
+	//Trust
+	notify = new SowrdBossAttackNotify(835, 840);
+	notifyRot = new SowrdBossRotateNotify(780, 830);
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, notify);
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, notifyRot);
 
 	//Colliderの設定
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5f, 0), 0.35f);
@@ -100,7 +111,12 @@ void SwordBoss::Initialize()
 	pCombatStateManager_->Initialize();
 	pCombatStateManager_->ChangeState("Wait");
 
+	//技ごとに変更するようにtodo
 	pDamageController_ = new DamageController;
+	DamageInfo damage(this, "SwordBoss", 5);
+	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 5, 0.2f, transform_.position_);
+	pDamageController_->SetCurrentDamage(damage);
+	pDamageController_->SetCurrentKnockBackInfo(knockBack);
 
 	pPolyLine_ = new PolyLine;
 	pPolyLine_->Load("PolyImage/Sword.png");
@@ -142,6 +158,7 @@ void SwordBoss::Draw()
 	CollisionDraw();
 
 	//中間の攻撃コリジョンの表示をする
+#if _DEBUG
 	XMFLOAT3 middle = Float3Add(swordTransform_.rotate_, Float3Multiply(Float3Sub(preRotate_, swordTransform_.rotate_), 0.5f));
 	XMFLOAT3 target = CalculationDirection(middle);
 	XMFLOAT3 pos = Float3Sub(swordTransform_.position_, transform_.position_);
@@ -153,6 +170,7 @@ void SwordBoss::Draw()
 		e->SetCenter(p);
 		e->Draw(transform_.position_);
 	}
+#endif
 
 	pEnemyUi_->Draw();
 	pMoveAction_->Draw();

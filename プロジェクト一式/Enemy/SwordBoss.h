@@ -15,8 +15,9 @@ enum class SWORDBOSS_ANIMATION {
     DAMAGE_SMALL,
     DAMAGE_MID,
     DEAD,
-    ATTACK1,
-    ATTACK2,
+    Slash_Up,
+    Slash_Right,
+    Thrust,
     MAX,
 };
 
@@ -29,7 +30,8 @@ const int SWORDBOSS_ANIMATION_DATA[(int)SWORDBOSS_ANIMATION::MAX][2] {
     { 210, 260 }, //DamageMid
     { 260, 495 }, //Dead
     { 600, 690 }, //Attack1（切り上げ
-    { 700, 775 }, //Attack2（横切り
+    { 700, 775 }, //Attack2（右切り
+    { 780, 880 }, //Attack2（右切り
 };
 
 class SwordBoss : public EnemyBase

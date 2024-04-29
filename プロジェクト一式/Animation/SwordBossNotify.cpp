@@ -11,6 +11,12 @@ void SowrdBossAttackNotify::OnFrame(GameObject* obj)
 	boss->CalcPoly();
 }
 
+void SowrdBossAttackNotify::OnExit(GameObject* obj)
+{
+	SwordBoss* boss = static_cast<SwordBoss*>(obj);
+	boss->AttackEnd();
+}
+
 void SowrdBossRotateNotify::OnFrame(GameObject* obj)
 {
 	SwordBoss* boss = static_cast<SwordBoss*>(obj);

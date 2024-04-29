@@ -1,6 +1,7 @@
 #pragma once
 #include "../Engine/GameObject.h"
 #include <vector>
+class Character;
 
 enum class KNOCK_TYPE {
     SMALL = 0,
@@ -9,22 +10,23 @@ enum class KNOCK_TYPE {
     MAX,
 };
 
-class Character;
+//ダメージの情報
 struct DamageInfo {
-    Character* owner;
-    std::string name;
-    int damage;
+    Character* owner;   //ダメージを与えるキャラ
+    std::string name;   //攻撃の名前
+    int damage;         //ダメージ
 
     DamageInfo() : owner(nullptr), name(""), damage(0) {};
     DamageInfo(int _damage) : owner(nullptr), name(""), damage(_damage) {};
     DamageInfo(Character* _owner, std::string _name, int _damage ) : owner(_owner), name(_name), damage(_damage) {};
 };
 
+//ノックバックの情報
 struct KnockBackInfo {
-    KNOCK_TYPE type;
-    int time;
-    float power;
-    XMFLOAT3 pos;
+    KNOCK_TYPE type;    //ノックバックの種類
+    int time;           //時間
+    float power;        //パワー
+    XMFLOAT3 pos;       //ノックバック発生座標
 
     KnockBackInfo() : type(KNOCK_TYPE::MEDIUM), time(0), power(0.0f), pos({ 0.f, 0.f, 0.f }) {};
     KnockBackInfo(KNOCK_TYPE _type, int _time, float _power, XMFLOAT3 _pos) : type(_type), time(_time), power(_power), pos(_pos) {};
@@ -103,15 +105,20 @@ public:
     virtual void ResetMovement() { movement_ = { 0.0f, 0.0f, 0.0f }; };
 };
 
+/// <summary>
+/// 複数回攻撃が当たらないようにするクラス、攻撃をするCharacterに持たせて使う
+/// attackListに乗っているCharacterには攻撃が当たらない
+/// </summary>
 class DamageController {
     DamageInfo currentDamage;           //今設定されているダメージの情報
     KnockBackInfo currentKnockBack;     //今設定されているノックバックの情報
     std::vector<Character*> attackList; //攻撃を与えたCharacterのリスト
-
+    
 public:
-    void AddAttackList(Character* chara);
-    void ResetAttackList();
+    void AddAttackList(Character* chara);       //キャラをリストに登録
+    void ResetAttackList();                     //リストリセット
 
+    //ダメージ・ノックバックアクセサ
     void SetCurrentDamage(const DamageInfo& info) { currentDamage = info; }
     DamageInfo& GetCurrentDamage() { return currentDamage; }
     void SetCurrentKnockBackInfo(const KnockBackInfo& info) { currentKnockBack = info; }

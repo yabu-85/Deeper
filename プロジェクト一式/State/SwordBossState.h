@@ -4,6 +4,7 @@
 class Root;
 class SwordBoss;
 class EnemyBase;
+enum class SWORDBOSS_ANIMATION;
 
 class SwordBossAppear : public StateBase
 {
@@ -63,6 +64,7 @@ public:
 class SwordBossAttack : public StateBase
 {
 	int time_;
+	SWORDBOSS_ANIMATION nextAttack_;
 	SwordBoss* pBoss_;
 public:
 	SwordBossAttack(StateManager* owner);

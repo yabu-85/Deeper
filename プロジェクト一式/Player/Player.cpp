@@ -115,7 +115,7 @@ void Player::Draw()
     static const float rotRatio = 0.2f;
     if (transform_.rotate_.y <= -180.0f) transform_.rotate_.y += 360.0f;
     if (transform_.rotate_.y >= 180.0f) transform_.rotate_.y -= 360.0f;
-    if (pAim_->IsTarget()) {        
+    if (pStateManager_->GetName() == "Walk" && pAim_->IsTarget()) {
         //ˆÚ“®’†‚È‚çˆÚ“®•ûŒü‚©‚çŒü‚­•ûŒüŒvŽZ
         float rotYYY = 0.0f;
         if (InputManager::CmdWalk()) rotYYY = CalculationRotate(GetInputMove()).y - transform_.rotate_.y;

@@ -15,8 +15,6 @@
 #include "../Action/RotateAction.h"
 #include "../Action/SearchAction.h"
 
-#include "../Engine/Input.h"
-
 MeleeFighter::MeleeFighter(GameObject* parent)
 	: EnemyBase(parent, "MeleeFighterEnemy"), hModel_(-1), pMoveAction_(nullptr), pRotateAction_(nullptr), pVisionSearchAction_(nullptr),
 	pOrientedMoveAction_(nullptr), boneIndex_{ -1,-1 }, partIndex_{ -1,-1 }, pDamageController_(nullptr), pAnimationController_(nullptr), 

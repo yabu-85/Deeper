@@ -82,6 +82,7 @@ void SwordBossDead::OnEnter()
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
 	e->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::DEAD, 0.1f);
 	e->DeadEnter();
+	e->AttackEnd();
 	time_ = 0;
 }
 
@@ -221,15 +222,26 @@ void SwordBossMove::OnExit()
 
 enum class SWORD_BOSS_ATK {
 	Slash_Up = 0,
-	Slash_Down,
 	Slash_Right,
-	Slash_Left,
 	Thrust,
-	Jump,
 	Max,
 };
 
-SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0)
+struct AttackData {
+	int animId;					//AnimationController‚ÌID‚ðŠ„‚è“–‚Ä‚é
+	AttackData(int anim) : animId(anim) {};
+};
+
+namespace {
+	AttackData ATTACK_INFO_LIST[(int)SWORD_BOSS_ATK::Max] = {
+			AttackData((int)SWORDBOSS_ANIMATION::Slash_Up),
+			AttackData((int)SWORDBOSS_ANIMATION::Slash_Right),
+			AttackData((int)SWORDBOSS_ANIMATION::Thrust),
+	};
+
+}
+
+SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0), nextAttack_(SWORDBOSS_ANIMATION::Slash_Up)
 {
 	pBoss_ = static_cast<SwordBoss*>(owner_->GetGameObject());
 }
@@ -237,10 +249,10 @@ SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(
 void SwordBossAttack::Update()
 {
 	time_++;
-	int AnimFrame = pBoss_->GetAnimationController()->GetAnimTime((int)SWORDBOSS_ANIMATION::ATTACK1);
+	int AnimFrame = pBoss_->GetAnimationController()->GetAnimTime((int)nextAttack_);
 
 	if (time_ >= AnimFrame) {
-		if (0) owner_->ChangeState("Attack");
+		if (rand() % 2 == 0) owner_->ChangeState("Attack");
 		else owner_->ChangeState("Wait");
 	}
 }
@@ -248,9 +260,16 @@ void SwordBossAttack::Update()
 void SwordBossAttack::OnEnter()
 {
 	time_ = 0;
-	pBoss_->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
+	int r = rand() % (int)SWORD_BOSS_ATK::Max;
+	switch (r) {
+	case 0: nextAttack_ = SWORDBOSS_ANIMATION::Slash_Up;	break;
+	case 1: nextAttack_ = SWORDBOSS_ANIMATION::Slash_Right;	break;
+	case 2: nextAttack_ = SWORDBOSS_ANIMATION::Thrust;		break;
+	}
+
 	pBoss_->SetCombatReady(false);
-	pBoss_->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::ATTACK1, 0.15f);
+	pBoss_->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
+	pBoss_->GetAnimationController()->SetNextAnim((int)nextAttack_, 0.15f);
 }
 
 void SwordBossAttack::OnExit()

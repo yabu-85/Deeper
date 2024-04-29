@@ -7,13 +7,13 @@ class StateManager;
 
 class EnemyBase : public Character
 {
-    void Damage() override;
-    void Dead() override;
+    virtual void Damage() override;
+    virtual void Dead() override;
 
 protected:
-    float aimTargetPos_;    //AimTarget時のY軸の加算値
     bool isAimTarget_;      //AimTargetにしていいかどうか
-    ENEMY_TYPE type_;
+    ENEMY_TYPE type_;       //
+    float aimTargetPos_;    //AimTarget時のY軸の加算値
 
     int actionCoolDown_;    //Moveとかの切り替え時間用の変数
     int attackCoolDown_;    //攻撃のクールダウン

@@ -68,6 +68,8 @@ void CombatAI::Update() {
 
 bool CombatAI::IsEnemyAttackPermission(EnemyBase* enemy)
 {
+	if (rand() % 5 == 0) return true;
+
 	return (DifficultyManager::AttackPermission() && enemy->GetCombatReady());
 }
 

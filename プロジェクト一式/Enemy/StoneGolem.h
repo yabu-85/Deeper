@@ -28,16 +28,15 @@ public:
     void Release() override;
     void OnAttackCollision(GameObject* pTarget) override;
 
+    void DamageInfoReset();
+    void SetDamageInfoCombo1();
+    void SetDamageInfoCombo2();
+    void SetDamageInfoCombo3();
+
     int GetModelHandle() { return hModel_; }
     DamageController* GetDamageController() { return pDamageController_; }
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }
     OrientedMoveAction* GetOrientedMoveAction() { return pOrientedMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }
     VisionSearchAction* GetVisionSearchAction() { return pVisionSearchAction_; }
-
-    void DamageInfoReset();
-    void SetDamageInfoCombo1();
-    void SetDamageInfoCombo2();
-    void SetDamageInfoCombo3();
-
 };

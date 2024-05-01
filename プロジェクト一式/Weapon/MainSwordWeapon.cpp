@@ -54,7 +54,7 @@ namespace {
 }
 
 MainSwordWeapon::MainSwordWeapon(GameObject* parent)
-	: WeaponBase(parent, "MainSwordWeapon"), polyCreatTime_(0), wandPos_(0, 0, 0), direction_(0,0,0),
+	: WeaponBase(parent, "MainSwordWeapon"), wandPos_(0, 0, 0), direction_(0,0,0),
     pPlayer_(nullptr), pPolyLine_(nullptr), pDamageController_(nullptr), sphere_{ nullptr, nullptr }
 {
     transform_.pParent_ = nullptr;
@@ -100,11 +100,7 @@ void MainSwordWeapon::Initialize()
 
 void MainSwordWeapon::Update()
 {
-    //É|ÉäÉSÉìÇå„ÇÎÇ©ÇÁè¡ÇµÇƒÇ≠
-    if (polyCreatTime_ > 0) {
-        polyCreatTime_--;
-        pPolyLine_->ClearLastPositions();
-    }
+    pPolyLine_->Update();
 
 }
 
@@ -171,7 +167,7 @@ void MainSwordWeapon::ResetState()
     isCancellable_ = false;
     pStateManager_->ChangeState("");
     SetAllAttackColliderValid(false);
-    SetPolyCreatTime();
+    pPolyLine_->SetClear(true);
 }
 
 void MainSwordWeapon::CalcSwordTrans()
@@ -197,11 +193,6 @@ void MainSwordWeapon::CalcSwordTrans()
     swordTip = Float3Add(wandPos_, vec);
     swordTip = Float3Sub(swordTip, pPos);
     sphere_[1]->SetCenter(swordTip);
-}
-
-void MainSwordWeapon::SetPolyCreatTime()
-{
-    polyCreatTime_ = POLY_DRAW_TIME;
 }
 
 void MainSwordWeapon::DamageInfoReset()
@@ -254,7 +245,7 @@ void MainSwordWeaponCombo1::Update()
     //çUåÇîªíË
     if(time_ >= ANIM_ATTACK_FRAME1[0] && time_ <= ANIM_ATTACK_FRAME1[1]) m->CalcSwordTrans();
     //çUåÇèIóπîªíË
-    if (time_ == ANIM_ATTACK_FRAME1[1]) m->SetPolyCreatTime();
+    if (time_ == ANIM_ATTACK_FRAME1[1]) m->GetPolyLine()->SetClear(true);
     //Audioçƒê∂
     if (time_ == ANIM_AUDIO_FRAME1) AudioManager::Play(AUDIO_ID::SWORD_WIELD_1);
     
@@ -326,7 +317,7 @@ void MainSwordWeaponCombo2::Update()
     //çUåÇîªíË
     if (time_ >= ANIM_ATTACK_FRAME2[0] && time_ <= ANIM_ATTACK_FRAME2[1]) m->CalcSwordTrans();
     //çUåÇèIóπîªíË
-    if (time_ == ANIM_ATTACK_FRAME2[1]) m->SetPolyCreatTime();
+    if (time_ == ANIM_ATTACK_FRAME2[1]) m->GetPolyLine()->SetClear(true);
     //Audioçƒê∂
     if (time_ == ANIM_AUDIO_FRAME2) AudioManager::Play(AUDIO_ID::SWORD_WIELD_2);
 
@@ -398,7 +389,7 @@ void MainSwordWeaponCombo3::Update()
     //çUåÇîªíË
     if (time_ >= ANIM_ATTACK_FRAME3[0] && time_ <= ANIM_ATTACK_FRAME3[1]) m->CalcSwordTrans();
     //çUåÇèIóπîªíË
-    if (time_ == ANIM_ATTACK_FRAME3[1]) m->SetPolyCreatTime();
+    if (time_ == ANIM_ATTACK_FRAME3[1]) m->GetPolyLine()->SetClear(true);
     //Audioçƒê∂
     if (time_ == ANIM_AUDIO_FRAME3) AudioManager::Play(AUDIO_ID::SWORD_WIELD_3);
     

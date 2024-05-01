@@ -48,9 +48,14 @@ public:
     void Release() override;
     void OnAttackCollision(GameObject* pTarget) override;
 
-    void CalcPoly();
-    void DamageInfoReset();
-    void SetDamageInfoCombo1();
+    //攻撃判定（コライダーとPolyの計算）
+    void CalcAttack();
+
+    //攻撃が終了した時に呼ぶ
+    void AttackEnd();
+    
+    //攻撃する情報のセット
+    void SetDamageInfo1();
 
     int GetModelHandle() { return hModel_; }
     AnimationController* GetAnimationController() { return pAnimationController_; }

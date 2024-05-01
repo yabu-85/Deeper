@@ -9,7 +9,6 @@ class DamageController;
 
 class MainSwordWeapon : public WeaponBase
 {
-    int polyCreatTime_;     //ポリゴンの作成時間
     XMFLOAT3 wandPos_;      //プレイヤーの手のポジション
     XMFLOAT3 direction_;    //剣先の進行方向
 
@@ -32,13 +31,13 @@ public:
     //攻撃判定コライダーの計算
     void CalcSwordTrans();
 
-    //PolyLineを段々消すように
-    void SetPolyCreatTime();
-
     void DamageInfoReset();
     void SetDamageInfoCombo1();
     void SetDamageInfoCombo2();
     void SetDamageInfoCombo3();
+
+    PolyLine* GetPolyLine() { return pPolyLine_; }
+
 };
 
 //-------------------State----------------------

@@ -31,13 +31,12 @@ const int SWORDBOSS_ANIMATION_DATA[(int)SWORDBOSS_ANIMATION::MAX][2] {
     { 260, 495 }, //Dead
     { 600, 690 }, //Attack1（切り上げ
     { 700, 775 }, //Attack2（右切り
-    { 780, 880 }, //Attack2（右切り
+    { 780, 880 }, //Attack3（突き刺し
 };
 
 class SwordBoss : public EnemyBase
 {
     int hModel_;
-    int polyCreatTime_;
     int hSwordModel_;
     int boneIndex_;
     int partIndex_;
@@ -61,8 +60,12 @@ public:
     void OnAttackCollision(GameObject* pTarget) override;
 
     void CalcPoly();
+    void CalcCollider();
     void AttackEnd();
-    void SetPolyCreatTime();
+
+    void SetDamageInfo1();
+    void SetDamageInfo2();
+    void SetDamageInfo3();
 
     int GetModelHandle() { return hModel_; }
     AnimationController* GetAnimationController() { return pAnimationController_; }

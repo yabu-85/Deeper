@@ -9,8 +9,6 @@ class ThrowBullet : public BulletBase
     float maxHeight_;           //最大高度
     float maxDistance_;         //最大距離
     bool isDeath_;              //死亡用フラグ
-    XMFLOAT3 deathPosition_;    //Poly用の死亡場所記憶
-    
     PolyLine* pPolyLine_;
 
 public:

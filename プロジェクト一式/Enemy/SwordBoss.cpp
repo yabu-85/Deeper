@@ -63,20 +63,14 @@ void SwordBoss::Initialize()
 	pAnimationController_ = new AnimationController(hModel_, this);
 	for (int i = 0; i < (int)SWORDBOSS_ANIMATION::MAX; i++) pAnimationController_->AddAnim(SWORDBOSS_ANIMATION_DATA[i][0], SWORDBOSS_ANIMATION_DATA[i][1]);
 	//Slash_Up
-	SowrdBossAttackNotify* notify = new SowrdBossAttackNotify(600, 690);
-	SowrdBossRotateNotify* notifyRot = new SowrdBossRotateNotify(600, 690);
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, notify);
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, notifyRot);
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossAttackNotify(600, 690));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossRotateNotify(600, 690));
 	//Slash_Right
-	notify = new SowrdBossAttackNotify(740, 755);
-	notifyRot = new SowrdBossRotateNotify(700, 740);
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, notify);
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, notifyRot);
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossAttackNotify(740, 755));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossRotateNotify(700, 740));
 	//Trust
-	notify = new SowrdBossAttackNotify(835, 840);
-	notifyRot = new SowrdBossRotateNotify(780, 830);
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, notify);
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, notifyRot);
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossAttackNotify(835, 840));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossRotateNotify(780, 830));
 
 	//ColliderÇÃê›íË
 	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5f, 0), 0.35f);
@@ -111,7 +105,7 @@ void SwordBoss::Initialize()
 	pCombatStateManager_->Initialize();
 	pCombatStateManager_->ChangeState("Wait");
 
-	//ãZÇ≤Ç∆Ç…ïœçXÇ∑ÇÈÇÊÇ§Ç…todo
+	//ãZÇ≤Ç∆Ç…ïœçXÇ∑ÇÈÇÊÇ§Ç… todo
 	pDamageController_ = new DamageController;
 	DamageInfo damage(this, "SwordBoss", 5);
 	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 5, 0.2f, transform_.position_);

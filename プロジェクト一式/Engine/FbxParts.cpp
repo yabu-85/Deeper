@@ -662,20 +662,29 @@ XMFLOAT3 FbxParts::GetBoneRotate(int index, FbxTime time)
 	FbxAnimEvaluator* evaluator = ppCluster_[index]->GetLink()->GetScene()->GetAnimationEvaluator();
 	FbxMatrix mCurrentOrentation = evaluator->GetNodeGlobalTransform(ppCluster_[index]->GetLink(), time);
 
-	// Extract rotation axis from the rotation matrix
-	FbxVector4 rotationRow0 = mCurrentOrentation.GetRow(0);
-	FbxVector4 rotationRow1 = mCurrentOrentation.GetRow(1);
-	FbxVector4 rotationRow2 = mCurrentOrentation.GetRow(2);
-
-	// Calculate the rotation angles in degrees
-	float pitch = static_cast<float>(atan2(rotationRow2[1], rotationRow2[2]));
-	float yaw = static_cast<float>(asin(-rotationRow2[0]));
-	float roll = static_cast<float>(atan2(rotationRow1[0], rotationRow0[0]));
-
+	//https://qiita.com/q_tarou/items/46e5045068742dfb2fa6
+	float PI = 3.14159265358979f;
+	float threshold = 0.001f;
 	XMFLOAT3 rot = XMFLOAT3();
-	rot.x = -XMConvertToDegrees(pitch);
-	rot.y = -XMConvertToDegrees(yaw);
-	rot.z = XMConvertToDegrees(roll);
+	if (abs(mCurrentOrentation[2][1] - 1.0f) < threshold) { // R(2,1) = sin(x) = 1‚ÌŽž
+		rot.x = PI / 2.0f;
+		rot.y = 0.0f;
+		rot.z = atan2f(mCurrentOrentation[1][0], mCurrentOrentation[0][0]);
+	}
+	else if (abs(mCurrentOrentation[2][1] + 1.0f) < threshold) { // R(2,1) = sin(x) = -1‚ÌŽž
+		rot.x = -PI / 2;
+		rot.y = 0;
+		rot.z = atan2(mCurrentOrentation[1][0], mCurrentOrentation[0][0]);
+	}
+	else {
+		rot.x = asin(mCurrentOrentation[2][1]);
+		rot.y = atan2(-mCurrentOrentation[2][0], mCurrentOrentation[2][2]);
+		rot.z = atan2(-mCurrentOrentation[0][1], mCurrentOrentation[1][1]);
+	}
+
+	rot.x = -XMConvertToDegrees(angle_x);
+	rot.y = -XMConvertToDegrees(angle_y);
+	rot.z = XMConvertToDegrees(angle_z);
 	return rot;
 }
 

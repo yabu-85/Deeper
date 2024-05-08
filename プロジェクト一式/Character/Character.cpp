@@ -19,7 +19,7 @@ void Character::Update()
 {
 	if (knockBackTime_ > 0) {
 		float speed = ((float)knockBackTime_ / (float)knockBackTimeMax_);
-		speed = Easing::OutQuint(speed);
+		speed = Easing::QuintOut(speed);
 		KnockBack(speed);
 		knockBackTime_--;
 	}

@@ -22,8 +22,7 @@ namespace {
 }
 
 ThrowBullet::ThrowBullet(GameObject* parent)
-	: BulletBase(parent, "ThrowBullet"), maxDistance_(0), maxHeight_(0), time_(0), pPolyLine_(nullptr),
-	deathPosition_(XMFLOAT3()), isDeath_(false)
+	: BulletBase(parent, "ThrowBullet"), maxDistance_(0), maxHeight_(0), time_(0), pPolyLine_(nullptr), isDeath_(false)
 {
 }
 
@@ -47,18 +46,16 @@ void ThrowBullet::Initialize()
 
 	pPolyLine_ = new PolyLine;
 	pPolyLine_->Load("PolyImage/Line.png");
-	pPolyLine_->SetLength(30);
-
+	pPolyLine_->SetLength(DEATH_TIME);
 }
 
 void ThrowBullet::Update()
 {
+	time_--;
+
 	//Ž€–S”»’è
 	if (isDeath_) {
-		pPolyLine_->AddPosition(deathPosition_);
-
 		if (time_ <= 0) KillMe();
-		time_--;
 		return;
 	}
 
@@ -72,7 +69,6 @@ void ThrowBullet::Update()
 		return;
 	}
 
-	time_--;
 }
 
 void ThrowBullet::Draw()
@@ -139,7 +135,6 @@ void ThrowBullet::Move()
 	transform_.position_.x += moveVec_.x;
 	transform_.position_.y += height;
 	transform_.position_.z += moveVec_.z;
-
 }
 
 void ThrowBullet::Hit()
@@ -149,16 +144,14 @@ void ThrowBullet::Hit()
 
 	VFXManager::CreateVfxExplode1(transform_.position_);
 	AudioManager::Play(AUDIO_ID::BULLET_HIT1, transform_.position_, 10.0f);
-	deathPosition_ = transform_.position_;
+	pPolyLine_->AddPosition(transform_.position_);
 	time_ = DEATH_TIME;
 	isDeath_ = true;
-	transform_.position_.y = 10000.0f;
-
+	Invisible();
 }
 
 void ThrowBullet::SetThrowData(float maxHeight, float maxDist)
 {
 	maxHeight_ = maxHeight;
 	maxDistance_ = maxDist;
-
 }

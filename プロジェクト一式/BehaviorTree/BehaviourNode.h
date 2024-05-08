@@ -59,6 +59,7 @@ protected:
 
 //--------------------------Sequence--------------------------
 
+//失敗するまで続ける、最後まで失敗しない場合SUCCESSが帰ってくる
 class Sequence : public CompositeNode
 {
 public:
@@ -69,6 +70,7 @@ public:
 
 //--------------------------Selector--------------------------
 
+//成功するまで続ける、最後まで成功しない場合FAILUREが帰ってくる
 class Selector : public CompositeNode
 {
 public:

@@ -455,6 +455,9 @@
     <ClCompile Include="Enemy\Scarecrow.cpp">
       <Filter>08Enemy\Enemies</Filter>
     </ClCompile>
+    <ClCompile Include="BehaviorTree\EnemyAttackSelectNode.cpp">
+      <Filter>05BehaviorTree\02ActionNode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -771,6 +774,9 @@
     </ClInclude>
     <ClInclude Include="Enemy\Scarecrow.h">
       <Filter>08Enemy\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\EnemyAttackSelectNode.h">
+      <Filter>05BehaviorTree\02ActionNode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,13 @@ void SowrdBossAttackNotify::OnFrame(GameObject* obj)
 {
 	SwordBoss* boss = static_cast<SwordBoss*>(obj);
 	boss->CalcPoly();
+	boss->CalcCollider();
+}
+
+void SowrdBossAttackNotify::OnEnter(GameObject* obj)
+{
+	SwordBoss* boss = static_cast<SwordBoss*>(obj);
+	boss->SetAllAttackColliderValid(true);
 }
 
 void SowrdBossAttackNotify::OnExit(GameObject* obj)

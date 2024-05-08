@@ -17,6 +17,7 @@
 #include "../BehaviorTree/PlayerConditionNode.h"
 #include "../BehaviorTree/IsEnemyStateNode.h"
 #include "../BehaviorTree/IsEnemyPermission.h"
+#include "../BehaviorTree/EnemyAttackSelectNode.h"
 
 #include "../Action/MoveAction.h"
 #include "../Action/RotateAction.h"
@@ -106,10 +107,16 @@ SwordBossCombat::SwordBossCombat(StateManager* owner) : StateBase(owner), time_(
 	selector1->AddChildren(mCon);
 
 	//-------------------------------------Wait--------------------------------------
+	
+	//攻撃準備可能なら攻撃どれか選択して、選択できたならState推移
 	EnemyChangeCombatStateNode* action3 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(action3, e);
-	IsPlayerInRangeNode* condition6 = new IsPlayerInRangeNode(condition5, e->GetAttackDistance(), e, GameManager::GetPlayer());
-	IsEnemyAttackReady* condition8 = new IsEnemyAttackReady(condition6, e);
+	EnemyAttackSelectNode* action2 = new EnemyAttackSelectNode(e);
+	Sequence* sequence1 = new Sequence();
+	sequence1->AddChildren(action2);
+	sequence1->AddChildren(action3);
+
+	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(sequence1, e);
+	IsEnemyAttackReady* condition8 = new IsEnemyAttackReady(condition5, e);
 	waitSelector->AddChildren(condition8);
 
 	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(e, "Move");
@@ -139,7 +146,7 @@ void SwordBossCombat::OnEnter()
 	e->GetRotateAction()->Initialize();
 	e->GetRotateAction()->SetTarget(GameManager::GetPlayer());
 	e->GetRotateAction()->SetRatio(ROTATE_RATIO);
-
+	e->GetCombatStateManager()->ChangeState("Wait");
 }
 
 SwordBossCombat::~SwordBossCombat()
@@ -168,6 +175,7 @@ void SwordBossWait::OnEnter()
 {
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
+	e->GetOrientedMoveAction()->SetMoveSpeed(SLOW_SPEED);
 	e->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::IDLE, 0.1f);
 
 	//プレイヤーから指定の範囲内で
@@ -208,6 +216,7 @@ void SwordBossMove::OnEnter()
 	time_ = FPS * MIN_MOVE_TIME + rand() % MAX_MOVE_TIME * FPS;
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
+	e->GetOrientedMoveAction()->SetMoveSpeed(FAST_SPEED);
 	e->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::RUN, 0.1f);
 
 }
@@ -269,6 +278,13 @@ void SwordBossAttack::OnEnter()
 	pBoss_->SetCombatReady(false);
 	pBoss_->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
 	pBoss_->GetAnimationController()->SetNextAnim((int)nextAttack_, 0.15f);
+
+	std::string name = pBoss_->GetDamageController()->GetCurrentDamage().name;
+	if (name == "none") {
+		owner_->ChangeState("Wait");
+		OutputDebugStringA(std::to_string(rand() % 100).c_str());
+		OutputDebugString("\n");
+	}
 }
 
 void SwordBossAttack::OnExit()

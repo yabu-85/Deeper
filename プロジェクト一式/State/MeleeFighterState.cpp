@@ -290,12 +290,12 @@ void MeleeFighterAttack::Update()
 	int time2 = time1 + (endT2 - startT2);
 
 	if (time_ >= time1 && time_ < time1 + 10) {
-		e->CalcPoly();
+		e->CalcAttack();
 	}
 
 	//攻撃フラグの制御
-	if (time_ == time1 + 8) { e->SetDamageInfoCombo1(); }
-	else if (time_ == time1 + 10) { e->DamageInfoReset(); }
+	if (time_ == time1 + 8) { e->SetDamageInfo1(); }
+	else if (time_ == time1 + 10) { e->AttackEnd(); }
 
 	//エフェクト
 	if(time_ == time1 + 10) {
@@ -324,7 +324,7 @@ void MeleeFighterAttack::OnExit()
 	MeleeFighter* e = static_cast<MeleeFighter*>(owner_->GetGameObject());
 	e->GetRotateAction()->SetRatio(ROTATE_RATIO);
 	e->SetAttackCoolDown(rand() % 100);
-	e->DamageInfoReset();
+	e->AttackEnd();
 }
 
 //--------------------------------------------------------------------------------

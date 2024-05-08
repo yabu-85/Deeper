@@ -157,7 +157,7 @@ void MeleeFighter::OnAttackCollision(GameObject* pTarget)
 	}
 }
 
-void MeleeFighter::CalcPoly()
+void MeleeFighter::CalcAttack()
 {
 	std::list<Collider*> list = GetAttackColliderList();
 	auto it = list.begin();
@@ -171,18 +171,17 @@ void MeleeFighter::CalcPoly()
 	}
 }
 
-void MeleeFighter::DamageInfoReset()
+void MeleeFighter::AttackEnd()
 {
 	SetAllAttackColliderValid(false);
 	GetDamageController()->ResetAttackList();
 	for (int i = 0; i < 2; i++) pPolyLine_[i]->ResetPosition();
 }
 
-void MeleeFighter::SetDamageInfoCombo1()
+void MeleeFighter::SetDamageInfo1()
 {
 	DamageInfo damage(this, "MeleeAttack", 3);
 	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 0, 0.0f, transform_.position_);
 	GetDamageController()->SetCurrentDamage(damage);
 	GetDamageController()->SetCurrentKnockBackInfo(knockBack);
-	SetAllAttackColliderValid(true);
 }

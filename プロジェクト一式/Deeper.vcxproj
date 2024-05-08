@@ -145,6 +145,7 @@
     <ClCompile Include="BehaviorTree\BehaviourNode.cpp" />
     <ClCompile Include="BehaviorTree\CameraConditionNode.cpp" />
     <ClCompile Include="BehaviorTree\ChangeStateNode.cpp" />
+    <ClCompile Include="BehaviorTree\EnemyAttackSelectNode.cpp" />
     <ClCompile Include="BehaviorTree\IsEnemyActionReadyNode.cpp" />
     <ClCompile Include="BehaviorTree\IsEnemyPermission.cpp" />
     <ClCompile Include="BehaviorTree\IsEnemyStateNode.cpp" />
@@ -251,6 +252,7 @@
     <ClInclude Include="BehaviorTree\BehaviourNode.h" />
     <ClInclude Include="BehaviorTree\CameraConditionNode.h" />
     <ClInclude Include="BehaviorTree\ChangeStateNode.h" />
+    <ClInclude Include="BehaviorTree\EnemyAttackSelectNode.h" />
     <ClInclude Include="BehaviorTree\IsEnemyActionReadyNode.h" />
     <ClInclude Include="BehaviorTree\IsEnemyPermission.h" />
     <ClInclude Include="BehaviorTree\IsEnemyStateNode.h" />

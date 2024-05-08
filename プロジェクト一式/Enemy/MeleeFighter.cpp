@@ -15,6 +15,12 @@
 #include "../Action/RotateAction.h"
 #include "../Action/SearchAction.h"
 
+namespace {
+	static const int POLY_SMOOTH = 0;
+	static const int POLY_DRAW_TIME = 20;
+
+}
+
 MeleeFighter::MeleeFighter(GameObject* parent)
 	: EnemyBase(parent, "MeleeFighterEnemy"), hModel_(-1), pMoveAction_(nullptr), pRotateAction_(nullptr), pVisionSearchAction_(nullptr),
 	pOrientedMoveAction_(nullptr), boneIndex_{ -1,-1 }, partIndex_{ -1,-1 }, pDamageController_(nullptr), pAnimationController_(nullptr), 
@@ -27,13 +33,16 @@ MeleeFighter::~MeleeFighter()
 }
 
 void MeleeFighter::Initialize()
-{
+{	
 	hModel_ = Model::Load("Model/walf.fbx");
 	assert(hModel_ >= 0);
+	
+	Model::GetBoneIndex(hModel_, "attack_Hand.R", &boneIndex_[0], &partIndex_[0]);
+	assert(boneIndex_[0] >= 0);
+	Model::GetBoneIndex(hModel_, "attack_Hand.L", &boneIndex_[1], &partIndex_[1]);
+	assert(boneIndex_[1] >= 0);
 
-	CreateStage* pCreateStage = GameManager::GetCreateStage();
-	XMFLOAT3 startPos = pCreateStage->GetRandomFloarPosition();
-	transform_.position_ = startPos;
+	transform_.position_ = GameManager::GetCreateStage()->GetRandomFloarPosition();
 	transform_.rotate_.y = (float)(rand() % 360);
 
 	SetHP(100);
@@ -51,16 +60,13 @@ void MeleeFighter::Initialize()
 	for (int i = 0; i < (int)MELEE_ANIMATION::MAX; i++) pAnimationController_->AddAnim(MELEE_ANIMATION_DATA[i][0], MELEE_ANIMATION_DATA[i][1]);
 
 	//Colliderの設定
-	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5f, 0), 0.35f);
-	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 1.1f, 0), 0.35f);
-	SphereCollider* collision3 = new SphereCollider(XMFLOAT3(0, 0, 0), 0.25f);
-	SphereCollider* collision4 = new SphereCollider(XMFLOAT3(0, 0, 0), 0.25f);
-	AddCollider(collision1);
-	AddCollider(collision2);
-	AddAttackCollider(collision3);
-	AddAttackCollider(collision4);
+	AddCollider(new SphereCollider(XMFLOAT3(0, 0.5f, 0), 0.35f));
+	AddCollider(new SphereCollider(XMFLOAT3(0, 1.1f, 0), 0.35f));
+	AddAttackCollider(new SphereCollider(XMFLOAT3(0, 0, 0), 0.25f));
+	AddAttackCollider(new SphereCollider(XMFLOAT3(0, 0, 0), 0.25f));
 	SetAllAttackColliderValid(false);
 
+	pDamageController_ = new DamageController();
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize(1.9f);
 
@@ -70,8 +76,6 @@ void MeleeFighter::Initialize()
 	pRotateAction_ = new RotateAction(this, 0.0f);
 	pVisionSearchAction_ = new VisionSearchAction(this, 30.0f, 90.0f);
 	pRotateAction_->Initialize();
-
-	pDamageController_ = new DamageController();
 
 	//ステートの設定
 	pStateManager_ = new StateManager(this);
@@ -89,17 +93,12 @@ void MeleeFighter::Initialize()
 	pCombatStateManager_->AddState(new MeleeFighterAttack(pCombatStateManager_));
 	pCombatStateManager_->ChangeState("Wait");
 	pCombatStateManager_->Initialize();
-	
-	Model::GetBoneIndex(hModel_, "attack_Hand.R", &boneIndex_[0], &partIndex_[0]);
-	Model::GetBoneIndex(hModel_, "attack_Hand.L", &boneIndex_[1], &partIndex_[1]);
-	assert(boneIndex_[0] >= 0);
-	assert(boneIndex_[1] >= 0);
 
 	for (int i = 0; i < 2; i++) {
 		pPolyLine_[i] = new PolyLine;
 		pPolyLine_[i]->Load("PolyImage/Burger.png");
-		pPolyLine_[i]->SetLength(30);
-		pPolyLine_[i]->SetSmooth(0);
+		pPolyLine_[i]->SetLength(POLY_DRAW_TIME);
+		pPolyLine_[i]->SetSmooth(POLY_SMOOTH);
 	}
 }
 
@@ -136,6 +135,7 @@ void MeleeFighter::Release()
 	SAFE_DELETE(pOrientedMoveAction_);
 	SAFE_DELETE(pMoveAction_);
 	SAFE_DELETE(pAnimationController_);
+	SAFE_DELETE(pDamageController_);
 
 	EnemyBase::Release();
 	Model::Release(hModel_);

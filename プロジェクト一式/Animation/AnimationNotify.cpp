@@ -10,7 +10,7 @@ void DoubleFrame::CalcFrame(int t, GameObject* obj) {
 	if (time <= t && endTime >= t) {
 		OnFrame(obj);
 		if (time == t) OnEnter(obj);
-		else if (endTime == t) OnExit(obj);
+		if (endTime == t) OnExit(obj);
 	}
 }
 

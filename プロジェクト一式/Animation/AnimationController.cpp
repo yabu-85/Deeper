@@ -18,6 +18,13 @@ void AnimationController::Update()
 {
 	currentBlend_ -= blendDecrease_;
 
+	if (currentAnim_ != -1) {
+		int animTime = (int)Model::GetAnimFrame(modelNum_);
+		for (OneFrame* action : animDatas_[currentAnim_].frameList) {
+			action->CalcFrame(animTime, pGameObject_);
+		}
+	}
+
 	//0ˆÈ‰º‚É‚È‚Á‚½‚çƒuƒŒƒ“ƒhI‚í‚è‚É‚·‚é
 	if (currentBlend_ <= 0.0f) {
 		currentBlend_ = 0.0f;
@@ -28,12 +35,6 @@ void AnimationController::Update()
 		Model::SetBlendFactor(modelNum_, currentBlend_);
 	}
 
-	if (currentAnim_ != -1) {
-		int animTime = (int)Model::GetAnimFrame(modelNum_);
-		for (OneFrame* action : animDatas_[currentAnim_].frameList) {
-			action->CalcFrame(animTime, pGameObject_);
-		}
-	}
 }
 
 void AnimationController::AddAnim(int s, int e)

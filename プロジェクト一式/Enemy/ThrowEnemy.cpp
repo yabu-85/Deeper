@@ -30,12 +30,14 @@ void ThrowEnemy::Initialize()
 {
 	hModel_ = Model::Load("Model/stoneGolem.fbx");
 	assert(hModel_ >= 0);
+	
 	hItemModel_ = Model::Load("Model/RedBox.fbx");
 	assert(hItemModel_ >= 0);
 
-	CreateStage* pCreateStage = GameManager::GetCreateStage();
-	XMFLOAT3 startPos = pCreateStage->GetRandomFloarPosition();
-	transform_.position_ = startPos;
+	Model::GetBoneIndex(hModel_, "attack_Hand.R", &boneIndex_, &partIndex_);
+	assert(boneIndex_ >= 0);
+
+	transform_.position_ = GameManager::GetCreateStage()->GetRandomFloarPosition();;
 	transform_.rotate_.y = (float)(rand() % 360);
 	transform_.scale_ = { 0.5f, 0.5f, 0.5f };
 	itemTransform_.scale_ = { 0.2f, 0.2f, 0.2f };
@@ -51,8 +53,7 @@ void ThrowEnemy::Initialize()
 	attackDistance_ = 8.0f;
 
 	//Collider‚ÌÝ’è
-	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.7f, 0), 0.6f);
-	AddCollider(collision1);
+	AddCollider(new SphereCollider(XMFLOAT3(0, 0.7f, 0), 0.6f));
 
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize(1.8f);
@@ -80,8 +81,6 @@ void ThrowEnemy::Initialize()
 	pCombatStateManager_->ChangeState("Wait");
 	pCombatStateManager_->Initialize();
 
-	Model::GetBoneIndex(hModel_, "attack_Hand.R", &boneIndex_, &partIndex_);
-	assert(boneIndex_ >= 0);
 }
 
 void ThrowEnemy::Update()
@@ -128,12 +127,7 @@ void ThrowEnemy::ThrowItem()
 	XMFLOAT3 plaPos = GameManager::GetPlayer()->GetPosition();
 	plaPos.y += 0.75f;
 
-#if 0
-	NormalBullet* bullet = Instantiate<NormalBullet>(GetParent());
-#else
 	ThrowBullet* bullet = Instantiate<ThrowBullet>(GetParent());
-#endif
-
 	bullet->Shot(itemTransform_.position_, plaPos);
 	bullet->SetShotParent(this);
 	bullet->SetObjectName("NormalEBullet");

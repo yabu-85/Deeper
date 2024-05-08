@@ -13,7 +13,7 @@ namespace {
 }
 
 Scarecrow::Scarecrow(GameObject* parent)
-	: EnemyBase(parent, "ScarecrowEnemy"), hModel_(-1)
+	: EnemyBase(parent, "ScarecrowEnemy"), hModel_(-1), pMoveAction_(nullptr)
 {
 }
 
@@ -40,10 +40,8 @@ void Scarecrow::Initialize()
 	combatDistance_ = 5.0f;
 
 	//Collider‚ÌÝ’è
-	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.3f, 0), 0.5f);
-	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 1.1f, 0), 0.5f);
-	AddCollider(collision1);
-	AddCollider(collision2);
+	AddCollider(new SphereCollider(XMFLOAT3(0, 0.3f, 0), 0.5f));
+	AddCollider(new SphereCollider(XMFLOAT3(0, 1.1f, 0), 0.5f));
 
 	pEnemyUi_ = new EnemyUi(this);
 	pEnemyUi_->Initialize(2.8f);

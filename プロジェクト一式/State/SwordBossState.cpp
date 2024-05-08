@@ -260,6 +260,9 @@ void SwordBossAttack::Update()
 	time_++;
 	int AnimFrame = pBoss_->GetAnimationController()->GetAnimTime((int)nextAttack_);
 
+	OutputDebugStringA(std::to_string((int)nextAttack_).c_str());
+	OutputDebugString("\n");
+
 	if (time_ >= AnimFrame) {
 		owner_->ChangeState("Attack");
 	}
@@ -277,7 +280,7 @@ void SwordBossAttack::OnEnter()
 
 	pBoss_->SetCombatReady(false);
 	pBoss_->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
-	pBoss_->GetAnimationController()->SetNextAnim((int)nextAttack_, 0.15f);
+	pBoss_->GetAnimationController()->SetNextAnim((int)nextAttack_, 0.1f);
 
 	std::string name = pBoss_->GetDamageController()->GetCurrentDamage().name;
 	if (name == "none") {

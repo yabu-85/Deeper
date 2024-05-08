@@ -115,6 +115,9 @@ private:
 	std::vector<int> orientBoneIndex;
 	void RotateOrient();
 
+	//FbxMatrixから回転行列の計算をするラジアン
+	XMFLOAT3 CalcMatRotateRatio(const fbxsdk::FbxMatrix& mat);
+
 	/////////privateな関数（Init関数から呼ばれる）//////////////////////////
 	void InitVertex(fbxsdk::FbxMesh * mesh);	//頂点バッファ準備
 	void InitMaterial(fbxsdk::FbxNode * pNode);	//マテリアル準備

@@ -89,6 +89,30 @@ void FbxParts::RotateOrient()
 	}
 }
 
+XMFLOAT3 FbxParts::CalcMatRotateRatio(const fbxsdk::FbxMatrix& mat)
+{
+	//https://qiita.com/q_tarou/items/46e5045068742dfb2fa6
+	float PI = 3.14159265358979f;
+	float threshold = 0.0f;
+	XMFLOAT3 rot = XMFLOAT3();
+	if (abs((float)mat.Get(2, 1) - 1.0f) < threshold) { // R(2,1) = sin(x) = 1の時
+		rot.x = PI / 2.0f;
+		rot.y = 0.0f;
+		rot.z = atan2f((float)mat.Get(1, 0) , (float)mat.Get(0, 0));
+	}
+	else if (abs((float)mat.Get(2, 1) + 1.0f) < threshold) { // R(2,1) = sin(x) = -1の時
+		rot.x = -PI / 2.0f;
+		rot.y = 0.0f;
+		rot.z = atan2f((float)mat.Get(1, 0), (float)mat.Get(0, 0));
+	}
+	else {
+		rot.x = asinf((float)mat.Get(2, 1));
+		rot.y = atan2f(-(float)mat.Get(2, 0), (float)mat.Get(2, 2));
+		rot.z = atan2f(-(float)mat.Get(0, 1), (float)mat.Get(1, 1));
+	}
+	return rot;
+}
+
 //頂点バッファ準備
 void FbxParts::InitVertex(fbxsdk::FbxMesh * mesh)
 {
@@ -645,7 +669,7 @@ XMFLOAT3 FbxParts::GetBonePosition(int index, FbxTime time1, FbxTime time2, floa
 	FbxMatrix mCurrentOrentation1 = evaluator->GetNodeGlobalTransform(ppCluster_[index]->GetLink(), time1);
 	FbxMatrix mCurrentOrentation2 = evaluator->GetNodeGlobalTransform(ppCluster_[index]->GetLink(), time2);
 
-	float w1 = 1 - blendFactor;
+	float w1 = 1.0f - blendFactor;
 	XMFLOAT3 pos = XMFLOAT3();
 	pos.x = (float)mCurrentOrentation1[3][0] * w1;
 	pos.y = (float)mCurrentOrentation1[3][1] * w1;
@@ -662,29 +686,10 @@ XMFLOAT3 FbxParts::GetBoneRotate(int index, FbxTime time)
 	FbxAnimEvaluator* evaluator = ppCluster_[index]->GetLink()->GetScene()->GetAnimationEvaluator();
 	FbxMatrix mCurrentOrentation = evaluator->GetNodeGlobalTransform(ppCluster_[index]->GetLink(), time);
 
-	//https://qiita.com/q_tarou/items/46e5045068742dfb2fa6
-	float PI = 3.14159265358979f;
-	float threshold = 0.001f;
-	XMFLOAT3 rot = XMFLOAT3();
-	if (abs(mCurrentOrentation[2][1] - 1.0f) < threshold) { // R(2,1) = sin(x) = 1の時
-		rot.x = PI / 2.0f;
-		rot.y = 0.0f;
-		rot.z = atan2f(mCurrentOrentation[1][0], mCurrentOrentation[0][0]);
-	}
-	else if (abs(mCurrentOrentation[2][1] + 1.0f) < threshold) { // R(2,1) = sin(x) = -1の時
-		rot.x = -PI / 2;
-		rot.y = 0;
-		rot.z = atan2(mCurrentOrentation[1][0], mCurrentOrentation[0][0]);
-	}
-	else {
-		rot.x = asin(mCurrentOrentation[2][1]);
-		rot.y = atan2(-mCurrentOrentation[2][0], mCurrentOrentation[2][2]);
-		rot.z = atan2(-mCurrentOrentation[0][1], mCurrentOrentation[1][1]);
-	}
-
-	rot.x = -XMConvertToDegrees(angle_x);
-	rot.y = -XMConvertToDegrees(angle_y);
-	rot.z = XMConvertToDegrees(angle_z);
+	XMFLOAT3 rot = CalcMatRotateRatio(mCurrentOrentation);
+	rot.x = -XMConvertToDegrees(rot.x);
+	rot.y = -XMConvertToDegrees(rot.y);
+	rot.z = XMConvertToDegrees(rot.z);
 	return rot;
 }
 
@@ -693,33 +698,22 @@ XMFLOAT3 FbxParts::GetBoneRotate(int index, FbxTime frame1, FbxTime frame2, floa
 	FbxAnimEvaluator* evaluator = ppCluster_[index]->GetLink()->GetScene()->GetAnimationEvaluator();
 	FbxMatrix mCurrentOrentation1 = evaluator->GetNodeGlobalTransform(ppCluster_[index]->GetLink(), frame1);
 	FbxMatrix mCurrentOrentation2 = evaluator->GetNodeGlobalTransform(ppCluster_[index]->GetLink(), frame2);
+	
+	//frame1の計算
+	float w1 = 1.0f - blendFactor;
+	XMFLOAT3 rot = CalcMatRotateRatio(mCurrentOrentation1);
+	rot = XMFLOAT3(rot.x * w1, rot.y * w1, rot.z * w1);
 
-	// Extract rotation axis from the rotation matrix
-	FbxVector4 rotationRow0 = mCurrentOrentation1.GetRow(0);
-	FbxVector4 rotationRow1 = mCurrentOrentation1.GetRow(1);
-	FbxVector4 rotationRow2 = mCurrentOrentation1.GetRow(2);
-
-	// Calculate the rotation angles in degrees
-	float pitch = static_cast<float>(atan2(rotationRow2[1], rotationRow2[2]));
-	float yaw = static_cast<float>(asin(-rotationRow2[0]));
-	float roll = static_cast<float>(atan2(rotationRow1[0], rotationRow0[0]));
-
-	float w1 = 1 - blendFactor;
-	XMFLOAT3 rot = XMFLOAT3();
-	rot.x = -(XMConvertToDegrees(pitch) * w1);
-	rot.y = -(XMConvertToDegrees(yaw) * w1);
-	rot.z = (XMConvertToDegrees(roll) * w1);
-
-	//ブレンドの値足す
-	rotationRow0 = mCurrentOrentation2.GetRow(0);
-	rotationRow1 = mCurrentOrentation2.GetRow(1);
-	rotationRow2 = mCurrentOrentation2.GetRow(2);
-	pitch = static_cast<float>(atan2(rotationRow2[1], rotationRow2[2]));
-	yaw = static_cast<float>(asin(-rotationRow2[0]));
-	roll = static_cast<float>(atan2(rotationRow1[0], rotationRow0[0]));
-	rot.x += -(XMConvertToDegrees(pitch) * blendFactor);
-	rot.y += -(XMConvertToDegrees(yaw) * blendFactor);
-	rot.z += (XMConvertToDegrees(roll) * blendFactor);
+	//frame2をブレンドの値で足す
+	XMFLOAT3 r = CalcMatRotateRatio(mCurrentOrentation2);
+	rot.x += r.x * blendFactor;
+	rot.y += r.y * blendFactor;
+	rot.z += r.z * blendFactor;
+	
+	//Degreeに変換
+	rot.x = -XMConvertToDegrees(rot.x);
+	rot.y = -XMConvertToDegrees(rot.y);
+	rot.z = XMConvertToDegrees(rot.z);
 	return rot;
 }
 

@@ -18,7 +18,7 @@
 
 namespace {
 	static const int POLY_DRAW_TIME = 20;
-	static const int POLY_SMOOTH = 1;
+	static const int POLY_SMOOTH = 0;
 	static const float POLY_LENG = 1.7f;
 
 	static const float FIRST_LENG = 0.1f;	//コライダーの最初のポジション
@@ -70,25 +70,21 @@ void SwordBoss::Initialize()
 	pAnimationController_ = new AnimationController(hModel_, this);
 	for (int i = 0; i < (int)SWORDBOSS_ANIMATION::MAX; i++) pAnimationController_->AddAnim(SWORDBOSS_ANIMATION_DATA[i][0], SWORDBOSS_ANIMATION_DATA[i][1]);
 	//Slash_Up
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossAttackNotify(600, 690));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossAttackNotify(630, 690));
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossRotateNotify(600, 690));
 	//Slash_Right
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossAttackNotify(740, 755));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossAttackNotify(740, 775));
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossRotateNotify(700, 740));
 	//Trust
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossAttackNotify(835, 840));
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossRotateNotify(780, 830));
 
 	//Colliderの設定
-	SphereCollider* collision1 = new SphereCollider(XMFLOAT3(0, 0.5f, 0), 0.35f);
-	SphereCollider* collision2 = new SphereCollider(XMFLOAT3(0, 1.1f, 0), 0.35f);
-	AddCollider(collision1);
-	AddCollider(collision2);
-	for (int i = 0; i < 4; i++) {
-		SphereCollider* collision = new SphereCollider(XMFLOAT3(0, 0, 0), 0.2f);
-		collision->SetValid(false);
-		AddAttackCollider(collision);
-	}
+	AddCollider(new SphereCollider(XMFLOAT3(0, 0.5f, 0), 0.35f));
+	AddCollider(new SphereCollider(XMFLOAT3(0, 1.1f, 0), 0.35f));
+	//AttackCollider
+	for (int i = 0; i < 4; i++) AddAttackCollider(new SphereCollider(XMFLOAT3(0, 0, 0), 0.2f));
+	SetAllAttackColliderValid(false);
 
 	//Actionの設定
 	pMoveAction_ = new AstarMoveAction(this, 0.0f, 0.3f);
@@ -113,9 +109,9 @@ void SwordBoss::Initialize()
 
 	//技ごとに変更するように todo
 	pDamageController_ = new DamageController;
-	DamageInfo damage(this, "SwordBoss", 5);
+	DamageInfo damage(this, "SwordBoss", 0);
 	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 5, 0.2f, transform_.position_);
-	//pDamageController_->SetCurrentDamage(damage);
+	pDamageController_->SetCurrentDamage(damage);
 	pDamageController_->SetCurrentKnockBackInfo(knockBack);
 
 	pPolyLine_ = new PolyLine;
@@ -131,7 +127,6 @@ void SwordBoss::Update()
 	pStateManager_->Update();	
 	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f, GetBodyRange());
 	pPolyLine_->Update();
-
 }
 
 void SwordBoss::Draw()
@@ -206,6 +201,8 @@ void SwordBoss::CalcPoly()
 
 void SwordBoss::CalcCollider()
 {
+	OutputDebugString("calc Collider\n");
+
 	//まず中間の当たり判定
 	std::list<Collider*> list = GetAttackColliderList();
 	XMFLOAT3 pos = Float3Sub(swordTransform_.position_, transform_.position_);

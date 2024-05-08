@@ -15,7 +15,7 @@
 
 namespace {
     static const int POLY_DRAW_TIME = 10;
-    static const int POLY_SMOOTH = 1;
+    static const int POLY_SMOOTH = 0;
 
     static const float WEAPON_SIZE = 1.2f;
     static const float BLEND_= 1.2f;
@@ -117,6 +117,7 @@ void MainSwordWeapon::Draw()
     //‰ñ“]Ž²‚ðŽæ“¾
     transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     transform_.rotate_.y += pPlayer_->GetRotate().y;
+    transform_.rotate_.z -= 180.0f;
 
     Transform t = transform_;
     t.position_ = wandPos_;

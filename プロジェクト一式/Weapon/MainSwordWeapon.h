@@ -4,7 +4,7 @@
 
 class Player;
 class SphereCollider;
-class PolyLine;
+class DoublePolyLine;
 class DamageController;
 
 class MainSwordWeapon : public WeaponBase
@@ -14,7 +14,7 @@ class MainSwordWeapon : public WeaponBase
 
     Player* pPlayer_;
     SphereCollider* sphere_[2];
-    PolyLine* pPolyLine_;
+    DoublePolyLine* pDoublePolyLine_;
     DamageController* pDamageController_;
 
 public:
@@ -36,7 +36,7 @@ public:
     void SetDamageInfoCombo2();
     void SetDamageInfoCombo3();
 
-    PolyLine* GetPolyLine() { return pPolyLine_; }
+    DoublePolyLine* GetPolyLine() { return pDoublePolyLine_; }
 
 };
 

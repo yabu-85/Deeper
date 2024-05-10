@@ -33,7 +33,7 @@ namespace {
 
 SwordBoss::SwordBoss(GameObject* parent)
 	: EnemyBase(parent, "SwordBossEnemy"), hModel_(-1), hSwordModel_(-1), pMoveAction_(nullptr), pRotateAction_(nullptr), pOrientedMoveAction_(nullptr), 
-	boneIndex_(-1), partIndex_(-1), pDamageController_(nullptr), pAnimationController_(nullptr), pPolyLine_(nullptr), preRotate_{0,0,0}
+	boneIndex_(-1), partIndex_(-1), pDamageController_(nullptr), pAnimationController_(nullptr), pDoublePolyLine_(nullptr), preRotate_{0,0,0}
 {
 }
 
@@ -112,10 +112,9 @@ void SwordBoss::Initialize()
 	pDamageController_->SetCurrentDamage(damage);
 	pDamageController_->SetCurrentKnockBackInfo(knockBack);
 
-	pPolyLine_ = new PolyLine;
-	pPolyLine_->Load("PolyImage/Sword.png");
-	pPolyLine_->SetLength(POLY_DRAW_TIME);
-	pPolyLine_->SetSmooth(POLY_SMOOTH);
+	pDoublePolyLine_ = new DoublePolyLine;
+	pDoublePolyLine_->Load("PolyImage/Sword.png");
+	pDoublePolyLine_->SetLength(POLY_DRAW_TIME);
 }
 
 void SwordBoss::Update()
@@ -124,7 +123,7 @@ void SwordBoss::Update()
 	pAnimationController_->Update();
 	pStateManager_->Update();	
 	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f, GetBodyRange());
-	pPolyLine_->Update();
+	pDoublePolyLine_->Update();
 }
 
 void SwordBoss::Draw()
@@ -159,13 +158,13 @@ void SwordBoss::Draw()
 
 	pEnemyUi_->Draw();
 	pMoveAction_->Draw();
-	pPolyLine_->Draw();
+	pDoublePolyLine_->Draw();
 }
 
 void SwordBoss::Release()
 {
-	SAFE_RELEASE(pPolyLine_);
-	SAFE_DELETE(pPolyLine_);
+	SAFE_RELEASE(pDoublePolyLine_);
+	SAFE_DELETE(pDoublePolyLine_);
 	SAFE_DELETE(pRotateAction_);
 	SAFE_DELETE(pMoveAction_);
 	SAFE_DELETE(pOrientedMoveAction_);
@@ -194,7 +193,7 @@ void SwordBoss::OnAttackCollision(GameObject* pTarget)
 void SwordBoss::CalcPoly()
 {
 	XMFLOAT3 target = CalculationDirection(swordTransform_.rotate_);
-	pPolyLine_->AddPosition(swordTransform_.position_, Float3Add(swordTransform_.position_, Float3Multiply(target, POLY_LENG)));
+	pDoublePolyLine_->AddPosition(swordTransform_.position_, Float3Add(swordTransform_.position_, Float3Multiply(target, POLY_LENG)));
 }
 
 void SwordBoss::CalcCollider()
@@ -226,7 +225,7 @@ void SwordBoss::AttackEnd()
 {
 	SetAllAttackColliderValid(false);
 	GetDamageController()->ResetAttackList();
-	pPolyLine_->SetClear(true);
+	pDoublePolyLine_->SetClear(true);
 }
 
 void SwordBoss::SetDamageInfo1()

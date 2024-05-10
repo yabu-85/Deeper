@@ -114,9 +114,6 @@
     <Filter Include="03Scene\Stage\Stage3">
       <UniqueIdentifier>{c8f62308-17d4-4d83-af48-fb7a7bc2ad71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03Scene\Base">
-      <UniqueIdentifier>{ca23a4cb-66f8-49a0-8901-bff618760a67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03Scene\Ornament">
       <UniqueIdentifier>{b78aad7c-1ab8-46ab-a6dc-9337e00b7fc9}</UniqueIdentifier>
     </Filter>
@@ -140,6 +137,9 @@
     </Filter>
     <Filter Include="15Animation\EnemyNotify">
       <UniqueIdentifier>{9f83ef5f-4a95-40ee-9270-87b6f087e1e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03Scene\Base">
+      <UniqueIdentifier>{ca23a4cb-66f8-49a0-8901-bff618760a67}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

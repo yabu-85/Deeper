@@ -2,6 +2,13 @@
 #include <algorithm>
 class EnemyBase;
 
+//まだ使用可能まで作成出来ていないやつ
+//攻撃を登録して、その中から攻撃を選ぶクラス
+
+//Singletonを使用するかどうか迷いどころ
+//多分使用した方がいいと思うからEngineにある
+//Singletonがまだできていない
+
 class SelectAttackInfo {
     int priority_;   //複数攻撃可能だった時の優先度
 public:

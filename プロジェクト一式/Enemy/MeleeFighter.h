@@ -1,6 +1,5 @@
 #pragma once
 #include "EnemyBase.h"
-#include "EnemyAttackSelect.h"
 
 class PolyLine;
 class AstarMoveAction;
@@ -31,8 +30,6 @@ class MeleeFighter : public EnemyBase
     int hModel_;
     int boneIndex_[2];
     int partIndex_[2];
-
-    SelectoAttack attackSelector_;
 
     PolyLine* pPolyLine_[2];
     AnimationController* pAnimationController_;

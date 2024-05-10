@@ -98,15 +98,7 @@ void MeleeFighter::Initialize()
 		pPolyLine_[i] = new PolyLine;
 		pPolyLine_[i]->Load("PolyImage/Burger.png");
 		pPolyLine_[i]->SetLength(POLY_DRAW_TIME);
-		pPolyLine_[i]->SetSmooth(POLY_SMOOTH);
 	}
-
-	attackSelector_.AddSelectAttack(new MelleAttack1(0));
-	attackSelector_.AddSelectAttack(new MelleAttack1(0));
-	attackSelector_.AddSelectAttack(new MelleAttack2(1));
-	attackSelector_.AddSelectAttack(new MelleAttack2(1));
-	attackSelector_.Selector((EnemyBase*)this);
-
 }
 
 void MeleeFighter::Update()
@@ -167,14 +159,16 @@ void MeleeFighter::OnAttackCollision(GameObject* pTarget)
 void MeleeFighter::CalcAttack()
 {
 	std::list<Collider*> list = GetAttackColliderList();
-	auto it = list.begin();
-	for (int i = 0; i < 2; i++) {
+	int i = 0;
+	for (Collider* collid : list) {
 		XMFLOAT3 wandPos = Model::GetBoneAnimPosition(hModel_, boneIndex_[i], partIndex_[i]);
 		pPolyLine_[i]->AddPosition(wandPos);
 
 		//AttackƒRƒŠƒWƒ‡ƒ“‚ÌÀ•WÝ’è
 		XMFLOAT3 center = XMFLOAT3(wandPos.x - transform_.position_.x, wandPos.y - transform_.position_.y, wandPos.z - transform_.position_.z);
-		(*it)->SetCenter(center);
+		collid->SetCenter(center);
+		collid->SetValid(true);
+		i++;
 	}
 }
 

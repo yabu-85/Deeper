@@ -36,6 +36,7 @@ void WeaponMainOrnament::Draw()
 {
     wandPos_ = Model::GetBoneAnimPosition(pPlayerOrnament_->GetModelHandle(), boneIndex_, partIndex_);
     transform_.rotate_ = Model::GetBoneAnimRotate(pPlayerOrnament_->GetModelHandle(), boneIndex_, partIndex_);
+    transform_.rotate_.z -= 180.0f;
 
     if (transform_.rotate_.x >= 90.0f || transform_.rotate_.x <= -90.0f) {
         transform_.rotate_.y *= -1.0f;

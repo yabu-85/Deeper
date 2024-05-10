@@ -1,7 +1,7 @@
 #pragma once
 #include "EnemyBase.h"
 
-class PolyLine;
+class DoublePolyLine;
 class AstarMoveAction;
 class OrientedMoveAction;
 class RotateAction;
@@ -43,7 +43,7 @@ class SwordBoss : public EnemyBase
     Transform swordTransform_;
     XMFLOAT3 preRotate_;
 
-    PolyLine* pPolyLine_;
+    DoublePolyLine* pDoublePolyLine_;
     AnimationController* pAnimationController_;
     DamageController* pDamageController_;
     AstarMoveAction* pMoveAction_;

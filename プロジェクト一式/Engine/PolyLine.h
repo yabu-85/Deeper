@@ -13,7 +13,6 @@ class PolyLine
 {
 protected:
 	int length_;			//’·‚³
-	int size_;				//À•W‚Ì”
 	float width_;			//‘¾‚³
 	float alpha_;			//“§–¾“x
 

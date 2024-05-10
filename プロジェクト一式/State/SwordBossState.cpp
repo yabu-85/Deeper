@@ -29,8 +29,8 @@ namespace {
 	static const int MIN_MOVE_TIME = 6;
 	static const int MAX_MOVE_TIME = 5;
 
-	static const float FAST_SPEED = 0.00f;
-	static const float SLOW_SPEED = 0.00f;
+	static const float FAST_SPEED = 0.05f;
+	static const float SLOW_SPEED = 0.03f;
 	static const float ROTATE_RATIO = 0.07f;
 
 }
@@ -110,13 +110,19 @@ SwordBossCombat::SwordBossCombat(StateManager* owner) : StateBase(owner), time_(
 	
 	//UŒ‚€”õ‰Â”\‚È‚çUŒ‚‚Ç‚ê‚©‘I‘ð‚µ‚ÄA‘I‘ð‚Å‚«‚½‚È‚çState„ˆÚ
 	EnemyChangeCombatStateNode* action3 = new EnemyChangeCombatStateNode(e, "Attack");
+	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(action3, e);
+	IsPlayerInRangeNode* condition6 = new IsPlayerInRangeNode(condition5, e->GetAttackDistance(), e, GameManager::GetPlayer());
+	IsEnemyAttackReady* condition8 = new IsEnemyAttackReady(condition6, e);
+
+	//C³‰ÓŠFSelectorŽÀ‘•‚µ‚½‚ç‰ü—Ç
+	/*
 	EnemyAttackSelectNode* action2 = new EnemyAttackSelectNode(e);
 	Sequence* sequence1 = new Sequence();
 	sequence1->AddChildren(action2);
 	sequence1->AddChildren(action3);
-
 	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(sequence1, e);
 	IsEnemyAttackReady* condition8 = new IsEnemyAttackReady(condition5, e);
+	*/
 	waitSelector->AddChildren(condition8);
 
 	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(e, "Move");
@@ -260,11 +266,9 @@ void SwordBossAttack::Update()
 	time_++;
 	int AnimFrame = pBoss_->GetAnimationController()->GetAnimTime((int)nextAttack_);
 
-	OutputDebugStringA(std::to_string((int)nextAttack_).c_str());
-	OutputDebugString("\n");
-
 	if (time_ >= AnimFrame) {
-		owner_->ChangeState("Attack");
+		if(rand() % 3 == 0) owner_->ChangeState("Attack");
+		else owner_->ChangeState("Wait");
 	}
 }
 

@@ -55,7 +55,7 @@ namespace {
 
 MainSwordWeapon::MainSwordWeapon(GameObject* parent)
 	: WeaponBase(parent, "MainSwordWeapon"), wandPos_(0, 0, 0), direction_(0,0,0),
-    pPlayer_(nullptr), pPolyLine_(nullptr), pDamageController_(nullptr), sphere_{ nullptr, nullptr }
+    pPlayer_(nullptr), pDoublePolyLine_(nullptr), pDamageController_(nullptr), sphere_{ nullptr, nullptr }
 {
     transform_.pParent_ = nullptr;
 }
@@ -91,16 +91,14 @@ void MainSwordWeapon::Initialize()
         AddAttackCollider(sphere_[i]);
     }
     
-
-    pPolyLine_ = new PolyLine;
-    pPolyLine_->Load("PolyImage/Sword.png");
-    pPolyLine_->SetLength(POLY_DRAW_TIME);
-    pPolyLine_->SetSmooth(POLY_SMOOTH);
+    pDoublePolyLine_ = new DoublePolyLine;
+    pDoublePolyLine_->Load("PolyImage/Sword.png");
+    pDoublePolyLine_->SetLength(POLY_DRAW_TIME);
 }
 
 void MainSwordWeapon::Update()
 {
-    pPolyLine_->Update();
+    pDoublePolyLine_->Update();
 
 }
 
@@ -124,14 +122,14 @@ void MainSwordWeapon::Draw()
     Model::SetTransform(hModel_, t);
     Model::Draw(hModel_);
    
-    pPolyLine_->Draw();
+    pDoublePolyLine_->Draw();
     CollisionDraw();
 }
 
 void MainSwordWeapon::Release()
 {
-    SAFE_RELEASE(pPolyLine_);
-    SAFE_DELETE(pPolyLine_);
+    SAFE_RELEASE(pDoublePolyLine_);
+    SAFE_DELETE(pDoublePolyLine_);
     SAFE_DELETE(pDamageController_);
 
 }
@@ -168,7 +166,10 @@ void MainSwordWeapon::ResetState()
     isCancellable_ = false;
     pStateManager_->ChangeState("");
     SetAllAttackColliderValid(false);
-    pPolyLine_->SetClear(true);
+    pDoublePolyLine_->SetClear(true);
+
+    //修正箇所
+    pDoublePolyLine_->ResetPosition();
 }
 
 void MainSwordWeapon::CalcSwordTrans()
@@ -182,7 +183,7 @@ void MainSwordWeapon::CalcSwordTrans()
     XMFLOAT3 swordTip = Float3Add(wandPos_, vec);
     
     //ワールドの座標をPolyに
-    pPolyLine_->AddPosition(wandPos_, swordTip);
+    pDoublePolyLine_->AddPosition(wandPos_, swordTip);
 
     //ローカルにしてCollider設定
     XMFLOAT3 pPos = pPlayer_->GetPosition();

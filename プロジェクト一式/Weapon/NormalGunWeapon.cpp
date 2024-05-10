@@ -55,6 +55,7 @@ void NormalGunWeapon::Draw()
     transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     transform_.rotate_.y += pPlayer_->GetRotate().y;
+    transform_.rotate_.z -= 180.0f;
 
     Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_);

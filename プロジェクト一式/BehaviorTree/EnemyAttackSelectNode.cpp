@@ -16,7 +16,7 @@ EnemyAttackSelectNode::Status EnemyAttackSelectNode::Update()
 {
 	SwordBoss* boss = static_cast<SwordBoss*>(owner_);
 
-	if (rand() % 3 == 0) {
+	if (rand() % 2 == 0) {
 		DamageInfo damage(boss, "SwordBossAtk1", 0);
 		boss->GetDamageController()->SetCurrentDamage(damage);
 	}

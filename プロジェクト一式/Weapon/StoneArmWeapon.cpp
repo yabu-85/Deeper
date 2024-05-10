@@ -11,7 +11,7 @@
 #include "../Enemy/EnemyBase.h"
 
 namespace {
-    static const int ATTACK_DAMAGE = 100;
+    static const int ATTACK_DAMAGE = 40;
     static const float MOVE_SPEED = 0.03f;
 
     XMVECTOR shakeDirection { 0.0f, 1.0f, 0.0f, 0.0f };
@@ -72,6 +72,7 @@ void StoneArmWeapon::Draw()
     transform_.position_ = Model::GetBoneAnimPosition(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     transform_.rotate_ = Model::GetBoneAnimRotate(pPlayer_->GetModelHandle(), boneIndex_, partIndex_);
     transform_.rotate_.y += pPlayer_->GetRotate().y;
+    transform_.rotate_.z -= 180.0f;
 
     //‘½•ª«—ˆ’¼‚·C³‰ÓŠ
     atkPosition_ = Model::GetBoneAnimPosition(hModel_, atkBoneIndex_, atkPartIndex_);
@@ -106,7 +107,7 @@ void StoneArmWeapon::OnAttackCollision(GameObject* pTarget)
     if (pTarget->GetObjectName().find("Enemy") != std::string::npos) {
         EnemyBase* e = static_cast<EnemyBase*>(pTarget);
         DamageInfo damage(ATTACK_DAMAGE);
-        KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 30, 0.3f, pPlayer_->GetPosition());
+        KnockBackInfo knock(KNOCK_TYPE::MEDIUM, 20, 0.3f, pPlayer_->GetPosition());
         e->ApplyDamageDirectly(damage, knock);
     }
 }

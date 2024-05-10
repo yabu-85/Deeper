@@ -25,11 +25,9 @@ void Stage1::Initialize()
 	SetWarpStage(SCENE_ID_STAGE2);	
 	OnStageCleared();
 
-#if _DEBUG
 	//•Ší‚Æ‚©‚©‚µ
 	GameManager::GetWeaponObjectManager()->AddWeaponObject(ENEMY_TYPE::ENEMY_STONEGOLEM, GameManager::GetStage()->GetStartPosition());
 	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_SCARECROW);
-#endif
 
 }
 

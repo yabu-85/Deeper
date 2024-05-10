@@ -52,6 +52,7 @@ void ThrowBullet::Initialize()
 void ThrowBullet::Update()
 {
 	time_--;
+	pPolyLine_->Update();
 
 	//死亡判定
 	if (isDeath_) {
@@ -145,7 +146,11 @@ void ThrowBullet::Hit()
 
 	VFXManager::CreateVfxExplode1(transform_.position_);
 	AudioManager::Play(AUDIO_ID::BULLET_HIT1, transform_.position_, 10.0f);
+	
+	//進めたポジション追加＆後ろ削除
 	pPolyLine_->AddPosition(transform_.position_);
+	pPolyLine_->ClearLastPositions();
+
 	time_ = DEATH_TIME;
 	isDeath_ = true;
 	Invisible();

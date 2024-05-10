@@ -47,7 +47,7 @@ void MeleeFighter::Initialize()
 
 	SetHP(100);
 	SetMaxHP(100);
-	SetBodyWeight(10.0f);
+	SetBodyWeight(1.0f);
 	SetBodyRange(0.35f);
 
 	type_ = ENEMY_MELEE;
@@ -100,6 +100,13 @@ void MeleeFighter::Initialize()
 		pPolyLine_[i]->SetLength(POLY_DRAW_TIME);
 		pPolyLine_[i]->SetSmooth(POLY_SMOOTH);
 	}
+
+	attackSelector_.AddSelectAttack(new MelleAttack1(0));
+	attackSelector_.AddSelectAttack(new MelleAttack1(0));
+	attackSelector_.AddSelectAttack(new MelleAttack2(1));
+	attackSelector_.AddSelectAttack(new MelleAttack2(1));
+	attackSelector_.Selector((EnemyBase*)this);
+
 }
 
 void MeleeFighter::Update()

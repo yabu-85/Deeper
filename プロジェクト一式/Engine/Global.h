@@ -33,6 +33,12 @@ static XMFLOAT3 Float3Normalize(XMFLOAT3 a)
 }
 
 //‹——£‚ðŒvŽZ
+static float CalculationDistance(XMFLOAT3 dir)
+{
+	return sqrtf((dir.x * dir.x) + (dir.y * dir.y) + (dir.z * dir.z));
+}
+
+//‹——£‚ðŒvŽZ
 static float CalculationDistance(XMFLOAT3 a, XMFLOAT3 b)
 {
 	XMFLOAT3 c = Float3Sub(a, b);

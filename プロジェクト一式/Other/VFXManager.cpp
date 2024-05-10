@@ -17,13 +17,13 @@ void VFXManager::Initialize()
 	//‰Î‚Ì•²
 	sparks.textureFileName = "Particle/cloudA.png";
 	sparks.delay = 0;
-	sparks.number = 20;
+	sparks.number = 15;
 	sparks.lifeTime = 50;
 	sparks.directionRnd = XMFLOAT3(90.0f, 90.0f, 90.0f);
 	sparks.speed = 0.2f;
 	sparks.speedRnd = 1.0f;
 	sparks.accel = 0.9f;
-	sparks.size = XMFLOAT2(0.3f, 0.3f);
+	sparks.size = XMFLOAT2(0.25f, 0.25f);
 	sparks.sizeRnd = XMFLOAT2(0.1f, 0.1f);
 	sparks.scale = XMFLOAT2(0.97f, 0.97f);
 	sparks.color = XMFLOAT4(1.0f, 1.0f, 0.1f, 1.0f);
@@ -33,7 +33,7 @@ void VFXManager::Initialize()
 	//”š”­
 	explode.textureFileName = "Particle/cloudA.png";
 	explode.delay = 0;
-	explode.number = 4;
+	explode.number = 8;
 	explode.lifeTime = 20;
 	explode.position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	explode.positionRnd = XMFLOAT3(0.5f, 0.0f, 0.5f);

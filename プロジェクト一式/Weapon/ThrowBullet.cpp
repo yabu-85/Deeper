@@ -56,6 +56,7 @@ void ThrowBullet::Update()
 	//Ž€–S”»’è
 	if (isDeath_) {
 		if (time_ <= 0) KillMe();
+		pPolyLine_->ClearLastPositions();
 		return;
 	}
 
@@ -148,6 +149,7 @@ void ThrowBullet::Hit()
 	time_ = DEATH_TIME;
 	isDeath_ = true;
 	Invisible();
+	transform_.position_.y -= 10000.0f;
 }
 
 void ThrowBullet::SetThrowData(float maxHeight, float maxDist)

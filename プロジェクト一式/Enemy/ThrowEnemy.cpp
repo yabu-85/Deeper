@@ -44,7 +44,7 @@ void ThrowEnemy::Initialize()
 
 	SetHP(30);
 	SetMaxHP(30);
-	SetBodyWeight(10.0f);
+	SetBodyWeight(0.7f);
 	SetBodyRange(0.3f);
 
 	type_ = ENEMY_THROW;

@@ -461,6 +461,9 @@
     <ClCompile Include="Enemy\EnemyAttackSelect.cpp">
       <Filter>08Enemy\EnemyBase</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Singleton.cpp">
+      <Filter>01Engine\ResourceManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -783,6 +786,9 @@
     </ClInclude>
     <ClInclude Include="Enemy\EnemyAttackSelect.h">
       <Filter>08Enemy\EnemyBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Singleton.h">
+      <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

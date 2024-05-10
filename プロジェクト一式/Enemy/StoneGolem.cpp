@@ -38,7 +38,7 @@ void StoneGolem::Initialize()
 
 	SetHP(200);
 	SetMaxHP(200);
-	SetBodyWeight(100.0f);
+	SetBodyWeight(10.0f);
 	SetBodyRange(0.7f);
 	
 	type_ = ENEMY_STONEGOLEM;

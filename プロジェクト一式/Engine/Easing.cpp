@@ -1,27 +1,50 @@
 #include "Easing.h"
 #include <cmath>
 
-float Easing::QuintIn(float x)
+#include "Direct3D.h"
+#include "GameObject.h"
+
+float Easing::EaseInQuint(float x)
 {
 	return x * x * x * x * x;
 }
 
-float Easing::QuintOut(float x)
+float Easing::EaseOutQuint(float x)
 {
 	return 1.0f - pow(1.0f - x, 5.0f);
 }
 
-float Easing::QuintInOut(float x)
+float Easing::EaseInOutQuint(float x)
 {
-	return (x < 0.5f) ? 16.0f * x * x * x * x * x : 1.0f - pow(-2.0f * x + 2.0f, 5.0f) / 2.0f;
+	return x < 0.5f ? (16.0f * x * x * x * x * x) : (1.0f - pow(-2.0f * x + 2.0f, 5.0f) / 2.0f);
 }
 
-float Easing::ExpoIn(float x)
+
+float Easing::Leap(float start, float end, float x)
 {
-	return x == 0.0f ? 0.0f : pow(2.0f, 10.0f * x - 10.0f);
+	return start + x * (end - start);
 }
 
-float Easing::Leap(float start, float end, float value)
+//ŠKæŒvŽZ‚ðs‚¤ŠÖ”
+double Factorial(int a)
 {
-	return start + value * (end - start);
+    double result = 1.0f;
+    for (int i = 2; i <= a; i++)
+    {
+        result *= i;
+    }
+
+    return result;
+}
+
+//“ñ€ŒW”‚ðŒvŽZ‚·‚éŠÖ”
+double Binomial(int n, int k)
+{
+    return Factorial(n) / (Factorial(k) * Factorial(n - k));
+}
+
+//ƒo[ƒ“ƒXƒ^ƒCƒ“Šî’êŠÖ”
+double Bernstein(int n, int i, float t)
+{
+    return Binomial(n, i) * pow(t, i) * pow(1 - t, n - i);
 }

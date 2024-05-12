@@ -10,17 +10,6 @@ PolyLine::PolyLine() : width_(0.3f), length_(50), alpha_(1.0f), moveAlpha_(false
 	ResetPosition();
 }
 
-void PolyLine::Update()
-{
-	if (clear_) {
-		ClearLastPositions();
-		if (first_ && allClearReset_) {
-			clear_ = false;
-			allClearReset_ = false;
-		}
-	}
-}
-
 void PolyLine::ResetPosition()
 {
 	//リストの先頭に現在位置を追加
@@ -227,8 +216,15 @@ void PolyLine::Draw()
 	Direct3D::SetShader(Direct3D::SHADER_BILLBOARD);
 	Direct3D::SetBlendMode(Direct3D::BLEND_ADD);
 
-	if (moveAlpha_)
-		alpha_ -= 0.005f;
+	if (moveAlpha_) alpha_ -= 0.005f;
+	
+	if (clear_) {
+		ClearLastPositions();
+		if (first_ && allClearReset_) {
+			clear_ = false;
+			allClearReset_ = false;
+		}
+	}
 
 	//コンスタントバッファに渡す情報
 	CONSTANT_BUFFER cb;

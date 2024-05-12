@@ -1,21 +1,21 @@
+#pragma once
 #include <vector>
-#include <algorithm>
+#include "../Engine/Singleton.h"
 class EnemyBase;
 
-//まだ使用可能まで作成出来ていないやつ
-//攻撃を登録して、その中から攻撃を選ぶクラス
-
-//Singletonを使用するかどうか迷いどころ
-//多分使用した方がいいと思うからEngineにある
-//Singletonがまだできていない
-
-class SelectAttackInfo {
+class SelectAttackInfo : public Singleton<SelectAttackInfo> {
     int priority_;   //複数攻撃可能だった時の優先度
 public:
     SelectAttackInfo(int pri) : priority_(pri) {}
     virtual bool CanUseAttack(EnemyBase* enemy) { return false; }
     int GetPriority() { return priority_; }
     void SetPriority(int p) { priority_ = p; }
+
+    // 引数を受け取るGetInstance()メソッド
+    static SelectAttackInfo& GetInstance(int pri) {
+        static SelectAttackInfo instance(pri); // インスタンス化時に引数を渡す
+        return instance;
+    }
 };
 
 class SelectoAttack {
@@ -27,16 +27,7 @@ public:
     int GetSelectAttack() { return selectAttack_; }
 };
 
-//---------------------------------------------------
-
-class MelleAttack1 : public SelectAttackInfo {
+class SwordBossSlashUp : public SelectAttackInfo {
+    friend class Singleton<SwordBossSlashUp>;
 public:
-    MelleAttack1(int pri) : SelectAttackInfo(pri) {}
-    bool CanUseAttack(EnemyBase* enemy) override;
-};
-
-class MelleAttack2 : public SelectAttackInfo {
-public:
-    MelleAttack2(int pri) : SelectAttackInfo(pri) {}
-    bool CanUseAttack(EnemyBase* enemy) override;
 };

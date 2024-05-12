@@ -45,7 +45,7 @@ static float CalculationDistance(XMFLOAT3 a, XMFLOAT3 b)
 	return sqrtf((c.x * c.x) + (c.y * c.y) + (c.z * c.z));
 }
 
-//向いている方向から回転軸を計算 y=0～360
+//ベクトルから回転軸を計算（度）
 static XMFLOAT3 CalculationRotate(XMFLOAT3 dir) {
 	XMFLOAT3 rot = XMFLOAT3();
 	rot.x = XMConvertToDegrees(-asinf(dir.y));
@@ -53,7 +53,16 @@ static XMFLOAT3 CalculationRotate(XMFLOAT3 dir) {
 	return rot;
 }
 
-//回転軸Y（度）から向いている方向を計算
+//ベクトルから回転軸を計算（度）
+static float CalculationRotateZ(XMFLOAT3 dir) {
+	float cosX = cosf(dir.x * XM_PI / 180.0f);
+	float cosY = cosf(dir.y * XM_PI / 180.0f);
+	float sinX = sinf(dir.x * XM_PI / 180.0f);
+	float sinY = sinf(dir.y * XM_PI / 180.0f);
+	return XMConvertToDegrees(atan2f(-sinY * dir.x + cosY * dir.z, dir.y * sinX + (dir.x * cosY + dir.z * sinY) * cosX));
+}
+
+//回転軸から向いている方向を計算ベクター
 static XMVECTOR CalculationVectorDirection(XMFLOAT3 rotate) {
 	XMMATRIX mRotX = XMMatrixRotationX(XMConvertToRadians(rotate.x));
 	XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(rotate.y));
@@ -62,7 +71,7 @@ static XMVECTOR CalculationVectorDirection(XMFLOAT3 rotate) {
 	return XMVector3TransformNormal(forwardVector, mView);
 }
 
-//回転軸Y（度）から向いている方向を計算
+//回転軸から向いている方向を計算XMFLOAT3
 static XMFLOAT3 CalculationDirection(XMFLOAT3 rotate) {
 	XMFLOAT3 dir;
 	XMStoreFloat3(&dir, CalculationVectorDirection(rotate));

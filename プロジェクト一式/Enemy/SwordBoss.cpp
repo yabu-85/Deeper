@@ -16,13 +16,17 @@
 #include "../Animation/AnimationController.h"
 #include "../Animation/SwordBossNotify.h"
 
+#include "../Engine/Singleton.h"
+#include "../Enemy/EnemyAttackSelect.h"
+
 namespace {
 	static const int POLY_DRAW_TIME = 20;
 	static const int POLY_SMOOTH = 0;
 	static const float POLY_LENG = 1.7f;
 
-	static const float FIRST_LENG = 0.1f;	//コライダーの最初のポジション
-	static const float ADDLENG = 0.42f;		//コライダーのポジションに足す量
+	static const int ATTACK_COLLIDER = 5;	//コライダーの数
+	static const float FIRST_LENG = 0.03f;	//コライダーの最初のポジション
+	static const float ADDLENG = 0.36f;		//コライダーのポジションに足す量
 
 	//アニメ通知の情報
 	static const int ATTACK_ANIME_ID[] = { (int)SWORDBOSS_ANIMATION::Slash_Up, (int)SWORDBOSS_ANIMATION::Slash_Right, (int)SWORDBOSS_ANIMATION::Thrust };
@@ -33,7 +37,8 @@ namespace {
 
 SwordBoss::SwordBoss(GameObject* parent)
 	: EnemyBase(parent, "SwordBossEnemy"), hModel_(-1), hSwordModel_(-1), pMoveAction_(nullptr), pRotateAction_(nullptr), pOrientedMoveAction_(nullptr), 
-	boneIndex_(-1), partIndex_(-1), pDamageController_(nullptr), pAnimationController_(nullptr), pDoublePolyLine_(nullptr), preRotate_{0,0,0}
+	boneIndex_(-1), partIndex_(-1), pDamageController_(nullptr), pAnimationController_(nullptr), pDoublePolyLine_(nullptr), pSelectoAttack_(nullptr),
+	preRotate_{0,0,0}, prePosition_{0,0,0}
 {
 }
 
@@ -53,7 +58,7 @@ void SwordBoss::Initialize()
 	SetHP(300);
 	SetMaxHP(300);
 	SetBodyWeight(10.0f);
-	SetBodyRange(0.5f);
+	SetBodyRange(0.7f);
 
 	transform_.position_ = GameManager::GetStage()->GetBossPosition();
 	type_ = ENEMY_SWORDBOSS;
@@ -72,16 +77,19 @@ void SwordBoss::Initialize()
 	//AnimNotifyの追加
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossAttackNotify(630, 690));
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossRotateNotify(600, 690));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossVfxNotify(620, 660));
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossAttackNotify(740, 775));
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossRotateNotify(700, 740));
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossAttackNotify(835, 840));
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossRotateNotify(780, 830));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossVfxNotify(710, 760));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossAttackNotify(835, 845));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossRotateNotify(780, 840));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossVfxNotify(830, 845));
 
 	//Colliderの設定
 	AddCollider(new SphereCollider(XMFLOAT3(0, 0.5f, 0), 0.35f));
 	AddCollider(new SphereCollider(XMFLOAT3(0, 1.1f, 0), 0.35f));
 	//AttackCollider
-	for (int i = 0; i < 4; i++) AddAttackCollider(new SphereCollider(XMFLOAT3(0, 0, 0), 0.2f));
+	for (int i = 0; i < ATTACK_COLLIDER; i++) AddAttackCollider(new SphereCollider(XMFLOAT3(0, 0, 0), 0.2f));
 	SetAllAttackColliderValid(false);
 
 	//Actionの設定
@@ -112,8 +120,16 @@ void SwordBoss::Initialize()
 	pDamageController_->SetCurrentDamage(damage);
 	pDamageController_->SetCurrentKnockBackInfo(knockBack);
 
+
+	pSelectoAttack_ = new SelectoAttack;
+	// SelectAttackInfoのインスタンスを取得
+	SelectAttackInfo& info = SelectAttackInfo::GetInstance(1); // 例えば優先度1を渡す
+
+	// テストクラスのインスタンスを取得して関数を呼び出す
+	//SwordBossSlashUp& instance = SwordBossSlashUp::GetInstance(1);
+
 	pDoublePolyLine_ = new DoublePolyLine;
-	pDoublePolyLine_->Load("PolyImage/Sword.png");
+	pDoublePolyLine_->Load("PolyImage/BossSword.png");
 	pDoublePolyLine_->SetLength(POLY_DRAW_TIME);
 }
 
@@ -121,9 +137,9 @@ void SwordBoss::Update()
 {
 	EnemyBase::Update();
 	pAnimationController_->Update();
-	pStateManager_->Update();	
+	pStateManager_->Update();
 	GameManager::GetCollisionMap()->CalcMapWall(transform_.position_, 0.1f, GetBodyRange());
-	pDoublePolyLine_->Update();
+
 }
 
 void SwordBoss::Draw()
@@ -131,7 +147,9 @@ void SwordBoss::Draw()
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 
+	prePosition_ = swordTransform_.position_;
 	swordTransform_.position_ = Model::GetBoneAnimPosition(hModel_, boneIndex_, partIndex_);
+
 	preRotate_ = swordTransform_.rotate_;
 	swordTransform_.rotate_ = Model::GetBoneAnimRotate(hModel_, boneIndex_, partIndex_);
 	swordTransform_.rotate_.y += transform_.rotate_.y;
@@ -140,9 +158,8 @@ void SwordBoss::Draw()
 	Model::Draw(hSwordModel_);
 	
 	CollisionDraw();
-
+	
 	//中間の攻撃コリジョンの表示をする
-#if _DEBUG
 	XMFLOAT3 middle = Float3Add(swordTransform_.rotate_, Float3Multiply(Float3Sub(preRotate_, swordTransform_.rotate_), 0.5f));
 	XMFLOAT3 target = CalculationDirection(middle);
 	XMFLOAT3 pos = Float3Sub(swordTransform_.position_, transform_.position_);
@@ -150,11 +167,10 @@ void SwordBoss::Draw()
 	float leng = FIRST_LENG;
 	for (auto e : list) {
 		XMFLOAT3 p = Float3Add(pos, Float3Multiply(target, leng));
-		leng += ADDLENG;
 		e->SetCenter(p);
 		e->Draw(transform_.position_);
+		leng += ADDLENG;
 	}
-#endif
 
 	pEnemyUi_->Draw();
 	pMoveAction_->Draw();
@@ -163,8 +179,11 @@ void SwordBoss::Draw()
 
 void SwordBoss::Release()
 {
+	SAFE_DELETE(pSelectoAttack_);
+	
 	SAFE_RELEASE(pDoublePolyLine_);
 	SAFE_DELETE(pDoublePolyLine_);
+
 	SAFE_DELETE(pRotateAction_);
 	SAFE_DELETE(pMoveAction_);
 	SAFE_DELETE(pOrientedMoveAction_);
@@ -190,6 +209,16 @@ void SwordBoss::OnAttackCollision(GameObject* pTarget)
 	}
 }
 
+void SwordBoss::CreateVfxSword()
+{
+	std::list<Collider*> list = GetAttackColliderList();
+	XMFLOAT3 vfxDir = Float3Sub(swordTransform_.position_, prePosition_);
+	for (auto e : list) {
+		XMFLOAT3 pos = Float3Add(transform_.position_, e->GetCenter());
+		VFXManager::CreateVfxBossSword(pos, vfxDir);
+	}
+}
+
 void SwordBoss::CalcPoly()
 {
 	XMFLOAT3 target = CalculationDirection(swordTransform_.rotate_);
@@ -198,26 +227,26 @@ void SwordBoss::CalcPoly()
 
 void SwordBoss::CalcCollider()
 {
-	OutputDebugString("calc Collider\n");
-
 	//まず中間の当たり判定
 	std::list<Collider*> list = GetAttackColliderList();
 	XMFLOAT3 pos = Float3Sub(swordTransform_.position_, transform_.position_);
-	float leng = FIRST_LENG;
 	XMFLOAT3 middle = Float3Add(swordTransform_.rotate_, Float3Multiply(Float3Sub(preRotate_, swordTransform_.rotate_), 0.5f));
 	XMFLOAT3 target = CalculationDirection(middle);
+	float leng = FIRST_LENG;
+
 	for (auto e : list) {
+		XMFLOAT3 p = Float3Add(pos, Float3Multiply(target, leng));
+		e->SetCenter(p);
 		leng += ADDLENG;
-		e->SetCenter(Float3Add(pos, Float3Multiply(target, leng)));
-		Collision(GameManager::GetPlayer());
 	}
+	Collision(GameManager::GetPlayer());
 
 	//現在の当たり判定
 	leng = FIRST_LENG;
 	target = CalculationDirection(swordTransform_.rotate_);
 	for (auto e : list) {
-		leng += ADDLENG;
 		e->SetCenter(Float3Add(pos, Float3Multiply(target, leng)));
+		leng += ADDLENG;
 	}
 }
 

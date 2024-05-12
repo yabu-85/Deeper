@@ -162,26 +162,33 @@ void AstarMoveAction::Draw()
 //------------------------------Oriented----------------------
 
 OrientedMoveAction::OrientedMoveAction(Character* obj, float speed)
-	: MoveAction(obj, speed, 0.0f), direction_ { 0, 0, -1, 0 }, move_{XMVectorZero()}
+	: MoveAction(obj, speed, 0.0f), direction_ { 0, 0, -1, 0 }, move_{XMVectorZero()}, targetDirection_(XMVectorZero())
 {
 }
 
 void OrientedMoveAction::Update() {
-	XMFLOAT3 position = pCharacter_->GetPosition();
-	XMVECTOR vPosition = XMLoadFloat3(&position);
-
 	//ターゲットへの方向のrotateYを計算
-	XMVECTOR vec = XMLoadFloat3(&targetPos_) - vPosition;
-	vec = XMVector3Normalize(vec);
-	float rotationY = atan2f(XMVectorGetX(vec), XMVectorGetZ(vec));
+	float rotationY = atan2f(XMVectorGetX(targetDirection_), XMVectorGetZ(targetDirection_));
 
 	//その方句を基準に移動
 	XMMATRIX mRotY = XMMatrixRotationY(rotationY);
 	XMVECTOR vMove = XMVector3TransformCoord(direction_, mRotY);
 	vMove = XMVector3Normalize(vMove);
 	move_ = vMove * moveSpeed_;
+	
+	XMFLOAT3 position = pCharacter_->GetPosition();
+	XMVECTOR vPosition = XMLoadFloat3(&position); 
 	XMStoreFloat3(&position, vPosition + move_);
 	pCharacter_->SetPosition(position);
+}
+
+void OrientedMoveAction::SetTarget(XMFLOAT3 target)
+{
+	targetPos_ = target;
+	XMFLOAT3 position = pCharacter_->GetPosition();
+	XMVECTOR vPosition = XMLoadFloat3(&position); 
+	targetDirection_ = XMLoadFloat3(&targetPos_) - vPosition;
+	targetDirection_ = XMVector3Normalize(targetDirection_);
 }
 
 bool OrientedMoveAction::CheckWallCollision(int count)
@@ -198,34 +205,6 @@ bool OrientedMoveAction::CheckWallCollision(int count)
 	return false;
 }
 
-void OrientedMoveAction::CalcOptimalDirection()
-{
-	EnemyBase* enemy = static_cast<EnemyBase*>(pCharacter_);
-	XMFLOAT3 pos = enemy->GetPosition();
-	XMFLOAT3 vec = { pos.x - targetPos_.x, 0.0f, pos.z - targetPos_.z };
-	float dist = sqrtf(vec.x * vec.x + vec.z * vec.z);
-	float comDist = enemy->GetCombatDistance();
-	int dirRand = 0;
-	if (dist < comDist) {
-		//前・前・前・右・左
-		dirRand = rand() % 5;
-		if (dirRand == 1 || dirRand == 2) dirRand = 0;
-		else if (dirRand == 3) dirRand = 1;
-		else if (dirRand == 4) dirRand = 2;
-	}
-	else {
-		//前・前・右・左・後
-		dirRand = rand() % 5;
-		if (dirRand == 1) dirRand = 0;
-		else if (dirRand == 2) dirRand = 1;
-		else if (dirRand == 3) dirRand = 2;
-		else if (dirRand == 4) dirRand = 3;
-	}
-
-	direction_ = { DIR_X[dirRand], 0.0f, DIR_Z[dirRand] };
-
-}
-
 void OrientedMoveAction::SelectProbabilityDirection(int f, int b, int r, int l)
 {
 	int max = f + b + r + l;
@@ -236,7 +215,6 @@ void OrientedMoveAction::SelectProbabilityDirection(int f, int b, int r, int l)
 	else if(random < f + b) direction_ = { DIR_X[BACK], 0.0f, DIR_Z[BACK] };
 	else if(random < f + b + r) direction_ = { DIR_X[RIGHT], 0.0f, DIR_Z[RIGHT] };
 	else if(random <= f + b + r + l) direction_ = { DIR_X[LEFT], 0.0f, DIR_Z[LEFT] };
-	
 }
 
 void OrientedMoveAction::InverseDirection()

@@ -66,6 +66,10 @@ class SwordBossAttack : public StateBase
 	int time_;
 	SWORDBOSS_ANIMATION nextAttack_;
 	SwordBoss* pBoss_;
+
+	void UpdateSlashUp();
+	void UpdateSlashRight();
+	void UpdateThrust();
 public:
 	SwordBossAttack(StateManager* owner);
 	const char* GetName() const override { return "Attack"; }

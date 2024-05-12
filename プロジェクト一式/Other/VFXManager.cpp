@@ -1,6 +1,7 @@
 #include "VFXManager.h"
 #include "../Engine/VFX.h"
 #include "../Engine/Easing.h"
+#include "../Engine/Global.h"
 
 namespace VFXManager
 {
@@ -10,6 +11,9 @@ namespace VFXManager
 	EmitterData enemySpawn;
 	EmitterData swordSlash;
 	EmitterData recovery;
+
+	EmitterData bossSwordSparks;
+	EmitterData bossSowrdSmoke;
 }
 
 void VFXManager::Initialize()
@@ -105,27 +109,50 @@ void VFXManager::Initialize()
 	recovery.color = XMFLOAT4(0.0f, 1.0f, 0.1f, 1.0f);
 	recovery.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
+	bossSwordSparks.textureFileName = "Particle/cloudA.png";
+	bossSwordSparks.delay = 0;
+	bossSwordSparks.number = 1;
+	bossSwordSparks.lifeTime = 40;
+	bossSwordSparks.positionRnd = XMFLOAT3(0.15f, 0.15f, 0.15f);
+	bossSwordSparks.directionRnd = XMFLOAT3(20.0f, 20.0f, 20.0f);
+	bossSwordSparks.speed = 0.03f;
+	bossSwordSparks.speedRnd = 0.02f;
+	bossSwordSparks.accel = 1.0f;
+	bossSwordSparks.size = XMFLOAT2(0.15f, 0.15f);
+	bossSwordSparks.sizeRnd = XMFLOAT2(0.15f, 0.15f);
+	bossSwordSparks.scale = XMFLOAT2(0.97f, 0.97f);
+	bossSwordSparks.color = XMFLOAT4(1.0f, 0.2f, 0.2f, 1.0f);
+	bossSwordSparks.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / bossSwordSparks.lifeTime);
+	bossSwordSparks.gravity = 0.0f;
+
+	const float BOSS_SMOKE_ALPHA = 0.5f;
+	bossSowrdSmoke.textureFileName = "Particle/cloudA.png";
+	bossSowrdSmoke.delay = 0;
+	bossSowrdSmoke.number = 1;
+	bossSowrdSmoke.lifeTime = 40;
+	bossSowrdSmoke.positionRnd = XMFLOAT3(0.2f, 0.2f, 0.2f);
+	bossSowrdSmoke.directionRnd = XMFLOAT3(20.0f, 20.0f, 20.0f);
+	bossSowrdSmoke.speed = 0.03f;
+	bossSowrdSmoke.speedRnd = 0.02f;
+	bossSowrdSmoke.accel = 1.0f;
+	bossSowrdSmoke.size = XMFLOAT2(0.25f, 0.25f);
+	bossSowrdSmoke.sizeRnd = XMFLOAT2(0.1f, 0.1f);
+	bossSowrdSmoke.scale = XMFLOAT2(1.05f, 1.05f);
+	bossSowrdSmoke.color = XMFLOAT4(1.0f, 0.2f, 0.2f, BOSS_SMOKE_ALPHA);
+	bossSowrdSmoke.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / bossSowrdSmoke.lifeTime);
+	bossSowrdSmoke.gravity = 0.0f;
 }
 
 void VFXManager::CreateVfx(XMFLOAT3 pos, VFX_TYPE type, XMFLOAT3 other)
 {
 	switch (type)
 	{
-	case Explode: 
-		CreateVfxExplode1(pos);
-		break;
-	case EnemySpawn: 
-		CreateVfxEnemySpawn(pos); 
-		break;
-	case Smoke: 
-		CreateVfxSmoke(pos);
-		break;
-	case SwordSlash: 
-		CreateVfxSwordSlash(pos, other); 
-		break;
-	case Recovery: 
-		CreateVfxRecovery(pos); 
-		break;
+	case Explode:		CreateVfxExplode1(pos);			break;
+	case EnemySpawn:	CreateVfxEnemySpawn(pos);		break;
+	case Smoke:			CreateVfxSmoke(pos);			break;
+	case SwordSlash:	CreateVfxSwordSlash(pos, other); break;
+	case Recovery:		CreateVfxRecovery(pos);			break;
+	case BossSowrd:		CreateVfxBossSword(pos, other); break;
 	default: break;
 	}
 }
@@ -145,6 +172,17 @@ void VFXManager::CreateVfxRecovery(XMFLOAT3 pos)
 {
 	recovery.position = pos;
 	VFX::Start(recovery);
+}
+
+void VFXManager::CreateVfxBossSword(XMFLOAT3 pos, XMFLOAT3 dir)
+{
+	bossSwordSparks.position = pos;
+	bossSwordSparks.direction = dir;
+	VFX::Start(bossSwordSparks);
+
+	bossSowrdSmoke.position = pos;
+	bossSowrdSmoke.direction = dir;
+	VFX::Start(bossSowrdSmoke);
 }
 
 void VFXManager::CreateVfxExplode1(XMFLOAT3 pos)

@@ -1,6 +1,7 @@
 #include "EnemyAttackSelect.h"
 #include <mutex>
 #include <cassert>
+#include <algorithm>
 
 void SelectoAttack::Selector(EnemyBase* enemy)
 {
@@ -35,17 +36,4 @@ void SelectoAttack::Selector(EnemyBase* enemy)
 void SelectoAttack::AddSelectAttack(SelectAttackInfo* info)
 {
     attacks_.push_back(info);
-}
-
-//------------------------------------------------------------------
-
-bool MelleAttack1::CanUseAttack(EnemyBase* enemy)
-{
-    return true;
-    return rand() % 2 == 0;
-}
-
-bool MelleAttack2::CanUseAttack(EnemyBase* enemy)
-{
-    return rand() % 3 == 0;
 }

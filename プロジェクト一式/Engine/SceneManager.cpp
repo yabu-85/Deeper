@@ -25,9 +25,9 @@ void SceneManager::Initialize()
 	nextSceneID_ = currentSceneID_;
 	Instantiate<Stage3>(this);
 #else
-	currentSceneID_ = SCENE_ID_TITLE;
+	currentSceneID_ = SCENE_ID_STAGE3;
 	nextSceneID_ = currentSceneID_;
-	Instantiate<TitleScene>(this);
+	Instantiate<Stage3>(this);
 #endif
 
 	GameManager::SetSceneManager(this);

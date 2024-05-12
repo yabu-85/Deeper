@@ -83,7 +83,7 @@ void EnemyUi::Draw()
 	//ターゲット発見の表示
 	if (foundParcent_ > 0.0f) {
 		foundParcent_ -= 0.01f;
-		int alpha = (int)(Easing::QuintIn(foundParcent_) * (float)MAX_ALPHA);
+		int alpha = (int)(Easing::EaseInQuint(foundParcent_) * (float)MAX_ALPHA);
 		Transform foundTrans;
 		foundTrans.position_ = scrPos;
 		Image::SetAlpha(hPict_[FOUND], alpha);

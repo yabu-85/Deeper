@@ -28,7 +28,6 @@ protected:
 	list<XMFLOAT3> positions_;	    //‰ß‹Žlength_‰ñ•ª‚ÌˆÊ’u
 public:
 	PolyLine();
-	void Update();
 	void Draw();
 	virtual void Release();
 

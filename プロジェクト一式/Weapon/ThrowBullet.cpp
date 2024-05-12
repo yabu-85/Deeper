@@ -52,7 +52,6 @@ void ThrowBullet::Initialize()
 void ThrowBullet::Update()
 {
 	time_--;
-	pPolyLine_->Update();
 
 	//Ž€–S”»’è
 	if (isDeath_) {

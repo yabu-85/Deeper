@@ -1,6 +1,7 @@
 #pragma once
 #include "EnemyBase.h"
 
+class SelectoAttack;
 class DoublePolyLine;
 class AstarMoveAction;
 class OrientedMoveAction;
@@ -41,8 +42,10 @@ class SwordBoss : public EnemyBase
     int boneIndex_;
     int partIndex_;
     Transform swordTransform_;
+    XMFLOAT3 prePosition_;
     XMFLOAT3 preRotate_;
 
+    SelectoAttack* pSelectoAttack_;
     DoublePolyLine* pDoublePolyLine_;
     AnimationController* pAnimationController_;
     DamageController* pDamageController_;
@@ -59,6 +62,7 @@ public:
     void Release() override;
     void OnAttackCollision(GameObject* pTarget) override;
 
+    void CreateVfxSword();
     void CalcPoly();
     void CalcCollider();
     void AttackEnd();

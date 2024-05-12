@@ -98,8 +98,6 @@ void MainSwordWeapon::Initialize()
 
 void MainSwordWeapon::Update()
 {
-    pDoublePolyLine_->Update();
-
 }
 
 void MainSwordWeapon::Draw()

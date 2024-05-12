@@ -230,7 +230,7 @@ void StoneGolemWait::Update()
 
 	//ŽžŠÔ‚Æƒ‰ƒ“ƒ_ƒ€‚ÅŒü‚«ŒvŽZ
 	if (time_ > (FPS * 3) && rand() % 10 == 0) {
-		e->GetOrientedMoveAction()->CalcOptimalDirection();
+		e->GetOrientedMoveAction()->SelectProbabilityDirection(3, 0, 1, 1);
 		time_ = 0;
 	}
 

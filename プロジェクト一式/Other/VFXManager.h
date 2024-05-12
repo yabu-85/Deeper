@@ -8,7 +8,7 @@ enum VFX_TYPE {
 	Smoke,
 	SwordSlash,
 	Recovery,
-
+	BossSowrd,
 };
 
 namespace VFXManager
@@ -25,5 +25,6 @@ namespace VFXManager
 	void CreateVfxSmoke(XMFLOAT3 pos);
 	void CreateVfxSwordSlash(XMFLOAT3 pos, XMFLOAT3 dir);
 	void CreateVfxRecovery(XMFLOAT3 pos);
+	void CreateVfxBossSword(XMFLOAT3 pos, XMFLOAT3 dir);
 };
 

@@ -24,6 +24,6 @@ EnemyAttackSelectNode::Status EnemyAttackSelectNode::Update()
 		DamageInfo damage(boss, "none", 0);
 		boss->GetDamageController()->SetCurrentDamage(damage);
 	}
-	
+
 	return Status::SUCCESS;
 }

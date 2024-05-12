@@ -10,6 +10,7 @@
 #include "../Stage/CreateStage.h"
 #include "../Engine/Model.h"
 #include "../Engine/Global.h"
+#include "../Engine/Easing.h"
 
 #include "../BehaviorTree/IsEnemyActionReadyNode.h"
 #include "../BehaviorTree/ChangeStateNode.h"
@@ -32,6 +33,10 @@ namespace {
 	static const float FAST_SPEED = 0.05f;
 	static const float SLOW_SPEED = 0.03f;
 	static const float ROTATE_RATIO = 0.07f;
+
+	//çUåÇ
+	static const float ThrustMoveSpeed = 0.11f;
+	static const int ThrustMoveTime[2] = { 40, 60 };
 
 }
 
@@ -242,20 +247,6 @@ enum class SWORD_BOSS_ATK {
 	Max,
 };
 
-struct AttackData {
-	int animId;					//AnimationControllerÇÃIDÇäÑÇËìñÇƒÇÈ
-	AttackData(int anim) : animId(anim) {};
-};
-
-namespace {
-	AttackData ATTACK_INFO_LIST[(int)SWORD_BOSS_ATK::Max] = {
-			AttackData((int)SWORDBOSS_ANIMATION::Slash_Up),
-			AttackData((int)SWORDBOSS_ANIMATION::Slash_Right),
-			AttackData((int)SWORDBOSS_ANIMATION::Thrust),
-	};
-
-}
-
 SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(0), nextAttack_(SWORDBOSS_ANIMATION::Slash_Up)
 {
 	pBoss_ = static_cast<SwordBoss*>(owner_->GetGameObject());
@@ -264,8 +255,19 @@ SwordBossAttack::SwordBossAttack(StateManager* owner) : StateBase(owner), time_(
 void SwordBossAttack::Update()
 {
 	time_++;
-	int AnimFrame = pBoss_->GetAnimationController()->GetAnimTime((int)nextAttack_);
 
+	OutputDebugStringA(std::to_string(time_).c_str());
+	OutputDebugString("\n\n");
+
+	switch (nextAttack_)
+	{
+	case SWORDBOSS_ANIMATION::Slash_Up:		UpdateSlashUp();	 break;
+	case SWORDBOSS_ANIMATION::Slash_Right:	UpdateSlashRight();	 break;
+	case SWORDBOSS_ANIMATION::Thrust:		UpdateThrust();		 break;
+	default: break;
+	}
+
+	int AnimFrame = pBoss_->GetAnimationController()->GetAnimTime((int)nextAttack_);
 	if (time_ >= AnimFrame) {
 		if(rand() % 3 == 0) owner_->ChangeState("Attack");
 		else owner_->ChangeState("Wait");
@@ -283,15 +285,7 @@ void SwordBossAttack::OnEnter()
 	}
 
 	pBoss_->SetCombatReady(false);
-	pBoss_->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
 	pBoss_->GetAnimationController()->SetNextAnim((int)nextAttack_, 0.1f);
-
-	std::string name = pBoss_->GetDamageController()->GetCurrentDamage().name;
-	if (name == "none") {
-		owner_->ChangeState("Wait");
-		OutputDebugStringA(std::to_string(rand() % 100).c_str());
-		OutputDebugString("\n");
-	}
 }
 
 void SwordBossAttack::OnExit()
@@ -299,6 +293,25 @@ void SwordBossAttack::OnExit()
 	pBoss_->GetRotateAction()->SetRatio(ROTATE_RATIO);
 	pBoss_->SetAttackCoolDown(rand() % 150);
 	pBoss_->AttackEnd();
+}
+
+void SwordBossAttack::UpdateSlashUp()
+{
+}
+
+void SwordBossAttack::UpdateSlashRight()
+{
+}
+
+void SwordBossAttack::UpdateThrust()
+{
+	if (time_ >= ThrustMoveTime[0] && time_ <= ThrustMoveTime[1]) {
+		int AnimFrame = pBoss_->GetAnimationController()->GetAnimTime((int)nextAttack_);
+		float t = (float)time_ / (float)ThrustMoveTime[1];
+		t = Easing::EaseInQuint(t);
+		pBoss_->GetOrientedMoveAction()->SetMoveSpeed(ThrustMoveSpeed * t);
+		pBoss_->GetOrientedMoveAction()->Update();
+	}
 }
 
 //--------------------------------------------------------------------------------

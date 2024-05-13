@@ -7,6 +7,7 @@
 #include "../GameManager/GameManager.h"
 #include "../Enemy/SwordBoss.h"
 #include "../Player/Player.h"
+#include "../Enemy/EnemyAttackSelect.h"
 
 EnemyAttackSelectNode::EnemyAttackSelectNode(EnemyBase* owner) : Action(), owner_(owner)
 {
@@ -15,15 +16,8 @@ EnemyAttackSelectNode::EnemyAttackSelectNode(EnemyBase* owner) : Action(), owner
 EnemyAttackSelectNode::Status EnemyAttackSelectNode::Update()
 {
 	SwordBoss* boss = static_cast<SwordBoss*>(owner_);
+	bool select = boss->GetSelectoAttack()->Selector(boss);
 
-	if (rand() % 2 == 0) {
-		DamageInfo damage(boss, "SwordBossAtk1", 0);
-		boss->GetDamageController()->SetCurrentDamage(damage);
-	}
-	else {
-		DamageInfo damage(boss, "none", 0);
-		boss->GetDamageController()->SetCurrentDamage(damage);
-	}
-
-	return Status::SUCCESS;
+	if(select) return Status::SUCCESS;
+	return Status::FAILURE;
 }

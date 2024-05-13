@@ -7,6 +7,7 @@
 #include "../Player/Aim.h"
 #include "../Enemy/SwordBoss.h"
 #include "../Enemy/EnemyUi.h"
+#include "../Enemy/EnemyAttackSelect.h"
 #include "../Stage/CreateStage.h"
 #include "../Engine/Model.h"
 #include "../Engine/Global.h"
@@ -114,20 +115,23 @@ SwordBossCombat::SwordBossCombat(StateManager* owner) : StateBase(owner), time_(
 	//-------------------------------------Wait--------------------------------------
 	
 	//UŒ‚€”õ‰Â”\‚È‚çUŒ‚‚Ç‚ê‚©‘I‘ð‚µ‚ÄA‘I‘ð‚Å‚«‚½‚È‚çState„ˆÚ
+	
+	/*
 	EnemyChangeCombatStateNode* action3 = new EnemyChangeCombatStateNode(e, "Attack");
 	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(action3, e);
 	IsPlayerInRangeNode* condition6 = new IsPlayerInRangeNode(condition5, e->GetAttackDistance(), e, GameManager::GetPlayer());
 	IsEnemyAttackReady* condition8 = new IsEnemyAttackReady(condition6, e);
+	waitSelector->AddChildren(condition8);
+	*/
 
 	//C³‰ÓŠFSelectorŽÀ‘•‚µ‚½‚ç‰ü—Ç
-	/*
+	EnemyChangeCombatStateNode* action3 = new EnemyChangeCombatStateNode(e, "Attack");
 	EnemyAttackSelectNode* action2 = new EnemyAttackSelectNode(e);
 	Sequence* sequence1 = new Sequence();
 	sequence1->AddChildren(action2);
 	sequence1->AddChildren(action3);
 	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(sequence1, e);
 	IsEnemyAttackReady* condition8 = new IsEnemyAttackReady(condition5, e);
-	*/
 	waitSelector->AddChildren(condition8);
 
 	EnemyChangeCombatStateNode* action1 = new EnemyChangeCombatStateNode(e, "Move");
@@ -256,9 +260,6 @@ void SwordBossAttack::Update()
 {
 	time_++;
 
-	OutputDebugStringA(std::to_string(time_).c_str());
-	OutputDebugString("\n\n");
-
 	switch (nextAttack_)
 	{
 	case SWORDBOSS_ANIMATION::Slash_Up:		UpdateSlashUp();	 break;
@@ -277,7 +278,7 @@ void SwordBossAttack::Update()
 void SwordBossAttack::OnEnter()
 {
 	time_ = 0;
-	int r = rand() % (int)SWORD_BOSS_ATK::Max;
+	int r = pBoss_->GetSelectoAttack()->GetSelectAttack();
 	switch (r) {
 	case 0: nextAttack_ = SWORDBOSS_ANIMATION::Slash_Up;	break;
 	case 1: nextAttack_ = SWORDBOSS_ANIMATION::Slash_Right;	break;

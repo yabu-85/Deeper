@@ -1,18 +1,38 @@
 #pragma once
+#include <memory>
 
 template <class T>
 class Singleton
 {
-    static T* instance_;
+    static std::unique_ptr<T> instance_;
 
 protected:
     Singleton() = default;
     virtual ~Singleton() = default;
 
 public:
-    static T& GetInstance();
-    static void DestroyInstance();
+    //コピー禁止
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
+
+    //ムーブ禁止
+    Singleton(Singleton&&) = delete;
+    Singleton& operator=(Singleton&&) = delete;
+
+    static std::unique_ptr<T>& GetInstance()
+    {
+        if (!instance_)
+        {
+            struct A : T {};
+            instance_ = std::make_unique<A>();
+        }
+
+        return instance_;
+    }
+    static void DestroyInstance()
+    {
+        instance_.reset();
+        instance_ = nullptr;
+    }
 
 };
-
-template<class T> T* Singleton<T>::instance_ = nullptr;

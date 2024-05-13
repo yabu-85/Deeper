@@ -72,6 +72,7 @@ public:
     void SetDamageInfo3();
 
     int GetModelHandle() { return hModel_; }
+    SelectoAttack* GetSelectoAttack() { return pSelectoAttack_; }
     AnimationController* GetAnimationController() { return pAnimationController_; }
     DamageController* GetDamageController() { return pDamageController_; }
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }

@@ -120,13 +120,10 @@ void SwordBoss::Initialize()
 	pDamageController_->SetCurrentDamage(damage);
 	pDamageController_->SetCurrentKnockBackInfo(knockBack);
 
-
 	pSelectoAttack_ = new SelectoAttack;
-	// SelectAttackInfoのインスタンスを取得
-	SelectAttackInfo& info = SelectAttackInfo::GetInstance(1); // 例えば優先度1を渡す
-
-	// テストクラスのインスタンスを取得して関数を呼び出す
-	//SwordBossSlashUp& instance = SwordBossSlashUp::GetInstance(1);
+	SwordBossSlashUp::GetInstance();
+	//SwordBossSlashRight::GetInstance();
+	//SwordBossThrust::GetInstance();
 
 	pDoublePolyLine_ = new DoublePolyLine;
 	pDoublePolyLine_->Load("PolyImage/BossSword.png");

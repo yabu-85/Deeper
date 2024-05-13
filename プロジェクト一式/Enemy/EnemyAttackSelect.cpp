@@ -3,7 +3,11 @@
 #include <cassert>
 #include <algorithm>
 
-void SelectoAttack::Selector(EnemyBase* enemy)
+SelectoAttack::SelectoAttack() : selectAttack_(0)
+{
+}
+
+bool SelectoAttack::Selector(EnemyBase* enemy)
 {
     //使用な技を入れる
     std::vector<int> availables;
@@ -13,7 +17,7 @@ void SelectoAttack::Selector(EnemyBase* enemy)
     }
 
     //使用可能な技がないから終わり
-    if (availables.empty()) return;
+    if (availables.empty()) return false;
 
     //priorityで昇順ソート
     std::sort(availables.begin(), availables.end(), [&](int a, int b) {
@@ -31,9 +35,45 @@ void SelectoAttack::Selector(EnemyBase* enemy)
     //ランダムで選択
     int randSelect = rand() % selectSize;
     selectAttack_ = availables[randSelect];
+    return true;
 }
 
 void SelectoAttack::AddSelectAttack(SelectAttackInfo* info)
 {
     attacks_.push_back(info);
+}
+
+//------------------------------------------------------------------------------------
+
+SwordBossSlashUp::SwordBossSlashUp() : SelectAttackInfo(0)
+{
+    SetPriority(0);
+}
+
+bool SwordBossSlashUp::CanUseAttack(EnemyBase* enemy)
+{
+    if (rand() % 2 == 0) return true;
+    return false;
+}
+
+SwordBossSlashRight::SwordBossSlashRight() : SelectAttackInfo(0)
+{
+    SetPriority(1);
+}
+
+bool SwordBossSlashRight::CanUseAttack(EnemyBase* enemy)
+{
+    if (rand() % 2 == 0) return true;
+    return false;
+}
+
+SwordBossThrust::SwordBossThrust() : SelectAttackInfo(0)
+{
+    SetPriority(1);
+}
+
+bool SwordBossThrust::CanUseAttack(EnemyBase* enemy)
+{
+    if (rand() % 2 == 0) return true;
+    return false;
 }

@@ -1,5 +1,6 @@
 #include "SwordBoss.h"
 #include "EnemyUi.h"
+#include "SwordBossAttacks.h"
 #include "../GameManager/GameManager.h"
 #include "../Engine/Model.h"
 #include "../Engine/SphereCollider.h"
@@ -37,7 +38,7 @@ namespace {
 
 SwordBoss::SwordBoss(GameObject* parent)
 	: EnemyBase(parent, "SwordBossEnemy"), hModel_(-1), hSwordModel_(-1), pMoveAction_(nullptr), pRotateAction_(nullptr), pOrientedMoveAction_(nullptr), 
-	boneIndex_(-1), partIndex_(-1), pDamageController_(nullptr), pAnimationController_(nullptr), pDoublePolyLine_(nullptr), pSelectoAttack_(nullptr),
+	boneIndex_(-1), partIndex_(-1), pDamageController_(nullptr), pAnimationController_(nullptr), pDoublePolyLine_(nullptr), pSelectAttack_(nullptr),
 	preRotate_{0,0,0}, prePosition_{0,0,0}
 {
 }
@@ -120,10 +121,10 @@ void SwordBoss::Initialize()
 	pDamageController_->SetCurrentDamage(damage);
 	pDamageController_->SetCurrentKnockBackInfo(knockBack);
 
-	pSelectoAttack_ = new SelectoAttack;
-	SwordBossSlashUp::GetInstance();
-	//SwordBossSlashRight::GetInstance();
-	//SwordBossThrust::GetInstance();
+	pSelectAttack_ = new SelectAttack;
+	pSelectAttack_->AddSelectAttack(&SwordBossSlashUp::singleton());
+	pSelectAttack_->AddSelectAttack(&SwordBossSlashRight::singleton());
+	pSelectAttack_->AddSelectAttack(&SwordBossThrust::singleton());
 
 	pDoublePolyLine_ = new DoublePolyLine;
 	pDoublePolyLine_->Load("PolyImage/BossSword.png");
@@ -176,7 +177,7 @@ void SwordBoss::Draw()
 
 void SwordBoss::Release()
 {
-	SAFE_DELETE(pSelectoAttack_);
+	SAFE_DELETE(pSelectAttack_);
 	
 	SAFE_RELEASE(pDoublePolyLine_);
 	SAFE_DELETE(pDoublePolyLine_);

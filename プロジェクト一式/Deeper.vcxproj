@@ -146,6 +146,7 @@
     <ClCompile Include="BehaviorTree\CameraConditionNode.cpp" />
     <ClCompile Include="BehaviorTree\ChangeStateNode.cpp" />
     <ClCompile Include="BehaviorTree\EnemyAttackSelectNode.cpp" />
+    <ClCompile Include="BehaviorTree\EnemySetValueNode.cpp" />
     <ClCompile Include="BehaviorTree\IsEnemyActionReadyNode.cpp" />
     <ClCompile Include="BehaviorTree\IsEnemyPermission.cpp" />
     <ClCompile Include="BehaviorTree\IsEnemyStateNode.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="Enemy\Scarecrow.cpp" />
     <ClCompile Include="Enemy\StoneGolem.cpp" />
     <ClCompile Include="Enemy\SwordBoss.cpp" />
+    <ClCompile Include="Enemy\SwordBossAttacks.cpp" />
     <ClCompile Include="Enemy\ThrowEnemy.cpp" />
     <ClCompile Include="Engine\Easing.cpp" />
     <ClCompile Include="Engine\PolyLine.cpp" />
@@ -255,6 +257,7 @@
     <ClInclude Include="BehaviorTree\CameraConditionNode.h" />
     <ClInclude Include="BehaviorTree\ChangeStateNode.h" />
     <ClInclude Include="BehaviorTree\EnemyAttackSelectNode.h" />
+    <ClInclude Include="BehaviorTree\EnemySetValueNode.h" />
     <ClInclude Include="BehaviorTree\IsEnemyActionReadyNode.h" />
     <ClInclude Include="BehaviorTree\IsEnemyPermission.h" />
     <ClInclude Include="BehaviorTree\IsEnemyStateNode.h" />
@@ -271,6 +274,7 @@
     <ClInclude Include="Enemy\Scarecrow.h" />
     <ClInclude Include="Enemy\StoneGolem.h" />
     <ClInclude Include="Enemy\SwordBoss.h" />
+    <ClInclude Include="Enemy\SwordBossAttacks.h" />
     <ClInclude Include="Enemy\ThrowEnemy.h" />
     <ClInclude Include="Engine\Easing.h" />
     <ClInclude Include="Engine\PolyLine.h" />

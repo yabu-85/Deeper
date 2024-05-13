@@ -16,7 +16,7 @@ EnemyAttackSelectNode::EnemyAttackSelectNode(EnemyBase* owner) : Action(), owner
 EnemyAttackSelectNode::Status EnemyAttackSelectNode::Update()
 {
 	SwordBoss* boss = static_cast<SwordBoss*>(owner_);
-	bool select = boss->GetSelectoAttack()->Selector(boss);
+	bool select = boss->GetSelectAttack()->Selector(boss);
 
 	if(select) return Status::SUCCESS;
 	return Status::FAILURE;

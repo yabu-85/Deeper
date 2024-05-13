@@ -1,7 +1,7 @@
 #pragma once
 #include "EnemyBase.h"
 
-class SelectoAttack;
+class SelectAttack;
 class DoublePolyLine;
 class AstarMoveAction;
 class OrientedMoveAction;
@@ -45,7 +45,7 @@ class SwordBoss : public EnemyBase
     XMFLOAT3 prePosition_;
     XMFLOAT3 preRotate_;
 
-    SelectoAttack* pSelectoAttack_;
+    SelectAttack* pSelectAttack_;
     DoublePolyLine* pDoublePolyLine_;
     AnimationController* pAnimationController_;
     DamageController* pDamageController_;
@@ -72,7 +72,7 @@ public:
     void SetDamageInfo3();
 
     int GetModelHandle() { return hModel_; }
-    SelectoAttack* GetSelectoAttack() { return pSelectoAttack_; }
+    SelectAttack* GetSelectAttack() { return pSelectAttack_; }
     AnimationController* GetAnimationController() { return pAnimationController_; }
     DamageController* GetDamageController() { return pDamageController_; }
     AstarMoveAction* GetMoveAction() { return pMoveAction_; }

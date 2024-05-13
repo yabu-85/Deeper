@@ -13,6 +13,7 @@
 #include "../Engine/Global.h"
 #include "../Engine/Easing.h"
 
+#include "../BehaviorTree/EnemySetValueNode.h"
 #include "../BehaviorTree/IsEnemyActionReadyNode.h"
 #include "../BehaviorTree/ChangeStateNode.h"
 #include "../BehaviorTree/BehaviourNode.h"
@@ -36,7 +37,9 @@ namespace {
 	static const float ROTATE_RATIO = 0.07f;
 
 	//攻撃
-	static const float ThrustMoveSpeed = 0.11f;
+	static const int SELECT_COOLDOWN = 5;	//SelectAttackの計算間隔（選べなかった時用に）
+
+	static const float ThrustMoveSpeed = 0.22f;
 	static const int ThrustMoveTime[2] = { 40, 60 };
 
 }
@@ -115,21 +118,14 @@ SwordBossCombat::SwordBossCombat(StateManager* owner) : StateBase(owner), time_(
 	//-------------------------------------Wait--------------------------------------
 	
 	//攻撃準備可能なら攻撃どれか選択して、選択できたならState推移
-	
-	/*
-	EnemyChangeCombatStateNode* action3 = new EnemyChangeCombatStateNode(e, "Attack");
-	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(action3, e);
-	IsPlayerInRangeNode* condition6 = new IsPlayerInRangeNode(condition5, e->GetAttackDistance(), e, GameManager::GetPlayer());
-	IsEnemyAttackReady* condition8 = new IsEnemyAttackReady(condition6, e);
-	waitSelector->AddChildren(condition8);
-	*/
-
-	//修正箇所：Selector実装したら改良
 	EnemyChangeCombatStateNode* action3 = new EnemyChangeCombatStateNode(e, "Attack");
 	EnemyAttackSelectNode* action2 = new EnemyAttackSelectNode(e);
+	EnemySetAttackCoolDown* action4 = new EnemySetAttackCoolDown(e, SELECT_COOLDOWN);
 	Sequence* sequence1 = new Sequence();
 	sequence1->AddChildren(action2);
 	sequence1->AddChildren(action3);
+	sequence1->AddChildren(action4);
+
 	IsEnemyAttackPermission* condition5 = new IsEnemyAttackPermission(sequence1, e);
 	IsEnemyAttackReady* condition8 = new IsEnemyAttackReady(condition5, e);
 	waitSelector->AddChildren(condition8);
@@ -194,17 +190,15 @@ void SwordBossWait::OnEnter()
 	e->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::IDLE, 0.1f);
 
 	//プレイヤーから指定の範囲内で
-	//ゲーム参考にしてから作る
 	XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
 	XMFLOAT3 ePos = e->GetPosition();
 	XMFLOAT3 vec = { pPos.x - ePos.x, 0.0f, pPos.z - ePos.z };
 	float dist = sqrt(vec.x * vec.x + vec.z * vec.z);
+	
+	//遠いなら前、近いなら左右どっちか
 	if(dist <= e->GetCombatDistance()) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 0, 0, 1, 0 });
-	else {
-		int r = rand() % 2;
-		if(r == 0) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ 1, 0, 0, 0 });
-		else if (r == 1) e->GetOrientedMoveAction()->SetDirection(XMVECTOR{ -1, 0, 0, 0 });
-	}
+	else e->GetOrientedMoveAction()->SelectProbabilityDirection(0, 0, 1, 1);
+
 }
 
 //------------------------------------Move--------------------------------------------
@@ -270,15 +264,14 @@ void SwordBossAttack::Update()
 
 	int AnimFrame = pBoss_->GetAnimationController()->GetAnimTime((int)nextAttack_);
 	if (time_ >= AnimFrame) {
-		if(rand() % 3 == 0) owner_->ChangeState("Attack");
-		else owner_->ChangeState("Wait");
+		owner_->ChangeState("Wait");
 	}
 }
 
 void SwordBossAttack::OnEnter()
 {
 	time_ = 0;
-	int r = pBoss_->GetSelectoAttack()->GetSelectAttack();
+	int r = pBoss_->GetSelectAttack()->GetSelectAttack();
 	switch (r) {
 	case 0: nextAttack_ = SWORDBOSS_ANIMATION::Slash_Up;	break;
 	case 1: nextAttack_ = SWORDBOSS_ANIMATION::Slash_Right;	break;
@@ -307,6 +300,9 @@ void SwordBossAttack::UpdateSlashRight()
 void SwordBossAttack::UpdateThrust()
 {
 	if (time_ >= ThrustMoveTime[0] && time_ <= ThrustMoveTime[1]) {
+		//移動方向セット
+		pBoss_->GetOrientedMoveAction()->SetDirection({ 0.0f, 0.0f, 1.0f, 0.0f });
+		
 		int AnimFrame = pBoss_->GetAnimationController()->GetAnimTime((int)nextAttack_);
 		float t = (float)time_ / (float)ThrustMoveTime[1];
 		t = Easing::EaseInQuint(t);

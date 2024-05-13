@@ -141,6 +141,9 @@
     <Filter Include="03Scene\Base">
       <UniqueIdentifier>{ca23a4cb-66f8-49a0-8901-bff618760a67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="08Enemy\Attacks">
+      <UniqueIdentifier>{1f88c9f6-5bb9-4f75-ba3a-5bce324aa7b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -463,6 +466,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Singleton.cpp">
       <Filter>01Engine\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\SwordBossAttacks.cpp">
+      <Filter>08Enemy\Attacks</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviorTree\EnemySetValueNode.cpp">
+      <Filter>05BehaviorTree\02ActionNode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -789,6 +798,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Singleton.h">
       <Filter>01Engine\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\SwordBossAttacks.h">
+      <Filter>08Enemy\Attacks</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviorTree\EnemySetValueNode.h">
+      <Filter>05BehaviorTree\02ActionNode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

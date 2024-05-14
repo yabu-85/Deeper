@@ -9,30 +9,26 @@ class RotateAction;
 class AnimationController;
 
 enum class SWORDBOSS_ANIMATION {
-    IDLE = 0,
-    RUN,
-    RORING,
+    RUN = 0,
+    WALK,
     BACK_STEP,
-    DAMAGE_SMALL,
-    DAMAGE_MID,
     DEAD,
     Slash_Up,
     Slash_Right,
+    Slash_Jump,
     Thrust,
     MAX,
 };
 
 const int SWORDBOSS_ANIMATION_DATA[(int)SWORDBOSS_ANIMATION::MAX][2] {
-    {0, 120},     //Idle
-    { 548, 590 }, //Run
-    { 120, 175 }, //Roring
-    { 500, 546 }, //Back
-    { 175, 210 }, //DamageSmall
-    { 210, 260 }, //DamageMid
-    { 260, 495 }, //Dead
-    { 600, 690 }, //Attack1（切り上げ
-    { 700, 775 }, //Attack2（右切り
-    { 780, 880 }, //Attack3（突き刺し
+    { 288, 330 }, //Run
+    { 340, 415 }, //Run
+    { 240, 286 }, //Back
+    { 0, 235 },   //Dead
+    { 420, 510 }, //Attack1（切り上げ
+    { 520, 595 }, //Attack2（右切り
+    { 710, 800 }, //Attack3（ジャンプ
+    { 600, 700 }, //Attack4（突き刺し
 };
 
 class SwordBoss : public EnemyBase

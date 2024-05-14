@@ -171,11 +171,15 @@ void Player::SmallKnockBack()
 
 void Player::MediumKnockBack()
 {
+    if (GetStateManager()->GetName() != "Hear") GetStateManager()->ChangeState("Hear");
+    GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::DAMAGE_SMALL, 0.3f);
+
 }
 
 void Player::LargeKnockBack()
 {
     if (GetStateManager()->GetName() != "Hear") GetStateManager()->ChangeState("Hear");
+    GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::DAMAGE_MID, 0.3f);
 
 }
 

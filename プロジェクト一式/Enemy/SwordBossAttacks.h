@@ -8,10 +8,17 @@ public:
     bool CanUseAttack(EnemyBase* enemy) override;
 };
 
-class SwordBossSlashRight : public SelectAttackInfo, public Singleton<SwordBossSlashUp> {
+class SwordBossSlashRight : public SelectAttackInfo, public Singleton<SwordBossSlashRight> {
     friend class Singleton<SwordBossSlashRight>;
 public:
     SwordBossSlashRight();
+    bool CanUseAttack(EnemyBase* enemy) override;
+};
+
+class SwordBossSlashJump : public SelectAttackInfo, public Singleton<SwordBossSlashJump> {
+    friend class Singleton<SwordBossSlashJump>;
+public:
+    SwordBossSlashJump();
     bool CanUseAttack(EnemyBase* enemy) override;
 };
 

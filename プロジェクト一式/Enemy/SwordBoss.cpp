@@ -17,9 +17,6 @@
 #include "../Animation/AnimationController.h"
 #include "../Animation/SwordBossNotify.h"
 
-#include "../Engine/Singleton.h"
-#include "../Enemy/EnemyAttackSelect.h"
-
 namespace {
 	static const int POLY_DRAW_TIME = 20;
 	static const int POLY_SMOOTH = 0;
@@ -75,16 +72,22 @@ void SwordBoss::Initialize()
 	//アニメーションデータのセットフレームはヘッダに書いてる
 	pAnimationController_ = new AnimationController(hModel_, this);
 	for (int i = 0; i < (int)SWORDBOSS_ANIMATION::MAX; i++) pAnimationController_->AddAnim(SWORDBOSS_ANIMATION_DATA[i][0], SWORDBOSS_ANIMATION_DATA[i][1]);
-	//AnimNotifyの追加
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossAttackNotify(630, 690));
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossRotateNotify(600, 690));
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossVfxNotify(620, 660));
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossAttackNotify(740, 775));
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossRotateNotify(700, 740));
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossVfxNotify(710, 760));
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossAttackNotify(835, 845));
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossRotateNotify(780, 840));
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossVfxNotify(830, 845));
+	//AnimNotify Slash_Up
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossAttackNotify(455, 473));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossRotateNotify(420, 455));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossVfxNotify(430, 475));
+	//AnimNotify Slash_Right
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossAttackNotify(560, 575));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossRotateNotify(520, 555));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossVfxNotify(520, 575));
+	//AnimNotify Slash_Jump
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Jump, new SowrdBossAttackNotify(760, 780));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Jump, new SowrdBossRotateNotify(710, 765));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Jump, new SowrdBossVfxNotify(720, 780));
+	//AnimNotify Thrust
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossAttackNotify(650, 662));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossRotateNotify(600, 650));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Thrust, new SowrdBossVfxNotify(620, 662));
 
 	//Colliderの設定
 	AddCollider(new SphereCollider(XMFLOAT3(0, 0.5f, 0), 0.35f));
@@ -117,13 +120,14 @@ void SwordBoss::Initialize()
 	//技ごとに変更するように todo
 	pDamageController_ = new DamageController;
 	DamageInfo damage(this, "SwordBoss", 0);
-	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 5, 0.2f, transform_.position_);
+	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 40, 0.01f, transform_.position_);
 	pDamageController_->SetCurrentDamage(damage);
 	pDamageController_->SetCurrentKnockBackInfo(knockBack);
 
 	pSelectAttack_ = new SelectAttack;
 	pSelectAttack_->AddSelectAttack(&SwordBossSlashUp::singleton());
 	pSelectAttack_->AddSelectAttack(&SwordBossSlashRight::singleton());
+	pSelectAttack_->AddSelectAttack(&SwordBossSlashJump::singleton());
 	pSelectAttack_->AddSelectAttack(&SwordBossThrust::singleton());
 
 	pDoublePolyLine_ = new DoublePolyLine;
@@ -133,6 +137,10 @@ void SwordBoss::Initialize()
 
 void SwordBoss::Update()
 {
+	float dist = CalculationDistance(GameManager::GetPlayer()->GetPosition(), transform_.position_);
+	OutputDebugStringA(std::to_string(dist).c_str());
+	OutputDebugString("\n");
+
 	EnemyBase::Update();
 	pAnimationController_->Update();
 	pStateManager_->Update();

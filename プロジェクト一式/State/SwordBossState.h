@@ -69,6 +69,7 @@ class SwordBossAttack : public StateBase
 
 	void UpdateSlashUp();
 	void UpdateSlashRight();
+	void UpdateSlashJump();
 	void UpdateThrust();
 public:
 	SwordBossAttack(StateManager* owner);

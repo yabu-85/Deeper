@@ -318,7 +318,6 @@ void PlayerHear::Update()
 void PlayerHear::OnEnter()
 {
 	Player* p = static_cast<Player*>(owner_->GetGameObject());
-	p->GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::BACK_STEP, 0.3f);
 
 }
 

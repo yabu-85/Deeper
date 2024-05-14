@@ -28,19 +28,25 @@
 namespace {
 	static const int APPER_TIME = 180;
 	static const int FOUND_SEARCH = 10;
-	static const int FPS = 60;
-	static const int MIN_MOVE_TIME = 6;
-	static const int MAX_MOVE_TIME = 5;
 
-	static const float FAST_SPEED = 0.05f;
+	static const int MIN_MOVE_TIME = 60;
+	static const int RANDOM_MOVE_TIME = 120;
+
+	static const float FAST_SPEED = 0.055f;
 	static const float SLOW_SPEED = 0.03f;
 	static const float ROTATE_RATIO = 0.07f;
 
-	//攻撃
+	//攻撃---------------------------------------------------
 	static const int SELECT_COOLDOWN = 5;	//SelectAttackの計算間隔（選べなかった時用に）
 
+	//Thrust
 	static const float ThrustMoveSpeed = 0.22f;
 	static const int ThrustMoveTime[2] = { 40, 60 };
+
+	//Slash_Jump
+	static const float JumpMoveSpeed = 0.24f;
+	static const float JumpheightPower = 0.07f;
+	static const int JumpMoveTime[2] = { 43, 60 };
 
 }
 
@@ -58,7 +64,7 @@ void SwordBossAppear::Update()
 void SwordBossAppear::OnEnter()
 {
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
-	e->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::IDLE, 0.1f);
+	e->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::WALK, 0.1f);
 
 	XMFLOAT3 pos = e->GetPosition();
 	VFXManager::CreateVfxEnemySpawn(pos);
@@ -187,7 +193,7 @@ void SwordBossWait::OnEnter()
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(SLOW_SPEED);
 	e->GetOrientedMoveAction()->SetMoveSpeed(SLOW_SPEED);
-	e->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::IDLE, 0.1f);
+	e->GetAnimationController()->SetNextAnim((int)SWORDBOSS_ANIMATION::WALK, 0.1f);
 
 	//プレイヤーから指定の範囲内で
 	XMFLOAT3 pPos = GameManager::GetPlayer()->GetPosition();
@@ -222,7 +228,7 @@ void SwordBossMove::Update()
 
 void SwordBossMove::OnEnter()
 {
-	time_ = FPS * MIN_MOVE_TIME + rand() % MAX_MOVE_TIME * FPS;
+	time_ = MIN_MOVE_TIME + rand() % RANDOM_MOVE_TIME;
 	SwordBoss* e = static_cast<SwordBoss*>(owner_->GetGameObject());
 	e->GetMoveAction()->SetMoveSpeed(FAST_SPEED);
 	e->GetOrientedMoveAction()->SetMoveSpeed(FAST_SPEED);
@@ -258,6 +264,7 @@ void SwordBossAttack::Update()
 	{
 	case SWORDBOSS_ANIMATION::Slash_Up:		UpdateSlashUp();	 break;
 	case SWORDBOSS_ANIMATION::Slash_Right:	UpdateSlashRight();	 break;
+	case SWORDBOSS_ANIMATION::Slash_Jump:	UpdateSlashJump();	 break;
 	case SWORDBOSS_ANIMATION::Thrust:		UpdateThrust();		 break;
 	default: break;
 	}
@@ -275,7 +282,8 @@ void SwordBossAttack::OnEnter()
 	switch (r) {
 	case 0: nextAttack_ = SWORDBOSS_ANIMATION::Slash_Up;	break;
 	case 1: nextAttack_ = SWORDBOSS_ANIMATION::Slash_Right;	break;
-	case 2: nextAttack_ = SWORDBOSS_ANIMATION::Thrust;		break;
+	case 2: nextAttack_ = SWORDBOSS_ANIMATION::Slash_Jump;	break;
+	case 3: nextAttack_ = SWORDBOSS_ANIMATION::Thrust;		break;
 	}
 
 	pBoss_->SetCombatReady(false);
@@ -295,6 +303,24 @@ void SwordBossAttack::UpdateSlashUp()
 
 void SwordBossAttack::UpdateSlashRight()
 {
+}
+
+void SwordBossAttack::UpdateSlashJump()
+{
+
+	if (time_ >= JumpMoveTime[0] && time_ <= JumpMoveTime[1]) {
+		//ジャンプ移動
+		float jumpParce = ((float)time_ - (float)JumpMoveTime[0]) / ((float)JumpMoveTime[1] - (float)JumpMoveTime[0]);
+		float time = jumpParce * 2.0f - 1.0f;
+		XMFLOAT3 pos = pBoss_->GetPosition();
+		pos.y = (JumpheightPower * -time) + pos.y;
+		pBoss_->SetPosition(pos);
+
+		//移動
+		pBoss_->GetOrientedMoveAction()->SetDirection({ 0.0f, 0.0f, 1.0f, 0.0f });
+		pBoss_->GetOrientedMoveAction()->SetMoveSpeed(JumpMoveSpeed);
+		pBoss_->GetOrientedMoveAction()->Update();
+	}
 }
 
 void SwordBossAttack::UpdateThrust()

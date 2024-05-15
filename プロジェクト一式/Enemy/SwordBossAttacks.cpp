@@ -17,7 +17,9 @@ namespace {
 
 }
 
-SwordBossSlashUp::SwordBossSlashUp() { SetPriority(PRIORITY_SLASH_UP); }
+SwordBossSlashUp::SwordBossSlashUp() { 
+    SetPriority(PRIORITY_SLASH_UP); 
+}
 bool SwordBossSlashUp::CanUseAttack(EnemyBase* enemy)
 {
     float dist = CalculationDistance(GameManager::GetPlayer()->GetPosition(), enemy->GetPosition());

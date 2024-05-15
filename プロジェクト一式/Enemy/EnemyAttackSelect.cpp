@@ -1,7 +1,7 @@
 #include "EnemyAttackSelect.h"
 #include <algorithm>
 
-SelectAttack::SelectAttack() : selectAttack_(0)
+SelectAttack::SelectAttack() : currentAttack_(0)
 {
 }
 
@@ -30,7 +30,7 @@ bool SelectAttack::Selector(EnemyBase* enemy)
 
     //ランダムで選択
     int randSelect = rand() % selectSize;
-    selectAttack_ = availables[randSelect];
+    currentAttack_ = availables[randSelect];
     return true;
 }
 
@@ -41,7 +41,6 @@ void SelectAttack::AddSelectAttack(SelectAttackInfo* info)
 
 void SelectAttack::SelectNoCombo(EnemyBase* e, std::vector<int>& list)
 {
-    //使用可能な技を入れる
     for (int i = 0; i < attacks_.size(); i++) {
         //使用可能の場合リストに追加
         if (attacks_.at(i)->CanUseAttack(e)) list.push_back(i);
@@ -50,9 +49,15 @@ void SelectAttack::SelectNoCombo(EnemyBase* e, std::vector<int>& list)
 
 void SelectAttack::SelectCombo(EnemyBase* e, std::vector<int>& list)
 {
-    //コンボ中なら
+    std::vector<int> combo = attacks_.at(currentAttack_)->GetComboList();
     for (int i = 0; i < attacks_.size(); i++) {
+        //コンボ派生対象化どうか
+        if (std::find(combo.begin(), combo.end(), i) != combo.end()) continue;
+
+        //すでにコンボ攻撃しているかどうか
         if (std::find(comboHistory_.begin(), comboHistory_.end(), i) != comboHistory_.end()) continue;
+       
+        //攻撃できるなら追加
         if (attacks_.at(i)->CanUseAttack(e)) list.push_back(i);
     }
 }

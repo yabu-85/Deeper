@@ -84,6 +84,7 @@ void GameManager::Update()
 		if (Input::IsKeyDown(DIK_K)) { for (int i = 0; i < 20; i++) pEnemyManager_->SpawnEnemy(ENEMY_THROW); }
 		if (Input::IsKeyDown(DIK_P)) { pEnemyManager_->SpawnEnemy(ENEMY_MELEE); }
 		if (Input::IsKeyDown(DIK_O)) { for (int i = 0; i < 20; i++) pEnemyManager_->SpawnEnemy(ENEMY_MELEE); }
+		if (Input::IsKeyDown(DIK_RETURN)) { pEnemyManager_->SpawnEnemy(ENEMY_SWORDBOSS); }
 
 		if (Input::IsKeyDown(DIK_B)) pWeaponObjectManager_->AllKillWeaponObject();
 		if (Input::IsKeyDown(DIK_V)) {

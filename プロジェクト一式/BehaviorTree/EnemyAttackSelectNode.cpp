@@ -9,15 +9,13 @@
 #include "../Player/Player.h"
 #include "../Enemy/EnemyAttackSelect.h"
 
-EnemyAttackSelectNode::EnemyAttackSelectNode(EnemyBase* owner) : Action(), owner_(owner)
+SwordBossAttackSelectNode::SwordBossAttackSelectNode(EnemyBase* owner) : Action()
 {
+	owner_ = static_cast<SwordBoss*>(owner);
 }
 
-EnemyAttackSelectNode::Status EnemyAttackSelectNode::Update()
+SwordBossAttackSelectNode::Status SwordBossAttackSelectNode::Update()
 {
-	SwordBoss* boss = static_cast<SwordBoss*>(owner_);
-	bool select = boss->GetSelectAttack()->Selector(boss);
-
-	if(select) return Status::SUCCESS;
+	if(owner_->GetSelectAttack()->Selector(owner_)) return Status::SUCCESS;
 	return Status::FAILURE;
 }

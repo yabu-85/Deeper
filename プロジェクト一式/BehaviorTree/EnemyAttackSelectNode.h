@@ -3,11 +3,12 @@
 #include <string>
 
 class EnemyBase;
+class SwordBoss;
 
-class EnemyAttackSelectNode : public Action
+class SwordBossAttackSelectNode : public Action
 {
-	EnemyBase* owner_;
+	SwordBoss* owner_;
 public:
-	EnemyAttackSelectNode(EnemyBase* owner);
+	SwordBossAttackSelectNode(EnemyBase* owner);
 	Status Update() override;
 };

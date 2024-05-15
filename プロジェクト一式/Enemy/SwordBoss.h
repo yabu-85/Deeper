@@ -31,6 +31,13 @@ const int SWORDBOSS_ANIMATION_DATA[(int)SWORDBOSS_ANIMATION::MAX][2] {
     { 600, 700 }, //Attack4ÅiìÀÇ´éhÇµ
 };
 
+enum SWORDBOSS_ATTACK_TYPE {
+    Slash_Up = 0,
+    Slash_Right,
+    Slash_Jump,
+    Thrust,
+};
+
 class SwordBoss : public EnemyBase
 {
     int hModel_;

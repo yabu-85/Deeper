@@ -12,6 +12,8 @@ bool SelectAttack::Selector(EnemyBase* enemy)
     if (comboHistory_.empty()) SelectNoCombo(enemy, availables);
     else SelectCombo(enemy, availables);
 
+
+
     //使用可能な技がないから終わり
     if (availables.empty()) return false;
 
@@ -52,7 +54,7 @@ void SelectAttack::SelectCombo(EnemyBase* e, std::vector<int>& list)
     std::vector<int> combo = attacks_.at(currentAttack_)->GetComboList();
     for (int i = 0; i < attacks_.size(); i++) {
         //コンボ派生対象化どうか
-        if (std::find(combo.begin(), combo.end(), i) != combo.end()) continue;
+        if (std::find(combo.begin(), combo.end(), i) == combo.end()) continue;
 
         //すでにコンボ攻撃しているかどうか
         if (std::find(comboHistory_.begin(), comboHistory_.end(), i) != comboHistory_.end()) continue;
@@ -60,4 +62,7 @@ void SelectAttack::SelectCombo(EnemyBase* e, std::vector<int>& list)
         //攻撃できるなら追加
         if (attacks_.at(i)->CanUseAttack(e)) list.push_back(i);
     }
+
+    //何も選べなかったらコンボリセットで
+    if (list.empty()) ClearComboHistory();
 }

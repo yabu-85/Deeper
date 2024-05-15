@@ -125,7 +125,7 @@ SwordBossCombat::SwordBossCombat(StateManager* owner) : StateBase(owner), time_(
 	
 	//攻撃準備可能なら攻撃どれか選択して、選択できたならState推移
 	EnemyChangeCombatStateNode* action3 = new EnemyChangeCombatStateNode(e, "Attack");
-	EnemyAttackSelectNode* action2 = new EnemyAttackSelectNode(e);
+	SwordBossAttackSelectNode* action2 = new SwordBossAttackSelectNode(e);
 	EnemySetAttackCoolDown* action4 = new EnemySetAttackCoolDown(e, SELECT_COOLDOWN);
 	Sequence* sequence1 = new Sequence();
 	sequence1->AddChildren(action2);
@@ -271,7 +271,13 @@ void SwordBossAttack::Update()
 
 	int AnimFrame = pBoss_->GetAnimationController()->GetAnimTime((int)nextAttack_);
 	if (time_ >= AnimFrame) {
-		owner_->ChangeState("Wait");
+		//コンボ記録に追加
+		pBoss_->GetSelectAttack()->AddComboHistory(pBoss_->GetSelectAttack()->GetSelectAttack());
+		
+		//コンボできるならもう一度AttackState
+		if (pBoss_->GetSelectAttack()->Selector(pBoss_)) owner_->ChangeState("Attack");
+		//コンボできないからWaitStateに
+		else owner_->ChangeState("Wait");
 	}
 }
 
@@ -307,7 +313,6 @@ void SwordBossAttack::UpdateSlashRight()
 
 void SwordBossAttack::UpdateSlashJump()
 {
-
 	if (time_ >= JumpMoveTime[0] && time_ <= JumpMoveTime[1]) {
 		//ジャンプ移動
 		float jumpParce = ((float)time_ - (float)JumpMoveTime[0]) / ((float)JumpMoveTime[1] - (float)JumpMoveTime[0]);

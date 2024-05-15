@@ -12,7 +12,10 @@ public:
     virtual bool CanUseAttack(EnemyBase* enemy) { return false; }
     int GetPriority() { return priority_; }
     void SetPriority(int p) { priority_ = p; }
+
     std::vector<int>& GetComboList() { return comboList_; }
+    void AddComboList(int i) { comboList_.push_back(i); }
+    void SetComboList(std::vector<int> list) { comboList_ = list; }
 };
 
 class SelectAttack {
@@ -36,8 +39,11 @@ public:
     //攻撃の番号取得
     int GetSelectAttack() { return currentAttack_; }
 
+    //コンボ中かどうか
+    bool IsCombo() { return !comboHistory_.empty(); }
+
     //コンボ情報を入れる
-    void AddToComboHistory(int attackType) { comboHistory_.push_back(attackType); }
+    void AddComboHistory(int attackType) { comboHistory_.push_back(attackType); }
     
     //コンボ情報クリア
     void ClearComboHistory() { comboHistory_.clear(); }

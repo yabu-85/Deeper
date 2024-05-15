@@ -78,7 +78,7 @@ void SwordBoss::Initialize()
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Up, new SowrdBossVfxNotify(430, 475));
 	//AnimNotify Slash_Right
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossAttackNotify(560, 575));
-	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossRotateNotify(520, 555));
+	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossRotateNotify(520, 560));
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Right, new SowrdBossVfxNotify(520, 575));
 	//AnimNotify Slash_Jump
 	pAnimationController_->AddAnimNotify((int)SWORDBOSS_ANIMATION::Slash_Jump, new SowrdBossAttackNotify(760, 780));

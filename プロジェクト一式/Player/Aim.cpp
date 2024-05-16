@@ -14,9 +14,12 @@
 namespace {
     static const float UP_MOUSE_LIMIT = -60.0f;
     static const float DOWN_MOUSE_LIMIT = 60.0f;
-
+    
+    static const float COMPULSION_COMPLEMENT_DEFAULT = 0.06f;       //強制の補完具合デフォルトの
     static const int COMPULSION_TIME_DEFAULT = 60;                  //強制から戻る時間
+    
     static const float MOUSE_SPEED = 0.05f;                         //感度
+    static const float DISTANCE_BEHIND_DEFAULT = 5.0f;              //どのくらい後ろから移すかのデフォルト値
     static const float HEIGHT_RAY = 0.1f;                           //RayCastの値にプラスする高さ
     float HEIGHT_DISTANCE = 1.5f;                                   //Aimの高さ
 
@@ -41,9 +44,10 @@ Aim::Aim(GameObject* parent)
     distanceDecrease_(0), center_{ 0,0,0,0 }, shakeSpeed_(0), rangeDecrease_(0), isTargetChange_(false), targetChangeTime_(0), hPict_(-1),
     shakeDirection_{ 1,0,0,0 }, isValid_(true)
 {
-    mouseSensitivity = 2.0f;
-    defPerspectDistance_ = 5.0f;
-    perspectiveDistance_ = defPerspectDistance_;
+    mouseSensitivity = MOUSE_SPEED;
+    targetDistanceBehind_ = DISTANCE_BEHIND_DEFAULT;
+    distanceBehind_ = targetDistanceBehind_;
+    compulsionComplement_ = COMPULSION_COMPLEMENT_DEFAULT;
 }
 
 Aim::~Aim()
@@ -72,8 +76,8 @@ void Aim::Update()
     //デバッグ用
     if (Input::IsKey(DIK_1)) HEIGHT_DISTANCE += 0.1f;
     if (Input::IsKey(DIK_2)) HEIGHT_DISTANCE -= 0.1f;
-    if (Input::IsKey(DIK_3)) defPerspectDistance_ += 0.1f;
-    if (Input::IsKey(DIK_4)) defPerspectDistance_ -= 0.1f;
+    if (Input::IsKey(DIK_3)) targetDistanceBehind_ += 0.1f;
+    if (Input::IsKey(DIK_4)) targetDistanceBehind_ -= 0.1f;
 
     if (compulsionTime_ > 0) {
         //強制移動
@@ -227,8 +231,17 @@ void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar)
     compulsionPosisiton_ = pos;
     compulsionTarget_ = tar;
     isCompulsion_ = true;
-    compulsionTime_ = COMPULSION_TIME_DEFAULT;
 
+    compulsionComplement_ = COMPULSION_COMPLEMENT_DEFAULT;
+    compulsionTime_ = COMPULSION_TIME_DEFAULT;
+}
+
+void Aim::SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar, int returnTime, float complement)
+{
+    SetCompulsion(pos, tar);
+
+    compulsionTime_ = returnTime;
+    compulsionComplement_ = complement;
 }
 
 //------------------------------------private--------------------------------------------
@@ -245,8 +258,8 @@ void Aim::DefaultAim()
     CameraShake();
 
     //RayCastの前に情報を入れる
-    perspectiveDistance_ = perspectiveDistance_ + ((defPerspectDistance_ - perspectiveDistance_) * 0.1f);
-    XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (direction * perspectiveDistance_);
+    distanceBehind_ = distanceBehind_ + ((targetDistanceBehind_ - distanceBehind_) * 0.1f);
+    XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (direction * distanceBehind_);
     XMStoreFloat3(&cameraPosition_, camPos);
 
     //RayCastしてその値を上書きする
@@ -259,11 +272,15 @@ void Aim::DefaultAim()
 
 void Aim::Compulsion()
 {
-    XMStoreFloat3(&cameraPosition_, (XMVectorLerp(XMLoadFloat3(&cameraPosition_), XMLoadFloat3(&compulsionPosisiton_), 0.05f)));
-    XMStoreFloat3(&cameraTarget_, (XMVectorLerp(XMLoadFloat3(&cameraTarget_), XMLoadFloat3(&compulsionTarget_), 0.05f)));
+    XMStoreFloat3(&cameraPosition_, (XMVectorLerp(XMLoadFloat3(&cameraPosition_), XMLoadFloat3(&compulsionPosisiton_), compulsionComplement_)));
+    XMStoreFloat3(&cameraTarget_, (XMVectorLerp(XMLoadFloat3(&cameraTarget_), XMLoadFloat3(&compulsionTarget_), compulsionComplement_)));
 
     XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
-    perspectiveDistance_ = XMVectorGetX(XMVector3Length(dir));
+    distanceBehind_ = XMVectorGetX(XMVector3Length(dir));
+
+    OutputDebugStringA(std::to_string(distanceBehind_).c_str());
+    OutputDebugString("\n");
+
     RayCastStage();
 
     Camera::SetPosition(cameraPosition_);
@@ -289,12 +306,15 @@ void Aim::BackCompulsion()
     //強制時の視点の距離を求める
     XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
     float dist = XMVectorGetX(XMVector3Length(dir));
-    perspectiveDistance_ = perspectiveDistance_ - ((dist - defPerspectDistance_) / (float)compulsionTime_);
+    distanceBehind_ = distanceBehind_ - ((dist - targetDistanceBehind_) / (float)compulsionTime_);
+
+    OutputDebugStringA(std::to_string(distanceBehind_).c_str());
+    OutputDebugString("\n");
 
     //戻り中のPositionとTargetを計算する
     XMFLOAT3 position = pPlayer_->GetPosition();
     XMFLOAT3 target = { position.x + cameraOffset_.x, position.y + HEIGHT_DISTANCE, position.z + cameraOffset_.z };
-    XMVECTOR camPos = XMLoadFloat3(&target) + (CalculationVectorDirection(transform_.rotate_)  * perspectiveDistance_);
+    XMVECTOR camPos = XMLoadFloat3(&target) + (CalculationVectorDirection(transform_.rotate_)  * distanceBehind_);
     XMStoreFloat3(&position, camPos);
 
     XMVECTOR vPos = XMLoadFloat3(&cameraPosition_);
@@ -484,11 +504,11 @@ void Aim::RayCastStage()
     pCollisionMap_->GetRayCastMinDist(cameraPosition_, cameraTarget_, &data, min);
 
     //レイ当たった・判定距離内だったら
-    if (min <= (defPerspectDistance_)) {
-        perspectiveDistance_ = min - HEIGHT_RAY;
+    if (min <= (targetDistanceBehind_)) {
+        distanceBehind_ = min - HEIGHT_RAY;
     }
 
-    XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (vDir * perspectiveDistance_);
+    XMVECTOR camPos = XMLoadFloat3(&cameraTarget_) + (vDir * distanceBehind_);
     XMStoreFloat3(&cameraPosition_, camPos);
 
 }
@@ -496,8 +516,8 @@ void Aim::RayCastStage()
 void Aim::CalcMouseMove()
 {
     XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
-    transform_.rotate_.y += (mouseMove.x * MOUSE_SPEED) * mouseSensitivity; //横方向の回転
-    transform_.rotate_.x -= (mouseMove.y * MOUSE_SPEED) * mouseSensitivity; //縦方向の回転
+    transform_.rotate_.y += mouseMove.x * mouseSensitivity; //横方向の回転
+    transform_.rotate_.x -= mouseMove.y * mouseSensitivity; //縦方向の回転
     if (transform_.rotate_.x <= UP_MOUSE_LIMIT) transform_.rotate_.x = UP_MOUSE_LIMIT;
     if (transform_.rotate_.x >= DOWN_MOUSE_LIMIT) transform_.rotate_.x = DOWN_MOUSE_LIMIT;
 

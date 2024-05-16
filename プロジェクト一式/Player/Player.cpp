@@ -18,6 +18,7 @@
 #include "../Animation/AnimationController.h"
 
 #include "../Engine/Text.h"
+#include "../Engine/Camera.h"
 
 namespace {
     const float moveSpeed = 0.08f;          //移動スピード
@@ -102,6 +103,11 @@ void Player::Update()
 
     //デバッグ用
     if (Input::IsKeyDown(DIK_T)) isCollider = !isCollider;
+
+    XMFLOAT3 pos = transform_.position_;
+    pos.y += Camera::GetPosition().y;
+    if (Input::IsKey(DIK_Y)) pAim_->SetCompulsion(pos, XMFLOAT3(15, 0, 15));
+    if (Input::IsKey(DIK_U)) pAim_->SetCompulsion(pos, XMFLOAT3(15, 0, 15), 5, 0.2f);
 
 }
 

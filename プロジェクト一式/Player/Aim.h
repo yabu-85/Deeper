@@ -39,9 +39,10 @@ class Aim : public GameObject
     XMVECTOR center_;
     XMVECTOR shakeDirection_;
 
-    float perspectiveDistance_;     //どのくらい後ろから映すか
-    float defPerspectDistance_;     //デフォルトの視点の距離
+    float distanceBehind_;          //どのくらい後ろから映すか
+    float targetDistanceBehind_;    //デフォルトの視点の距離
     float mouseSensitivity;         //マウス感度
+    float compulsionComplement_;    //強制移動の補完具合
 
     XMFLOAT3 cameraTarget_;         //カメラの焦点目標
     XMFLOAT3 cameraPosition_;       //カメラの場所目標
@@ -91,12 +92,16 @@ public:
     //視野内・近い敵を取得する
     EnemyBase* CalcTargetEnemy();
 
+    //ターゲット系
     EnemyBase* GetTargetEnemy() { return pEnemyBase_; }
-    bool IsTarget() { return isTarget_; };
     XMFLOAT3 GetTargetPos() { return isTarget_ ? pEnemyBase_->GetPosition() : XMFLOAT3(); }
+    bool IsTarget() { return isTarget_; };
 
     //座標を指定してポジションと焦点を設定する
     void SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar);
+    //強制から戻る時間と、補完の強さ指定するバージョン
+    void SetCompulsion(XMFLOAT3 pos, XMFLOAT3 tar, int returnTime, float complement);
+    //今補完中かどうか
     bool IsCompulsion() { return isCompulsion_; }
 
     //反復回数、反復する距離、スピードの減衰地、スピード

@@ -80,26 +80,31 @@ void Aim::Update()
     if (Input::IsKey(DIK_4)) targetDistanceBehind_ -= 0.1f;
 
     if (compulsionTime_ > 0) {
-        //強制移動
+        //強制移動中
         if (isCompulsion_) {
             Compulsion();
             isCompulsion_ = false;
             return;
         }
 
-        //戻ってる時の移動
+        //強制移動から戻る
         if (!isTarget_) {
             BackCompulsion();
-            compulsionTime_--;
-            return;
         }
+        else {
+            ChangeTarget();
+            FacingTarget();
+            BackCompulsion();
+        }
+        compulsionTime_--;
+        return;
     }
 
     if (isMove_) {
         //Target状態の移動・強制から戻る状態だったらTarget状態に移動
         if (isTarget_) {
             CalcCameraOffset(0.0f);
-            compulsionTime_ = 0;
+            //compulsionTime_ = 0;
 
             //ちょっとAimTarget時の描画してみる
             XMFLOAT3 tarPos = pEnemyBase_->GetPosition();
@@ -112,16 +117,7 @@ void Aim::Update()
             Image::SetAlpha(hPict_, 255);
             Image::SetTransform(hPict_, foundTrans);
 
-            //TargetChange
-            XMFLOAT3 mouse = Input::GetMouseMove();
-            if (abs(mouse.x) > TARGET_CHANGE_VALUE) {
-                if (targetChangeTime_ <= 0 && !isTargetChange_) ChangeTarget(mouse);
-            }
-            else {
-                isTargetChange_ = false;
-            }
-            targetChangeTime_--;
-
+            ChangeTarget();
             FacingTarget();
         }
         //マウスで視点移動
@@ -278,9 +274,6 @@ void Aim::Compulsion()
     XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
     distanceBehind_ = XMVectorGetX(XMVector3Length(dir));
 
-    OutputDebugStringA(std::to_string(distanceBehind_).c_str());
-    OutputDebugString("\n");
-
     RayCastStage();
 
     Camera::SetPosition(cameraPosition_);
@@ -307,9 +300,6 @@ void Aim::BackCompulsion()
     XMVECTOR dir = XMLoadFloat3(&cameraPosition_) - XMLoadFloat3(&cameraTarget_);
     float dist = XMVectorGetX(XMVector3Length(dir));
     distanceBehind_ = distanceBehind_ - ((dist - targetDistanceBehind_) / (float)compulsionTime_);
-
-    OutputDebugStringA(std::to_string(distanceBehind_).c_str());
-    OutputDebugString("\n");
 
     //戻り中のPositionとTargetを計算する
     XMFLOAT3 position = pPlayer_->GetPosition();
@@ -407,8 +397,22 @@ void Aim::FacingTarget()
 
 }
 
-void Aim::ChangeTarget(XMFLOAT3 mouse)
+void Aim::ChangeTarget()
 {
+    targetChangeTime_--;
+    
+    XMFLOAT3 mouse = Input::GetMouseMove();
+    if (abs(mouse.x) < TARGET_CHANGE_VALUE) {
+        if(isTargetChange_ && targetChangeTime_ <= 0) {
+            isTargetChange_ = false;
+            return;
+        }
+        return;
+    }
+
+    //まだクールタイム中
+    if (targetChangeTime_ > 0) return;
+
     EnemyManager* pEnemyManager = GameManager::GetEnemyManager();
     if (!pEnemyManager) return;
     std::vector<EnemyBase*> eList = pEnemyManager->GetAllEnemy();
@@ -461,6 +465,12 @@ void Aim::ChangeTarget(XMFLOAT3 mouse)
             pEnemyBase_ = eList.at(rIndex);
             isTargetChange_ = true;
             targetChangeTime_ = TARGET_CHANGE_COOLTIME;
+           
+            OutputDebugString("Change Right\n");
+
+            OutputDebugStringA(std::to_string(mouse.x).c_str());
+            OutputDebugString("\n\n");
+
         }
     }
     //左を選ぶ
@@ -468,6 +478,12 @@ void Aim::ChangeTarget(XMFLOAT3 mouse)
         pEnemyBase_ = eList.at(lIndex);
         isTargetChange_ = true;
         targetChangeTime_ = TARGET_CHANGE_COOLTIME;
+   
+        OutputDebugString("Change Leght\n");
+
+        OutputDebugStringA(std::to_string(mouse.x).c_str());
+        OutputDebugString("\n\n");
+
     }
 }
 

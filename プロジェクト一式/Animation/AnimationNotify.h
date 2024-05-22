@@ -1,8 +1,10 @@
 #pragma once
-#include "../Other/VFXManager.h"
-#include "../Other/AudioManager.h"
 #include <vector>
+#include <string>
+
 class GameObject;
+enum AUDIO_TYPE;
+enum VFX_TYPE;
 
 class OneFrame {
 protected:
@@ -23,15 +25,25 @@ public:
 };
 
 class CreatFrame : public OneFrame {
+protected:
     VFX_TYPE type;
 public:
     CreatFrame(int t, VFX_TYPE _type) : OneFrame(t), type(_type) {};
     void CalcFrame(int t, GameObject* obj = nullptr) override;
 };
 
-class PlaySoundFrame : public OneFrame{
-    VFX_TYPE type;
+class CreatFrameBone : public CreatFrame {
+    int hModel;
+    int boneIndex;
+    int partIndex;
 public:
-    PlaySoundFrame(int t, VFX_TYPE _type) : OneFrame(t), type(_type) {};
+    CreatFrameBone(int t, VFX_TYPE _type, int model, std::string name);
+    void CalcFrame(int t, GameObject* obj = nullptr) override;
+};
+
+class PlaySoundFrame : public OneFrame{
+    AUDIO_TYPE type;
+public:
+    PlaySoundFrame(int t, AUDIO_TYPE _type) : OneFrame(t), type(_type) {};
     void CalcFrame(int t, GameObject* obj = nullptr) override;
 };

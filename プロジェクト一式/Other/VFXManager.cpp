@@ -9,7 +9,13 @@ namespace VFXManager
 	EmitterData explode;
 	EmitterData smoke;
 	EmitterData enemySpawn;
-	EmitterData swordSlash;
+
+	const float runPlusHeight = 0.1f;
+	EmitterData runSmoke;
+
+	EmitterData swordHit;
+	EmitterData swordHitExplode;
+
 	EmitterData recovery;
 
 	EmitterData bossSwordSparks;
@@ -20,7 +26,6 @@ void VFXManager::Initialize()
 {
 	//火の粉
 	sparks.textureFileName = "Particle/cloudA.png";
-	sparks.delay = 0;
 	sparks.number = 15;
 	sparks.lifeTime = 50;
 	sparks.directionRnd = XMFLOAT3(90.0f, 90.0f, 90.0f);
@@ -36,10 +41,8 @@ void VFXManager::Initialize()
 
 	//爆発
 	explode.textureFileName = "Particle/cloudA.png";
-	explode.delay = 0;
 	explode.number = 8;
 	explode.lifeTime = 20;
-	explode.position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	explode.positionRnd = XMFLOAT3(0.5f, 0.0f, 0.5f);
 	explode.direction = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	explode.directionRnd = XMFLOAT3(90.0f, 90.0f, 90.0f);
@@ -52,12 +55,10 @@ void VFXManager::Initialize()
 	explode.deltaColor = XMFLOAT4(0.0f, -1.0f / 20.0f, 0.0f, -1.0f / 20.0f);
 	explode.gravity = 0.001f;
 
-	//煙を出す
+	//煙（でかめ、勢い強い）
 	smoke.textureFileName = "Particle/cloudA.png";
-	smoke.delay = 0;
 	smoke.number = 6;
 	smoke.lifeTime = 30;
-	smoke.position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	smoke.positionRnd = XMFLOAT3(0.2f, 0.1f, 0.2f);
 	smoke.direction = XMFLOAT3(2.0f, 0.5f, 0.0f);
 	smoke.directionRnd = XMFLOAT3(20.0f, 180.0f, 0.0f);
@@ -68,36 +69,43 @@ void VFXManager::Initialize()
 	smoke.scale = XMFLOAT2(1.02f, 1.02f);
 	smoke.color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 	smoke.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / smoke.lifeTime);
-	smoke.gravity = 0.0f;
+
+	//煙（走りのやつ）
+	runSmoke.textureFileName = "Particle/cloudA.png";
+	runSmoke.number = 2;
+	runSmoke.lifeTime = 40;
+	runSmoke.size = XMFLOAT2(0.3f, 0.3f);
+	runSmoke.sizeRnd = XMFLOAT2(0.1f, 0.1f);
+	runSmoke.scale = XMFLOAT2(1.02f, 1.02f);
+	runSmoke.color = XMFLOAT4(0.3f, 0.3f, 0.3f, 0.7f);
+	runSmoke.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / runSmoke.lifeTime);
 
 	//敵のスポーンVFX
 	static const int APPER_TIME = 180;
 	enemySpawn.textureFileName = "Particle/Red.png";
-	enemySpawn.delay = 0;
 	enemySpawn.lifeTime = APPER_TIME;
 	enemySpawn.number = 1;
-	enemySpawn.speed = 0.0f;
-	enemySpawn.speedRnd = 0.0f;
 	enemySpawn.size = XMFLOAT2(2.0f, 2.0f);
 	enemySpawn.rotate = XMFLOAT3(90.0f, 0.0f, 0.0f);
 	enemySpawn.spin = XMFLOAT3(0.0f, 10.0f, 0.0f);
-	enemySpawn.gravity = 0.0f;
 	enemySpawn.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / APPER_TIME);
 	enemySpawn.isBillBoard = false;
 
 	//剣のスラッシュ
-	swordSlash.textureFileName = "Particle/Burger.png";
-	swordSlash.delay = 0;
-	swordSlash.number = 1;
-	swordSlash.lifeTime = 10;
-	swordSlash.speed = 0.03f;
-	swordSlash.accel = 0.9f;
-	swordSlash.size = XMFLOAT2(3.0f, 1.0f);
-	swordSlash.deltaColor = XMFLOAT4(1.0f, 1.0f, 1.0f, -0.1f);
+	swordHit.textureFileName = "Particle/Hit.png";
+	swordHit.lifeTime = 10;
+	swordHit.size = XMFLOAT2(1.5f, 1.5f);
+	swordHit.scale = XMFLOAT2(1.02f, 1.02f);
+	swordHit.deltaColor = XMFLOAT4(1.0f, 1.0f, 1.0f, -0.1f);
+
+	swordHitExplode.textureFileName = "Particle/Explode.png";
+	swordHitExplode.lifeTime = 10;
+	swordHitExplode.size = XMFLOAT2(1.5f, 1.5f);
+	swordHitExplode.scale = XMFLOAT2(1.02f, 1.02f);
+	swordHitExplode.deltaColor = XMFLOAT4(1.0f, 1.0f, 1.0f, -0.1f);
 
 	//回復
 	recovery.textureFileName = "Particle/cloudA.png";
-	recovery.delay = 0;
 	recovery.number = 3;
 	recovery.lifeTime = 10;
 	recovery.position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -107,40 +115,35 @@ void VFXManager::Initialize()
 	recovery.size = XMFLOAT2(2.0f, 2.0f);
 	recovery.scale = XMFLOAT2(0.9f, 0.9f);
 	recovery.color = XMFLOAT4(0.0f, 1.0f, 0.1f, 1.0f);
-	recovery.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
+	//炎の剣のエフェクト
 	bossSwordSparks.textureFileName = "Particle/cloudA.png";
-	bossSwordSparks.delay = 0;
 	bossSwordSparks.number = 1;
 	bossSwordSparks.lifeTime = 40;
 	bossSwordSparks.positionRnd = XMFLOAT3(0.15f, 0.15f, 0.15f);
 	bossSwordSparks.directionRnd = XMFLOAT3(20.0f, 20.0f, 20.0f);
 	bossSwordSparks.speed = 0.03f;
 	bossSwordSparks.speedRnd = 0.02f;
-	bossSwordSparks.accel = 1.0f;
 	bossSwordSparks.size = XMFLOAT2(0.15f, 0.15f);
 	bossSwordSparks.sizeRnd = XMFLOAT2(0.15f, 0.15f);
 	bossSwordSparks.scale = XMFLOAT2(0.97f, 0.97f);
 	bossSwordSparks.color = XMFLOAT4(1.0f, 0.2f, 0.2f, 1.0f);
 	bossSwordSparks.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / bossSwordSparks.lifeTime);
-	bossSwordSparks.gravity = 0.0f;
 
 	const float BOSS_SMOKE_ALPHA = 0.5f;
 	bossSowrdSmoke.textureFileName = "Particle/cloudA.png";
-	bossSowrdSmoke.delay = 0;
 	bossSowrdSmoke.number = 1;
 	bossSowrdSmoke.lifeTime = 40;
 	bossSowrdSmoke.positionRnd = XMFLOAT3(0.2f, 0.2f, 0.2f);
 	bossSowrdSmoke.directionRnd = XMFLOAT3(20.0f, 20.0f, 20.0f);
 	bossSowrdSmoke.speed = 0.03f;
 	bossSowrdSmoke.speedRnd = 0.02f;
-	bossSowrdSmoke.accel = 1.0f;
 	bossSowrdSmoke.size = XMFLOAT2(0.25f, 0.25f);
 	bossSowrdSmoke.sizeRnd = XMFLOAT2(0.1f, 0.1f);
 	bossSowrdSmoke.scale = XMFLOAT2(1.05f, 1.05f);
 	bossSowrdSmoke.color = XMFLOAT4(1.0f, 0.2f, 0.2f, BOSS_SMOKE_ALPHA);
 	bossSowrdSmoke.deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, -1.0f / bossSowrdSmoke.lifeTime);
-	bossSowrdSmoke.gravity = 0.0f;
+
 }
 
 void VFXManager::CreateVfx(XMFLOAT3 pos, VFX_TYPE type, XMFLOAT3 other)
@@ -150,22 +153,20 @@ void VFXManager::CreateVfx(XMFLOAT3 pos, VFX_TYPE type, XMFLOAT3 other)
 	case Explode:		CreateVfxExplode1(pos);			break;
 	case EnemySpawn:	CreateVfxEnemySpawn(pos);		break;
 	case Smoke:			CreateVfxSmoke(pos);			break;
-	case SwordSlash:	CreateVfxSwordSlash(pos, other); break;
+	case RunSmoke:		CreateVfxRunSmoke(pos);			break;
+	case SwordSlash:	CreateVfxSwordSlash(pos); break;
 	case Recovery:		CreateVfxRecovery(pos);			break;
 	case BossSowrd:		CreateVfxBossSword(pos, other); break;
 	default: break;
 	}
 }
 
-void VFXManager::CreateVfxSwordSlash(XMFLOAT3 pos, XMFLOAT3 dir)
+void VFXManager::CreateVfxSwordSlash(XMFLOAT3 pos)
 {
-	swordSlash.position = pos;
-	swordSlash.direction = dir;
-
-	float rotation = XMConvertToDegrees(atan2f(dir.y, (dir.x + dir.z)));
-	swordSlash.rotate.z = rotation;
-	
-	VFX::Start(swordSlash);
+	swordHit.position = pos;
+	swordHitExplode.position = pos;
+	VFX::Start(swordHit);
+	VFX::Start(swordHitExplode);
 }
 
 void VFXManager::CreateVfxRecovery(XMFLOAT3 pos)
@@ -208,4 +209,11 @@ void VFXManager::CreateVfxSmoke(XMFLOAT3 pos)
 	smoke.position = pos;
 	smoke.position.y -= 0.25f;
 	VFX::Start(smoke);
+}
+
+void VFXManager::CreateVfxRunSmoke(XMFLOAT3 pos)
+{
+	runSmoke.position = pos;
+	runSmoke.position.y += runPlusHeight;
+	VFX::Start(runSmoke);
 }

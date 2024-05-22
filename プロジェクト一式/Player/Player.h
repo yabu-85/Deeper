@@ -10,7 +10,7 @@ class AnimationController;
 enum class PLAYER_ANIMATION {
     IDLE = 0,
     RUN,
-    RORING,
+    ROLLING,
     BACK_STEP,
     DAMAGE_SMALL,
     DAMAGE_MID,
@@ -25,7 +25,7 @@ enum class PLAYER_ANIMATION {
 const int PLAYER_ANIMATION_DATA[(int)PLAYER_ANIMATION::MAX][2] {
     {0, 120},     //Idle
     { 548, 590 }, //Run
-    { 120, 175 }, //Roring
+    { 120, 175 }, //Rolling
     { 500, 546 }, //Back
     { 175, 210 }, //DamageSmall
     { 210, 260 }, //DamageMid

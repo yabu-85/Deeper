@@ -147,7 +147,7 @@ void GameManager::StartPause()
 {
 	pauseClose_ = false;
 	isPause_ = true;
-	AudioManager::Play(AUDIO_ID::PAUSE_OPEN);
+	AudioManager::Play(AUDIO_TYPE::PAUSE_OPEN);
 
 	//全てのキャラクターのUpdateを拒否
 	CharacterManager::SetAllCharacterLeave();
@@ -206,7 +206,7 @@ void GameManager::MouseLimitedChange()
 
 	//ポーズ中にEscape押したから閉じる
 	if (isPause_) {
-		AudioManager::Play(AUDIO_ID::PAUSE_CLOSE);
+		AudioManager::Play(AUDIO_TYPE::PAUSE_CLOSE);
 		EndPause();
 		return;
 	}

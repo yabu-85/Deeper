@@ -33,18 +33,18 @@ struct EmitterData
 	EmitterData()
 	{
 		textureFileName = "defaultParticle.png";
-		position = positionRnd = directionRnd = rotate = rotateRnd = spin = XMFLOAT3(0, 0, 0);
-		direction = XMFLOAT3(0, 1, 0);
-		speed = 0.1f;
+		position = positionRnd = directionRnd = rotate = rotateRnd = spin = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		speed = 0.0f;
 		speedRnd = 0.0f;
 		accel = 1.0f;
 		gravity = 0.0f;
-		color = XMFLOAT4(1, 1, 1, 1);
-		deltaColor = XMFLOAT4(0, 0, 0, 0);
+		color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		deltaColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 		size = scale = XMFLOAT2(1.0f, 1.0f);
 		sizeRnd = XMFLOAT2(0.0f, 0.0f);
 		lifeTime = 30;
-		delay = 10;
+		delay = 0;
 		number = 1;
 		isBillBoard = true;
 	}

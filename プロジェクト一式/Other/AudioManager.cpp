@@ -55,13 +55,13 @@ void AudioManager::SetAudioData()
     }
 }
 
-void AudioManager::Play(AUDIO_ID id, float volume)
+void AudioManager::Play(AUDIO_TYPE id, float volume)
 {
 	Audio::Play(hSound_[(int)id], volume * gameVolue_);
 
 }
 
-void AudioManager::Play(AUDIO_ID id, XMFLOAT3 position, float range, float volume)
+void AudioManager::Play(AUDIO_TYPE id, XMFLOAT3 position, float range, float volume)
 {
     //‹——£‚É‚æ‚Á‚Ä‰¹—Ê‚ð•Ï‚¦‚é
     float dist = CalculationDistance(GameManager::GetPlayer()->GetPosition(), position);

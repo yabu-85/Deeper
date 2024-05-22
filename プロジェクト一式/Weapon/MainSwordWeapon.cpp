@@ -143,8 +143,11 @@ void MainSwordWeapon::OnAttackCollision(GameObject* pTarget)
         //çUåÇì¸Ç¡ÇΩÇÁÉäÉXÉgÇ…í«â¡
         if (e->ApplyDamageWithList(damage, knock)) {
             pDamageController_->AddAttackList(e);
-            
-            VFXManager::CreateVfxSwordSlash(wandPos_, direction_);
+
+            XMFLOAT3 pos = pTarget->GetPosition();
+            pos.y = wandPos_.y;
+            VFXManager::CreateVfxSwordSlash(pos);
+
             pPlayer_->GetAim()->SetCameraShakeDirection(XMLoadFloat3(&direction_));
             pPlayer_->GetAim()->SetCameraShake(shakeInfo);
         }
@@ -247,7 +250,7 @@ void MainSwordWeaponCombo1::Update()
     //çUåÇèIóπîªíË
     if (time_ == ANIM_ATTACK_FRAME1[1]) m->GetPolyLine()->SetClear(true);
     //Audioçƒê∂
-    if (time_ == ANIM_AUDIO_FRAME1) AudioManager::Play(AUDIO_ID::SWORD_WIELD_1);
+    if (time_ == ANIM_AUDIO_FRAME1) AudioManager::Play(AUDIO_TYPE::SWORD_WIELD_1);
     
     //ì¸óÕ
     if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;
@@ -319,7 +322,7 @@ void MainSwordWeaponCombo2::Update()
     //çUåÇèIóπîªíË
     if (time_ == ANIM_ATTACK_FRAME2[1]) m->GetPolyLine()->SetClear(true);
     //Audioçƒê∂
-    if (time_ == ANIM_AUDIO_FRAME2) AudioManager::Play(AUDIO_ID::SWORD_WIELD_2);
+    if (time_ == ANIM_AUDIO_FRAME2) AudioManager::Play(AUDIO_TYPE::SWORD_WIELD_2);
 
     //ì¸óÕ
     if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;
@@ -391,7 +394,7 @@ void MainSwordWeaponCombo3::Update()
     //çUåÇèIóπîªíË
     if (time_ == ANIM_ATTACK_FRAME3[1]) m->GetPolyLine()->SetClear(true);
     //Audioçƒê∂
-    if (time_ == ANIM_AUDIO_FRAME3) AudioManager::Play(AUDIO_ID::SWORD_WIELD_3);
+    if (time_ == ANIM_AUDIO_FRAME3) AudioManager::Play(AUDIO_TYPE::SWORD_WIELD_3);
     
     //ì¸óÕ
     if (InputManager::IsCmdDown(InputManager::MAIN_ATK)) next_ = true;

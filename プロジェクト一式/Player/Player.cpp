@@ -16,6 +16,7 @@
 #include "../Other/VFXManager.h"
 #include "../Other/InputManager.h"
 #include "../Animation/AnimationController.h"
+#include "../Animation/AnimationNotify.h"
 
 #include "../Engine/Text.h"
 #include "../Engine/Camera.h"
@@ -66,6 +67,11 @@ void Player::Initialize()
     //アニメーションデータのセットフレームはヘッダに書いてる
     pAnimationController_ = new AnimationController(hModel_, this);
     for (int i = 0; i < (int)PLAYER_ANIMATION::MAX; i++) pAnimationController_->AddAnim(PLAYER_ANIMATION_DATA[i][0], PLAYER_ANIMATION_DATA[i][1]);
+    //Run
+    pAnimationController_->AddAnimNotify((int)PLAYER_ANIMATION::RUN, new CreatFrameBone(562, VFX_TYPE::RunSmoke, hModel_, "toe.L"));
+    pAnimationController_->AddAnimNotify((int)PLAYER_ANIMATION::RUN, new CreatFrameBone(584, VFX_TYPE::RunSmoke, hModel_, "toe.R"));
+    //Rolling
+    pAnimationController_->AddAnimNotify((int)PLAYER_ANIMATION::ROLLING, new CreatFrame(145, VFX_TYPE::RunSmoke));
 
     pAim_ = Instantiate<Aim>(this);
     pPlayerWeapon_ = new PlayerWeapon(this);
@@ -331,7 +337,7 @@ void Player::Avo()
         CalcMove();
         Rotate(avoRotateRatio);
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
-        GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::RORING, 0.2f);
+        GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::ROLLING, 0.2f);
 
         GetSphereCollider(0)->SetValid(false);
         GetSphereCollider(1)->SetValid(false);
@@ -347,7 +353,7 @@ void Player::Avo()
     //動いていない・ターゲットもしていない
     else {
         XMStoreFloat3(&playerMovement_, GetDirectionVec() * maxMoveSpeed);
-        GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::RORING, 0.2f);
+        GetAnimationController()->SetNextAnim((int)PLAYER_ANIMATION::ROLLING, 0.2f);
 
         GetSphereCollider(0)->SetValid(false);
         GetSphereCollider(1)->SetValid(false);

@@ -21,13 +21,13 @@ void SceneManager::Initialize()
 {
 	//Å‰‚ÌƒV[ƒ“‚ğ€”õ
 #if _DEBUG
-	currentSceneID_ = SCENE_ID_STAGE1;
-	nextSceneID_ = currentSceneID_;
-	Instantiate<Stage1>(this);
-#else
 	currentSceneID_ = SCENE_ID_STAGE3;
 	nextSceneID_ = currentSceneID_;
 	Instantiate<Stage3>(this);
+#else
+	currentSceneID_ = SCENE_ID_TITLE;
+	nextSceneID_ = currentSceneID_;
+	Instantiate<TitleScene>(this);
 #endif
 
 	GameManager::SetSceneManager(this);

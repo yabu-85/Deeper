@@ -73,6 +73,6 @@ void NormalBullet::OnAttackCollision(GameObject* pTarget)
 void NormalBullet::Hit()
 {
 	VFXManager::CreateVfxExplode1(transform_.position_);
-	AudioManager::Play(AUDIO_ID::BULLET_HIT1, transform_.position_, 10.0f);
+	AudioManager::Play(AUDIO_TYPE::BULLET_HIT1, transform_.position_, 10.0f);
 	KillMe();
 }

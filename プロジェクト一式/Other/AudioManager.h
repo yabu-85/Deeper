@@ -2,7 +2,7 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-enum class AUDIO_ID {
+enum AUDIO_TYPE {
 	BUTTON_WITHIN = 0,
 	BUTTON_PUSH,
 	PAUSE_OPEN,
@@ -19,12 +19,12 @@ namespace AudioManager {
 	void SetAudioData();
 
 	//音を鳴らす
-	void Play(AUDIO_ID id, float volume = 1.0f);
+	void Play(AUDIO_TYPE id, float volume = 1.0f);
 	
 	/// <summary>
 	/// 音を鳴らす・距離によって音量を変えて音量を変える
 	/// rangeの範囲内のCombat状態じゃないエネミーをCombat状態に
 	/// </summary>
-	void Play(AUDIO_ID id, XMFLOAT3 position, float range, float volume = 1.0f);
+	void Play(AUDIO_TYPE id, XMFLOAT3 position, float range, float volume = 1.0f);
 
 };

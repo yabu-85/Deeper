@@ -144,7 +144,7 @@ void ThrowBullet::Hit()
 	Move();
 
 	VFXManager::CreateVfxExplode1(transform_.position_);
-	AudioManager::Play(AUDIO_ID::BULLET_HIT1, transform_.position_, 10.0f);
+	AudioManager::Play(AUDIO_TYPE::BULLET_HIT1, transform_.position_, 10.0f);
 	
 	//進めたポジション追加＆後ろ削除
 	pPolyLine_->AddPosition(transform_.position_);

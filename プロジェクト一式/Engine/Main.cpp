@@ -122,88 +122,40 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				//入力（キーボード、マウス、コントローラー）情報を更新
 				Input::Update();
 
-				if (Input::IsKey(DIK_F)) {
+				pRootObject->UpdateSub();
 
-				}
-				
-				else if (Input::IsKey(DIK_G)) {
-					if (nowTime % 10 == 0) {
-						pRootObject->UpdateSub();
+				GameManager::Update();
 
-						GameManager::Update();
-
-						//Pauseなどでのウィンドウスタイル変更のため
-						if (GameManager::IsMouseLimitedScene() != isCursorLimited) {
-							isCursorLimited = !isCursorLimited;
-							if (isCursorLimited) LimitMousePointer(hWnd);
-							else ReleaseMousePointer();
-						}
-
-						//カメラを更新
-						Camera::Update();
-
-						//エフェクトの更新
-						VFX::Update();
-
-						//このフレームの描画開始
-						Direct3D::BeginDraw();
-
-						//全オブジェクトを描画
-						//ルートオブジェクトのDrawを呼んだあと、自動的に子、孫のUpdateが呼ばれる
-						pRootObject->DrawSub();
-
-						//エフェクトの描画
-						VFX::Draw();
-
-						GameManager::Draw();
-
-						//描画終了
-						Direct3D::EndDraw();
-
-						//ちょっと休ませる
-						Sleep(1);
-					}
+				//Pauseなどでのウィンドウスタイル変更のため
+				if (GameManager::IsMouseLimitedScene() != isCursorLimited) {
+					isCursorLimited = !isCursorLimited;
+					if (isCursorLimited) LimitMousePointer(hWnd);
+					else ReleaseMousePointer();
 				}
 
-				else if (true || !Input::IsKey(DIK_F)) {
-					
-					//全オブジェクトの更新処理
-					//ルートオブジェクトのUpdateを呼んだあと、自動的に子、孫のUpdateが呼ばれる
-					pRootObject->UpdateSub();
+				//カメラを更新
+				Camera::Update();
 
-					GameManager::Update();
+				//エフェクトの更新
+				VFX::Update();
 
-					//Pauseなどでのウィンドウスタイル変更のため
-					if (GameManager::IsMouseLimitedScene() != isCursorLimited) {
-						isCursorLimited = !isCursorLimited;
-						if (isCursorLimited) LimitMousePointer(hWnd);
-						else ReleaseMousePointer();
-					}
+				//このフレームの描画開始
+				Direct3D::BeginDraw();
 
-					//カメラを更新
-					Camera::Update();
+				//全オブジェクトを描画
+				//ルートオブジェクトのDrawを呼んだあと、自動的に子、孫のUpdateが呼ばれる
+				pRootObject->DrawSub();
 
-					//エフェクトの更新
-					VFX::Update();
+				//エフェクトの描画
+				VFX::Draw();
 
-					//このフレームの描画開始
-					Direct3D::BeginDraw();
+				GameManager::Draw();
 
-					//全オブジェクトを描画
-					//ルートオブジェクトのDrawを呼んだあと、自動的に子、孫のUpdateが呼ばれる
-					pRootObject->DrawSub();
+				//描画終了
+				Direct3D::EndDraw();
 
-					//エフェクトの描画
-					VFX::Draw();
-
-					GameManager::Draw();
-
-					//描画終了
-					Direct3D::EndDraw();
-
-					//ちょっと休ませる
-					Sleep(1);
-				}
+				//ちょっと休ませる
+				Sleep(1);
 			}
 			timeEndPeriod(1);	//時間計測の制度を戻す
 		}

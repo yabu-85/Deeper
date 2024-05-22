@@ -6,6 +6,7 @@ enum VFX_TYPE {
 	Explode = 0,
 	EnemySpawn,
 	Smoke,
+	RunSmoke,
 	SwordSlash,
 	Recovery,
 	BossSowrd,
@@ -23,7 +24,8 @@ namespace VFXManager
 	void CreateVfxExplode1(XMFLOAT3 pos);
 	void CreateVfxEnemySpawn(XMFLOAT3 pos);
 	void CreateVfxSmoke(XMFLOAT3 pos);
-	void CreateVfxSwordSlash(XMFLOAT3 pos, XMFLOAT3 dir);
+	void CreateVfxRunSmoke(XMFLOAT3 pos);
+	void CreateVfxSwordSlash(XMFLOAT3 pos);
 	void CreateVfxRecovery(XMFLOAT3 pos);
 	void CreateVfxBossSword(XMFLOAT3 pos, XMFLOAT3 dir);
 };

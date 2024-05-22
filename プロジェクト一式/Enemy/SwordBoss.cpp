@@ -16,6 +16,7 @@
 #include "../Player/Player.h"
 #include "../Animation/AnimationController.h"
 #include "../Animation/SwordBossNotify.h"
+#include "../Other/VFXManager.h"
 
 namespace {
 	static const int POLY_DRAW_TIME = 20;
@@ -25,11 +26,6 @@ namespace {
 	static const int ATTACK_COLLIDER = 5;	//コライダーの数
 	static const float FIRST_LENG = 0.03f;	//コライダーの最初のポジション
 	static const float ADDLENG = 0.36f;		//コライダーのポジションに足す量
-
-	//アニメ通知の情報
-	static const int ATTACK_ANIME_ID[] = { (int)SWORDBOSS_ANIMATION::Slash_Up, (int)SWORDBOSS_ANIMATION::Slash_Right, (int)SWORDBOSS_ANIMATION::Thrust };
-	static const int ATTACK_CALC[][2] = { {620, 660}, {740, 755}, {835, 845} };
-	static const int ATTACK_ROTATE[][2] = { {600, 690}, {700, 740}, {780, 830} };
 
 }
 
@@ -119,7 +115,7 @@ void SwordBoss::Initialize()
 
 	//技ごとに変更するように todo
 	pDamageController_ = new DamageController;
-	DamageInfo damage(this, "SwordBoss", 0);
+	DamageInfo damage(this, "SwordBoss", 12);
 	KnockBackInfo knockBack(KNOCK_TYPE::MEDIUM, 40, 0.01f, transform_.position_);
 	pDamageController_->SetCurrentDamage(damage);
 	pDamageController_->SetCurrentKnockBackInfo(knockBack);

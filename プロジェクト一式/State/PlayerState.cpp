@@ -343,6 +343,8 @@ void PlayerDead::Update()
 
 void PlayerDead::OnEnter()
 {
+	Player* p = static_cast<Player*>(owner_->GetGameObject());
+	p->SetAllColliderValid(false);
 	time_ = 0;
 }
 

@@ -14,7 +14,7 @@ namespace {
     //ãóó£
     static const float SLASH_UP_DIST = 2.5f;
     static const float SLASH_RIGHT_DIST = 2.5f;
-    static const float SLASH_JUMP_DIST[2] = { 4.0f, 6.0f }; //1à»è„ / 2à»â∫
+    static const float SLASH_JUMP_DIST[2] = { 3.5f, 6.0f }; //1à»è„ / 2à»â∫
     static const float THRUST_DIST = 3.5f;
 
     //ÉRÉìÉ{êÑà⁄ï\

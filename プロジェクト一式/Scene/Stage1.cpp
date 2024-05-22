@@ -28,6 +28,7 @@ void Stage1::Initialize()
 	//•Ší‚Æ‚©‚©‚µ
 	GameManager::GetWeaponObjectManager()->AddWeaponObject(ENEMY_TYPE::ENEMY_STONEGOLEM, GameManager::GetStage()->GetStartPosition());
 	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_SCARECROW);
+	GameManager::GetEnemyManager()->SpawnEnemy(ENEMY_SCARECROW);
 
 }
 

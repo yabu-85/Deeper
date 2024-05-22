@@ -321,9 +321,15 @@ void SwordBossAttack::UpdateSlashJump()
 		pos.y = (JumpheightPower * -time) + pos.y;
 		pBoss_->SetPosition(pos);
 
+		//‹ß‚³‚Å‘¬‚³—}§ŒvŽZ
+		const float limitDist = 3.0f;
+		float limitSpeed = 1.0f;
+		float dist = CalculationDistance(GameManager::GetPlayer()->GetPosition(), pBoss_->GetPosition());
+		if (dist < limitDist) limitSpeed *= (dist - pBoss_->GetBodyRange()) / limitDist;
+
 		//ˆÚ“®
+		pBoss_->GetOrientedMoveAction()->SetMoveSpeed(JumpMoveSpeed * limitSpeed);
 		pBoss_->GetOrientedMoveAction()->SetDirection({ 0.0f, 0.0f, 1.0f, 0.0f });
-		pBoss_->GetOrientedMoveAction()->SetMoveSpeed(JumpMoveSpeed);
 		pBoss_->GetOrientedMoveAction()->Update();
 	}
 }

@@ -60,7 +60,7 @@ class Aim : public GameObject
     void BackCompulsion();  //‹­§ˆÚ“®‚©‚ç’Êí‚ÉˆÚ‚é‚Æ‚«‚ÌŒvZ
 
     void FacingTarget();
-    void ChangeTarget(XMFLOAT3 mouse);
+    void ChangeTarget();
     void CalcCameraOffset(float _aimMove);
     void RayCastStage();
     void CalcMouseMove();

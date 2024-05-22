@@ -27,6 +27,7 @@ void Scarecrow::Initialize()
 	assert(hModel_ >= 0);
 
 	transform_.position_ = POSITION;
+	transform_.position_.x += rand() % 5 - 2;
 	transform_.rotate_.y = 0.0f;
 
 	SetHP(200);

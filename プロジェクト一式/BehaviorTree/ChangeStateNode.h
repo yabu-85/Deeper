@@ -4,7 +4,7 @@
 
 class EnemyBase;
 
-//w’è‚µ‚½Enemy‚ªw’è‚µ‚½State‚Å‚È‚¢‚È‚ç‚»‚ÌState‚ÉØ‚è‘Ö‚¦‚é
+//Enemy‚ªİ’è‚µ‚½State‚Å‚È‚¢‚È‚çØ‚è‘Ö‚¦‚é
 class EnemyChangeStateNode : public Action
 {
 	std::string stateName_;
@@ -14,6 +14,7 @@ public:
 	Status Update() override;
 };
 
+//Enemy‚ªİ’è‚µ‚½State‚Å‚È‚¢‚È‚çØ‚è‘Ö‚¦‚é
 class EnemyChangeCombatStateNode : public Action
 {
 	std::string stateName_;

@@ -3,6 +3,7 @@
 
 class EnemyBase;
 
+//敵の原点がスクリーン内にあるならSuccessを返す
 class IsEnemyWithinScreen : public Condition
 {
 	EnemyBase* pEnemyBase_;

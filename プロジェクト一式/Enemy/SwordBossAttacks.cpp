@@ -25,8 +25,6 @@ namespace {
 
 }
 
-#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
-
 SwordBossSlashUp::SwordBossSlashUp() {
     for (int i : SLASH_UP_COMBO) AddComboList(i);
     SetPriority(PRIORITY_SLASH_UP); 

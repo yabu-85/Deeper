@@ -13,12 +13,7 @@ TreeNode::~TreeNode()
 
 TreeNode::Status TreeNode::Tick()
 {
-    
     return status_ = Update();
-    
-    status_ = Update();
-
-    return status_;
 }
 
 //--------------------------Composite--------------------------

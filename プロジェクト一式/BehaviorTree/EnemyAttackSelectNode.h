@@ -5,6 +5,7 @@
 class EnemyBase;
 class SwordBoss;
 
+//AttackSelector‚Å‹Z‚ª‘I‘ð‰Â”\‚¾‚Á‚½‚çSuccess‚ð•Ô‚·
 class SwordBossAttackSelectNode : public Action
 {
 	SwordBoss* owner_;

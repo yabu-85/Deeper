@@ -30,7 +30,7 @@ namespace {
 }
 
 SwordBoss::SwordBoss(GameObject* parent)
-	: EnemyBase(parent, "SwordBossEnemy"), hModel_(-1), hSwordModel_(-1), pMoveAction_(nullptr), pRotateAction_(nullptr), pOrientedMoveAction_(nullptr), 
+	: EnemyBase(parent, "SwordBossEnemy"), hModel_(-1), hSwordModel_(-1), pAstarMoveAction_(nullptr), pRotateAction_(nullptr), pOrientedMoveAction_(nullptr),
 	boneIndex_(-1), partIndex_(-1), pDamageController_(nullptr), pAnimationController_(nullptr), pDoublePolyLine_(nullptr), pSelectAttack_(nullptr),
 	preRotate_{0,0,0}, prePosition_{0,0,0}
 {
@@ -93,7 +93,7 @@ void SwordBoss::Initialize()
 	SetAllAttackColliderValid(false);
 
 	//Action‚ÌÝ’è
-	pMoveAction_ = new AstarMoveAction(this, 0.0f, 0.3f);
+	pAstarMoveAction_ = new AstarMoveAction(this, 0.0f, 0.3f);
 	pOrientedMoveAction_ = new OrientedMoveAction(this, 0.02f);
 	pRotateAction_ = new RotateAction(this, 0.0f);
 	pRotateAction_->Initialize();
@@ -133,10 +133,6 @@ void SwordBoss::Initialize()
 
 void SwordBoss::Update()
 {
-	float dist = CalculationDistance(GameManager::GetPlayer()->GetPosition(), transform_.position_);
-	OutputDebugStringA(std::to_string(dist).c_str());
-	OutputDebugString("\n");
-
 	EnemyBase::Update();
 	pAnimationController_->Update();
 	pStateManager_->Update();
@@ -175,7 +171,7 @@ void SwordBoss::Draw()
 	}
 
 	pEnemyUi_->Draw();
-	pMoveAction_->Draw();
+	pAstarMoveAction_->Draw();
 	pDoublePolyLine_->Draw();
 }
 
@@ -187,7 +183,7 @@ void SwordBoss::Release()
 	SAFE_DELETE(pDoublePolyLine_);
 
 	SAFE_DELETE(pRotateAction_);
-	SAFE_DELETE(pMoveAction_);
+	SAFE_DELETE(pAstarMoveAction_);
 	SAFE_DELETE(pOrientedMoveAction_);
 	SAFE_DELETE(pAnimationController_);
 	SAFE_DELETE(pDamageController_);

@@ -26,7 +26,7 @@ public:
     void SetMoveSpeed(float speed) { moveSpeed_ = speed; }
     void SetMoveRange(float range) { moveRange_ = range; }
     
-    //移動が終わった、Targetの位置についたか移動終わった
+    //移動が終わったか
     bool IsInRange() { return isInRange_; }
 
     //Astarの場合Update呼ばないと移動しない

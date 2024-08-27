@@ -2,6 +2,7 @@
 #include "BehaviourNode.h"
 class EnemyBase;
 
+//AttackCoolDownのセットを行う、必ずSuccessが返ってくる
 class EnemySetAttackCoolDown : public Action
 {
 	int time_;

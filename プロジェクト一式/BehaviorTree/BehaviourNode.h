@@ -13,10 +13,10 @@ public:
     };
 
     enum class Status {
-        INVALID,
-        SUCCESS,
-        FAILURE,
-        RUNNING,
+        INVALID,    //初期状態
+        SUCCESS,    //成功
+        FAILURE,    //失敗
+        //RUNNING,  //実行中（使い道が今のところない
     };
 
 protected:
@@ -29,8 +29,8 @@ public:
     Status Tick();
 
     virtual Status Update() = 0;    //本体処理
-
     virtual void ResetState() { status_ = Status::INVALID; }
+
     void SetStatus(Status newState) { status_ = newState; }
     Status GetStatus() { return status_; }
     NodeType GetType() { return type_; }

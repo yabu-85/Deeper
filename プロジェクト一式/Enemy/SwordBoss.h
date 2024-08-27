@@ -52,7 +52,7 @@ class SwordBoss : public EnemyBase
     DoublePolyLine* pDoublePolyLine_;
     AnimationController* pAnimationController_;
     DamageController* pDamageController_;
-    AstarMoveAction* pMoveAction_;
+    AstarMoveAction* pAstarMoveAction_;
     OrientedMoveAction* pOrientedMoveAction_;
     RotateAction* pRotateAction_;
 
@@ -78,7 +78,7 @@ public:
     SelectAttack* GetSelectAttack() { return pSelectAttack_; }
     AnimationController* GetAnimationController() { return pAnimationController_; }
     DamageController* GetDamageController() { return pDamageController_; }
-    AstarMoveAction* GetMoveAction() { return pMoveAction_; }
+    AstarMoveAction* GetAstarMoveAction() { return pAstarMoveAction_; }
     OrientedMoveAction* GetOrientedMoveAction() { return pOrientedMoveAction_; }
     RotateAction* GetRotateAction() { return pRotateAction_; }
 };

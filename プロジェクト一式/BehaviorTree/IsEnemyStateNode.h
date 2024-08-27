@@ -4,6 +4,7 @@
 
 class EnemyBase;
 
+//指定したステートなら子供をUpdate
 class IsEnemyState : public Condition
 {
 	std::string stateName_;
@@ -13,6 +14,7 @@ public:
 	Status Update() override;
 };
 
+//指定したステートでないなら子供をUpdate
 class IsNotEnemyState : public Condition
 {
 	std::string stateName_;
@@ -24,6 +26,7 @@ public:
 
 //--------------------------------------------------------------------------------------------
 
+//指定したステートなら子供をUpdate
 class IsEnemyCombatState : public Condition
 {
 	std::string stateName_;
@@ -33,6 +36,7 @@ public:
 	Status Update() override;
 };
 
+//指定したステートでないなら子供をUpdate
 class IsNotEnemyCombatState : public Condition
 {
 	std::string stateName_;

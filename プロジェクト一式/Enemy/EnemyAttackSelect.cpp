@@ -12,8 +12,6 @@ bool SelectAttack::Selector(EnemyBase* enemy)
     if (comboHistory_.empty()) SelectNoCombo(enemy, availables);
     else SelectCombo(enemy, availables);
 
-
-
     //使用可能な技がないから終わり
     if (availables.empty()) return false;
 

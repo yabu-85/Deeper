@@ -7,6 +7,9 @@ class SphereCollider;
 class DoublePolyLine;
 class DamageController;
 
+/// <summary>
+/// プレイヤーのメイン武器
+/// </summary>
 class MainSwordWeapon : public WeaponBase
 {
     XMFLOAT3 wandPos_;      //プレイヤーの手のポジション

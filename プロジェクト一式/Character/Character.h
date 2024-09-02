@@ -3,13 +3,6 @@
 #include <vector>
 class Character;
 
-enum class KNOCK_TYPE {
-    SMALL = 0,
-    MEDIUM,
-    LARGE,
-    MAX,
-};
-
 //ダメージの情報
 struct DamageInfo {
     Character* owner;   //ダメージを与えるキャラ
@@ -19,6 +12,14 @@ struct DamageInfo {
     DamageInfo() : owner(nullptr), name(""), damage(0) {};
     DamageInfo(int _damage) : owner(nullptr), name(""), damage(_damage) {};
     DamageInfo(Character* _owner, std::string _name, int _damage ) : owner(_owner), name(_name), damage(_damage) {};
+};
+
+//ノックバックの種類
+enum class KNOCK_TYPE {
+    SMALL = 0,
+    MEDIUM,
+    LARGE,
+    MAX,
 };
 
 //ノックバックの情報
@@ -32,6 +33,10 @@ struct KnockBackInfo {
     KnockBackInfo(KNOCK_TYPE _type, int _time, float _power, XMFLOAT3 _pos) : type(_type), time(_time), power(_power), pos(_pos) {};
 };
 
+/// <summary>
+/// Health・ダメージを与えられる・キャラ同士の反発・ノックバックの機能をまとめたクラス
+/// 継承して使う
+/// </summary>
 class Character : public GameObject
 {
     int hp_;            //HP

@@ -4,6 +4,9 @@
 
 class InteractionUI;
 
+/// <summary>
+/// シーン移行するためのワープ装置
+/// </summary>
 class Warp : public GameObject
 {
     bool isValid_;

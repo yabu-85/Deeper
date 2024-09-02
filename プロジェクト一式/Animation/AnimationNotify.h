@@ -6,6 +6,10 @@ class GameObject;
 enum AUDIO_TYPE;
 enum VFX_TYPE;
 
+/// <summary>
+/// アニメーションが指定した時間になったら通知されるクラス
+/// １フレームのみ（時間が１０になったら呼ばれる
+/// </summary>
 class OneFrame {
 protected:
     int time;
@@ -15,6 +19,10 @@ public:
     virtual void OnFrame(GameObject* obj) {};
 };
 
+/// <summary>
+/// アニメーションが指定した間の時間になったら通知されるクラス
+/// 指定した時間の間（０～１０）
+/// </summary>
 class DoubleFrame : public OneFrame {
     int endTime;
 public:
@@ -24,6 +32,9 @@ public:
     virtual void OnExit(GameObject* obj) {};
 };
 
+/// <summary>
+/// アニメーションが指定した時間になったらVFXが生成される
+/// </summary>
 class CreatFrame : public OneFrame {
 protected:
     VFX_TYPE type;
@@ -32,6 +43,9 @@ public:
     void CalcFrame(int t, GameObject* obj = nullptr) override;
 };
 
+/// <summary>
+/// アニメーションが指定した時間になったら指定したボーンの位置からVFXが生成される
+/// </summary>
 class CreatFrameBone : public CreatFrame {
     int hModel;
     int boneIndex;
@@ -41,6 +55,9 @@ public:
     void CalcFrame(int t, GameObject* obj = nullptr) override;
 };
 
+/// <summary>
+/// アニメーションが指定した時間になったらSoundが再生される
+/// </summary>
 class PlaySoundFrame : public OneFrame{
     AUDIO_TYPE type;
 public:

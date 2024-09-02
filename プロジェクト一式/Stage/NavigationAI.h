@@ -3,6 +3,10 @@
 #include <vector>
 using namespace DirectX;
 
+/// <summary>
+/// ナビゲーションAI
+/// Astarのみ
+/// </summary>
 class NavigationAI
 {
 	std::vector<std::vector<int>> mapData_;

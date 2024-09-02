@@ -2,6 +2,9 @@
 
 class Character;
 
+/// <summary>
+/// Moveやらのアクションの基底クラス
+/// </summary>
 class BaseAction {
 protected:
     Character* pCharacter_;

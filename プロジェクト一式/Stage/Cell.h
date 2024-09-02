@@ -8,6 +8,10 @@
 class BoxCollider;
 class SphereCollider;
 
+/// <summary>
+/// コリジョンマップに登録されるワールドをマスで区切って登録
+/// Cellの中にTriangleが登録され、登録されたので当たり判定とかやる
+/// </summary>
 class Cell
 {
 	//左奥下の座標

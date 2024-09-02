@@ -10,6 +10,9 @@ struct Polygons {
 	XMFLOAT3 pos1, pos2, pos3;
 };
 
+/// <summary>
+/// OŠpŒ`‚Ìî•ñ
+/// </summary>
 class Triangle
 {
 	Polygons position_;

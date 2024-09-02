@@ -4,7 +4,9 @@
 
 using namespace DirectX;
 
-//視覚の探索
+/// <summary>
+/// コリジョンマップを使って計算して、視点での探索をする
+/// </summary>
 class VisionSearchAction : public BaseAction
 {
     bool isFoundTarget_;    //ターゲットを見つけたか

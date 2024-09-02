@@ -19,6 +19,10 @@ struct IntersectData {
     IntersectData(int num, int ray, XMFLOAT3 pos, XMFLOAT3 sca) : hModelNum(num), hRayModelNum(ray), position(pos), scale(sca) {}
 };
 
+/// <summary>
+/// ワールド生成をするクラス
+/// CSVのマス目情報からStageを生成
+/// </summary>
 class CreateStage {
 public:
     enum StageNum {

@@ -13,6 +13,7 @@ enum AUDIO_TYPE {
 	BULLET_HIT1,
 };
 
+//‰¹‚ð–Â‚ç‚·‹@”\‚ð‚Ü‚Æ‚ß‚½
 namespace AudioManager {
 	void Initialize();
 	void Release();

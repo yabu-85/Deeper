@@ -2,6 +2,7 @@
 #include <vector>
 class Character;
 
+//キャラクター管理クラス
 namespace CharacterManager
 {
 	std::vector<Character*> GetCharacterList();
@@ -13,7 +14,6 @@ namespace CharacterManager
 	
 	//全てのキャラのUpdateを拒否に
 	void SetAllCharacterLeave();
-
 
 };
 

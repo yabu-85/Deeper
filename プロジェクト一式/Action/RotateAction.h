@@ -1,6 +1,9 @@
 #pragma once
 #include "BaseAction.h"
 
+/// <summary>
+/// Žw’è‚µ‚½•ûŒü‚Ö‰ñ“]‚³‚¹‚éƒNƒ‰ƒX
+/// </summary>
 class RotateAction : public BaseAction
 {
     float rotateRatio_;         //‰ñ“]—¦

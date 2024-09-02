@@ -6,6 +6,10 @@
 class Triangle;
 class Cell;
 
+/// <summary>
+/// Cellをまとめたクラスで
+/// 当たり判定やRayCastなどをする
+/// </summary>
 class CollisionMap : public GameObject
 {
     //ヒープポインタのエラー出るから仕方なくここにも

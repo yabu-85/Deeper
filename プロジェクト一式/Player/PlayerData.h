@@ -3,6 +3,10 @@
 
 class WeaponBase;
 
+/// <summary>
+/// シーン移動しても情報を共有するためのクラス
+/// プレイヤー自体の情報と、Weaponの情報を持つ
+/// </summary>
 namespace PlayerData
 {
 	enum class WEAPON_TYPE {
@@ -21,7 +25,6 @@ namespace PlayerData
 		int clearStageCount_;
 		int receiveDamage_;
 		WeaponData subWeapon_[2];
-		
 	};
 
 	void Initialize();

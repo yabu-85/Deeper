@@ -9,6 +9,10 @@ using namespace DirectX;
 class UIBase;
 class Cursor;
 
+/// <summary>
+/// UI‚ğ‚Ü‚Æ‚ß‚½ƒNƒ‰ƒX
+/// ‰Ÿ‚³‚ê‚Ä‚¢‚é‚©‚Ì”»’è‚â‚»‚ÌŒÄ‚Ño‚µ‚àŒ“‚Ë‚Ä‚é
+/// </summary>
 class UIManager
 {
 public:

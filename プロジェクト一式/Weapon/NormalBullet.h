@@ -1,6 +1,9 @@
 #pragma once
 #include "BulletBase.h"
 
+/// <summary>
+/// ’¼üˆÚ“®‚·‚é’eŠÛ
+/// </summary>
 class NormalBullet : public BulletBase
 {
 public:

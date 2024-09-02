@@ -3,6 +3,9 @@
 
 class InteractionUI;
 
+/// <summary>
+/// プレイヤーが拾う、武器の元となるクラス
+/// </summary>
 class WeaponObject : public GameObject
 {
     int hModel_;

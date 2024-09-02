@@ -3,6 +3,7 @@
 
 using namespace DirectX;
 
+//PauseとかTitle画面で使うカーソル
 class Cursor
 {
 	int hPict_;

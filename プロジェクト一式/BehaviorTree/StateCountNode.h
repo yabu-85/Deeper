@@ -6,6 +6,7 @@
 using std::vector;
 using std::string;
 
+//指定したStateの敵が指定した数いたら
 class StateCountNode : public Condition
 {
 	vector<string> stateName_;
@@ -15,6 +16,7 @@ public:
 	Status Update() override;
 };
 
+//指定したStateの敵が指定した数いなかったら
 class CombatStateCountNode : public Condition
 {
 	vector<string> stateName_;

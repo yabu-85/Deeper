@@ -6,6 +6,7 @@
 
 using namespace DirectX;
 
+//UI（今はボタンクラスになってる
 class UIBase
 {
 	int hPict_[3];

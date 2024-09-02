@@ -7,6 +7,9 @@ using namespace DirectX;
 class WeaponObject;
 class WeaponBase;
 
+/// <summary>
+/// WeaponObject‚ð‚Ü‚Æ‚ß‚éƒNƒ‰ƒX
+/// </summary>
 class WeaponObjectManager
 {
 	float range_;							//Žæ“¾‚Å‚«‚é”ÍˆÍ

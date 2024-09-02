@@ -1,6 +1,7 @@
 #pragma once
 #include "../Engine/GameObject.h"
 
+//弾丸のベースクラス
 class BulletBase : public GameObject
 {
 	GameObject* pParent_;	//撃った人のポインタ

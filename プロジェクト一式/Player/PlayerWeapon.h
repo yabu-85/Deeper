@@ -5,6 +5,9 @@
 class WeaponBase;
 class Player;
 
+/// <summary>
+/// プレイヤーが持つWeapon画像表示や、取り外しをする
+/// </summary>
 class PlayerWeapon
 {
     enum SELECT_TYPE {

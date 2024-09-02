@@ -4,6 +4,7 @@
 class EnemyBase;
 class Player;
 
+//プレイヤーとの距離が n 以下なら
 class IsPlayerInRangeNode : public Condition
 {
 	float range_;
@@ -14,6 +15,7 @@ public:
 	Status Update() override;
 };
 
+//プレイヤーとの距離が n 以上なら
 class IsPlayerNotInRangeNode : public Condition
 {
 	float range_;

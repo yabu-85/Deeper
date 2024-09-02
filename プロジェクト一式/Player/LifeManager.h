@@ -1,5 +1,8 @@
 #pragma once
 
+/// <summary>
+/// ダメージの画像エフェクト、プレイヤーのHPGaugeの表示
+/// </summary>
 namespace LifeManager {
 	void Initialize();
 	void Update();

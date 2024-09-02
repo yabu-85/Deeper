@@ -5,6 +5,10 @@
 
 class StateManager;
 
+/// <summary>
+/// 武器のベースクラス
+/// ボーンにくっつけて使う
+/// </summary>
 class WeaponBase : public GameObject
 {
 protected:

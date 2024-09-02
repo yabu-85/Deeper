@@ -17,6 +17,9 @@ struct CameraShakeInfo {
 class Player;
 class CollisionMap;
 
+/// <summary>
+/// 三人称視点のクラス、強制移動と振動する機能を持つ
+/// </summary>
 class Aim : public GameObject
 {
     bool isValid_;                  //全ての挙動を止める

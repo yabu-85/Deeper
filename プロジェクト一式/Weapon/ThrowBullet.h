@@ -3,6 +3,10 @@
 
 class PolyLine;
 
+/// <summary>
+/// ŒÊ‚ğ•`‚¢‚Ä”ò‚Ô’eŠÛ
+/// Å‘å‹——£‚Æ‚‚³‚ğİ’è‚Å‚«‚é
+/// </summary>
 class ThrowBullet : public BulletBase
 {
     int time_;                  //ŒvZ—p
